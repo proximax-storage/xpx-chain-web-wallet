@@ -359,7 +359,9 @@ export class ConvertAccountMultisignComponent implements OnInit {
 
   selectAccount($event: Event, accountName?: string) {
     const event: any = $event;
+   
     this.convertAccountMultsignForm.enable({ emitEvent: false, onlySelf: true });
+    this.convertAccountMultsignForm.get('cosignatory').patchValue('', { emitEvent: false, onlySelf: false })
     const account: any = (event === null) ? this.walletService.filterAccountWallet(accountName) : event.value;
     if (event !== null) {
       this.valueValidateAccount = {
@@ -370,16 +372,16 @@ export class ConvertAccountMultisignComponent implements OnInit {
       }
     } else {
       if (this.currentAccounts.length > 0) {
-      const valueSelect = this.currentAccounts.filter(x => x.label === this.activateRoute.snapshot.paramMap.get('name'))[0];
-      this.valueValidateAccount = {
-        disabledItem: valueSelect.disabledItem,
-        disabledPartial: valueSelect.disabledPartial,
-        info: valueSelect.info,
-        subInfo: valueSelect.subInfo
-      }
+        const valueSelect = this.currentAccounts.filter(x => x.label === this.activateRoute.snapshot.paramMap.get('name'))[0];
+        this.valueValidateAccount = {
+          disabledItem: valueSelect.disabledItem,
+          disabledPartial: valueSelect.disabledPartial,
+          info: valueSelect.info,
+          subInfo: valueSelect.subInfo
+        }
 
-      this.convertAccountMultsignForm.controls['selectAccount'].patchValue(valueSelect)
-    }
+        this.convertAccountMultsignForm.controls['selectAccount'].patchValue(valueSelect)
+      }
     }
 
 
@@ -459,8 +461,8 @@ export class ConvertAccountMultisignComponent implements OnInit {
     }
 
 
-     this.publicAccountToConvert = PublicAccount.createFromPublicKey(this.currentAccountToConvert.publicAccount.publicKey, this.currentAccountToConvert.network)
-     this.mdbBtnAddCosignatory = false;
+    this.publicAccountToConvert = PublicAccount.createFromPublicKey(this.currentAccountToConvert.publicAccount.publicKey, this.currentAccountToConvert.network)
+    //  this.mdbBtnAddCosignatory = false;
     // if (this.activateRoute.snapshot.paramMap.get('name') !== null) {
     //   if (this.currentAccounts.length > 0) {
     //     const valueSelect = this.currentAccounts.filter(x => x.label === this.activateRoute.snapshot.paramMap.get('name'));
@@ -780,6 +782,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
     if (this.convertAccountMultsignForm.get('cosignatory').valid && this.convertAccountMultsignForm.get('cosignatory').value != '') {
       this.showContacts = false;
       this.searchContact = true;
+
       const cosignatory: PublicAccount = PublicAccount.createFromPublicKey(
         this.convertAccountMultsignForm.get('cosignatory').value,
         this.walletService.currentAccount.network
@@ -809,6 +812,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
         this.cosignatoryList.push({ publicAccount: cosignatory, action: 'Add', type: 1, disableItem: false, id: cosignatory.address });
         this.setCosignatoryList(this.cosignatoryList);
         this.convertAccountMultsignForm.get('cosignatory').patchValue('');
+        this.mdbBtnAddCosignatory = true
         this.builder();
       } else {
         this.sharedService.showError('', 'Cosignatory is already present in modification list');
@@ -932,6 +936,22 @@ export class ConvertAccountMultisignComponent implements OnInit {
         this.builder();
 
       }
+
+
+    );
+    // status form cosignatory
+    this.convertAccountMultsignForm.get('cosignatory').statusChanges.subscribe(
+      status => {
+        if (status === 'VALID' && this.publicAccountToConvert) {
+          this.mdbBtnAddCosignatory = false
+        } else {
+          this.mdbBtnAddCosignatory = true
+        }
+
+        // this.builde
+      }
+
+
     );
   }
 
