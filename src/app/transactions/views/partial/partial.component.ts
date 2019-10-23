@@ -71,6 +71,7 @@ export class PartialComponent implements OnInit {
     this.subscription.push(this.transactionService.getAggregateBondedTransactions$().subscribe(
       next => {
         this.aggregateTransactions = next;
+        this.aggregateTransactions.forEach(transaction => transaction.hash = transaction.data.transactionInfo.hash);
       }
     ));
   }
