@@ -30,12 +30,6 @@ export class PartialComponent implements OnInit {
     currentPage: 1
   };
 
-  configCustom: PaginationInstance = {
-    id: 'custom',
-    itemsPerPage: 1,
-    currentPage: 1
-  };
-
   dataSelected: TransactionsInterface = null;
   filter: string = '';
   goBack = `/${AppConfig.routes.service}`;
@@ -56,6 +50,8 @@ export class PartialComponent implements OnInit {
   configurationForm: ConfigurationForm;
   showSwap: boolean = false;
   msg: string = '';
+  routeNis1Hash = environment.nis1.urlExplorer;
+
 
   constructor(
     private proximaxProvider: ProximaxProvider,
