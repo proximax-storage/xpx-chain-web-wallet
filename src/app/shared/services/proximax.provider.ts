@@ -255,7 +255,7 @@ export class ProximaxProvider {
  * @param network
  * @returns {PublicAccount}
  */
-  createPublicAccount(publicKey: string, network: NetworkType): PublicAccount {
+  createPublicAccount(publicKey: string, network: NetworkType = environment.typeNetwork.value): PublicAccount {
     return PublicAccount.createFromPublicKey(publicKey, network);
   }
 
