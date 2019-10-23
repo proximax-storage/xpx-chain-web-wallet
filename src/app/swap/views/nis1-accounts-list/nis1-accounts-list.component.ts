@@ -91,7 +91,6 @@ export class Nis1AccountsListComponent implements OnInit {
     this.subscribeAccountFound();
     const publicAccount = this.nemProvider.createPublicAccount(publicKey);
     this.nemProvider.getAccountInfoNis1(publicAccount, nameAccount);
-    // this.router.navigate([`/${AppConfig.routes.swapTransferAssets}/${address}/${type}/1`]);
   }
 
   /**

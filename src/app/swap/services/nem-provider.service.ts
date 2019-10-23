@@ -93,7 +93,6 @@ export class NemProviderService {
       let accountsMultisigInfo = [];
       const addressOwnedSwap = this.createAddressToString(publicAccount.address.pretty());
       const accountInfoOwnedSwap = await this.getAccountInfo(addressOwnedSwap).pipe(first()).pipe((timeout(environment.timeOutTransactionNis1))).toPromise();
-      console.log(accountInfoOwnedSwap);
       if (accountInfoOwnedSwap['meta']['cosignatories'].length === 0) {
         let nis1AccountsInfo: AccountsInfoNis1Interface;
         // INFO ACCOUNTS MULTISIG
@@ -140,7 +139,6 @@ export class NemProviderService {
           }
         }
       } else {
-        console.log('show error....');
         this.sharedService.showWarning('', 'Swap does not support this account type');
         this.setNis1AccountsFound$(null);
         if (!this.walletService.currentWallet) {
@@ -148,7 +146,7 @@ export class NemProviderService {
         }
       }
     } catch (error) {
-      this.sharedService.showWarning('', 'Swap does not support this account type');
+      this.sharedService.showWarning('', 'It was not possible to connect to the server, try later');
       this.setNis1AccountsFound$(null);
     }
   }
@@ -178,8 +176,8 @@ export class NemProviderService {
    * @memberof NemProviderService
    */
   async validateBalanceAccounts(xpxFound: AssetTransferable, addressMultisig: Address) {
-    const quantityFillZeros = this.transactionService.addZeros(xpxFound.properties.divisibility, xpxFound.quantity);
-    const realQuantity: any = this.amountFormatter(quantityFillZeros, xpxFound, xpxFound.properties.divisibility);
+    const quantityFillZeros = this.transactionService.addZeros(6, xpxFound.quantity);
+    const realQuantity: any = this.amountFormatter(quantityFillZeros, xpxFound, 6);
     const transactions = await this.getUnconfirmedTransaction(addressMultisig);
     if (transactions.length > 0) {
       let relativeAmount = realQuantity;
@@ -188,9 +186,9 @@ export class NemProviderService {
           if (item['_assets'].length > 0) {
             const existMosaic = item['_assets'].find(mosaic => mosaic.assetId.namespaceId === 'prx' && mosaic.assetId.name === 'xpx');
             if (existMosaic) {
-              const quantity = parseFloat(this.amountFormatter(existMosaic.quantity, xpxFound, xpxFound.properties.divisibility));
+              const quantity = parseFloat(this.amountFormatter(existMosaic.quantity, xpxFound, 6));
               const quantitywhitoutFormat = relativeAmount.split(',').join('');
-              const quantityFormat = this.amountFormatter(parseInt((quantitywhitoutFormat - quantity).toString().split('.').join('')), xpxFound, xpxFound.properties.divisibility);
+              const quantityFormat = this.amountFormatter(parseInt((quantitywhitoutFormat - quantity).toString().split('.').join('')), xpxFound, 6);
               relativeAmount = quantityFormat;
             }
           }

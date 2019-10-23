@@ -158,7 +158,7 @@ export class Nis1TransferAssetsComponent implements OnInit {
         };
 
         const transactionWalletNis1: WalletTransactionsNis1Interface = {
-          name: (this.walletService.currentWallet) ? this.walletService.currentWallet.name : this.walletService.accountWalletCreated.wallet.name,
+          name: (this.walletService.getCurrentWallet()) ? this.walletService.currentWallet.name : this.walletService.accountWalletCreated.wallet.name,
           transactions: [this.transactionNis1]
         };
 
@@ -239,7 +239,7 @@ export class Nis1TransferAssetsComponent implements OnInit {
   initComponent() {
     this.accountSelected = Object.assign({}, this.nemProvider.getSelectedNis1Account());
     const moreAccounts = this.activateRoute.snapshot.paramMap.get('moreAccounts');
-    if (this.walletService.currentWallet) {
+    if (this.walletService.getCurrentWallet()) {
       this.goToBack = (moreAccounts === '0') ? '2' : moreAccounts;
       this.goToBackRoute = (moreAccounts === '0') ? `/${AppConfig.routes.swapAccountList}` : `/${AppConfig.routes.swapListCosignerNis1}`;
       this.ownedAccountSwap = this.walletService.filterAccountWallet(this.accountSelected.nameAccount);
