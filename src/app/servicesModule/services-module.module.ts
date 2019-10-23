@@ -22,8 +22,6 @@ import { SelectionAccountTypeComponent } from './views/account/selection-account
 import { AddContactsComponent } from './views/address-book/add-contacts/add-contacts.component';
 import { ConvertAccountMultisignComponent } from './views/multi-sign/convert-account-multisign/convert-account-multisign.component';
 import { EditAccountMultisignComponent } from './views/multi-sign/edit-account-multisign/edit-account-multisign.component';
-import { AccountsListComponent } from './views/swap/accounts-list/accounts-list.component';
-import { Nis1AccountsListComponent } from './views/swap/nis1-accounts-list/nis1-accounts-list.component';
 import { CreatePollComponent } from './views/voting/create-poll/create-poll.component';
 import { PollsComponent } from './views/voting/polls/polls.component';
 import { ResultPollComponent } from './views/voting/result-poll/result-poll.component';
@@ -33,13 +31,11 @@ import { VoteInPollComponent } from './views/voting/vote-in-poll/vote-in-poll.co
 import { HighchartsChartComponent } from './views/voting/vote-in-poll/highcharts-chart.component';
 import { AccountNis1FoundComponent } from './views/account/account-nis1-found/account-nis1-found.component';
 import { AccountNis1TransferXpxComponent } from './views/account/account-nis1-transfer-xpx/account-nis1-transfer-xpx.component';
-import { TransferXpxNis1Component } from './views/swap/transfer-xpx-nis1/transfer-xpx-nis1.component';
 import { AccountDeleteComponent } from './views/account/account-delete/account-delete/account-delete.component';
 import { AccountDeleteConfirmComponent } from './views/account/account-delete-confirm/account-delete-confirm.component';
 import { ExportWalletComponent } from './views/wallet/export-wallet/export-wallet.component';
 import { BlockchainComponent } from './views/nodes/blockchain/blockchain.component';
 import { DeleteWalletComponent } from './views/wallet/delete-wallet/delete-wallet.component';
-import { Nis1AccountsConsignerComponent } from './views/swap/nis1-accounts-consigner/nis1-accounts-consigner.component';
 
 @NgModule({
   declarations: [
@@ -64,8 +60,6 @@ import { Nis1AccountsConsignerComponent } from './views/swap/nis1-accounts-consi
     AddContactsComponent,
     ConvertAccountMultisignComponent,
     EditAccountMultisignComponent,
-    AccountsListComponent,
-    Nis1AccountsListComponent,
     CreatePollComponent,
     PollsComponent,
     ResultPollComponent,
@@ -75,14 +69,12 @@ import { Nis1AccountsConsignerComponent } from './views/swap/nis1-accounts-consi
     HighchartsChartComponent,
     AccountNis1FoundComponent,
     AccountNis1TransferXpxComponent,
-    TransferXpxNis1Component,
     AccountDeleteComponent,
     AccountDeleteConfirmComponent,
     ExportWalletComponent,
     BlockchainComponent,
     ExportWalletComponent,
-    DeleteWalletComponent,
-    Nis1AccountsConsignerComponent,
+    DeleteWalletComponent
   ],
   schemas: [ NO_ERRORS_SCHEMA ],
   imports: [
