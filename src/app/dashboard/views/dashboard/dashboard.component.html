@@ -177,12 +177,9 @@
             <ng-container *ngFor="let el of transactions | paginate: configFilesDashboard">
               <tr class="white-space-pre cursor-p" (click)="openModal(el);">
                 <td class="th-sm fs-07rem" scope="row description-dark-green">
-                  <ng-container *ngIf="el.nameType === 'ProximaX Swap'; else elseSwap">
+                  <ng-container *ngIf="el.nameType === 'ProximaX Swap';">
                     <span style="color: #e6b219;"><i class="fa fa-star" aria-hidden="true"></i></span>
                   </ng-container>
-                  <!-- <ng-template #elseSwap>
-                    &nbsp; &nbsp;
-                  </ng-template> -->
                   {{el.nameType}}
                 </td>
 
