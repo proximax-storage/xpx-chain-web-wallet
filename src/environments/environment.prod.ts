@@ -101,6 +101,9 @@ export const environment = {
   typeNetwork: {
     value: NetworkType.TEST_NET,
     label: 'PUBLIC TEST'
+  },
+  coingecko:{
+    url: 'https://api.coingecko.com/api/v3/coins/',
   }
 };
 /*
