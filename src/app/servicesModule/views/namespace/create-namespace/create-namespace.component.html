@@ -2,10 +2,7 @@
   <app-header [params]="paramsHeader"></app-header>
 
   <form [formGroup]="namespaceForm" (ngSubmit)="createNamespace()">
-    <div class="row">
-      <div class="col-12 col-sm-7 col-md-8 mb-2rem">
-
-        <div class="row mt-1rem">
+      <div class="row mt-1rem">
           <div class="col-11 mx-auto" *ngIf="insufficientBalance && !insufficientBalanceDuration">
             <div class="box-transparent-border-red m-0">
               <div class="txt-a-center">
@@ -17,6 +14,11 @@
             </div>
           </div>
         </div>
+    <div class="row">
+      
+      <div class="col-12 col-sm-7 col-md-8 mb-2rem">
+
+
         <div class="row mt-1rem">
           <!-- <ng-container *ngIf="insufficientBalance && !insufficientBalanceDuration">
             <div class="col-11 mx-auto d-flex justify-content-end">

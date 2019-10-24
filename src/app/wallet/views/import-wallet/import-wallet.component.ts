@@ -79,13 +79,14 @@ export class ImportWalletComponent implements OnInit {
           this.walletService.clearNis1AccounsWallet();
           this.spinnerButton = true;
           const nis1Wallet = this.nemProviderService.createAccountPrivateKey(this.importWalletForm.get('privateKey').value);
+          const publicAccount = this.nemProviderService.createPublicAccount(nis1Wallet.publicKey);
           this.nis1Account = {
             address: nis1Wallet.address,
             publicKey: nis1Wallet.publicKey
           };
 
           this.saveAccount(wallet, walletName, password);
-          this.nemProviderService.getAccountInfoNis1(nis1Wallet, walletName);
+          this.nemProviderService.getAccountInfoNis1(publicAccount, walletName);
           return;
         }
 

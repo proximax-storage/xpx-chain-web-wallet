@@ -213,7 +213,8 @@
                 <mdb-accordion-item-body class="box-accounts-height box-modal-grey">
                   <ng-container *ngFor="let dataSigner of transferTransaction.data['cosignatures'];  let i=index">
                     <div class="">
-                      <span class="fs-06rem w-w-b-w cursor-p fw-600" [title]="'Public Key: '+dataSigner.signer.publicKey">
+                      <span class="fs-06rem w-w-b-w cursor-p fw-600"
+                        [title]="'Public Key: '+dataSigner.signer.publicKey">
                         {{dataSigner.signer.address.pretty()}}
                       </span>
                     </div>
@@ -233,7 +234,9 @@
         <!-- NIS1 HASH -->
         <div class="col-12 mt-05rem lh-1em box-modal-grey-dark p-1rem color-white">
           <span class="fw-600 fs-075rem">NIS1 Hash: <br></span>
-          <span class="fs-075rem w-w-b-w "> {{nis1hash | uppercase}} </span>
+          <span class="fs-075rem w-w-b-w ">
+            <a [href]="routeNis1Explorer+nis1hash" class="color-white cursor-p" target="_blank">{{nis1hash | uppercase}}</a>
+          </span>
         </div>
       </div>
     </div>

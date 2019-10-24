@@ -255,7 +255,7 @@ export class ProximaxProvider {
  * @param network
  * @returns {PublicAccount}
  */
-  createPublicAccount(publicKey: string, network: NetworkType): PublicAccount {
+  createPublicAccount(publicKey: string, network: NetworkType = environment.typeNetwork.value): PublicAccount {
     return PublicAccount.createFromPublicKey(publicKey, network);
   }
 
@@ -338,7 +338,7 @@ export class ProximaxProvider {
    * @memberof ProximaxProvider
    */
   getAggregateBondedTransactions(publicAccount: PublicAccount): Observable<AggregateTransaction[]> {
-    return this.accountHttp.aggregateBondedTransactions(publicAccount);
+    return this.accountHttp.aggregateBondedTransactions(publicAccount, new QueryParams(100));
   }
 
    /**

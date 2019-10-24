@@ -9,6 +9,8 @@ import { NgxCurrencyModule } from "ngx-currency";
 import { NgxUiLoaderModule, NgxUiLoaderConfig, POSITION, SPINNER, PB_DIRECTION } from 'ngx-ui-loader';
 import { TagInputModule } from 'ngx-chips';
 import { NgxDropzoneModule } from 'ngx-dropzone';
+import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
+import { RouterModule } from '@angular/router';
 
 import { MdbModule } from '../shared/moduls/mdb/mdb.module';
 import { TransferTypeComponent } from '../dashboard/components/transfer-type/transfer-type.component';
@@ -25,7 +27,6 @@ import { MosaicsInfoComponent } from '../dashboard/components/mosaics-info/mosai
 import { MosaicAliasComponent } from '../dashboard/components/mosaic-alias/mosaic-alias.component';
 import { AddressAliasTypeComponent } from '../dashboard/components/address-alias-type/address-alias-type.component';
 import { StringFilterPipe } from '../shared/pipes/string-filter.pipe';
-import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { AttestationTypeComponent } from '../dashboard/components/attestation-type/attestation-type.component';
 import { VoteTypeComponent } from '../dashboard/components/vote-type/vote-type.component';
 import { TransferAssetsComponent } from '../servicesModule/components/transfer-assets/transfer-assets.component';
@@ -34,6 +35,7 @@ import { TransferTypeBondedComponent } from '../dashboard/components/transfer-ty
 import { FilterObjectPipe } from '../shared/pipes/filter-object.pipe';
 import { BoxDataSignerHashComponent } from '../dashboard/components/box-data-signer-hash/box-data-signer-hash.component';
 import { AuthComponent } from '../auth/views/auth/auth.component';
+import { HeaderComponent } from '../servicesModule/components/header/header.component';
 
 
 
@@ -52,6 +54,7 @@ const ngxUiLoaderConfig: NgxUiLoaderConfig = {
 
 const components = [
   AuthComponent,
+  HeaderComponent,
   TransferTypeComponent,
   RegisterNamespaceTypeComponent,
   MosaicDefinitionTypeComponent,
@@ -81,7 +84,8 @@ const moduls = [
   ReactiveFormsModule,
   FormsModule,
   ClipboardModule,
-  NgxCurrencyModule
+  NgxCurrencyModule,
+  RouterModule
 ];
 
 

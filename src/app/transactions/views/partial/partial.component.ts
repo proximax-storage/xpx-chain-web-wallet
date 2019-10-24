@@ -30,12 +30,6 @@ export class PartialComponent implements OnInit {
     currentPage: 1
   };
 
-  configCustom: PaginationInstance = {
-    id: 'custom',
-    itemsPerPage: 1,
-    currentPage: 1
-  };
-
   dataSelected: TransactionsInterface = null;
   filter: string = '';
   goBack = `/${AppConfig.routes.service}`;
@@ -44,7 +38,7 @@ export class PartialComponent implements OnInit {
   multisigInfo: MultisigAccountInfo[] = [];
   nis1hash = null;
   elements: any = [];
-  headElements = ['Account linked to the transaction', 'Hash'];
+  headElements = ['Deadline', 'Account linked to the transaction', 'Hash'];
   hideSign = false;
   objectKeys = Object.keys;
   onlySigner = false;
@@ -56,6 +50,9 @@ export class PartialComponent implements OnInit {
   configurationForm: ConfigurationForm;
   showSwap: boolean = false;
   msg: string = '';
+  routeNis1Hash = environment.nis1.urlExplorer;
+  deadline: string;
+
 
   constructor(
     private proximaxProvider: ProximaxProvider,
@@ -74,7 +71,12 @@ export class PartialComponent implements OnInit {
     this.typeTransactions = this.transactionService.getTypeTransactions();
     this.subscription.push(this.transactionService.getAggregateBondedTransactions$().subscribe(
       next => {
-        this.aggregateTransactions = next;
+        this.aggregateTransactions = next.sort((a, b) => (this.transactionService.dateFormat(a.data.deadline) < this.transactionService.dateFormat(b.data.deadline)) ? 1 : -1);
+        this.aggregateTransactions.forEach(transaction => {
+          transaction.hash = transaction.data.transactionInfo.hash;
+          transaction['deadline'] = this.transactionService.dateFormat(transaction.data.deadline)
+          
+        });
       }
     ));
   }
@@ -124,6 +126,7 @@ export class PartialComponent implements OnInit {
     this.showSwap = false;
     this.modalPartial.show();
     this.dataSelected = transaction;
+    this.deadline = this.transactionService.dateFormat(this.dataSelected.data['deadline'])
     this.arraySelect = this.arraySelect.slice(0);
     // this.arraySelect = [];
     this.account = null;

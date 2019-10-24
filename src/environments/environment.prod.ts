@@ -6,10 +6,10 @@ import { ChronoUnit } from 'js-joda';
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: true,
+  production: false,
   itemBooksAddress: 'sw-books-testnet',
-  version: '0.3.23',
-  cacheVersion: '01',
+  version: '0.4.0',
+  cacheVersion: '02',
   nameKeyBlockStorage: `sw-blocks`,
   nameKeyNodeSelected: `sw-selected-node-testnet`,
   nameKeyWalletStorage: `sw-testnet`,
@@ -82,12 +82,12 @@ export const environment = {
     address_public_test: 'VDYN53-XXEGKK-3XHQYE-K6ZBMN-JPXN57-ZBHXA3-AW55'
   },
   nis1: {
-    url: 'http://18.231.166.212:7890',
+    url: 'https://bctestnetswap.xpxsirius.io:7890',
     urlExplorer: 'http://testnet-explorer.nemtool.com/#/s_tx?hash=',
     networkType: NetworkTypes.TEST_NET,
     burnAddress : 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN',
     nodes: [
-      { protocol: "http", domain: "18.231.166.212", port: 7890 } as ServerConfig
+      { protocol: "https", domain: "bctestnetswap.xpxsirius.io", port: 7890 } as ServerConfig
     ],
   },
   swapAccount: {
