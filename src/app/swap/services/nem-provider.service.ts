@@ -180,13 +180,13 @@ export class NemProviderService {
     console.log('xpxFound --> ', xpxFound);
     const quantityFillZeros = this.transactionService.addZeros(6, xpxFound.quantity);
     const realQuantity: any = this.amountFormatter(quantityFillZeros, xpxFound, 6);
-    const transactions = await this.getUnconfirmedTransaction(addressMultisig);
+    const unconfirmedTxn = await this.getUnconfirmedTransaction(addressMultisig);
     console.log('Address  ---> ', addressMultisig);
-    console.log('TRANSACTIONS  ---> ', transactions);
-    if (transactions.length > 0) {
+    if (unconfirmedTxn.length > 0) {
       let relativeAmount = realQuantity;
       console.log('relativeAmount', relativeAmount);
-      for (const item of transactions) {
+      for (const item of unconfirmedTxn) {
+        console.log('transaction unconfirmed -->', item);
         if (item.type === 257 && item['signer']['address']['value'] === addressMultisig['value']) {
           if (item['_assets'].length > 0) {
             const existMosaic = item['_assets'].find(mosaic => mosaic.assetId.namespaceId === 'prx' && mosaic.assetId.name === 'xpx');
