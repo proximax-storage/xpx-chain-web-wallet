@@ -118,6 +118,17 @@ export class CreateNamespaceComponent implements OnInit {
       if (xpxInBalance) {
         if (this.namespaceForm.get('namespaceRoot').value === '' || this.namespaceForm.get('namespaceRoot').value === '1') {
           const invalidBalance = xpxInBalance.amount.compact() < amount;
+          const amountMosaicXpx = this.transactionService.amountFormatterSimple(xpxInBalance.amount.compact()).replace(/,/g, '');
+          
+          if (Number(amountMosaicXpx) < 26.393510) {
+            // ********** INSUFFICIENT BALANCE*************
+            this.insufficientBalance = true;
+            this.insufficientBalanceDuration = false;
+            if (this.namespaceForm.enabled) {
+              this.namespaceForm.disable();
+            }
+            return;
+          } 
           const mosaic = await this.mosaicServices.filterMosaics([xpxInBalance.id]);
           if (mosaic && mosaic[0].mosaicInfo) {
             this.calculateRentalFee = this.transactionService.amountFormatterSimple(amount);
@@ -130,7 +141,7 @@ export class CreateNamespaceComponent implements OnInit {
             }
           }
 
-          if (invalidBalance) {
+          if (invalidBalance || Number(amountMosaicXpx) < 26.393510) {
             // **********DURATION INSUFFICIENT BALANCE*************
             this.insufficientBalance = false;
             this.insufficientBalanceDuration = true;

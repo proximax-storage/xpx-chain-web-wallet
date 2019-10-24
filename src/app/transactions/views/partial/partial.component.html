@@ -54,6 +54,7 @@
               *ngFor="let transaction of aggregateTransactions | stringFilter: filter | paginate: configAdvance">
               <tr class="white-space-pre cursor-p text-center" mdbTableCol
                 [ngClass]="!transaction ? 'background-pending': ''" (click)="find(transaction)">
+                <td class="fs-07rem">{{transaction['deadline']}}</td>
                 <td class="fs-07rem">{{transaction.senderAddress}}</td>
                 <td class="fs-07rem">{{transaction.data.transactionInfo.hash}}</td>
               </tr>
