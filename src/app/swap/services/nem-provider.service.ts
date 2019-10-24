@@ -105,6 +105,7 @@ export class NemProviderService {
               const xpxFound = ownedMosaic.find(el => el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx');
               if (xpxFound) {
                 multisig.balance = await this.validateBalanceAccounts(xpxFound, addressMultisig);
+                console.log('multisig.balance', multisig.balance)
                 multisig.mosaic = xpxFound;
                 accountsMultisigInfo.push(multisig);
               }
@@ -176,12 +177,15 @@ export class NemProviderService {
    * @memberof NemProviderService
    */
   async validateBalanceAccounts(xpxFound: AssetTransferable, addressMultisig: Address) {
+    console.log('xpxFound --> ', xpxFound);
     const quantityFillZeros = this.transactionService.addZeros(6, xpxFound.quantity);
     const realQuantity: any = this.amountFormatter(quantityFillZeros, xpxFound, 6);
     const transactions = await this.getUnconfirmedTransaction(addressMultisig);
+    console.log('Address  ---> ', addressMultisig);
+    console.log('TRANSACTIONS  ---> ', transactions);
     if (transactions.length > 0) {
       let relativeAmount = realQuantity;
-      console.log('----relativeAmount---', relativeAmount);
+      console.log('relativeAmount', relativeAmount);
       for (const item of transactions) {
         if (item.type === 257 && item['signer']['address']['value'] === addressMultisig['value']) {
           if (item['_assets'].length > 0) {
