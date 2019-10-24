@@ -172,38 +172,43 @@ export class NemProviderService {
    *
    *
    * @param {AssetTransferable} xpxFound
-   * @param {Address} addressMultisig
+   * @param {Address} addressSigner
    * @returns
    * @memberof NemProviderService
    */
-  async validateBalanceAccounts(xpxFound: AssetTransferable, addressMultisig: Address) {
+  async validateBalanceAccounts(xpxFound: AssetTransferable, addressSigner: Address) {
     console.log('xpxFound --> ', xpxFound);
     const quantityFillZeros = this.transactionService.addZeros(6, xpxFound.quantity);
-    const realQuantity: any = this.amountFormatter(quantityFillZeros, xpxFound, 6);
-    const unconfirmedTxn = await this.getUnconfirmedTransaction(addressMultisig);
-    console.log('Address  ---> ', addressMultisig);
+    let realQuantity: any = this.amountFormatter(quantityFillZeros, xpxFound, 6);
+    const unconfirmedTxn = await this.getUnconfirmedTransaction(addressSigner);
+    console.log('Address  ---> ', addressSigner);
     if (unconfirmedTxn.length > 0) {
-      let relativeAmount = realQuantity;
-      console.log('relativeAmount', relativeAmount);
+      //let quantity = realQuantity;
+      console.log('realQuantity', realQuantity);
       for (const item of unconfirmedTxn) {
         console.log('transaction unconfirmed -->', item);
-        if (item.type === 257 && item['signer']['address']['value'] === addressMultisig['value']) {
-          if (item['_assets'].length > 0) {
-            const existMosaic = item['_assets'].find(mosaic => mosaic.assetId.namespaceId === 'prx' && mosaic.assetId.name === 'xpx');
-            if (existMosaic) {
-              const quantity = parseFloat(this.amountFormatter(existMosaic.quantity, xpxFound, 6));
-              console.log('quantity --->', quantity);
-              const quantitywhitoutFormat = relativeAmount.split(',').join('');
-              console.log('quantitywhitoutFormat --->', quantitywhitoutFormat);
-              const quantityFormat = this.amountFormatter(parseInt((quantitywhitoutFormat - quantity).toString().split('.').join('')), xpxFound, 6);
-              console.log('quantityFormat --->', quantityFormat);
-              relativeAmount = quantityFormat;
-            }
-          }
+        let existMosaic = null;
+        if (item.type === 257 && item['signer']['address']['value'] === addressSigner['value'] && item['_assets'].length > 0) {
+          existMosaic = item['_assets'].find((mosaic) => mosaic.assetId.namespaceId === 'prx' && mosaic.assetId.name === 'xpx');
+        } else if (item.type === 4100 && item['otherTransaction']['type'] === 257 && item['otherTransaction']['signer']['address']['value'] === addressSigner['value']) {
+          existMosaic = item['otherTransaction']['_assets'].find((mosaic) => mosaic.assetId.namespaceId === 'prx' && mosaic.assetId.name === 'xpx');
+        }
+
+        console.log('existMosaic -->', existMosaic);
+        if (existMosaic) {
+          const unconfirmedFormatter = parseFloat(this.amountFormatter(existMosaic.quantity, xpxFound, 6));
+          console.log('unconfirmedFormatter --->', unconfirmedFormatter);
+          const quantityWhitoutFormat = realQuantity.split(',').join('');
+          console.log('quantityWhitoutFormat --->', quantityWhitoutFormat);
+          const residue = this.transactionService.subtractAmount(parseFloat(quantityWhitoutFormat), unconfirmedFormatter);
+          console.log('residue --->', residue);
+          const quantityFormat = this.amountFormatter(parseInt((residue).toString().split('.').join('')), xpxFound, 6);
+          console.log('quantityFormat --->', quantityFormat);
+          realQuantity = quantityFormat;
         }
       }
 
-      return relativeAmount;
+      return realQuantity;
     } else {
       return realQuantity;
     }
@@ -233,13 +238,8 @@ export class NemProviderService {
    */
   amountFormatter(amountParam: number, mosaic: AssetTransferable, manualDivisibility: number = 0) {
     const divisibility = (manualDivisibility === 0) ? manualDivisibility : mosaic.properties.divisibility;
-    const amountDivisibility = Number(
-      amountParam / Math.pow(10, divisibility)
-    );
-
-    const amountFormatter = amountDivisibility.toLocaleString("en-us", {
-      minimumFractionDigits: divisibility
-    });
+    const amountDivisibility = Number(amountParam / Math.pow(10, divisibility));
+    const amountFormatter = amountDivisibility.toLocaleString("en-us", { minimumFractionDigits: divisibility });
     return amountFormatter;
   }
 
@@ -352,7 +352,14 @@ export class NemProviderService {
     return accountOwnedMosaics.fromAddress(address);
   }
 
-  getNetworkType(network) {
+  /**
+   *
+   *
+   * @param {*} network
+   * @returns
+   * @memberof NemProviderService
+   */
+  getNetworkType(network: string) {
     let networkData = null;
     if (typeof network === 'string') {
       switch (network) {

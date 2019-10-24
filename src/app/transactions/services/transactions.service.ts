@@ -143,21 +143,18 @@ export class TransactionsService {
    * @param cant Quantity of zeros to add
    * @param amount Amount to add zeros
    */
-  addZeros(cant, amount = 0) {
-    let decimal;
-    let realAmount;
+  addZeros(cant: any, amount = 0) {
+    let decimal: any;
+    let realAmount: any;
     if (amount === 0) {
       decimal = this.addDecimals(cant);
       realAmount = `0${decimal}`;
     } else {
-      let arrAmount = amount
-        .toString()
-        .replace(/,/g, "")
-        .split(".");
+      const arrAmount = amount.toString().replace(/,/g, "").split(".");
       if (arrAmount.length < 2) {
         decimal = this.addDecimals(cant);
       } else {
-        let arrDecimals = arrAmount[1].split("");
+        const arrDecimals = arrAmount[1].split("");
         decimal = this.addDecimals(cant - arrDecimals.length, arrAmount[1]);
       }
       realAmount = `${arrAmount[0]}${decimal}`;
@@ -171,8 +168,10 @@ export class TransactionsService {
    * @param cant Quantity of zeros to add
    * @param amount Amount to add zeros
    */
-  addDecimals(cant, amount = "0") {
-    let x = "0";
+  addDecimals(cant: any, amount = "0") {
+    console.log(cant);
+    console.log(amount);
+    const x = "0";
     if (amount === "0") {
       for (let index = 0; index < cant - 1; index++) {
         amount += x;
@@ -815,6 +814,25 @@ export class TransactionsService {
     if (!this.transactionsReady.find(x => x === hash)) {
       this.transactionsReady.push(hash);
     }
+  }
+
+  /**
+   *
+   *
+   * @param {number} quantityOne
+   * @param {number} quantityTwo
+   * @returns {string}
+   * @memberof TransactionsService
+   */
+  subtractAmount(quantityOne: number, quantityTwo: number): string {
+    let residue: string[] = (quantityOne - quantityTwo).toString().replace(/,/g, "").split(".");
+    residue[1] = residue[1].slice(0,6);
+    const missing = 6 - residue[1].length;
+    for (let index = 0; index < missing; index++) {
+      residue[1] += 0;
+    }
+
+    return residue.join().replace(/,/g, ".");
   }
 
   /**
