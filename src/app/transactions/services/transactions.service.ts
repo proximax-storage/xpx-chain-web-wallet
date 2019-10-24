@@ -824,10 +824,10 @@ export class TransactionsService {
    * @returns {string}
    * @memberof TransactionsService
    */
-  subtractAmount(quantityOne: number, quantityTwo: number): string {
+  subtractAmount(quantityOne: number, quantityTwo: number, limitDecimal = 6): string {
     let residue: string[] = (quantityOne - quantityTwo).toString().replace(/,/g, "").split(".");
     residue[1] = residue[1].slice(0,6);
-    const missing = 6 - residue[1].length;
+    const missing = limitDecimal - residue[1].length;
     for (let index = 0; index < missing; index++) {
       residue[1] += 0;
     }
