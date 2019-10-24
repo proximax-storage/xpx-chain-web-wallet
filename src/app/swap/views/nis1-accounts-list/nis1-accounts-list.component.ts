@@ -102,14 +102,15 @@ export class Nis1AccountsListComponent implements OnInit {
     this.subscription.push(this.nemProvider.getNis1AccountsFound$().pipe(first()).subscribe(accountFound => {
       console.log(accountFound);
       if (accountFound) {
+        this.nemProvider.setSelectedNis1Account(accountFound);
         if (accountFound.cosignerAccounts.length > 0) {
           console.log('REDIRECCIONA A LISTAR LAS CUENTA DE COSIGNATARIOS');
           this.indexSelected = 0;
-          //this.routeContinue = `/${AppConfig.routes.swapListCosignerNis1}`;
+          // this.routeContinue = `/${AppConfig.routes.swapListCosignerNis1}`;
+          this.router.navigate([`/${AppConfig.routes.swapListCosigners}`]);
         } else {
           console.log('PROCEDE A TRANSFERIR DE UNA VEZ');
           this.indexSelected = 0;
-          this.nemProvider.setSelectedNis1Account(accountFound);
           this.router.navigate([`/${AppConfig.routes.swapTransferAssetsLogged}/${accountFound.address.pretty()}/1/0`]);
         }
       }else {

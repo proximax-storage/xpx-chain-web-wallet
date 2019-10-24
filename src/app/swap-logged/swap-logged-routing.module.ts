@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { AppConfig } from '../config/app.config';
 import { Nis1AccountsListComponent } from '../swap/views/nis1-accounts-list/nis1-accounts-list.component';
 import { Nis1TransferAssetsComponent } from '../swap/views/nis1-transfer-assets/nis1-transfer-assets.component';
+import { Nis1CosignerAccountsComponent } from '../swap/views/nis1-cosigner-accounts/nis1-cosigner-accounts.component';
 
 const routes: Routes = [{
   path: AppConfig.routes.swapAccountList,
@@ -21,6 +22,16 @@ const routes: Routes = [{
     meta: {
       title: 'swapTransferAssetsLogged.title',
       description: 'swapTransferAssetsLogged.text',
+      override: true,
+    },
+  }
+}, {
+  path: AppConfig.routes.swapListCosigners,
+  component: Nis1CosignerAccountsComponent,
+  data: {
+    meta: {
+      title: 'swapListCosigners.title',
+      description: 'swapListCosigners.text',
       override: true,
     },
   }

@@ -181,14 +181,18 @@ export class NemProviderService {
     const transactions = await this.getUnconfirmedTransaction(addressMultisig);
     if (transactions.length > 0) {
       let relativeAmount = realQuantity;
+      console.log('----relativeAmount---', relativeAmount);
       for (const item of transactions) {
         if (item.type === 257 && item['signer']['address']['value'] === addressMultisig['value']) {
           if (item['_assets'].length > 0) {
             const existMosaic = item['_assets'].find(mosaic => mosaic.assetId.namespaceId === 'prx' && mosaic.assetId.name === 'xpx');
             if (existMosaic) {
               const quantity = parseFloat(this.amountFormatter(existMosaic.quantity, xpxFound, 6));
+              console.log('quantity --->', quantity);
               const quantitywhitoutFormat = relativeAmount.split(',').join('');
+              console.log('quantitywhitoutFormat --->', quantitywhitoutFormat);
               const quantityFormat = this.amountFormatter(parseInt((quantitywhitoutFormat - quantity).toString().split('.').join('')), xpxFound, 6);
+              console.log('quantityFormat --->', quantityFormat);
               relativeAmount = quantityFormat;
             }
           }

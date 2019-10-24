@@ -48,6 +48,7 @@ export const AppConfig: Config = {
 
     swapAccountNis1Found: 'swap-account-nis1-found',
     swapTransactions: 'swap-transactions',
+    swapListCosigners: 'swap-list-cosigners',
     swapListCosignerNis1: 'swap-list-cosigner-nis1',
     swapTransferAssets: 'swap-transfer-assets',
     swapTransferAssetsLogged: 'swap-transfer-assets-nis1',
@@ -127,6 +128,7 @@ export interface Config {
     swapAccountNis1Found: string;
     swapTransactions: string;
     swapListCosignerNis1: string;
+    swapListCosigners: string;
     swapListAccountsNis1: string;
     swapTransferAssets: string;
     swapTransferAssetsLogged: string;
