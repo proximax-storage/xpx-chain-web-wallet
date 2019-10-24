@@ -674,7 +674,6 @@ export class NemProviderService {
           }
         });
 
-        // console.log('=======> ', newWalletTransactions);
         const transactionWalletNis1: WalletTransactionsNis1Interface = {
           name: this.walletService.getCurrentWallet().name,
           transactions: newWalletTransactions
@@ -684,12 +683,12 @@ export class NemProviderService {
       }
     }
 
-    /*const wallet = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.getCurrentWallet().name);
+    const wallet = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.getCurrentWallet().name);
     if (wallet !== undefined && wallet !== null) {
       this.walletService.setSwapTransactions$(wallet.transactions);
     } else {
       this.walletService.setSwapTransactions$([]);
-    }*/
+    }
   }
 }
 

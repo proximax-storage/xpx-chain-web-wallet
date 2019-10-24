@@ -625,6 +625,13 @@ export class TransactionsService {
           if (addressSender === addressAccountMultisig || addressSender === addressAccountSimple) {
             if (msg && msg["type"] && msg["type"] === "Swap") {
               nameType = "ProximaX Swap";
+              let walletTransactionsNis = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.getCurrentWallet().name);
+              if (walletTransactionsNis !== undefined && walletTransactionsNis !== null) {
+                const transactions = walletTransactionsNis.transactions.filter(el => el.nis1TransactionHash !== msg["nis1Hash"]);
+                walletTransactionsNis.transactions = transactions;
+                this.walletService.setSwapTransactions$(walletTransactionsNis.transactions);
+                this.walletService.saveAccountWalletTransNisStorage(walletTransactionsNis);
+              }
             }
           }
         }
