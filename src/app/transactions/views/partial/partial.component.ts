@@ -38,7 +38,7 @@ export class PartialComponent implements OnInit {
   multisigInfo: MultisigAccountInfo[] = [];
   nis1hash = null;
   elements: any = [];
-  headElements = ['Account linked to the transaction', 'Hash'];
+  headElements = ['Deadline', 'Account linked to the transaction', 'Hash'];
   hideSign = false;
   objectKeys = Object.keys;
   onlySigner = false;
@@ -71,8 +71,13 @@ export class PartialComponent implements OnInit {
     this.typeTransactions = this.transactionService.getTypeTransactions();
     this.subscription.push(this.transactionService.getAggregateBondedTransactions$().subscribe(
       next => {
+        next.sort((a, b) => (a.data.deadline < b.data.deadline) ? 1 : -1)
         this.aggregateTransactions = next;
-        this.aggregateTransactions.forEach(transaction => transaction.hash = transaction.data.transactionInfo.hash);
+        this.aggregateTransactions.forEach(transaction => {
+          transaction.hash = transaction.data.transactionInfo.hash;
+          transaction['deadline'] = this.transactionService.dateFormat(transaction.data.deadline)
+          
+        });
       }
     ));
   }
