@@ -25,7 +25,7 @@ const routes: Routes = [
       loadChildren: './wallet/wallet.module#WalletModule'
     },{
       path: '',
-      loadChildren: './swap/swap.module#SwapModule'
+      loadChildren: './swap-not-logged/swap-not-logged.module#SwapNotLoggedModule'
     }]
   }, {
     path: ``,
@@ -40,6 +40,9 @@ const routes: Routes = [
     }, {
       path: '',
       loadChildren: './servicesModule/services-module.module#ServicesModule'
+    },{
+      path: '',
+      loadChildren: './swap-logged/swap-logged.module#SwapLoggedModule'
     }]
   }, {
     path: '**',
@@ -47,11 +50,6 @@ const routes: Routes = [
   },
 ];
 
-/*@NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
-})
-export class AppRoutingModule { }*/
 export const appRoutingProviders: any[] = [];
 export const routing: ModuleWithProviders = RouterModule.forRoot(routes, {
   enableTracing: false,
