@@ -297,10 +297,11 @@ export class Nis1TransferAssetsComponent implements OnInit {
             this.accountToSwap = Object.assign({}, accountFiltered);
             this.accountToSwap.address = this.nemProvider.createAddressToString(accountFiltered.address);
             this.accountToSwap.nameAccount = this.accountSelected.nameAccount;
-            this.accountToSwap.accountCosignatory = this.ownedAccountSwap.publicAccount;
+            this.accountToSwap.accountCosignatory = this.proximaxProvider.createPublicAccount(this.ownedAccountSwap.publicAccount.publicKey);
             this.quantity = this.accountToSwap.balance;
             this.maxAmount = this.quantity.length;
             this.showCertifiedSwap = false;
+            console.log(this.accountToSwap);
             this.createFormTransfer();
             this.subscribeAmount();
           }
