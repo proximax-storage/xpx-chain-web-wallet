@@ -71,8 +71,7 @@ export class PartialComponent implements OnInit {
     this.typeTransactions = this.transactionService.getTypeTransactions();
     this.subscription.push(this.transactionService.getAggregateBondedTransactions$().subscribe(
       next => {
-        next.sort((a, b) => (a.data.deadline < b.data.deadline) ? 1 : -1)
-        this.aggregateTransactions = next;
+        this.aggregateTransactions = next.sort((a, b) => (this.transactionService.dateFormat(a.data.deadline) < this.transactionService.dateFormat(b.data.deadline)) ? 1 : -1);
         this.aggregateTransactions.forEach(transaction => {
           transaction.hash = transaction.data.transactionInfo.hash;
           transaction['deadline'] = this.transactionService.dateFormat(transaction.data.deadline)

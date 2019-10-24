@@ -338,7 +338,7 @@ export class ProximaxProvider {
    * @memberof ProximaxProvider
    */
   getAggregateBondedTransactions(publicAccount: PublicAccount): Observable<AggregateTransaction[]> {
-    return this.accountHttp.aggregateBondedTransactions(publicAccount);
+    return this.accountHttp.aggregateBondedTransactions(publicAccount, new QueryParams(100));
   }
 
    /**
