@@ -26,13 +26,13 @@ export class Nis1TransferAssetsComponent implements OnInit {
   blockButton: boolean;
   configurationForm: ConfigurationForm;
   errorAmount: string;
-  formTransfer: FormGroup; 7
-  goToBack: string;
+  formTransfer: FormGroup;
   goToBackRoute = `/${AppConfig.routes.swapListCosignerNis1}`;
   isMultisig = null;
   insufficientBalance = false;
   maxAmount: number = 0;
   mainAccount = false;
+  nameBtnBack = '';
   optionsXPX = {
     prefix: '',
     thousands: ',',
@@ -48,6 +48,7 @@ export class Nis1TransferAssetsComponent implements OnInit {
   routeGoHome = `/${AppConfig.routes.home}`;
   routeContinue: string;
   spinnerVisibility = false;
+  showBtnBack = false;
   showCertifiedSwap = false;
   subscription: Subscription[] = [];
   transactionNis1: TransactionsNis1Interface;
@@ -244,15 +245,28 @@ export class Nis1TransferAssetsComponent implements OnInit {
   initComponent() {
     this.accountSelected = Object.assign({}, this.nemProvider.getSelectedNis1Account());
     const moreAccounts = this.activateRoute.snapshot.paramMap.get('moreAccounts');
+    console.log('more accounts ', moreAccounts);
     if (this.walletService.getCurrentWallet()) {
-      this.goToBack = (moreAccounts === '0') ? '2' : moreAccounts;
-      this.goToBackRoute = (moreAccounts === '0') ? `/${AppConfig.routes.swapAccountList}` : `/${AppConfig.routes.swapListCosignerNis1}`;
+      this.showBtnBack = true;
       this.ownedAccountSwap = this.walletService.filterAccountWallet(this.accountSelected.nameAccount);
+      if (moreAccounts !== '0') {
+        this.nameBtnBack = 'Back to Select Account';
+        this.goToBackRoute = `/${AppConfig.routes.swapListCosigners}`;
+      } else {
+        this.nameBtnBack = 'Back to Account List';
+        this.goToBackRoute = `/${AppConfig.routes.swapAccountList}`;
+      }
     } else {
-      this.goToBack = this.activateRoute.snapshot.paramMap.get('moreAccounts');
+      this.showBtnBack = false;
       const currentAccountCreated = Object.assign({}, this.walletService.accountWalletCreated);
       if (currentAccountCreated && Object.keys(currentAccountCreated).length > 0) {
         this.ownedAccountSwap = currentAccountCreated.dataAccount;
+      }
+
+      if (moreAccounts !== '0') {
+        this.showBtnBack = true;
+        this.nameBtnBack = 'Back to Select Account';
+        this.goToBackRoute = `/${AppConfig.routes.swapListCosignerNis1}`;
       }
     }
 

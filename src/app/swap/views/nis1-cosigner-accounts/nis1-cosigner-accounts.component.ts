@@ -90,6 +90,10 @@ export class Nis1CosignerAccountsComponent implements OnInit {
    * @memberof Nis1CosignerAccountsComponent
    */
   selectAccount(address: string, type: string) {
-    this.router.navigate([`/${AppConfig.routes.swapTransferAssets}/${address}/${type}/1`]);
+    if (this.walletService.getCurrentWallet()) {
+      this.router.navigate([`/${AppConfig.routes.swapTransferAssetsLogged}/${address}/${type}/1`]);
+    }else {
+      this.router.navigate([`/${AppConfig.routes.swapTransferAssets}/${address}/${type}/1`]);
+    }
   }
 }
