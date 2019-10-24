@@ -683,6 +683,13 @@ export class NemProviderService {
         this.saveAccountWalletTransNisStorage(transactionWalletNis1);
       }
     }
+
+    /*const wallet = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.getCurrentWallet().name);
+    if (wallet !== undefined && wallet !== null) {
+      this.walletService.setSwapTransactions$(wallet.transactions);
+    } else {
+      this.walletService.setSwapTransactions$([]);
+    }*/
   }
 }
 

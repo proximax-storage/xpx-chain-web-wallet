@@ -105,33 +105,21 @@ export class AuthService {
       return false;
     }
 
-
     this.nemProvider.validaTransactionsSwap();
     this.setLogged(true);
     this.dataBridgeService.closeConection();
     this.dataBridgeService.connectnWs();
-
-    let wallet = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.getCurrentWallet().name);
-    if (wallet !== undefined && wallet !== null) {
-      this.walletService.setSwapTransactions$(wallet.transactions);
-    } else {
-      this.walletService.setSwapTransactions$([]);
-    }
-    // load services and components
-    this.route.navigate([`/${AppConfig.routes.dashboard}`]);
     this.serviceModuleService.changeBooksItem();
-
     const address: Address[] = [];
     for (let account of currentWallet.accounts) {
       address.push(this.proximaxProvider.createFromRawAddress(account.address));
     }
 
     this.mosaicService.getMosaicXPX();
-    // this.dataBridgeService.searchTransactionStatus();
     this.namespaces.searchNamespacesFromAccounts(address);
     this.transactionService.searchAccountsInfo(this.walletService.currentWallet.accounts);
     this.dataBridgeService.searchBlockInfo();
-    // this.nemProvider.searchUnconfirmedSwap(this.walletService.currentWallet.accounts, commonCopy);
+    this.route.navigate([`/${AppConfig.routes.dashboard}`]);
     return true;
   }
 
