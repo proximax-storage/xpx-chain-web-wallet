@@ -6,7 +6,7 @@ import { PlainMessage, TransferTransaction, MultisigTransaction, Account } from 
 import { PublicAccount } from 'tsjs-xpx-chain-sdk';
 import { Subscription } from 'rxjs';
 
-import { WalletService, AccountCreatedInterface, TransactionsNis1Interface, AccountsInterface } from '../../../wallet/services/wallet.service';
+import { WalletService, AccountCreatedInterface, TransactionsNis1Interface, AccountsInterface, CurrentWalletTransNis } from '../../../wallet/services/wallet.service';
 import { AppConfig } from '../../../config/app.config';
 import { SharedService, ConfigurationForm } from '../../../shared/services/shared.service';
 import { NemProviderService, AccountsInfoNis1Interface, WalletTransactionsNis1Interface } from '../../services/nem-provider.service';
@@ -157,13 +157,18 @@ export class Nis1TransferAssetsComponent implements OnInit {
           nis1TransactionHash: next['transactionHash'].data
         };
 
+        let walletNis1Storage: CurrentWalletTransNis;
+        if (this.walletService.getCurrentWallet()) {
+          walletNis1Storage = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.getCurrentWallet().name);
+        } else {
+          walletNis1Storage = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.accountWalletCreated.wallet.name);
+        }
+
         const transactionWalletNis1: WalletTransactionsNis1Interface = {
           name: (this.walletService.getCurrentWallet()) ? this.walletService.currentWallet.name : this.walletService.accountWalletCreated.wallet.name,
-          transactions: [this.transactionNis1]
+          transactions: (walletNis1Storage) ? walletNis1Storage.transactions : []
         };
-
-        console.log(transactionWalletNis1);
-
+        transactionWalletNis1.transactions.push(this.transactionNis1);
         this.nemProvider.saveAccountWalletTransNisStorage(transactionWalletNis1);
         this.processing = false;
         this.spinnerVisibility = false;
