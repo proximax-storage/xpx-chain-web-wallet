@@ -105,7 +105,6 @@ export class NemProviderService {
               const xpxFound = ownedMosaic.find(el => el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx');
               if (xpxFound) {
                 multisig.balance = await this.validateBalanceAccounts(xpxFound, addressMultisig);
-                console.log('multisig.balance', multisig.balance)
                 multisig.mosaic = xpxFound;
                 accountsMultisigInfo.push(multisig);
               }
@@ -128,6 +127,7 @@ export class NemProviderService {
             nis1AccountsInfo = this.buildAccountInfoNIS1(publicAccount, accountsMultisigInfo, null, cosignatoryOf, false, name, null);
             this.setNis1AccountsFound$(nis1AccountsInfo);
           } else {
+            this.sharedService.showWarning('', 'The account has no balance to swap.');
             this.setNis1AccountsFound$(null);
           }
         } catch (error) {
