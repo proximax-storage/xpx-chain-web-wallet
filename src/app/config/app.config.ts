@@ -46,6 +46,7 @@ export const AppConfig: Config = {
     renewNamespace: 'renew-namespace',
     renovateNamespace: 'renovate-namespace',
 
+    swapAccountFound: 'swap-account-found',
     swapAccountNis1Found: 'swap-account-nis1-found',
     swapTransactions: 'swap-transactions',
     swapListCosigners: 'swap-list-cosigners',
@@ -125,6 +126,7 @@ export interface Config {
     renewNamespace: string;
     renovateNamespace: string;
 
+    swapAccountFound: string;
     swapAccountNis1Found: string;
     swapTransactions: string;
     swapListCosignerNis1: string;

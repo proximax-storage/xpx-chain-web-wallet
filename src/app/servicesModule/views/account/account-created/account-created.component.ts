@@ -9,6 +9,7 @@ import { WalletService } from '../../../../wallet/services/wallet.service';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { SharedService } from '../../../../shared/services/shared.service';
 import { environment } from '../../../../../environments/environment';
+import { NemProviderService } from '../../../../swap/services/nem-provider.service';
 
 @Component({
   selector: 'app-account-created',
@@ -31,12 +32,14 @@ export class AccountCreatedComponent implements OnInit {
   name: any;
   privateKey: any;
   publicKey: any;
+  routeContinue = `/${AppConfig.routes.viewAllAccount}`;
   viewPrivateKey = false;
   viewPublicKey = false;
   disabledContinue: boolean = true;
   subscription: Subscription[] = [];
 
   constructor(
+    private nemProvider: NemProviderService,
     private walletService: WalletService,
     private proximaxProvider: ProximaxProvider,
     private sharedService: SharedService,
@@ -48,15 +51,34 @@ export class AccountCreatedComponent implements OnInit {
     this.algo = this.walletService.accountWalletCreated;
 
     if (this.algo !== null) {
-      // console.log('---------------------------------------account created ------
-
       this.name = this.algo.data.name;
       this.address = this.algo.wallet.address.pretty();
       this.privateKey = this.proximaxProvider.decryptPrivateKey(this.algo.data.algo, this.algo.dataAccount.encrypted, this.algo.dataAccount.iv).toUpperCase();
       this.publicKey = this.proximaxProvider.getPublicAccountFromPrivateKey(this.privateKey, this.algo.data.network).publicKey;
       if (this.algo.dataAccount.nis1Account !== null) {
+        this.subscription.push(this.nemProvider.getNis1AccountsFound$().subscribe(next => {
+          console.log('next', next);
+          if (next) {
+            this.nemProvider.setSelectedNis1Account(next);
+            this.routeContinue = `/${AppConfig.routes.swapAccountFound}`;
+          } else {
+            this.routeContinue = `/${AppConfig.routes.viewAllAccount}`;
+          }
+          this.disabledContinue = false;
+        }, error => {
+          this.disabledContinue = false
+          this.routeContinue = `/${AppConfig.routes.viewAllAccount}`;
+        }));
+      } else {
+        this.disabledContinue = false;
+        this.routeContinue = `/${AppConfig.routes.viewAllAccount}`;
+      }
+
+
+      /*if (this.algo.dataAccount.nis1Account !== null) {
         this.subscription.push(this.walletService.getNis1AccountsWallet$().pipe(timeout(environment.timeOutTransactionNis1)).subscribe(
           next => {
+            console.log('next --->', next);
             this.disabledContinue = false;
           },
           error => {
@@ -65,7 +87,8 @@ export class AccountCreatedComponent implements OnInit {
         ));
       } else {
         this.disabledContinue = false;
-      }
+      }*/
+
       this.viewPublicKey = this.algo.data.fromPrivateKey;
       this.algo = null;
     } else {
@@ -91,10 +114,11 @@ export class AccountCreatedComponent implements OnInit {
 
   /**
    *
+   *
+   * @memberof AccountCreatedComponent
    */
   goToRoute() {
     let nis1Info = [];
-    // [routerLink]="[routes.backToService]"
     if (this.walletService.accountWalletCreated.dataAccount.nis1Account !== null) {
       nis1Info = this.walletService.getNis1AccountsWallet();
       this.walletService.accountWalletCreated = null;

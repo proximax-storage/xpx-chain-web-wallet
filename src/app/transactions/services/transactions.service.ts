@@ -169,8 +169,6 @@ export class TransactionsService {
    * @param amount Amount to add zeros
    */
   addDecimals(cant: any, amount = "0") {
-    console.log(cant);
-    console.log(amount);
     const x = "0";
     if (amount === "0") {
       for (let index = 0; index < cant - 1; index++) {
@@ -193,10 +191,7 @@ export class TransactionsService {
    */
   async getAccountInfo(address: Address): Promise<AccountInfo> {
     try {
-      const accountInfo = await this.proximaxProvider
-        .getAccountInfo(address)
-        .toPromise();
-      // console.log(accountInfo);
+      const accountInfo = await this.proximaxProvider.getAccountInfo(address).toPromise();
       if (accountInfo !== null && accountInfo !== undefined) {
         //Search mosaics
         this.mosaicServices.searchInfoMosaics(
@@ -217,9 +212,7 @@ export class TransactionsService {
     // console.log('\n=== SEARCH AGGREGATE BONDED ===', publicsAccounts, '\n');
     const aggregateTransactions = [];
     for (let publicAccount of publicsAccounts) {
-      const aggregateTransaction = await this.proximaxProvider
-        .getAggregateBondedTransactions(publicAccount)
-        .toPromise();
+      const aggregateTransaction = await this.proximaxProvider.getAggregateBondedTransactions(publicAccount).toPromise();
       aggregateTransaction.forEach((a: AggregateTransaction) => {
         const existTransction = aggregateTransactions.find(
           x => x.data.transactionInfo.hash === a.transactionInfo.hash
@@ -247,14 +240,9 @@ export class TransactionsService {
   amountFormatter(amountParam: UInt64 | number, mosaic: MosaicInfo, manualDivisibility = "") {
     let amountFormatter = "";
     if (mosaic !== null && mosaic !== undefined) {
-      const divisibility =
-        manualDivisibility === ""
-          ? mosaic["properties"].divisibility
-          : manualDivisibility;
-      const amount =
-        typeof amountParam === "number" ? amountParam : amountParam.compact();
+      const divisibility = manualDivisibility === "" ? mosaic["properties"].divisibility : manualDivisibility;
+      const amount = typeof amountParam === "number" ? amountParam : amountParam.compact();
       const amountDivisibility = Number(amount / Math.pow(10, divisibility));
-
       amountFormatter = amountDivisibility.toLocaleString("en-us", {
         minimumFractionDigits: divisibility
       });
@@ -345,12 +333,8 @@ export class TransactionsService {
    * @param transaction
    */
   buildAggregateTransaction(sender: PublicAccount, transaction: Transaction): AggregateTransaction {
-    // console.log('sender --->', sender);
     return AggregateTransaction.createBonded(
-      Deadline.create(
-        environment.deadlineTransfer.deadline,
-        environment.deadlineTransfer.chronoUnit
-      ),
+      Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
       [transaction.toAggregate(sender)],
       this.walletService.currentAccount.network
     );
@@ -379,15 +363,7 @@ export class TransactionsService {
     seconds -= hrs * 3600;
     let mnts = Math.floor(seconds / 60);
     seconds -= mnts * 60;
-    const response =
-      days +
-      " days, " +
-      hrs +
-      " Hrs, " +
-      mnts +
-      " Minutes, " +
-      seconds +
-      " Seconds";
+    const response = days + " days, " + hrs + " Hrs, " + mnts + " Minutes, " + seconds + " Seconds";
     return response;
   }
 
@@ -455,12 +431,7 @@ export class TransactionsService {
    * @memberof TransactionsService
    */
   formatNumberMilesThousands(n: number) {
-    return n
-      .toString()
-      .replace(
-        /((?!^)|(?:^|.*?[^\d.,])\d{1,3})(\d{3})(?=(?:\d{3})*(?!\d))/gy,
-        "$1,$2"
-      );
+    return n.toString().replace(/((?!^)|(?:^|.*?[^\d.,])\d{1,3})(\d{3})(?=(?:\d{3})*(?!\d))/gy, "$1,$2");
   }
 
   /**
@@ -533,10 +504,6 @@ export class TransactionsService {
    * @memberof TransactionsService
    */
   getStructureDashboard(transaction: Transaction, othersTransactions?: TransactionsInterface[], group?: string): TransactionsInterface {
-    /*console.log('transaction --->', transaction);
-    console.log('othersTransactions --->', othersTransactions);*/
-    // console.log('group', group);
-    // console.log('\n----------------------------------------------\n');
     if (othersTransactions && othersTransactions.length > 0) {
       try {
         const existTransction = othersTransactions.filter(next => next.data.transactionInfo.hash === transaction.transactionInfo.hash);
@@ -544,7 +511,6 @@ export class TransactionsService {
           return null;
         }
       } catch (error) {
-       // console.log(error);
        return null;
       }
     }
