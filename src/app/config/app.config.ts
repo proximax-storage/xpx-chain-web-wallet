@@ -2,7 +2,6 @@ import { InjectionToken } from '@angular/core';
 export const APP_CONFIG = new InjectionToken('app.config');
 export const AppConfig: Config = {
   routes: {
-    accountNis1Found: 'account-nis1-found',
     accountList: 'account-list',
     account: 'details-account',
     accountCreated: 'account-created',
@@ -85,7 +84,6 @@ export interface Config {
     account: string;
     accountCreated: string;
     accountList: string;
-    accountNis1Found: string;
     addressBook: string;
     addContacts: string;
     apostille: string;

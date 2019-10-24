@@ -12,7 +12,6 @@ export class Nis1AccountFoundComponent implements OnInit {
 
   routeGoBack = `/${AppConfig.routes.home}`;
   routeContinue = ``;
-  //swapAccountNis1Found
 
   constructor(
     private nemProvider: NemProviderService,
@@ -21,7 +20,6 @@ export class Nis1AccountFoundComponent implements OnInit {
 
   ngOnInit() {
     const data = Object.assign({}, this.nemProvider.getSelectedNis1Account());
-    console.log('DATA ----> ', data);
     if (this.walletService.getCurrentWallet()) {
       if (data.cosignerAccounts.length > 0) {
         this.routeContinue = `/${AppConfig.routes.swapListCosigners}`;

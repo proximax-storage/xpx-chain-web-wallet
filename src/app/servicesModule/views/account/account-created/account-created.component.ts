@@ -25,7 +25,7 @@ export class AccountCreatedComponent implements OnInit {
   information = 'Make sure you store your private key in a safe place. Access to your digital assets cannot be recovered without it.';
   moduleName = 'Accounts';
   routes = {
-    accountNis1Found: `/${AppConfig.routes.accountNis1Found}`,
+    accountNis1Found: `/${AppConfig.routes.swapAccountNis1Found}`,
     backToService: `/${AppConfig.routes.viewAllAccount}`
   };
 
@@ -57,7 +57,6 @@ export class AccountCreatedComponent implements OnInit {
       this.publicKey = this.proximaxProvider.getPublicAccountFromPrivateKey(this.privateKey, this.algo.data.network).publicKey;
       if (this.algo.dataAccount.nis1Account !== null) {
         this.subscription.push(this.nemProvider.getNis1AccountsFound$().subscribe(next => {
-          console.log('next', next);
           if (next) {
             this.nemProvider.setSelectedNis1Account(next);
             this.routeContinue = `/${AppConfig.routes.swapAccountFound}`;
@@ -73,21 +72,6 @@ export class AccountCreatedComponent implements OnInit {
         this.disabledContinue = false;
         this.routeContinue = `/${AppConfig.routes.viewAllAccount}`;
       }
-
-
-      /*if (this.algo.dataAccount.nis1Account !== null) {
-        this.subscription.push(this.walletService.getNis1AccountsWallet$().pipe(timeout(environment.timeOutTransactionNis1)).subscribe(
-          next => {
-            console.log('next --->', next);
-            this.disabledContinue = false;
-          },
-          error => {
-            this.disabledContinue = false;
-          }
-        ));
-      } else {
-        this.disabledContinue = false;
-      }*/
 
       this.viewPublicKey = this.algo.data.fromPrivateKey;
       this.algo = null;
