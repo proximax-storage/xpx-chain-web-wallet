@@ -6,10 +6,10 @@ import { ChronoUnit } from 'js-joda';
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false,
+  production: true,
   itemBooksAddress: 'sw-books-testnet',
   version: '0.4.0',
-  cacheVersion: '02',
+  cacheVersion: '03',
   nameKeyBlockStorage: `sw-blocks`,
   nameKeyNodeSelected: `sw-selected-node-testnet`,
   nameKeyWalletStorage: `sw-testnet`,
@@ -35,24 +35,6 @@ export const environment = {
     chronoUnit: ChronoUnit.MINUTES
   },
   timeOutTransactionNis1: 10000,
-  /*mosaicXpxInfo: {
-    name: 'prx.xpx',
-    coin: 'XPX',
-    id: '3c0f3de5298ced2d',
-    mosaicIdUint64: [697101613, 1007631845],
-    namespaceIdUint64: [2434186742, 3220914849],
-    namespaceId: 'bffb42a19116bdf6',
-    divisibility: 6
-  },*/
-  /*mosaicXpxInfo: {
-    name: 'prx.xpx',
-    coin: 'XPX',
-    id: '1a804316c87d5cda',
-    mosaicIdUint64: [3363658970, 444613398],
-    namespaceIdUint64: [2434186742, 3220914849],
-    namespaceId: 'bffb42a19116bdf6',
-    divisibility: 6
-  },*/
   blockchainConnection: {
     host: 'bctestnet1.brimstone.xpxsirius.io',
     port: 443,
@@ -92,12 +74,8 @@ export const environment = {
   },
   swapAccount: {
     addressAccountMultisig: 'VAWOEOWTABXR7O3ZAK2XNA5GIBNE6PZIXDAFDWBU',
-    addressAccountSimple: 'VC3I3FSQ354JT2QNS2XJ2J3OROCOBIRK6JB3BCBH'
+    addressAccountSimple: 'VCWLIYQPQAJSYWMWL5BHUCA3VOWVOXZ3WTNJPTUJ'
   },
-  /*typeNetwork: {
-    value: NetworkType.MAIN_NET,
-    label: 'MAIN NET'
-  }*/
   typeNetwork: {
     value: NetworkType.TEST_NET,
     label: 'PUBLIC TEST'
