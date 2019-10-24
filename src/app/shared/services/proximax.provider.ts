@@ -51,6 +51,7 @@ import { mergeMap } from 'rxjs/operators';
 import { MosaicDefinitionTransaction } from 'tsjs-xpx-chain-sdk/dist/src/model/transaction/MosaicDefinitionTransaction';
 import { environment } from '../../../environments/environment';
 import { Subject } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -70,7 +71,7 @@ export class ProximaxProvider {
   namespaceService: NamespaceService;
   transactionStatusError: TransactionStatusError;
 
-  constructor() {
+  constructor(public http: HttpClient,) {
   }
 
   /**
@@ -163,6 +164,11 @@ export class ProximaxProvider {
       params.network
     );
     return mosaicDefinitionTransaction;
+  }
+
+
+  coingecko(coin_id){
+    return this.http.get(`${environment.coingecko.url}${coin_id}`);
   }
 
   /**
