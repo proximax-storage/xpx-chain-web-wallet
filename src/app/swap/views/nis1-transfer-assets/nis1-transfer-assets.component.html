@@ -111,7 +111,7 @@
                 <img class="form-control-feedback"
                   src="assets/images/img/icon-amount-green-16h-proximax-sirius-wallet.svg" alt="">
                 <input pattern="^[+]?([0-9]*[.])?[0-9]+$" currencyMask [options]="optionsXPX" mdbInputDirective
-                  mdbValidate [validateSuccess]="true" [maxlength]="maxAmount" id="amount{{errorAmount}}"
+                  mdbValidate [validateSuccess]="true"  id="amount{{errorAmount}}"
                   [validateError]="true" type="text" class="form-control form-control-sm input-border input-amount"
                   placeholder="Enter Amount" formControlName="amountXpx">
                 <span class="label-i fw-600 text-cl-m cursor-p pl-2rem" (click)="selectMaxAmount()">Use Max</span>
