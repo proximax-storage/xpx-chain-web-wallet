@@ -334,7 +334,7 @@ export class Nis1TransferAssetsComponent implements OnInit {
             this.quantity = this.accountToSwap.balance;
             this.maxAmount = this.quantity.length;
             this.showCertifiedSwap = false;
-            console.log(this.accountToSwap);
+            // console.log(this.accountToSwap);
             this.createFormTransfer();
             this.subscribeAmount();
           }
