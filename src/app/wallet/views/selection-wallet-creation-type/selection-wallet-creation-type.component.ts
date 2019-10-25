@@ -144,7 +144,7 @@ export class SelectionWalletCreationTypeComponent implements OnInit {
             }
           );
           //Wallet does not exist
-          console.log(dataDecryp, existWallet, environment.typeNetwork.value);
+         // console.log(dataDecryp, existWallet, environment.typeNetwork.value);
 
           if (existWallet === undefined) {
             if (dataDecryp.accounts[0].network === environment.typeNetwork.value) {
@@ -183,8 +183,7 @@ export class SelectionWalletCreationTypeComponent implements OnInit {
             this.sharedService.showWarning('', 'The Wallet Already Exists');
           }
         } catch (error) {
-          console.log(error);
-
+        //  console.log(error);
           this.sharedService.showError('', 'Invalid Document Format');
         }
       };

@@ -86,8 +86,8 @@ export class Nis1AccountsListComponent implements OnInit {
    * @memberof Nis1AccountsListComponent
    */
   selectAccount(publicKey: string, nameAccount: string) {
-    console.log('publicKey ---> ', publicKey);
-    console.log('nameAccount ---> ', nameAccount);
+    // console.log('publicKey ---> ', publicKey);
+    // console.log('nameAccount ---> ', nameAccount);
     this.subscribeAccountFound();
     const publicAccount = this.nemProvider.createPublicAccount(publicKey);
     this.nemProvider.getAccountInfoNis1(publicAccount, nameAccount);
@@ -100,16 +100,16 @@ export class Nis1AccountsListComponent implements OnInit {
    */
   subscribeAccountFound(){
     this.subscription.push(this.nemProvider.getNis1AccountsFound$().pipe(first()).subscribe(accountFound => {
-      console.log(accountFound);
+      // console.log(accountFound);
       if (accountFound) {
         this.nemProvider.setSelectedNis1Account(accountFound);
         if (accountFound.cosignerAccounts.length > 0) {
-          console.log('REDIRECCIONA A LISTAR LAS CUENTA DE COSIGNATARIOS');
+          // console.log('REDIRECCIONA A LISTAR LAS CUENTA DE COSIGNATARIOS');
           this.indexSelected = 0;
           // this.routeContinue = `/${AppConfig.routes.swapListCosignerNis1}`;
           this.router.navigate([`/${AppConfig.routes.swapListCosigners}`]);
         } else {
-          console.log('PROCEDE A TRANSFERIR DE UNA VEZ');
+          // console.log('PROCEDE A TRANSFERIR DE UNA VEZ');
           this.indexSelected = 0;
           this.router.navigate([`/${AppConfig.routes.swapTransferAssetsLogged}/${accountFound.address.pretty()}/1/0`]);
         }
