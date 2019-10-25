@@ -9,7 +9,7 @@ export const environment = {
   production: true,
   itemBooksAddress: 'sw-books-testnet',
   version: '0.4.1',
-  cacheVersion: '04',
+  cacheVersion: '05',
   nameKeyBlockStorage: `sw-blocks`,
   nameKeyNodeSelected: `sw-selected-node-testnet`,
   nameKeyWalletStorage: `sw-testnet`,
@@ -18,8 +18,8 @@ export const environment = {
   nameKeyMosaicStorage: `sw-mosaics-testnet`,
   nameKeyVersion: 'sw-version-testnet',
   nameKeyWalletTransactionsNis: 'sw-transactions-nis',
-  protocol: `https`,
-  protocolWs: `wss`,
+  protocol: `http`,
+  protocolWs: `ws`,
   nodeExplorer: 'https://bctestnetexplorer.xpxsirius.io/#/result/hash',
   mosaicXpxInfo: {
     name: 'prx.xpx',
@@ -64,12 +64,12 @@ export const environment = {
     address_public_test: 'VDYN53-XXEGKK-3XHQYE-K6ZBMN-JPXN57-ZBHXA3-AW55'
   },
   nis1: {
-    url: 'https://bctestnetswap.xpxsirius.io:7890',
+    url: 'http://18.231.166.212:7890',
     urlExplorer: 'http://testnet-explorer.nemtool.com/#/s_tx?hash=',
     networkType: NetworkTypes.TEST_NET,
     burnAddress : 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN',
     nodes: [
-      { protocol: "https", domain: "bctestnetswap.xpxsirius.io", port: 7890 } as ServerConfig
+      { protocol: "http", domain: "18.231.166.212", port: 7890 } as ServerConfig
     ],
   },
   swapAccount: {

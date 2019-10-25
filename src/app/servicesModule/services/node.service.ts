@@ -20,6 +20,16 @@ export class NodeService {
     private proximaxProvider: ProximaxProvider,
   ) { }
 
+
+  /**
+   *
+   *
+   * @param {string} node
+   * @param {boolean} [showMsg=false]
+   * @param {string} [msgNodeCreated='']
+   * @returns
+   * @memberof NodeService
+   */
   addNode(node: string, showMsg = false, msgNodeCreated = '') {
     const dataStorage = this.getAllNodes();
     const data = { value: node, label: node };

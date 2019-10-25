@@ -69,8 +69,22 @@ export class NemProviderService {
   * @memberof NemProviderService
   */
   async createTransaction(message: PlainMessage, assetId: AssetId, quantity: number) {
+    //console.log('my quantity to send -->', quantity);
     let resultAssets: any = await this.assetHttp.getAssetTransferableWithAbsoluteAmount(assetId, quantity).toPromise();
-    resultAssets['quantity'] = resultAssets['quantity'] * 1000000;
+    // console.log('RESULT ASSETS');
+    const part = quantity.toString().split('.');
+    const cant = (part.length === 1) ? 6 : 6 - part[1].length;
+    for (let index = 0; index < cant; index++) {
+      if(part.length === 1) {
+        part[0] += 0;
+      }else {
+        part[1] += 0;
+      }
+    }
+
+    resultAssets['quantity'] = Number(part.join(''));
+    // resultAssets['quantity'] = quantity * 1000000;
+    // console.log('\n QUANTITY FORMATTER TO SEND -->', resultAssets['quantity']);
     return TransferTransaction.createWithAssets(
       this.createWithDeadline(),
       new Address(environment.nis1.burnAddress),
@@ -136,12 +150,16 @@ export class NemProviderService {
           }
         } catch (error) {
           // Valida si es cosignatario
-          if (cosignatoryOf.length > 0) {
+          /*if (cosignatoryOf.length > 0) {
             nis1AccountsInfo = this.buildAccountInfoNIS1(publicAccount, accountsMultisigInfo, null, cosignatoryOf, false, name, null);
             this.setNis1AccountsFound$(nis1AccountsInfo);
           } else {
+            this.sharedService.showWarning('', 'It was not possible to connect to the server, try later');
             this.setNis1AccountsFound$(null);
-          }
+          }*/
+
+          this.sharedService.showWarning('', 'It was not possible to connect to the server, try later');
+          this.setNis1AccountsFound$(null);
         }
       } else {
         this.sharedService.showWarning('', 'Swap does not support this account type');
@@ -191,8 +209,8 @@ export class NemProviderService {
       // console.log('realQuantity', realQuantity);
       for (const item of unconfirmedTxn) {
         // console.log('transaction unconfirmed -->', item);
-       // console.log(item['otherTransaction']['_assets']);
-       // console.log(this.hexToAscii(item['otherTransaction'].message.payload), '\n\n');
+        // console.log(item['otherTransaction']['_assets']);
+        // console.log(this.hexToAscii(item['otherTransaction'].message.payload), '\n\n');
         let existMosaic = null;
         if (item.type === 257 && item['signer']['address']['value'] === addressSigner['value'] && item['_assets'].length > 0) {
           existMosaic = item['_assets'].find((mosaic) => mosaic.assetId.namespaceId === 'prx' && mosaic.assetId.name === 'xpx');

@@ -116,6 +116,7 @@ export class Nis1TransferAssetsComponent implements OnInit {
             }
 
             const transaction = await this.nemProvider.createTransaction(msg, assetId, quantity);
+            //console.log('\nTRANSACTION CREATED -->', transaction)
             const publicAccountMultisig = this.nemProvider.createPublicAccount(this.accountToSwap.publicKey);
             this.nemProvider.createTransactionMultisign(transaction, publicAccountMultisig).then(next => {
               const publicAccount = this.proximaxProvider.createPublicAccount(this.ownedAccountSwap.publicAccount.publicKey);
@@ -131,6 +132,7 @@ export class Nis1TransferAssetsComponent implements OnInit {
             const assetId = this.accountToSwap.mosaic.assetId;
             const msg = PlainMessage.create(this.ownedAccountSwap.publicAccount.publicKey);
             const transaction = await this.nemProvider.createTransaction(msg, assetId, quantity);
+            // console.log('\nTRANSACTION CREATED -->', transaction)
             const publicAccount = this.proximaxProvider.createPublicAccount(this.ownedAccountSwap.publicAccount.publicKey);
             this.anounceTransaction(transaction, account, publicAccount);
           }
@@ -154,6 +156,7 @@ export class Nis1TransferAssetsComponent implements OnInit {
    * @memberof Nis1TransferAssetsComponent
    */
   anounceTransaction(transaction: TransferTransaction | MultisigTransaction, account: Account, siriusAccount: PublicAccount) {
+    // console.log('\nIN ANNOUNCE TXN --->', transaction);
     this.nemProvider.anounceTransaction(transaction, account).pipe(first()).pipe((timeout(environment.timeOutTransactionNis1))).subscribe(next => {
       if (next && next['message'] && next['message'].toLowerCase() === 'success') {
         // console.log('next --->', next);
