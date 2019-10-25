@@ -42,6 +42,8 @@ export class CreateAccountComponent implements OnInit {
   saveNis1: boolean = false;
   foundXpx: boolean = false;
   spinnerButton: boolean = false;
+  privateKey: any;
+  prefix: any;
 
   constructor(
     private activateRoute: ActivatedRoute,
@@ -144,8 +146,14 @@ export class CreateAccountComponent implements OnInit {
           const network = environment.typeNetwork.value;
           let newAccount: SimpleWallet = null;
           if (this.fromPrivateKey) {
-            newAccount = this.proximaxProvider.createAccountFromPrivateKey(nameAccount, password, this.formCreateAccount.get('privateKey').value, network);
 
+            this.privateKey = this.formCreateAccount.get('privateKey').value;
+            if(this.privateKey.length > 64){
+              const newPrivateKey = this.privateKey
+              this.prefix = newPrivateKey.slice(0, -64)
+               this.privateKey = newPrivateKey.slice(2)
+            }
+            newAccount = this.proximaxProvider.createAccountFromPrivateKey(nameAccount, password, this.privateKey, network);
             const accountEqual = this.walletService.getCurrentWallet().accounts.find(el => el.publicAccount.address['address'] === newAccount.address['address']);
             this.walletService.clearNis1AccounsWallet();
             if (accountEqual && accountEqual !== undefined) {
@@ -159,17 +167,17 @@ export class CreateAccountComponent implements OnInit {
                   publicKey: nis1Wallet.publicKey
                 };
                 // const accountInfo = await this.nemProvider.getAccountInfo(nis1Wallet.address).toPromise();
-                this.saveAccount(newAccount, nameAccount, password);
+                this.saveAccount(newAccount, nameAccount, password, this.prefix);
                 this.nemProvider.getAccountsInfoAccountNew(nis1Wallet, nameAccount);
                 // console.log('this is a nis1 accountInfo ---------->', accountInfo);
               } else {
-                this.saveAccount(newAccount, nameAccount, password);
+                this.saveAccount(newAccount, nameAccount, password, this.prefix);
               }
             }
           } else {
             this.walletService.clearNis1AccounsWallet();
             newAccount = this.proximaxProvider.createAccountSimple(nameAccount, password, network);
-            this.saveAccount(newAccount, nameAccount, password);
+            this.saveAccount(newAccount, nameAccount, password, this.prefix);
           }
         }
       }
@@ -183,7 +191,7 @@ export class CreateAccountComponent implements OnInit {
    * @param {Password} password wallet password
    * @memberof CreateAccountComponent
    */
-  saveAccount(newAccount: SimpleWallet, nameAccount: string, password: Password) {
+  saveAccount(newAccount: SimpleWallet, nameAccount: string, password: Password,  prefix: any) {
     this.namespaceService.searchNamespacesFromAccounts([newAccount.address]);
     const accountBuilded: AccountsInterface = this.walletService.buildAccount({
       address: newAccount.address['address'],
@@ -201,7 +209,8 @@ export class CreateAccountComponent implements OnInit {
         ).toUpperCase(), newAccount.network
       ),
       isMultisign: null,
-      nis1Account: this.nis1Account
+      nis1Account: this.nis1Account,
+      prefixKeyNis1: prefix,
     });
 
 
