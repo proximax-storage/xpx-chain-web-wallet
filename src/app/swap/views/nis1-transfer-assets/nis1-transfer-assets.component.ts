@@ -103,7 +103,9 @@ export class Nis1TransferAssetsComponent implements OnInit {
             const msg = PlainMessage.create(this.accountToSwap.accountCosignatory.publicKey);
             const transaction = await this.nemProvider.createTransaction(msg, assetId, quantity);
             const publicAccountMultisig = this.nemProvider.createPublicAccount(this.accountToSwap.publicKey);
+            console.log('TRANSACTIONS MULTISIG ---->', transaction);
             this.nemProvider.createTransactionMultisign(transaction, publicAccountMultisig).then(next => {
+              console.log('TRANSACTIONS MULTISIG CREATED---->', next);
               const publicAccount = this.proximaxProvider.createPublicAccount(this.ownedAccountSwap.publicAccount.publicKey);
               this.anounceTransaction(next, account, publicAccount);
             }).catch(error => {
@@ -119,9 +121,10 @@ export class Nis1TransferAssetsComponent implements OnInit {
             const transaction = await this.nemProvider.createTransaction(msg, assetId, quantity);
             console.log('assetId -->', assetId);
             console.log('msg -->', msg);
-            console.log('transaction -->', transaction);
+            console.log('transaction 123456 -->', transaction);
             console.log('account to receive -->', this.ownedAccountSwap.publicAccount);
             const publicAccount = this.proximaxProvider.createPublicAccount(this.ownedAccountSwap.publicAccount.publicKey);
+            console.log('TRANSACTION ANNOUNCE ---->', transaction);
             this.anounceTransaction(transaction, account, publicAccount);
           }
         } else {
@@ -169,6 +172,7 @@ export class Nis1TransferAssetsComponent implements OnInit {
           name: (this.walletService.getCurrentWallet()) ? this.walletService.currentWallet.name : this.walletService.accountWalletCreated.wallet.name,
           transactions: (walletNis1Storage) ? walletNis1Storage.transactions : []
         };
+
         transactionWalletNis1.transactions.push(this.transactionNis1);
         this.nemProvider.saveAccountWalletTransNisStorage(transactionWalletNis1);
         this.processing = false;

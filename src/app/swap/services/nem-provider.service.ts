@@ -69,7 +69,8 @@ export class NemProviderService {
   * @memberof NemProviderService
   */
   async createTransaction(message: PlainMessage, assetId: AssetId, quantity: number) {
-    const resultAssets = await this.assetHttp.getAssetTransferableWithRelativeAmount(assetId, quantity).toPromise();
+    let resultAssets: any = await this.assetHttp.getAssetTransferableWithAbsoluteAmount(assetId, quantity).toPromise();
+    resultAssets['quantity'] = resultAssets['quantity'] * 1000000;
     return TransferTransaction.createWithAssets(
       this.createWithDeadline(),
       new Address(environment.nis1.burnAddress),
@@ -118,7 +119,9 @@ export class NemProviderService {
         try {
           // SEARCH INFO OWNED SWAP
           const ownedMosaic = await this.getOwnedMosaics(addressOwnedSwap).pipe(first()).pipe((timeout(environment.timeOutTransactionNis1))).toPromise();
+          //console.log('ownedMosaic', ownedMosaic);
           const xpxFound = ownedMosaic.find(el => el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx');
+          // console.log('xpxFound', xpxFound);
           if (xpxFound) {
             const balance = await this.validateBalanceAccounts(xpxFound, addressOwnedSwap);
             nis1AccountsInfo = this.buildAccountInfoNIS1(publicAccount, accountsMultisigInfo, balance, cosignatoryOf, false, name, xpxFound);
@@ -177,16 +180,16 @@ export class NemProviderService {
    * @memberof NemProviderService
    */
   async validateBalanceAccounts(xpxFound: AssetTransferable, addressSigner: Address) {
-    console.log('xpxFound --> ', xpxFound);
+    // console.log('xpxFound --> ', xpxFound);
     const quantityFillZeros = this.transactionService.addZeros(6, xpxFound.quantity);
     let realQuantity: any = this.amountFormatter(quantityFillZeros, xpxFound, 6);
     const unconfirmedTxn = await this.getUnconfirmedTransaction(addressSigner);
-    console.log('Address  ---> ', addressSigner);
+    // console.log('Address  ---> ', addressSigner);
     if (unconfirmedTxn.length > 0) {
       //let quantity = realQuantity;
-      console.log('realQuantity', realQuantity);
+      // console.log('realQuantity', realQuantity);
       for (const item of unconfirmedTxn) {
-        console.log('transaction unconfirmed -->', item);
+        // console.log('transaction unconfirmed -->', item);
         let existMosaic = null;
         if (item.type === 257 && item['signer']['address']['value'] === addressSigner['value'] && item['_assets'].length > 0) {
           existMosaic = item['_assets'].find((mosaic) => mosaic.assetId.namespaceId === 'prx' && mosaic.assetId.name === 'xpx');
@@ -194,16 +197,16 @@ export class NemProviderService {
           existMosaic = item['otherTransaction']['_assets'].find((mosaic) => mosaic.assetId.namespaceId === 'prx' && mosaic.assetId.name === 'xpx');
         }
 
-        console.log('existMosaic -->', existMosaic);
+        // console.log('existMosaic -->', existMosaic);
         if (existMosaic) {
           const unconfirmedFormatter = parseFloat(this.amountFormatter(existMosaic.quantity, xpxFound, 6));
-          console.log('unconfirmedFormatter --->', unconfirmedFormatter);
+          // console.log('unconfirmedFormatter --->', unconfirmedFormatter);
           const quantityWhitoutFormat = realQuantity.split(',').join('');
-          console.log('quantityWhitoutFormat --->', quantityWhitoutFormat);
+          // console.log('quantityWhitoutFormat --->', quantityWhitoutFormat);
           const residue = this.transactionService.subtractAmount(parseFloat(quantityWhitoutFormat), unconfirmedFormatter);
-          console.log('residue --->', residue);
+          // console.log('residue --->', residue);
           const quantityFormat = this.amountFormatter(parseInt((residue).toString().split('.').join('')), xpxFound, 6);
-          console.log('quantityFormat --->', quantityFormat);
+          // console.log('quantityFormat --->', quantityFormat);
           realQuantity = quantityFormat;
         }
       }
@@ -223,6 +226,7 @@ export class NemProviderService {
    * @memberof NemProviderService
    */
   anounceTransaction(transaction: TransferTransaction | MultisigTransaction, cosignerAccount: Account) {
+    // console.log('transaction', transaction);
     const signedTransaction = cosignerAccount.signTransaction(transaction);
     return this.http.post(`${environment.nis1.url}/transaction/announce`, signedTransaction).pipe(first()).pipe((timeout(environment.timeOutTransactionNis1)));
   }
@@ -349,6 +353,7 @@ export class NemProviderService {
    */
   getOwnedMosaics(address: Address): Observable<AssetTransferable[]> {
     const accountOwnedMosaics = new AccountOwnedAssetService(this.accountHttp, this.assetHttp);
+    // console.log(accountOwnedMosaics);
     return accountOwnedMosaics.fromAddress(address);
   }
 
