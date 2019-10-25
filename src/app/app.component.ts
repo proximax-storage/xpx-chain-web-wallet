@@ -19,7 +19,7 @@ export class AppComponent {
     private namespaceService: NamespacesService,
     private sharedService: SharedService
   ) {
-    const version = localStorage.getItem(environment.nameKeyVersion);
+   /* const version = localStorage.getItem(environment.nameKeyVersion);
     if (version) {
       if (version !== environment.cacheVersion) {
         this.restart();
@@ -28,8 +28,8 @@ export class AppComponent {
       }
     } else {
       this.restart();
-    }
-
+    }*/
+    this.restart();
     const img = this.sharedService.walletCreatedCertified();
   }
 

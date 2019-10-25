@@ -122,7 +122,7 @@
 
         <div class="col-11 col-sm-4 d-flex justify-content-center justify-content-sm-start">
           <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
-            size="md" (click)="goToRoute()" [disabled]="disabledContinue">
+            size="md" [routerLink]="[routeContinue]" [disabled]="disabledContinue">
             <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
               *ngIf="disabledContinue"></span>
             <span class="color-white">Continue</span>

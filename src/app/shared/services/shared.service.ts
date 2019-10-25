@@ -37,7 +37,7 @@ export class SharedService {
     },
     privateKey: {
       minLength: 64,
-      maxLength: 64
+      maxLength: 66
     },
     publicKey: {
       minLength: 64,

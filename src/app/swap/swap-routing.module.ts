@@ -38,7 +38,7 @@ const routes: Routes = [
         override: true,
       },
     }
-  }, {
+  }/*, {
     path: AppConfig.routes.swapAccountListNis1,
     component: Nis1AccountsListComponent,
     data: {
@@ -48,7 +48,7 @@ const routes: Routes = [
         override: true,
       }
     }
-  }
+  }*/
 ];
 
 @NgModule({

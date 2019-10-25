@@ -2,7 +2,6 @@ import { InjectionToken } from '@angular/core';
 export const APP_CONFIG = new InjectionToken('app.config');
 export const AppConfig: Config = {
   routes: {
-    accountNis1Found: 'account-nis1-found',
     accountList: 'account-list',
     account: 'details-account',
     accountCreated: 'account-created',
@@ -45,12 +44,20 @@ export const AppConfig: Config = {
     polls: 'polls',
     renewNamespace: 'renew-namespace',
     renovateNamespace: 'renovate-namespace',
+
+    swapAccountFound: 'swap-account-found',
     swapAccountNis1Found: 'swap-account-nis1-found',
     swapTransactions: 'swap-transactions',
+    swapListCosigners: 'swap-list-cosigners',
     swapListCosignerNis1: 'swap-list-cosigner-nis1',
-    swapListAccountsNis1: 'swap-ist-accounts-nis1',
     swapTransferAssets: 'swap-transfer-assets',
+    swapTransferAssetsLogged: 'swap-transfer-assets-nis1',
     swapAccountListNis1: 'swap-account-list-nis1',
+    swapAccountList: 'swap-account-list',
+    swapListAccountsNis1: 'swap-list-accounts-nis1',
+
+
+
     selectNode: 'select-node',
     selectTypeCreationWallet: 'select-type-creation-wallet',
     selectTypeCreationAccount: 'select-type-creation-account',
@@ -77,7 +84,6 @@ export interface Config {
     account: string;
     accountCreated: string;
     accountList: string;
-    accountNis1Found: string;
     addressBook: string;
     addContacts: string;
     apostille: string;
@@ -117,12 +123,19 @@ export interface Config {
     polls: string;
     renewNamespace: string;
     renovateNamespace: string;
+
+    swapAccountFound: string;
     swapAccountNis1Found: string;
     swapTransactions: string;
     swapListCosignerNis1: string;
+    swapListCosigners: string;
     swapListAccountsNis1: string;
     swapTransferAssets: string;
+    swapTransferAssetsLogged: string;
     swapAccountListNis1: string;
+    swapAccountList: string;
+
+
     selectNode: string;
     selectTypeCreationWallet: string;
     selectTypeCreationAccount: string;
