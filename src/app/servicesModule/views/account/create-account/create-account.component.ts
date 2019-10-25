@@ -194,7 +194,7 @@ export class CreateAccountComponent implements OnInit {
    * @param {Password} password wallet password
    * @memberof CreateAccountComponent
    */
-  saveAccount(newAccount: SimpleWallet, nameAccount: string, password: Password) {
+  saveAccount(newAccount: SimpleWallet, nameAccount: string, password: Password, prefix: string) {
     this.namespaceService.searchNamespacesFromAccounts([newAccount.address]);
     const accountBuilded: AccountsInterface = this.walletService.buildAccount({
       address: newAccount.address['address'],
@@ -212,7 +212,8 @@ export class CreateAccountComponent implements OnInit {
         ).toUpperCase(), newAccount.network
       ),
       isMultisign: null,
-      nis1Account: this.nis1Account
+      nis1Account: this.nis1Account,
+      prefixKeyNis1: prefix
     });
 
 
