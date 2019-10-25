@@ -21,8 +21,7 @@ import { SwapCertifiedComponent } from './views/swap-certified/swap-certified.co
     SwapCertifiedComponent
   ],
   imports: [
-    CoreModule,
-    SwapRoutingModule
+    CoreModule
   ],
   schemas: [ NO_ERRORS_SCHEMA ]
 })

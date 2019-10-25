@@ -22,15 +22,11 @@ import { AddContactsComponent } from './views/address-book/add-contacts/add-cont
 import { CreateMultiSignatureComponent } from './views/multi-sign/components/create-multi-signature/create-multi-signature.component';
 import { ConvertAccountMultisignComponent } from './views/multi-sign/convert-account-multisign/convert-account-multisign.component';
 import { EditAccountMultisignComponent } from './views/multi-sign/edit-account-multisign/edit-account-multisign.component';
-import { Nis1AccountsListComponent } from './views/swap/nis1-accounts-list/nis1-accounts-list.component';
-import { AccountsListComponent } from './views/swap/accounts-list/accounts-list.component';
-import { Nis1AccountsConsignerComponent } from './views/swap/nis1-accounts-consigner/nis1-accounts-consigner.component';
 import { CreatePollComponent } from './views/voting/create-poll/create-poll.component';
 import { CreateApostilleComponent } from './views/apostille/create-apostille/create-apostille.component';
 import { AuditApostilleComponent } from './views/apostille/audit-apostille/audit-apostille.component';
 import { PollsComponent } from './views/voting/polls/polls.component';
 import { VoteInPollComponent } from './views/voting/vote-in-poll/vote-in-poll.component';
-import { AccountNis1FoundComponent } from './views/account/account-nis1-found/account-nis1-found.component';
 import { AccountNis1TransferXpxComponent } from './views/account/account-nis1-transfer-xpx/account-nis1-transfer-xpx.component';
 import { AccountDeleteComponent } from './views/account/account-delete/account-delete/account-delete.component';
 import { AccountDeleteConfirmComponent } from './views/account/account-delete-confirm/account-delete-confirm.component';
@@ -359,26 +355,6 @@ const routes: Routes = [
       }
     }
   }, {
-    path: AppConfig.routes.nis1AccountList,
-    component: Nis1AccountsListComponent,
-    data: {
-      meta: {
-        title: 'nis1AccountList.title',
-        description: 'nis1AccountList.text',
-        override: true,
-      }
-    }
-  }, {
-    path: AppConfig.routes.accountList,
-    component: AccountsListComponent,
-    data: {
-      meta: {
-        title: 'accountList.title',
-        description: 'accountList.text',
-        override: true,
-      }
-    }
-  }, {
     path: AppConfig.routes.audiApostille,
     component: AuditApostilleComponent,
     data: {
@@ -395,26 +371,6 @@ const routes: Routes = [
       meta: {
         title: 'createApostille.title',
         description: 'createApostille.text',
-        override: true,
-      }
-    }
-  }, {
-    path: AppConfig.routes.nis1AccountsConsigner,
-    component: Nis1AccountsConsignerComponent,
-    data: {
-      meta: {
-        title: 'nis1AccountsConsigner.title',
-        description: 'nis1AccountsConsigner.text',
-        override: true,
-      }
-    }
-  }, {
-    path: AppConfig.routes.accountNis1Found,
-    component: AccountNis1FoundComponent,
-    data: {
-      meta: {
-        title: 'accountNis1Found.title',
-        description: 'accountNis1Found.text',
         override: true,
       }
     }

@@ -28,11 +28,12 @@
   </div>
 </div>
 
-<div class="row">
-  <div class="col-11 col-md-10 mx-auto">
+<div class="row-fluid">
+  <div class="col-11 col-lg-10 mx-auto">
     <div class="row d-flex justify-content-start align-items-stretch mb-1rem">
       <div class="col-12 col-md-6 col-xl-4 d-flex mt-1rem audit-back"
         *ngFor="let item of transactions |  stringFilter: filter | paginate: configFilesSelected ">
+
         <div class="audit-front d-flex" placement="top">
           <div class="col-8 p-05rem background-white">
             <div>
@@ -58,6 +59,7 @@
             </div>
           </div>
         </div>
+
       </div>
       <div class="col-12 pt-2rem pb-1rem d-flex justify-content-center mx-auto">
         <pagination-controls [id]="configFilesSelected.id" (pageChange)="configFilesSelected.currentPage = $event">

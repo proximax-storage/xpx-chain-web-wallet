@@ -36,6 +36,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   @ViewChild(MdbTableDirective, { static: true }) mdbTable: MdbTableDirective;
   @ViewChild('modalDashboard', { static: true }) modalDashboard: ModalDirective;
   currentWallet: CurrentWalletInterface;
+  coinUsd: any = '0.00';
+  xpxUsd: any;
   @HostListener('input') oninput() {
     this.searchItems();
   }
@@ -109,7 +111,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       part2: '000000'
     }
 
-    this.balance();
+    this.coingecko();
     this.subscribeTransactionsConfirmedUnconfirmed();
     this.getRecentTransactions();
 
@@ -200,21 +202,38 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
 
+  
   /**
    * Get balance from account
    *
    * @memberof DashboardComponent
    */
-  balance() {
+  coingecko() {
+    this.proximaxProvider.coingecko("proximax").toPromise()
+    .then(details => {
+      this.xpxUsd = details['market_data']['current_price'].usd
+      this.balance(this.xpxUsd)
+    }).catch(err => {
+      this.xpxUsd = 0;
+      this.balance(this.xpxUsd)
+    });
+
+  }
+
+  balance(xpxUsd){
     this.subscription.push(this.transactionService.getBalance$().subscribe(
-      next => this.vestedBalance = this.transactionService.getDataPart(next, 6),
+      next => {
+        this.vestedBalance = this.transactionService.getDataPart(next, 6)
+        if(this.xpxUsd != undefined){
+          this.coinUsd = Number(next.replace(/,/g, '')) * xpxUsd;
+        }
+      },
       error => this.vestedBalance = {
         part1: '0',
         part2: '000000'
       }
     ));
   }
-
   /**
    *
    *
