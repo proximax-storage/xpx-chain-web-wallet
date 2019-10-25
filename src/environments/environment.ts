@@ -9,7 +9,7 @@ export const environment = {
   production: false,
   itemBooksAddress: 'sw-books-testnet',
   version: '0.4.0',
-  cacheVersion: '03',
+  cacheVersion: '04',
   nameKeyBlockStorage: `sw-blocks`,
   nameKeyNodeSelected: `sw-selected-node-testnet`,
   nameKeyWalletStorage: `sw-testnet`,
@@ -64,7 +64,7 @@ export const environment = {
     address_public_test: 'VDYN53-XXEGKK-3XHQYE-K6ZBMN-JPXN57-ZBHXA3-AW55'
   },
   nis1: {
-    url: 'http://bctestnetswap.xpxsirius.io:7890',
+    url: 'https://bctestnetswap.xpxsirius.io:7890',
     urlExplorer: 'http://testnet-explorer.nemtool.com/#/s_tx?hash=',
     networkType: NetworkTypes.TEST_NET,
     burnAddress : 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN',
