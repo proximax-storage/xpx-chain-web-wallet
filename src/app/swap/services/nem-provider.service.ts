@@ -94,6 +94,7 @@ export class NemProviderService {
       let accountsMultisigInfo = [];
       const addressOwnedSwap = this.createAddressToString(publicAccount.address.pretty());
       const accountInfoOwnedSwap = await this.getAccountInfo(addressOwnedSwap).pipe(first()).pipe((timeout(environment.timeOutTransactionNis1))).toPromise();
+      // console.log('accountInfoOwnedSwap', accountInfoOwnedSwap);
       if (accountInfoOwnedSwap['meta']['cosignatories'].length === 0) {
         let nis1AccountsInfo: AccountsInfoNis1Interface;
         // INFO ACCOUNTS MULTISIG
@@ -190,6 +191,8 @@ export class NemProviderService {
       // console.log('realQuantity', realQuantity);
       for (const item of unconfirmedTxn) {
         // console.log('transaction unconfirmed -->', item);
+       // console.log(item['otherTransaction']['_assets']);
+       // console.log(this.hexToAscii(item['otherTransaction'].message.payload), '\n\n');
         let existMosaic = null;
         if (item.type === 257 && item['signer']['address']['value'] === addressSigner['value'] && item['_assets'].length > 0) {
           existMosaic = item['_assets'].find((mosaic) => mosaic.assetId.namespaceId === 'prx' && mosaic.assetId.name === 'xpx');
@@ -200,11 +203,11 @@ export class NemProviderService {
         // console.log('existMosaic -->', existMosaic);
         if (existMosaic) {
           const unconfirmedFormatter = parseFloat(this.amountFormatter(existMosaic.quantity, xpxFound, 6));
-          // console.log('unconfirmedFormatter --->', unconfirmedFormatter);
+          // console.log('\n unconfirmedFormatter --->', unconfirmedFormatter);
           const quantityWhitoutFormat = realQuantity.split(',').join('');
-          // console.log('quantityWhitoutFormat --->', quantityWhitoutFormat);
+          // console.log('\nquantityWhitoutFormat --->', quantityWhitoutFormat);
           const residue = this.transactionService.subtractAmount(parseFloat(quantityWhitoutFormat), unconfirmedFormatter);
-          // console.log('residue --->', residue);
+          // console.log('\nresidue --->', residue, '\n');
           const quantityFormat = this.amountFormatter(parseInt((residue).toString().split('.').join('')), xpxFound, 6);
           // console.log('quantityFormat --->', quantityFormat);
           realQuantity = quantityFormat;
