@@ -12,6 +12,8 @@ import { SharedService, ConfigurationForm } from '../../../shared/services/share
 import { NemProviderService, AccountsInfoNis1Interface, WalletTransactionsNis1Interface } from '../../services/nem-provider.service';
 import { environment } from '../../../../environments/environment';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
+import { ServicesModuleService } from './../../../servicesModule/services/services-module.service';
+
 
 @Component({
   selector: 'app-nis1-transfer-assets',
@@ -33,6 +35,7 @@ export class Nis1TransferAssetsComponent implements OnInit {
   maxAmount: number = 0;
   mainAccount = false;
   nameBtnBack = '';
+  listContacts: any = [];
   optionsXPX = {
     prefix: '',
     thousands: ',',
@@ -60,6 +63,7 @@ export class Nis1TransferAssetsComponent implements OnInit {
     private router: Router,
     private nemProvider: NemProviderService,
     private proximaxProvider: ProximaxProvider,
+    private serviceModuleService: ServicesModuleService,
     private sharedService: SharedService,
     private walletService: WalletService
   ) { }
@@ -101,12 +105,19 @@ export class Nis1TransferAssetsComponent implements OnInit {
           const quantity = this.formTransfer.get("amountXpx").value;
           if (this.isMultisig) {
             const assetId = this.accountToSwap.mosaic.assetId;
-            const msg = PlainMessage.create(this.accountToSwap.accountCosignatory.publicKey);
+            const recipient = this.formTransfer.get('accountRecipient').value;
+            let msg: PlainMessage = null;
+            if (recipient !== '' && recipient.length === 40 || recipient.length === 46) {
+              const dataAccount = this.walletService.currentWallet.accounts.find(el => el.publicAccount.address['address'] === recipient.split('-').join(''));
+              msg = PlainMessage.create(dataAccount.publicAccount.publicKey);
+              // console.log(dataAccount);
+            }else{
+              msg = PlainMessage.create(this.accountToSwap.accountCosignatory.publicKey);
+            }
+
             const transaction = await this.nemProvider.createTransaction(msg, assetId, quantity);
             const publicAccountMultisig = this.nemProvider.createPublicAccount(this.accountToSwap.publicKey);
-            console.log('TRANSACTIONS MULTISIG ---->', transaction);
             this.nemProvider.createTransactionMultisign(transaction, publicAccountMultisig).then(next => {
-              console.log('TRANSACTIONS MULTISIG CREATED---->', next);
               const publicAccount = this.proximaxProvider.createPublicAccount(this.ownedAccountSwap.publicAccount.publicKey);
               this.anounceTransaction(next, account, publicAccount);
             }).catch(error => {
@@ -120,12 +131,7 @@ export class Nis1TransferAssetsComponent implements OnInit {
             const assetId = this.accountToSwap.mosaic.assetId;
             const msg = PlainMessage.create(this.ownedAccountSwap.publicAccount.publicKey);
             const transaction = await this.nemProvider.createTransaction(msg, assetId, quantity);
-            console.log('assetId -->', assetId);
-            console.log('msg -->', msg);
-            console.log('transaction 123456 -->', transaction);
-            console.log('account to receive -->', this.ownedAccountSwap.publicAccount);
             const publicAccount = this.proximaxProvider.createPublicAccount(this.ownedAccountSwap.publicAccount.publicKey);
-            console.log('TRANSACTION ANNOUNCE ---->', transaction);
             this.anounceTransaction(transaction, account, publicAccount);
           }
         } else {
@@ -150,10 +156,6 @@ export class Nis1TransferAssetsComponent implements OnInit {
   anounceTransaction(transaction: TransferTransaction | MultisigTransaction, account: Account, siriusAccount: PublicAccount) {
     this.nemProvider.anounceTransaction(transaction, account).pipe(first()).pipe((timeout(environment.timeOutTransactionNis1))).subscribe(next => {
       if (next && next['message'] && next['message'].toLowerCase() === 'success') {
-        console.log('RESPONSE ANNOUNCE --->', next);
-        console.log('ACCOUNT WALLET CREATED --->', this.walletService.accountWalletCreated);
-        console.log('CATAPILT ACCOUNT ---> ', siriusAccount);
-
         this.routeContinue = `/${AppConfig.routes.home}`;
         this.transactionNis1 = {
           siriusAddres: siriusAccount.address.pretty(),
@@ -194,6 +196,30 @@ export class Nis1TransferAssetsComponent implements OnInit {
     });
   }
 
+
+  /**
+   *
+   *
+   * @memberof Nis1TransferAssetsComponent
+   */
+  booksAddress() {
+    const data = this.listContacts.slice(0);
+    const bookAddress = this.serviceModuleService.getBooksAddress();
+    // console.log('bookAddress', bookAddress);
+    this.listContacts = [];
+    if (bookAddress !== undefined && bookAddress !== null) {
+      for (let x of bookAddress) {
+        data.push(x);
+      }
+      this.listContacts = data;
+    }
+
+    if (this.listContacts.length === 0) {
+      const contacts = `${environment.itemBooksAddress}-${this.walletService.accountWalletCreated.wallet.name}`;
+      this.listContacts = JSON.parse(localStorage.getItem(contacts));
+    }
+  }
+
   /**
    *
    *
@@ -201,7 +227,7 @@ export class Nis1TransferAssetsComponent implements OnInit {
    */
   createFormTransfer() {
     this.formTransfer = this.fb.group({
-      accountRecipient: (this.isMultisig) ? ['', [
+      accountRecipient: (this.isMultisig && this.isLogged && this.listContacts.length > 1) ? ['', [
         Validators.required,
         Validators.minLength(this.configurationForm.address.minLength),
         Validators.maxLength(this.configurationForm.address.maxLength)
@@ -248,8 +274,9 @@ export class Nis1TransferAssetsComponent implements OnInit {
   initComponent() {
     this.accountSelected = Object.assign({}, this.nemProvider.getSelectedNis1Account());
     const moreAccounts = this.activateRoute.snapshot.paramMap.get('moreAccounts');
-    console.log('more accounts ', moreAccounts);
+    // console.log('more accounts ', moreAccounts);
     if (this.walletService.getCurrentWallet()) {
+      this.booksAddress();
       this.isLogged = true;
       this.showBtnBack = true;
       this.ownedAccountSwap = this.walletService.filterAccountWallet(this.accountSelected.nameAccount);
@@ -275,8 +302,8 @@ export class Nis1TransferAssetsComponent implements OnInit {
       }
     }
 
-    console.log('this.ownedAccountSwap ---> ', this.ownedAccountSwap);
-    console.log('accountSelected ---> ', this.accountSelected);
+    // console.log('this.ownedAccountSwap ---> ', this.ownedAccountSwap);
+    // console.log('accountSelected ---> ', this.accountSelected);
     if (this.accountSelected && Object.keys(this.accountSelected).length > 0 && this.ownedAccountSwap) {
       const account = this.activateRoute.snapshot.paramMap.get('account');
       const type = this.activateRoute.snapshot.paramMap.get('type');
@@ -316,6 +343,18 @@ export class Nis1TransferAssetsComponent implements OnInit {
 
     if (!this.accountToSwap) {
       this.router.navigate([`/${AppConfig.routes.home}`]);
+    }
+  }
+
+  /**
+   *
+   *
+   * @param {{ label: string, value: string }} event
+   * @memberof Nis1TransferAssetsComponent
+   */
+  selectContact(event: { label: string, value: string }) {
+    if (event !== undefined && event.value !== '') {
+      this.formTransfer.get('accountRecipient').patchValue(event.value);
     }
   }
 

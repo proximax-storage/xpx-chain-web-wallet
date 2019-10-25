@@ -60,7 +60,7 @@
           </div>
         </div>
 
-        <div class="row mt-1rem" *ngIf="isMultisig && !isLogged">
+        <div class="row mt-1rem" *ngIf="isMultisig && !isLogged || isLogged && isMultisig && listContacts.length === 1">
           <div class="col-12 lh-1em">
             <div>
               <span class="fw-bold">Account that will receive swap transfer:&nbsp;</span>
@@ -83,6 +83,28 @@
           </div>
 
           <div class="row">
+            <!-- ACCOUNT TO SWAP -->
+            <ng-container *ngIf="isLogged && isMultisig && listContacts.length > 1">
+              <div class="col-12 mx-auto mt-1rem">
+                <ng-select mdbInputDirective mdbValidate class="selectWrapper" [items]="listContacts" bindLabel="label"
+                  bindValue="value" placeholder="Select account that will receive swap transfer"
+                  (change)="selectContact($event)">
+                </ng-select>
+              </div>
+
+              <div class="col-12 mx-auto">
+                <div class="md-form form-sm mt-1rem mb-0rem">
+                  <img class="form-control-feedback"
+                    src="assets/images/img/icon-address-green-book-16h-proximax-sirius-wallet.svg" alt="" width="43"
+                    height="43">
+                  <input mdbInputDirective mdbValidate [validateSuccess]="true" readonly [validateError]="true"
+                    type="text" class="form-control form-control-sm input-border" style="border: 2px solid #306EB5;"
+                    placeholder="Account Selected" formControlName="accountRecipient">
+                </div>
+              </div>
+            </ng-container>
+
+
             <!-- INPUT AMOUNT TO SWAP -->
             <div class="col-12 mx-auto">
               <div class="md-form form-sm mt-1rem mb-0rem">
