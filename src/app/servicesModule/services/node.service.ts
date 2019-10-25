@@ -20,6 +20,16 @@ export class NodeService {
     private proximaxProvider: ProximaxProvider,
   ) { }
 
+
+  /**
+   *
+   *
+   * @param {string} node
+   * @param {boolean} [showMsg=false]
+   * @param {string} [msgNodeCreated='']
+   * @returns
+   * @memberof NodeService
+   */
   addNode(node: string, showMsg = false, msgNodeCreated = '') {
     const dataStorage = this.getAllNodes();
     const data = { value: node, label: node };
@@ -61,11 +71,10 @@ export class NodeService {
       this.setArrayNode([]);
     };
     // validates if a selected node exists in the storage
-    // const constSelectedStorage = this.getNodeSelected();
-    // const nodeSelected = (constSelectedStorage === null || constSelectedStorage === '') ? this.listNodes[0] : constSelectedStorage;
+     const constSelectedStorage = this.getNodeSelected();
+     const nodeSelected = (constSelectedStorage === null || constSelectedStorage === '') ? this.listNodes[Math.floor(Math.random() * this.listNodes.length)] : constSelectedStorage;
     // creates a new observable
 
-    const nodeSelected = this.listNodes[Math.floor(Math.random() * this.listNodes.length)];
     this.nodeObsSelected = new BehaviorSubject<any>(nodeSelected);
     // Start the subscription function to the selected node.
     this.subscribeNodeSelected();

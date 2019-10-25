@@ -95,7 +95,7 @@ export class SwapCertifiedComponent implements OnInit {
     doc.setFontType('normal');
     doc.text(this.transactionNis1.nis1TransactionHash, 140, 245, { maxWidth: 280 });
 
-    doc.text('Note: the swap process may take a several hours to complete.', 30, 330);
+    doc.text('Note: Swap process may take several hours to complete.', 30, 330);
 
     doc.save('Swap_Certificate.pdf');
   }

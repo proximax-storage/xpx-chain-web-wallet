@@ -74,7 +74,7 @@ export class PartialComponent implements OnInit {
         this.aggregateTransactions = next.sort((a, b) => (this.transactionService.dateFormat(a.data.deadline) < this.transactionService.dateFormat(b.data.deadline)) ? 1 : -1);
         this.aggregateTransactions.forEach(transaction => {
           transaction.hash = transaction.data.transactionInfo.hash;
-          transaction['deadline'] = this.transactionService.dateFormat(transaction.data.deadline)
+          transaction['deadline'] = `${this.transactionService.dateFormat(transaction.data.deadline)} - UTC`;
           
         });
       }
@@ -126,7 +126,7 @@ export class PartialComponent implements OnInit {
     this.showSwap = false;
     this.modalPartial.show();
     this.dataSelected = transaction;
-    this.deadline = this.transactionService.dateFormat(this.dataSelected.data['deadline'])
+    this.deadline = `${this.transactionService.dateFormat(this.dataSelected.data['deadline'])} - UTC`;
     this.arraySelect = this.arraySelect.slice(0);
     // this.arraySelect = [];
     this.account = null;
