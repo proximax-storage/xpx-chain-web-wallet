@@ -36,6 +36,8 @@ export class ImportWalletComponent implements OnInit {
   saveNis1: boolean = false;
   foundXpx: boolean = false;
   spinnerButton: boolean = false;
+  privateKey: any;
+  prefix: any;
 
   constructor(
     private fb: FormBuilder,
@@ -71,9 +73,14 @@ export class ImportWalletComponent implements OnInit {
       const existWallet = this.walletService.getWalletStorage().find((element: any) => element.name === walletName);
       if (existWallet === undefined) {
         const network = this.importWalletForm.get('network').value;
-        const privateKey = this.importWalletForm.get('privateKey').value;
+        this.privateKey = this.importWalletForm.get('privateKey').value;
+        if(this.privateKey.length > 64){
+          const newPrivateKey = this.privateKey
+          this.prefix = newPrivateKey.slice(0, -64)
+           this.privateKey = newPrivateKey.slice(2)
+        }
         const password = this.proximaxProvider.createPassword(this.importWalletForm.controls.passwords.get('password').value);
-        const wallet = this.proximaxProvider.createAccountFromPrivateKey(walletName, password, privateKey, network);
+        const wallet = this.proximaxProvider.createAccountFromPrivateKey(walletName, password, this.privateKey, network);
         if (this.saveNis1) {
           this.walletService.clearNis1AccounsWallet();
           this.spinnerButton = true;
@@ -84,12 +91,12 @@ export class ImportWalletComponent implements OnInit {
             publicKey: nis1Wallet.publicKey
           };
 
-          this.saveAccount(wallet, walletName, password);
+          this.saveAccount(wallet, walletName, password, this.prefix);
           this.nemProviderService.getAccountInfoNis1(publicAccount, walletName);
           return;
         }
 
-        this.saveAccount(wallet, walletName, password);
+        this.saveAccount(wallet, walletName, password, this.prefix);
       } else {
         this.clearForm('nameWallet');
         this.sharedService.showError('', 'This name is already in use, try another name');
@@ -189,7 +196,7 @@ export class ImportWalletComponent implements OnInit {
    * @param {*} password
    * @memberof ImportWalletComponent
    */
-  saveAccount(wallet: any, nameWallet: string, password: any) {
+  saveAccount(wallet: any, nameWallet: string, password: any, prefix: any) {
     const accountBuilded = this.walletService.buildAccount({
       address: wallet.address['address'],
       byDefault: true,
@@ -204,7 +211,8 @@ export class ImportWalletComponent implements OnInit {
         wallet.encryptedPrivateKey.iv
       ).toUpperCase(), wallet.network),
       isMultisign: null,
-      nis1Account: this.nis1Account
+      nis1Account: this.nis1Account,
+      prefixKeyNis1: prefix,
     });
 
     this.clearForm();

@@ -27,20 +27,23 @@ export class CreateAccountComponent implements OnInit {
   configurationForm: ConfigurationForm = {}
   currentWallet = [];
   errorWalletExist: string;
+  foundXpx: boolean = false;
   isValid = false;
   moduleName = 'Accounts';
   othersAccounts = [];
   fromPrivateKey = false;
   formCreateAccount: FormGroup;
-  passwordMain: string = 'password';
-  pvkMain: string = 'password';
   routes = {
     back: `/${AppConfig.routes.selectTypeCreationAccount}`,
     backToService: `/${AppConfig.routes.service}`
   };
   nis1Account: any = null;
   saveNis1: boolean = false;
-  foundXpx: boolean = false;
+  passwordMain: string = 'password';
+  pvkMain: string = 'password';
+  privateKey: any;
+  prefix: any;
+
   spinnerButton: boolean = false;
 
   constructor(
@@ -144,27 +147,19 @@ export class CreateAccountComponent implements OnInit {
           const network = environment.typeNetwork.value;
           let newAccount: SimpleWallet = null;
           if (this.fromPrivateKey) {
-            newAccount = this.proximaxProvider.createAccountFromPrivateKey(nameAccount, password, this.formCreateAccount.get('privateKey').value, network);
+            this.privateKey = this.formCreateAccount.get('privateKey').value;
+            if (this.privateKey.length > 64) {
+              const newPrivateKey = this.privateKey;
+              this.prefix = newPrivateKey.slice(0, -64);
+              this.privateKey = newPrivateKey.slice(2);
+            }
+            newAccount = this.proximaxProvider.createAccountFromPrivateKey(nameAccount, password, this.privateKey, network);
+            //newAccount = this.proximaxProvider.createAccountFromPrivateKey(nameAccount, password, this.formCreateAccount.get('privateKey').value, network);
             const accountEqual = this.walletService.getCurrentWallet().accounts.find(el => el.publicAccount.address['address'] === newAccount.address['address']);
             this.walletService.clearNis1AccounsWallet();
             if (accountEqual && accountEqual !== undefined) {
               this.sharedService.showWarning('', 'This account already exists');
             } else {
-              /* if (this.saveNis1) {
-                  this.spinnerButton = true;
-                  const nis1Wallet = this.nemProvider.createAccountPrivateKey(this.formCreateAccount.get('privateKey').value);
-                  this.nis1Account = {
-                    address: nis1Wallet.address,
-                    publicKey: nis1Wallet.publicKey
-                  };
-                  // const accountInfo = await this.nemProvider.getAccountInfo(nis1Wallet.address).toPromise();
-                  this.saveAccount(newAccount, nameAccount, password);
-                  this.nemProvider.getAccountsInfoAccountNew(nis1Wallet, nameAccount);
-                  // console.log('this is a nis1 accountInfo ---------->', accountInfo);
-                } else {
-                  this.saveAccount(newAccount, nameAccount, password);
-                }*/
-
               if (this.saveNis1) {
                 this.walletService.clearNis1AccounsWallet();
                 this.spinnerButton = true;
@@ -175,17 +170,17 @@ export class CreateAccountComponent implements OnInit {
                   publicKey: nis1Wallet.publicKey
                 };
 
-                this.saveAccount(newAccount, walletName, password);
+                this.saveAccount(newAccount, walletName, password, this.prefix);
                 this.nemProvider.getAccountInfoNis1(publicAccount, walletName);
                 return;
               }
 
-              this.saveAccount(newAccount, nameAccount, password);
+              this.saveAccount(newAccount, nameAccount, password, this.prefix);
             }
           } else {
             this.walletService.clearNis1AccounsWallet();
             newAccount = this.proximaxProvider.createAccountSimple(nameAccount, password, network);
-            this.saveAccount(newAccount, nameAccount, password);
+            this.saveAccount(newAccount, nameAccount, password, this.prefix);
           }
         }
       }
