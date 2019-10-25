@@ -65,7 +65,7 @@ export const environment = {
   },
   nis1: {
     url: 'https://swap.brimstone.xpxsirius.io:7890',
-    urlExplorer: 'http://explorer.nemtool.com/#/unconfirmedtxlist',
+    urlExplorer: 'http://explorer.nemtool.com/#/s_tx?hash=',
     networkType: NetworkTypes.MAIN_NET,
     burnAddress : 'ND7WVWPWNTJR75CYC3D73LSVP7WIL7BL77QNT7NZ',
     nodes: [{
