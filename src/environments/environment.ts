@@ -9,7 +9,7 @@ export const environment = {
   production: false,
   itemBooksAddress: 'sw-books-testnet',
   version: '0.4.2',
-  cacheVersion: '05',
+  cacheVersion: '03',
   nameKeyBlockStorage: `sw-blocks`,
   nameKeyNodeSelected: `sw-selected-node-testnet`,
   nameKeyWalletStorage: `sw-testnet`,
@@ -18,8 +18,8 @@ export const environment = {
   nameKeyMosaicStorage: `sw-mosaics-testnet`,
   nameKeyVersion: 'sw-version-testnet',
   nameKeyWalletTransactionsNis: 'sw-transactions-nis',
-  protocol: `http`,
-  protocolWs: `ws`,
+  protocol: `https`,
+  protocolWs: `wss`,
   nodeExplorer: 'https://bctestnetexplorer.xpxsirius.io/#/result/hash',
   mosaicXpxInfo: {
     name: 'prx.xpx',
@@ -77,7 +77,7 @@ export const environment = {
     addressAccountSimple: 'VCWLIYQPQAJSYWMWL5BHUCA3VOWVOXZ3WTNJPTUJ'
   },
   typeNetwork: {
-    value: NetworkType.TEST_NET,
+      value: NetworkType.TEST_NET,
     label: 'PUBLIC TEST'
   },
   coingecko:{
