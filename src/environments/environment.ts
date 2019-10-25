@@ -64,12 +64,12 @@ export const environment = {
     address_public_test: 'VDYN53-XXEGKK-3XHQYE-K6ZBMN-JPXN57-ZBHXA3-AW55'
   },
   nis1: {
-    url: 'http://18.231.166.212:7890',
+    url: 'http://bctestnetswap.xpxsirius.io:7890',
     urlExplorer: 'http://testnet-explorer.nemtool.com/#/s_tx?hash=',
     networkType: NetworkTypes.TEST_NET,
     burnAddress : 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN',
     nodes: [
-      { protocol: "http", domain: "18.231.166.212", port: 7890 } as ServerConfig
+      { protocol: "https", domain: "bctestnetswap.xpxsirius.io", port: 7890 } as ServerConfig
     ],
   },
   swapAccount: {
@@ -77,7 +77,7 @@ export const environment = {
     addressAccountSimple: 'VCWLIYQPQAJSYWMWL5BHUCA3VOWVOXZ3WTNJPTUJ'
   },
   typeNetwork: {
-      value: NetworkType.TEST_NET,
+    value: NetworkType.TEST_NET,
     label: 'PUBLIC TEST'
   },
   coingecko:{
