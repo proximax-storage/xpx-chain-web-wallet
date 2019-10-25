@@ -27,7 +27,6 @@ import { CreateApostilleComponent } from './views/apostille/create-apostille/cre
 import { AuditApostilleComponent } from './views/apostille/audit-apostille/audit-apostille.component';
 import { PollsComponent } from './views/voting/polls/polls.component';
 import { VoteInPollComponent } from './views/voting/vote-in-poll/vote-in-poll.component';
-import { AccountNis1FoundComponent } from './views/account/account-nis1-found/account-nis1-found.component';
 import { AccountNis1TransferXpxComponent } from './views/account/account-nis1-transfer-xpx/account-nis1-transfer-xpx.component';
 import { AccountDeleteComponent } from './views/account/account-delete/account-delete/account-delete.component';
 import { AccountDeleteConfirmComponent } from './views/account/account-delete-confirm/account-delete-confirm.component';
@@ -372,16 +371,6 @@ const routes: Routes = [
       meta: {
         title: 'createApostille.title',
         description: 'createApostille.text',
-        override: true,
-      }
-    }
-  }, {
-    path: AppConfig.routes.accountNis1Found,
-    component: AccountNis1FoundComponent,
-    data: {
-      meta: {
-        title: 'accountNis1Found.title',
-        description: 'accountNis1Found.text',
         override: true,
       }
     }

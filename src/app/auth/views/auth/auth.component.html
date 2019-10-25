@@ -57,7 +57,9 @@
 
       <div class="col-11 col-sm-6 d-flex justify-content-center justify-content-sm-start">
         <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="btn-proximax" size="sm"
-          [disabled]="authForm.invalid">
+          [disabled]="authForm.invalid || spinnerButton">
+          <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+            *ngIf="spinnerButton"></span>
           <span class="color-white">Sign In</span>
         </button>
       </div>

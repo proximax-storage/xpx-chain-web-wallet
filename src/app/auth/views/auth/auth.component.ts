@@ -14,6 +14,7 @@ export class AuthComponent implements OnInit {
   authForm: FormGroup;
   configurationForm: ConfigurationForm = {};
   passwordMain = 'password';
+  spinnerButton = false;
   title = 'Sign In to your Wallet';
   wallets: Array<any>;
 
@@ -47,15 +48,27 @@ export class AuthComponent implements OnInit {
    *
    * @memberof AuthComponent
    */
-  auth() {
+  async auth() {
     this.authForm.markAsDirty();
     if (this.authForm.valid) {
-      this.authService.login(this.authForm.get('common').value, this.authForm.get('wallet').value);
+      this.spinnerButton = true;
+      const commonValue = this.authForm.get('common').value;
+      const wallet = this.authForm.get('wallet').value;
       this.authForm.get('wallet').reset();
       this.authForm.get('common').reset();
+      const auth = await this.authService.login(commonValue, wallet);
+      if (!auth) {
+        this.spinnerButton = false;
+      }
     }
   }
 
+  /**
+   *
+   *
+   * @param {*} inputType
+   * @memberof AuthComponent
+   */
   changeInputType(inputType) {
     let newType = this.sharedService.changeInputType(inputType)
     this.passwordMain = newType;

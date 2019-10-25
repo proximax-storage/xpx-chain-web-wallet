@@ -7,9 +7,8 @@ import { WalletService } from '../../services/wallet.service';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { AppConfig } from '../../../config/app.config';
 import { ServicesModuleService } from '../../../servicesModule/services/services-module.service';
-import { NemServiceService } from '../../../shared/services/nem-service.service';
 import { environment } from '../../../../environments/environment';
-import { NemProviderService } from 'src/app/swap/services/nem-provider.service';
+import { NemProviderService } from './../../../swap/services/nem-provider.service';
 
 
 @Component({

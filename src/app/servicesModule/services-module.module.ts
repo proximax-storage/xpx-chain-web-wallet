@@ -29,7 +29,6 @@ import { CreateApostilleComponent } from './views/apostille/create-apostille/cre
 import { AuditApostilleComponent } from './views/apostille/audit-apostille/audit-apostille.component';
 import { VoteInPollComponent } from './views/voting/vote-in-poll/vote-in-poll.component';
 import { HighchartsChartComponent } from './views/voting/vote-in-poll/highcharts-chart.component';
-import { AccountNis1FoundComponent } from './views/account/account-nis1-found/account-nis1-found.component';
 import { AccountNis1TransferXpxComponent } from './views/account/account-nis1-transfer-xpx/account-nis1-transfer-xpx.component';
 import { AccountDeleteComponent } from './views/account/account-delete/account-delete/account-delete.component';
 import { AccountDeleteConfirmComponent } from './views/account/account-delete-confirm/account-delete-confirm.component';
@@ -67,7 +66,6 @@ import { DeleteWalletComponent } from './views/wallet/delete-wallet/delete-walle
     AuditApostilleComponent,
     VoteInPollComponent,
     HighchartsChartComponent,
-    AccountNis1FoundComponent,
     AccountNis1TransferXpxComponent,
     AccountDeleteComponent,
     AccountDeleteConfirmComponent,
