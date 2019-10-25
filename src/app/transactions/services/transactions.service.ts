@@ -388,7 +388,8 @@ export class TransactionsService {
   dateFormat(deadline: Deadline) {
     return new Date(
       deadline.value.toString() + Deadline.timestampNemesisBlock * 1000
-    ).toUTCString();
+    ).toLocaleString();
+    // toUTCString();
   }
 
   /**
