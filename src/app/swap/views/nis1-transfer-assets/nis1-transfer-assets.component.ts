@@ -320,7 +320,7 @@ export class Nis1TransferAssetsComponent implements OnInit {
           this.maxAmount = this.quantity.length;
           this.showCertifiedSwap = false;
           this.createFormTransfer();
-          this.subscribeAmount();
+          // this.subscribeAmount();
         } else if (this.isMultisig && this.accountSelected.multisigAccountsInfo.length > 0) {
           // MULTISIG ACCOUNT
           //console.log('------isMultisig------');
@@ -339,7 +339,7 @@ export class Nis1TransferAssetsComponent implements OnInit {
             this.showCertifiedSwap = false;
             // console.log(this.accountToSwap);
             this.createFormTransfer();
-            this.subscribeAmount();
+            // this.subscribeAmount();
           }
         }
       }

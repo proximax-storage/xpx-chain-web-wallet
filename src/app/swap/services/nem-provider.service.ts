@@ -69,7 +69,7 @@ export class NemProviderService {
   * @memberof NemProviderService
   */
   async createTransaction(message: PlainMessage, assetId: AssetId, quantity: number) {
-    //console.log('my quantity to send -->', quantity);
+    // console.log('my quantity to send -->', quantity);
     let resultAssets: any = await this.assetHttp.getAssetTransferableWithAbsoluteAmount(assetId, quantity).toPromise();
     // console.log('RESULT ASSETS');
     const part = quantity.toString().split('.');
