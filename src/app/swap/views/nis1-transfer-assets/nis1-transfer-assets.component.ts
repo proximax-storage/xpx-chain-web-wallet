@@ -52,6 +52,7 @@ export class Nis1TransferAssetsComponent implements OnInit {
   showCertifiedSwap = false;
   subscription: Subscription[] = [];
   transactionNis1: TransactionsNis1Interface;
+  isLogged: boolean = false;
 
   constructor(
     private activateRoute: ActivatedRoute,
@@ -200,22 +201,20 @@ export class Nis1TransferAssetsComponent implements OnInit {
    */
   createFormTransfer() {
     this.formTransfer = this.fb.group({
-      /* accountRecipient: (this.accountSelected.multiSign) ? ['', [
-         Validators.required,
-         Validators.minLength(this.configurationForm.address.minLength),
-         Validators.maxLength(this.configurationForm.address.maxLength)]] : ['', []],*/
+      accountRecipient: (this.isMultisig) ? ['', [
+        Validators.required,
+        Validators.minLength(this.configurationForm.address.minLength),
+        Validators.maxLength(this.configurationForm.address.maxLength)
+      ]] : ['', []],
       amountXpx: ['', [
         Validators.required,
         Validators.maxLength(this.configurationForm.amount.maxLength)
       ]],
-      password: [
-        '',
-        [
-          Validators.required,
-          Validators.minLength(this.configurationForm.passwordWallet.minLength),
-          Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
-        ]
-      ]
+      password: ['', [
+        Validators.required,
+        Validators.minLength(this.configurationForm.passwordWallet.minLength),
+        Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
+      ]]
     });
   }
 
@@ -251,6 +250,7 @@ export class Nis1TransferAssetsComponent implements OnInit {
     const moreAccounts = this.activateRoute.snapshot.paramMap.get('moreAccounts');
     console.log('more accounts ', moreAccounts);
     if (this.walletService.getCurrentWallet()) {
+      this.isLogged = true;
       this.showBtnBack = true;
       this.ownedAccountSwap = this.walletService.filterAccountWallet(this.accountSelected.nameAccount);
       if (moreAccounts !== '0') {
@@ -261,6 +261,7 @@ export class Nis1TransferAssetsComponent implements OnInit {
         this.goToBackRoute = `/${AppConfig.routes.swapAccountList}`;
       }
     } else {
+      this.isLogged = false;
       this.showBtnBack = false;
       const currentAccountCreated = Object.assign({}, this.walletService.accountWalletCreated);
       if (currentAccountCreated && Object.keys(currentAccountCreated).length > 0) {
