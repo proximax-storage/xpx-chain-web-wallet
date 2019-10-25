@@ -293,7 +293,8 @@ export class DetailAccountComponent implements OnInit {
           if (this.currenAccount.nis1Account === null) {
             this.sharedService.showSuccess('', 'NIS1 account added');
           }
-          const nis1Wallet = this.nemProvider.createAccountPrivateKey(common['privateKey'].toUpperCase());
+          const privateKey = this.currenAccount.prefixKeyNis1.concat(common['privateKey'].toUpperCase())
+          const nis1Wallet = this.nemProvider.createAccountPrivateKey(privateKey);
 
           this.currenAccount.nis1Account = {
             address: nis1Wallet.address,

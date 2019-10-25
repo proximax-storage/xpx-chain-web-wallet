@@ -105,17 +105,14 @@ export class NodeService {
   validateToAddNode(node: any, showMsg: boolean = false, msgNodeCreated: string = '', defaultNode: boolean = true) {
     // check if there are nodes created in the storagr
     const dataStorage = this.getAllNodes();
-
-
     const data = { value: node, label: node, isDefault: defaultNode };
-
     // const arrayNode = Object.keys(dataStorage).filter(item => dataStorage[item].value === node);
     // if there is no data in the storage, proceed to create a new node array in the storage
     if (dataStorage === null) {
       // Add an array of nodes in the storage
       this.setArrayNode([data]);
       if (showMsg) {
-        this.sharedService.showSuccess('Congratulations!', msgNodeCreated);
+        this.sharedService.showSuccess('', msgNodeCreated);
       }
       return;
     }

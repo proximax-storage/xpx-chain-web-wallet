@@ -2,7 +2,6 @@ import { InjectionToken } from '@angular/core';
 export const APP_CONFIG = new InjectionToken('app.config');
 export const AppConfig: Config = {
   routes: {
-    accountNis1Found: 'account-nis1-found',
     accountList: 'account-list',
     account: 'details-account',
     accountCreated: 'account-created',
@@ -46,6 +45,7 @@ export const AppConfig: Config = {
     renewNamespace: 'renew-namespace',
     renovateNamespace: 'renovate-namespace',
 
+    swapAccountFound: 'swap-account-found',
     swapAccountNis1Found: 'swap-account-nis1-found',
     swapTransactions: 'swap-transactions',
     swapListCosigners: 'swap-list-cosigners',
@@ -84,7 +84,6 @@ export interface Config {
     account: string;
     accountCreated: string;
     accountList: string;
-    accountNis1Found: string;
     addressBook: string;
     addContacts: string;
     apostille: string;
@@ -125,6 +124,7 @@ export interface Config {
     renewNamespace: string;
     renovateNamespace: string;
 
+    swapAccountFound: string;
     swapAccountNis1Found: string;
     swapTransactions: string;
     swapListCosignerNis1: string;
