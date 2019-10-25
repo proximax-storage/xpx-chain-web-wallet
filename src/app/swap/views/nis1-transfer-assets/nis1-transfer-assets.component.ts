@@ -156,6 +156,7 @@ export class Nis1TransferAssetsComponent implements OnInit {
   anounceTransaction(transaction: TransferTransaction | MultisigTransaction, account: Account, siriusAccount: PublicAccount) {
     this.nemProvider.anounceTransaction(transaction, account).pipe(first()).pipe((timeout(environment.timeOutTransactionNis1))).subscribe(next => {
       if (next && next['message'] && next['message'].toLowerCase() === 'success') {
+        // console.log('next --->', next);
         this.routeContinue = `/${AppConfig.routes.home}`;
         this.transactionNis1 = {
           siriusAddres: siriusAccount.address.pretty(),
