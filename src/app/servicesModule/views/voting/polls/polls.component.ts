@@ -68,12 +68,12 @@ export class PollsComponent implements OnInit {
     this.showBarProgressone = true;
     // const publicAccount = PublicAccount.createFromPublicKey(environment.pollsContent.public_key, this.walletService.currentAccount.network)
     // if(publicAccount.publicKey === this.publicKeyNotFound) {
-    //   console.log('load transaction by address');
+    // console.log('load transaction by address');
     const address = environment.pollsContent.address_public_test;
     this.loadTransactionsStorage(null, this.proximaxProvider.createFromRawAddress(address).pretty());
     // } else {
-    ////   console.log('load transaction by public account');
-    ////   console.log(publicAccount);
+    //console.log('load transaction by public account');
+    //console.log(publicAccount);
     //   this.loadTransactionsStorage(publicAccount, '')
     // }
 
@@ -85,7 +85,7 @@ export class PollsComponent implements OnInit {
       this.showBarProgressone = false;
       if (this.getPoll) {
         if (resp) {
-          //          console.log("respondio resprespresp", resp)
+          //console.log("respondio resprespresp", resp)
           this.getPollStorage();
         } else {
 
@@ -210,7 +210,7 @@ export class PollsComponent implements OnInit {
       // let endDate = new Date(data.result.endDate).getTime();
       // let starDate = new Date(data.result.startDate).getTime();
       // const now = new Date().getTime();
-      //      console.log("data result:", data)
+      //console.log("data result:", data)
       resultData.push(data.result);
       if (resultData.length > 0) {
         resultData.map(elemt => {
