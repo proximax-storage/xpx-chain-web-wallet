@@ -9,8 +9,8 @@ import { SharedService, ConfigurationForm } from "../../../../shared/services/sh
 import { AppConfig } from '../../../../config/app.config';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { ServicesModuleService, ContactsStorageInterface, HeaderServicesInterface } from '../../../services/services-module.service';
-import { NemServiceService } from '../../../../shared/services/nem-service.service';
 import { environment } from '../../../../../environments/environment';
+import { NemProviderService } from '../../../../swap/services/nem-provider.service';
 
 
 @Component({
@@ -69,7 +69,7 @@ export class DetailAccountComponent implements OnInit {
     private sharedService: SharedService,
     private walletService: WalletService,
     private serviceModuleService: ServicesModuleService,
-    private nemProvider: NemServiceService
+    private nemProvider: NemProviderService
   ) {
     this.imgBackground = this.sharedService.walletCreatedCertified();
     this.configurationForm = this.sharedService.configurationForm;

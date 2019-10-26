@@ -118,56 +118,18 @@ export class WalletCreatedComponent implements OnInit {
 
   /**
    *
-   */
-  goToRoute() {
-    let nis1Info = [];
-    // console.log('---- ACCOUNT WALLET CREATED ----', this.walletService.accountWalletCreated);
-    if (this.walletService.accountWalletCreated && this.walletService.accountWalletCreated.dataAccount && this.walletService.accountWalletCreated.dataAccount.nis1Account) {
-      nis1Info = this.walletService.getNis1AccountsWallet();
-    }
-
-    try {
-      if (nis1Info.length > 0) {
-        // console.log('nis1Info.lengh ------>', nis1Info.length);
-        if (nis1Info[0].mosaic && Object.keys(nis1Info[0].mosaic).length > 0) {
-          // console.log('REDIRECCIONAME A ACCOUNT NIS1 FOUND');
-          this.router.navigate([`/${AppConfig.routes.walletNis1Found}`]);
-        } else {
-          this.walletService.accountWalletCreated = null;
-          this.router.navigate([this.routeAuth]);
-        }
-      } else {
-        this.walletService.accountWalletCreated = null;
-        this.router.navigate([this.routeAuth]);
-      }
-    } catch (error) {
-      this.walletService.accountWalletCreated = null;
-      this.router.navigate([this.routeAuth]);
-    }
-  }
-
-  /**
-   *
    *
    * @memberof WalletCreatedComponent
    */
   printAccountInfo() {
-    // console.log(this.privateKey);
-    // console.log(this.address);
-
-    let doc = new jsPDF({
-      unit: 'px'
-    });
+    let doc = new jsPDF({ unit: 'px' });
     doc.addImage(this.imgBackground, 'JPEG', 120, 60, 205, 132);
-
     // QR Code Address
     doc.addImage(this.qrConstruntion(this.privateKey, 1, 0), 151.5, 105);
-
     // Addres number
     doc.setFontSize(8);
     doc.setTextColor('#000000');
     doc.text(this.address, 146, 164, { maxWidth: 132 });
-
     doc.save('Your_Paper_Wallet');
   }
 

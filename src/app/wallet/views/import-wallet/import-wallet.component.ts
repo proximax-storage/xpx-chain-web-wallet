@@ -53,7 +53,6 @@ export class ImportWalletComponent implements OnInit {
     this.walletService.accountWalletCreated = null;
     this.configurationForm = this.sharedService.configurationForm;
     this.createFormImportWallet();
-    this.walletService.setNis1AccounsWallet(null);
     this.walletService.setNis1AccountsWallet$([]);
     this.walletService.setAccountInfoNis1(null);
     this.walletService.setNis1AccountSelected(null);
@@ -82,7 +81,6 @@ export class ImportWalletComponent implements OnInit {
         const password = this.proximaxProvider.createPassword(this.importWalletForm.controls.passwords.get('password').value);
         const wallet = this.proximaxProvider.createAccountFromPrivateKey(walletName, password, this.privateKey, network);
         if (this.saveNis1) {
-          this.walletService.clearNis1AccounsWallet();
           this.spinnerButton = true;
           const nis1Wallet = this.nemProviderService.createAccountPrivateKey(this.importWalletForm.get('privateKey').value);
           const publicAccount = this.nemProviderService.createPublicAccount(nis1Wallet.publicKey);
