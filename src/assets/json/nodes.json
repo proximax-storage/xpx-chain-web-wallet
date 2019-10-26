@@ -1,14 +1,7 @@
 {
   "nodes": [
-    "arcturus.xpxsirius.io",
-    "aldebaran.xpxsirius.io",
-    "betelgeuse.xpxsirius.io",
-    "bigcalvin.xpxsirius.io",
-    "westerlund.xpxsirius.io",
-    "canismajor.xpxsirius.io",
-    "coronaborealis.xpxsirius.io",
-    "delphinus.xpxsirius.io",
-    "eridanus.xpxsirius.io",
-    "lyrasithara.xpxsirius.io"
+      "bctestnet1.brimstone.xpxsirius.io",
+      "bctestnet2.brimstone.xpxsirius.io",
+      "bctestnet3.brimstone.xpxsirius.io"
   ]
 }
