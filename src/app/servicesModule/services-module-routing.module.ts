@@ -19,7 +19,6 @@ import { ViewAllAccountsComponent } from './views/account/view-all-accounts/view
 import { AccountCreatedComponent } from './views/account/account-created/account-created.component';
 import { SelectionAccountTypeComponent } from './views/account/selection-account-creation-type/selection-account-creation-type.component';
 import { AddContactsComponent } from './views/address-book/add-contacts/add-contacts.component';
-import { CreateMultiSignatureComponent } from './views/multi-sign/components/create-multi-signature/create-multi-signature.component';
 import { ConvertAccountMultisignComponent } from './views/multi-sign/convert-account-multisign/convert-account-multisign.component';
 import { EditAccountMultisignComponent } from './views/multi-sign/edit-account-multisign/edit-account-multisign.component';
 import { CreatePollComponent } from './views/voting/create-poll/create-poll.component';
@@ -27,7 +26,6 @@ import { CreateApostilleComponent } from './views/apostille/create-apostille/cre
 import { AuditApostilleComponent } from './views/apostille/audit-apostille/audit-apostille.component';
 import { PollsComponent } from './views/voting/polls/polls.component';
 import { VoteInPollComponent } from './views/voting/vote-in-poll/vote-in-poll.component';
-import { AccountNis1TransferXpxComponent } from './views/account/account-nis1-transfer-xpx/account-nis1-transfer-xpx.component';
 import { AccountDeleteComponent } from './views/account/account-delete/account-delete/account-delete.component';
 import { AccountDeleteConfirmComponent } from './views/account/account-delete-confirm/account-delete-confirm.component';
 import { ExportWalletComponent } from "./views/wallet/export-wallet/export-wallet.component";
@@ -371,16 +369,6 @@ const routes: Routes = [
       meta: {
         title: 'createApostille.title',
         description: 'createApostille.text',
-        override: true,
-      }
-    }
-  }, {
-    path: AppConfig.routes.accountNis1TransferXpx,
-    component: AccountNis1TransferXpxComponent,
-    data: {
-      meta: {
-        title: 'accountNis1TransferXpx.title',
-        description: 'accountNis1TransferXpx.text',
         override: true,
       }
     }

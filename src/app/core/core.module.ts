@@ -29,7 +29,6 @@ import { AddressAliasTypeComponent } from '../dashboard/components/address-alias
 import { StringFilterPipe } from '../shared/pipes/string-filter.pipe';
 import { AttestationTypeComponent } from '../dashboard/components/attestation-type/attestation-type.component';
 import { VoteTypeComponent } from '../dashboard/components/vote-type/vote-type.component';
-import { TransferAssetsComponent } from '../servicesModule/components/transfer-assets/transfer-assets.component';
 import { SwapCertificateComponent } from '../servicesModule/components/swap-certificate/swap-certificate.component';
 import { TransferTypeBondedComponent } from '../dashboard/components/transfer-type-bonded/transfer-type-bonded.component';
 import { FilterObjectPipe } from '../shared/pipes/filter-object.pipe';
@@ -70,7 +69,6 @@ const components = [
   AddressAliasTypeComponent,
   AttestationTypeComponent,
   VoteTypeComponent,
-  TransferAssetsComponent,
   SwapCertificateComponent,
   TransferTypeBondedComponent,
   BoxDataSignerHashComponent
