@@ -140,7 +140,6 @@ export class DeleteWalletComponent implements OnInit {
     this.dashboardService.processComplete = false;
     this.authService.setLogged(false);
     this.authService.destroyNodeSelected();
-    this.walletService.clearNis1AccounsWallet();
     this.walletService.setAccountSelectedWalletNis1(null);
     this.walletService.setAccountInfoNis1(null);
     this.walletService.setNis1AccountSelected(null);
