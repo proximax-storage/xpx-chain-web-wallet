@@ -77,12 +77,6 @@
       <div class="col-11 col-md-10 col-lg-9 mx-auto">
         <form [formGroup]="formTransfer" (ngSubmit)="createTransaction()" class="mx-auto">
           <div class="row">
-            <div class="col-12 d-flex justify-content-center pt-1rem">
-              <span class="fs-1-2rem fw-500 txt-a-center line-h-1-2em color-black">Swap Amount</span>
-            </div>
-          </div>
-
-          <div class="row">
             <!-- ACCOUNT TO SWAP -->
             <ng-container *ngIf="isLogged && isMultisig && listContacts.length > 1">
               <div class="col-12 mx-auto mt-1rem">
@@ -104,6 +98,9 @@
               </div>
             </ng-container>
 
+            <div class="col-12 d-flex justify-content-center pt-1rem">
+              <span class="fs-1-2rem fw-500 txt-a-center line-h-1-2em color-black">Swap Amount</span>
+            </div>
 
             <!-- INPUT AMOUNT TO SWAP -->
             <div class="col-12 mx-auto">
@@ -111,9 +108,9 @@
                 <img class="form-control-feedback"
                   src="assets/images/img/icon-amount-green-16h-proximax-sirius-wallet.svg" alt="">
                 <input pattern="^[+]?([0-9]*[.])?[0-9]+$" currencyMask [options]="optionsXPX" mdbInputDirective
-                  mdbValidate [validateSuccess]="true"  id="amount{{errorAmount}}"
-                  [validateError]="true" type="text" class="form-control form-control-sm input-border input-amount"
-                  placeholder="Enter Amount" formControlName="amountXpx">
+                  mdbValidate [validateSuccess]="true" id="amount{{errorAmount}}" [validateError]="true" type="text"
+                  class="form-control form-control-sm input-border input-amount" placeholder="Enter Amount"
+                  formControlName="amountXpx">
                 <span class="label-i fw-600 text-cl-m cursor-p pl-2rem" (click)="selectMaxAmount()">Use Max</span>
               </div>
               <mdb-error *ngIf="insufficientBalance">

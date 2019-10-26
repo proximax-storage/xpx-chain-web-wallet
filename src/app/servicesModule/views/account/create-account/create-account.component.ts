@@ -68,7 +68,6 @@ export class CreateAccountComponent implements OnInit {
     this.configurationForm = this.sharedService.configurationForm;
     const walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
     this.othersAccounts = walletsStorage.filter(elm => elm.name !== this.walletService.currentWallet.name);
-    this.walletService.setNis1AccounsWallet(null);
     this.walletService.setNis1AccountsWallet$([]);
     this.walletService.setAccountInfoNis1(null);
     this.walletService.setNis1AccountSelected(null);
@@ -156,12 +155,10 @@ export class CreateAccountComponent implements OnInit {
             newAccount = this.proximaxProvider.createAccountFromPrivateKey(nameAccount, password, this.privateKey, network);
             //newAccount = this.proximaxProvider.createAccountFromPrivateKey(nameAccount, password, this.formCreateAccount.get('privateKey').value, network);
             const accountEqual = this.walletService.getCurrentWallet().accounts.find(el => el.publicAccount.address['address'] === newAccount.address['address']);
-            this.walletService.clearNis1AccounsWallet();
             if (accountEqual && accountEqual !== undefined) {
               this.sharedService.showWarning('', 'This account already exists');
             } else {
               if (this.saveNis1) {
-                this.walletService.clearNis1AccounsWallet();
                 this.spinnerButton = true;
                 const nis1Wallet = this.nemProvider.createAccountPrivateKey(this.formCreateAccount.get('privateKey').value);
                 const publicAccount = this.nemProvider.createPublicAccount(nis1Wallet.publicKey);
@@ -178,7 +175,6 @@ export class CreateAccountComponent implements OnInit {
               this.saveAccount(newAccount, nameAccount, password, this.prefix);
             }
           } else {
-            this.walletService.clearNis1AccounsWallet();
             newAccount = this.proximaxProvider.createAccountSimple(nameAccount, password, network);
             this.saveAccount(newAccount, nameAccount, password, this.prefix);
           }

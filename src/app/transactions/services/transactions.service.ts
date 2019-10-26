@@ -49,26 +49,14 @@ export class TransactionsService {
   private balance$: Observable<any> = this.balance.asObservable();
 
   //Confirmed
-  private _confirmedTransactionsSubject = new BehaviorSubject<
-    TransactionsInterface[]
-  >([]);
-  private _confirmedTransactions$: Observable<
-    TransactionsInterface[]
-  > = this._confirmedTransactionsSubject.asObservable();
+  private _confirmedTransactionsSubject = new BehaviorSubject<TransactionsInterface[]>([]);
+  private _confirmedTransactions$: Observable<TransactionsInterface[]> = this._confirmedTransactionsSubject.asObservable();
   //Unconfirmed
-  private unconfirmedTransactionsSubject = new BehaviorSubject<
-    TransactionsInterface[]
-  >([]);
-  private unconfirmedTransactions$: Observable<
-    TransactionsInterface[]
-  > = this.unconfirmedTransactionsSubject.asObservable();
+  private unconfirmedTransactionsSubject = new BehaviorSubject<TransactionsInterface[]>([]);
+  private unconfirmedTransactions$: Observable<TransactionsInterface[]> = this.unconfirmedTransactionsSubject.asObservable();
   //Aggregate Transactions
-  private _aggregateTransactionsSubject: BehaviorSubject<
-    TransactionsInterface[]
-  > = new BehaviorSubject<TransactionsInterface[]>([]);
-  private _aggregateTransactions$: Observable<
-    TransactionsInterface[]
-  > = this._aggregateTransactionsSubject.asObservable();
+  private _aggregateTransactionsSubject: BehaviorSubject<TransactionsInterface[]> = new BehaviorSubject<TransactionsInterface[]>([]);
+  private _aggregateTransactions$: Observable<TransactionsInterface[]> = this._aggregateTransactionsSubject.asObservable();
 
   arraTypeTransaction = {
     transfer: {
@@ -131,8 +119,7 @@ export class TransactionsService {
     public nodeService: NodeService,
     private walletService: WalletService,
     private mosaicServices: MosaicService,
-    private namespaceService: NamespacesService,
-    private sharedService: SharedService
+    private namespaceService: NamespacesService
   ) {
     this.monitorNewAccounts();
   }
@@ -271,9 +258,7 @@ export class TransactionsService {
    * @param params
    */
   buildTransferTransaction(params: TransferInterface) {
-    const recipientAddress = this.proximaxProvider.createFromRawAddress(
-      params.recipient
-    );
+    const recipientAddress = this.proximaxProvider.createFromRawAddress(params.recipient);
     const mosaics = params.mosaic;
     const allMosaics = [];
     mosaics.forEach(element => {
@@ -286,10 +271,7 @@ export class TransactionsService {
     });
 
     const transferTransaction = TransferTransaction.create(
-      Deadline.create(
-        environment.deadlineTransfer.deadline,
-        environment.deadlineTransfer.chronoUnit
-      ),
+      Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
       recipientAddress,
       allMosaics,
       PlainMessage.create(params.message),
@@ -512,7 +494,7 @@ export class TransactionsService {
           return null;
         }
       } catch (error) {
-       return null;
+        return null;
       }
     }
 
@@ -545,7 +527,7 @@ export class TransactionsService {
    * @returns
    * @memberof TransactionsService
    */
-  validateIsRecipient(transaction: Transaction){
+  validateIsRecipient(transaction: Transaction) {
     let recipient = null;
     let recipientPretty = null;
     let isReceive = false;
@@ -575,27 +557,29 @@ export class TransactionsService {
    * @returns
    * @memberof TransactionsService
    */
-  validateIsSwapTransaction(transaction: Transaction, keyType: string, group: string){
+  validateIsSwapTransaction(transaction: Transaction, keyType: string, group: string) {
     let isVerified = false;
     let nameType = this.arraTypeTransaction[keyType].name;
     if (group && (group === 'confirmed' || group === 'unconfirmed')) {
-      if(transaction.type === this.arraTypeTransaction.aggregateBonded.id) {
-          if(transaction['innerTransactions'].length === 1){
-            if (transaction['innerTransactions'][0]["message"] && transaction['innerTransactions'][0]["message"].payload !== "") {
-              let newTransaction: any = null;
-              try {
-                const msg = JSON.parse(transaction['innerTransactions'][0]["message"].payload);
-                const addressAccountMultisig = environment.swapAccount.addressAccountMultisig;
-                const addressAccountSimple = environment.swapAccount.addressAccountSimple;
-                const addressSender = transaction['innerTransactions'][0].signer.address.plain();
-                if ((addressSender === addressAccountMultisig) || (addressSender === addressAccountSimple)) {
-                  if (msg && msg["type"] && msg["type"] === "Swap") {
-                    nameType = "ProximaX Swap";
-                    newTransaction = Object.assign({}, transaction['innerTransactions'][0]);
-                    newTransaction['transactionInfo'] = transaction.transactionInfo;
-                    // newTransaction['transactionInfo'].hash = transaction.transactionInfo.hash;
-                    newTransaction.size = transaction.size;
-                    newTransaction.cosignatures = transaction['cosignatures'];
+      if (transaction.type === this.arraTypeTransaction.aggregateBonded.id) {
+        if (transaction['innerTransactions'].length === 1) {
+          if (transaction['innerTransactions'][0]["message"] && transaction['innerTransactions'][0]["message"].payload !== "") {
+            let newTransaction: any = null;
+            try {
+              const msg = JSON.parse(transaction['innerTransactions'][0]["message"].payload);
+              const addressAccountMultisig = environment.swapAccount.addressAccountMultisig;
+              const addressAccountSimple = environment.swapAccount.addressAccountSimple;
+              const addressSender = transaction['innerTransactions'][0].signer.address.plain();
+              if ((addressSender === addressAccountMultisig) || (addressSender === addressAccountSimple)) {
+                if (msg && msg["type"] && msg["type"] === "Swap") {
+                  nameType = "ProximaX Swap";
+                  newTransaction = Object.assign({}, transaction['innerTransactions'][0]);
+                  newTransaction['transactionInfo'] = transaction.transactionInfo;
+                  newTransaction['nis1Hash'] = msg['nis1Hash'];
+                  // newTransaction['transactionInfo'].hash = transaction.transactionInfo.hash;
+                  newTransaction.size = transaction.size;
+                  newTransaction.cosignatures = transaction['cosignatures'];
+                  if (group && group === 'confirmed') {
                     let walletTransactionsNis = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.getCurrentWallet().name);
                     if (walletTransactionsNis !== undefined && walletTransactionsNis !== null) {
                       const transactions = walletTransactionsNis.transactions.filter(el => el.nis1TransactionHash !== msg["nis1Hash"]);
@@ -605,18 +589,19 @@ export class TransactionsService {
                     }
                   }
                 }
-              } catch (error) {}
-
-              if(newTransaction !== null) {
-                isVerified = true;
-                transaction = newTransaction;
               }
-            };
-          }
+            } catch (error) { }
+
+            if (newTransaction !== null) {
+              isVerified = true;
+              transaction = newTransaction;
+            }
+          };
+        }
       }
     }
 
-    if(!isVerified) {
+    if (!isVerified) {
       try {
         if (transaction["message"] && transaction["message"].payload !== "") {
           const msg = JSON.parse(transaction["message"].payload);
@@ -626,17 +611,20 @@ export class TransactionsService {
           if (addressSender === addressAccountMultisig || addressSender === addressAccountSimple) {
             if (msg && msg["type"] && msg["type"] === "Swap") {
               nameType = "ProximaX Swap";
-              let walletTransactionsNis = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.getCurrentWallet().name);
-              if (walletTransactionsNis !== undefined && walletTransactionsNis !== null) {
-                const transactions = walletTransactionsNis.transactions.filter(el => el.nis1TransactionHash !== msg["nis1Hash"]);
-                walletTransactionsNis.transactions = transactions;
-                this.walletService.setSwapTransactions$(walletTransactionsNis.transactions);
-                this.walletService.saveAccountWalletTransNisStorage(walletTransactionsNis);
+              transaction['nis1Hash'] = msg['nis1Hash'];
+              if (group && group === 'confirmed') {
+                let walletTransactionsNis = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.getCurrentWallet().name);
+                if (walletTransactionsNis !== undefined && walletTransactionsNis !== null) {
+                  const transactions = walletTransactionsNis.transactions.filter(el => el.nis1TransactionHash !== msg["nis1Hash"]);
+                  walletTransactionsNis.transactions = transactions;
+                  this.walletService.setSwapTransactions$(walletTransactionsNis.transactions);
+                  this.walletService.saveAccountWalletTransNisStorage(walletTransactionsNis);
+                }
               }
             }
           }
         }
-      } catch (error) {}
+      } catch (error) { }
     }
 
     return {
@@ -699,20 +687,20 @@ export class TransactionsService {
    */
   searchAccountsInfo(accounts: AccountsInterface[]) {
     // console.log('ACCOUNTS INTERFACE ---> ', accounts);
-    this.walletService.searchAccountsInfo(accounts).then((data: {mosaicsId: MosaicId[]; accountsInfo: AccountsInfoInterface[]; }) => {
+    this.walletService.searchAccountsInfo(accounts).then((data: { mosaicsId: MosaicId[]; accountsInfo: AccountsInfoInterface[]; }) => {
       this.walletService.validateMultisigAccount(accounts);
       const publicsAccounts: PublicAccount[] = [];
       data.accountsInfo.forEach((element: AccountsInfoInterface) => {
         if (element.accountInfo) {
           const exist = accounts.find(account => element.accountInfo.address.plain() === account.address);
-          if(exist) {
+          if (exist) {
             publicsAccounts.push(
               this.proximaxProvider.createPublicAccount(
                 exist.publicAccount.publicKey,
                 exist.publicAccount.address.networkType
               )
             );
-          }else {
+          } else {
             publicsAccounts.push(
               this.proximaxProvider.createPublicAccount(
                 element.accountInfo.publicKey,
@@ -800,7 +788,7 @@ export class TransactionsService {
    */
   subtractAmount(quantityOne: number, quantityTwo: number, limitDecimal = 6): string {
     let residue: string[] = (quantityOne - quantityTwo).toString().replace(/,/g, "").split(".");
-    residue[1] = residue[1].slice(0,6);
+    residue[1] = residue[1].slice(0, 6);
     const missing = limitDecimal - residue[1].length;
     for (let index = 0; index < missing; index++) {
       residue[1] += 0;

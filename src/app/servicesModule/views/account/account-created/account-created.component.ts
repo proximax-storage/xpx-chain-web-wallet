@@ -98,33 +98,6 @@ export class AccountCreatedComponent implements OnInit {
 
   /**
    *
-   *
-   * @memberof AccountCreatedComponent
-   */
-  goToRoute() {
-    let nis1Info = [];
-    if (this.walletService.accountWalletCreated.dataAccount.nis1Account !== null) {
-      nis1Info = this.walletService.getNis1AccountsWallet();
-      this.walletService.accountWalletCreated = null;
-    }
-
-    try {
-      if (nis1Info.length > 0) {
-        if (nis1Info[0].mosaic && Object.keys(nis1Info[0].mosaic).length > 0) {
-          this.router.navigate([this.routes.accountNis1Found]);
-        } else {
-          this.router.navigate([this.routes.backToService]);
-        }
-      } else {
-        this.router.navigate([this.routes.backToService]);
-      }
-    } catch (error) {
-      this.router.navigate([this.routes.backToService]);
-    }
-  }
-
-  /**
-   *
    * @param url
    * @param size
    * @param margin
@@ -136,6 +109,11 @@ export class AccountCreatedComponent implements OnInit {
     return qr.createDataURL(size, margin);
   }
 
+  /**
+   *
+   *
+   * @memberof AccountCreatedComponent
+   */
   printAccountInfo() {
     // console.log(this.privateKey);
     // console.log(this.address);

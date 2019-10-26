@@ -31,7 +31,6 @@ export class WalletService {
   accountSelectedWalletNis1: any = null;
 
   nis1AccountSeleted: any = null;
-  nis1AccounsWallet: any = [];
   unconfirmedTransactions: any = [];
 
 
@@ -198,15 +197,6 @@ export class WalletService {
     });
   }
 
-
-  /**
-   *
-   *
-   * @memberof WalletService
-   */
-  clearNis1AccounsWallet() {
-    this.nis1AccounsWallet = [];
-  }
 
   /**
    *
@@ -611,16 +601,6 @@ export class WalletService {
    * @returns
    * @memberof WalletService
    */
-  getNis1AccountsWallet() {
-    return this.nis1AccounsWallet;
-  }
-
-  /**
-   *
-   *
-   * @returns
-   * @memberof WalletService
-   */
   getAccountsPushedSubject() {
     return this.accountsPushedSubject$;
   }
@@ -964,14 +944,6 @@ export class WalletService {
    */
   setCurrentAccount$(currentAccount: AccountsInterface) {
     this.currentAccountObs.next(currentAccount);
-  }
-
-  /**
-   *
-   * @param data
-   */
-  setNis1AccounsWallet(account) {
-    this.nis1AccounsWallet.push(account);
   }
 
   /**
