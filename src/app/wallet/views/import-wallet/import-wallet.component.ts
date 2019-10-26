@@ -53,7 +53,7 @@ export class ImportWalletComponent implements OnInit {
     this.walletService.accountWalletCreated = null;
     this.configurationForm = this.sharedService.configurationForm;
     this.createFormImportWallet();
-    this.walletService.setNis1AccounsWallet(null);
+    // this.walletService.setNis1AccounsWallet(null);
     this.walletService.setNis1AccountsWallet$([]);
     this.walletService.setAccountInfoNis1(null);
     this.walletService.setNis1AccountSelected(null);
