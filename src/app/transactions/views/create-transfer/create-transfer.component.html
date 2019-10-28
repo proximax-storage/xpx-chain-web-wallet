@@ -362,7 +362,7 @@
                 <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20"
                   alt="">
                 <span class="fs-08rem">
-                  Unconfirmed/Recommended Fee:&nbsp;
+                  Unconfirmed/reco Fee:&nbsp;
                   <a [innerHTML]="getQuantity(fee)"></a> XPX
                 </span>
               </div>
@@ -386,6 +386,38 @@
             *ngIf="validateInput('message').invalid && (validateInput('message').dirty || validateInput('message').touched)">
             <span>Invalid Recipient</span>
           </mdb-error>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-11 col-md-10 col-lg-8 mx-auto">
+        <div class="box-grey d-flex justify-content-center pt-09rem pb-09rem">
+          <div class="row">
+            <div class="col-12 col-sm-4 fw-600 d-flex justify-content-center justify-content-sm-end">
+              <div class="form-check form-check-inline">
+                <input formControlName="formTransfer" checked [value]="true" type="radio" class="form-check-input"
+                  id="myComputer" name="typeFile" mdbInput>
+                <label class="form-check-label" for="myComputer">Plain</label>
+              </div>
+            </div>
+
+            <div class="col-12 col-sm-4 fw-600 d-flex justify-content-center justify-content-sm-center">
+              <div class="form-check form-check-inline">
+                <input formControlName="typeFile" [value]="false" type="radio" class="form-check-input" id="DFMS"
+                  name="typeFile" mdbInput>
+                <label class="form-check-label" for="DFMS">Hexadecimal</label>
+              </div>
+            </div>
+
+            <div class="col-12 col-sm-4 fw-600 d-flex justify-content-center justify-content-sm-start">
+              <div class="form-check form-check-inline">
+                <input formControlName="typeFile" [value]="false" type="radio" class="form-check-input" id="other"
+                  name="typeFile" mdbInput>
+                <label class="form-check-label" for="other">Encrypted</label>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
