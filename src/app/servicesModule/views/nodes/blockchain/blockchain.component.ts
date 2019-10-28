@@ -6,6 +6,14 @@ import { NodeService } from '../../../../servicesModule/services/node.service';
 import { environment } from '../../../../../environments/environment';
 import { DataBridgeService } from '../../../../shared/services/data-bridge.service';
 import { SharedService } from '../../../../shared/services/shared.service';
+import { NemProviderService } from 'src/app/swap/services/nem-provider.service';
+import { Address } from 'tsjs-xpx-chain-sdk';
+import { WalletService } from 'src/app/wallet/services/wallet.service';
+import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
+import { MosaicService } from 'src/app/servicesModule/services/mosaic.service';
+import { NamespacesService } from 'src/app/servicesModule/services/namespaces.service';
+import { TransactionsService } from 'src/app/transactions/services/transactions.service';
+import { DashboardService } from 'src/app/dashboard/services/dashboard.service';
 
 @Component({
   selector: 'app-blockchain',
@@ -32,7 +40,14 @@ export class BlockchainComponent implements OnInit {
     private fb: FormBuilder,
     private nodeService: NodeService,
     private dataBridgeService: DataBridgeService,
-    private sharedService : SharedService
+    private sharedService: SharedService,
+    private walletService: WalletService,
+    private nemProvider: NemProviderService,
+    private proximaxProvider: ProximaxProvider,
+    private transactionService: TransactionsService,
+    private namespaces: NamespacesService,
+    private mosaicService: MosaicService,
+    private dashboardService: DashboardService
   ) { }
 
   ngOnInit() {
@@ -59,7 +74,7 @@ export class BlockchainComponent implements OnInit {
     * @memberof BlockchainComponent
     */
   getAllNodes() {
-    this.arrayNodes=[];
+    this.arrayNodes = [];
     // const listNodeStorage = Json.
     const listNodeStorage: any = this.nodeService.getAllNodes();
 
@@ -96,8 +111,19 @@ export class BlockchainComponent implements OnInit {
     this.nodeForm.get('nodeSelect').patchValue(`${environment.protocol}://${this.nodeService.getNodeSelected()}`)
     // this.getBlock();
     this.getAllNodes();
+    this.dashboardService.destroySubscription();
     this.dataBridgeService.reconnect();
-    this.sharedService.showSuccess('','Node Updated');
+    this.nemProvider.validaTransactionsSwap();
+    const address: Address[] = [];
+    for (let account of this.walletService.currentWallet.accounts) {
+      address.push(this.proximaxProvider.createFromRawAddress(account.address));
+    }
+
+    this.mosaicService.getMosaicXPX();
+    this.namespaces.searchNamespacesFromAccounts(address);
+    this.transactionService.searchAccountsInfo(this.walletService.currentWallet.accounts);
+    this.dataBridgeService.searchBlockInfo();
+    this.sharedService.showSuccess('', 'Node Updated');
   }
 
   changeNode() {

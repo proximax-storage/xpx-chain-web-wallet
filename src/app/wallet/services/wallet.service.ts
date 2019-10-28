@@ -868,7 +868,7 @@ export class WalletService {
    * @param {WalletAccountInterface[]} walletsStorage
    * @memberof WalletService
    */
-  saveWallet(walletsStorage: WalletAccountInterface[]){
+  saveWallet(walletsStorage: WalletAccountInterface[]) {
     localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
   }
 
@@ -1039,7 +1039,8 @@ export class WalletService {
         if (account.isMultisign !== null) {
           if (account.isMultisign.cosignatories.length > 0) {
             account.isMultisign.cosignatories.forEach(cosignatorie => {
-              const exist = this.filterAccountWallet('', null, cosignatorie.address.pretty());
+              const address = this.proximaxProvider.createFromRawAddress(cosignatorie.address['address']);
+              const exist = this.filterAccountWallet('', null, address.pretty());
               if (exist) {
                 remove = false;
               }
