@@ -130,6 +130,7 @@ export class Nis1TransferAssetsComponent implements OnInit {
           } else if (!this.isMultisig) {
             //const assetId = this.ownedAccountSwap.mosaic.assetId;
             const assetId = this.accountToSwap.mosaic.assetId;
+            console.log(assetId);
             const msg = PlainMessage.create(this.ownedAccountSwap.publicAccount.publicKey);
             const transaction = await this.nemProvider.createTransaction(msg, assetId, quantity);
             // console.log('\nTRANSACTION CREATED -->', transaction)

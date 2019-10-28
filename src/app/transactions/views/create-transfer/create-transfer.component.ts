@@ -618,8 +618,10 @@ export class CreateTransferComponent implements OnInit {
         if (statusTransaction !== null && statusTransaction !== undefined && signedTransactionHashLock !== null) {
           const match = statusTransaction['hash'] === signedTransactionHashLock.hash;
           if (statusTransaction['type'] === 'confirmed' && match) {
-            this.announceAggregateBonded(signedTransactionBonded)
-            signedTransactionHashLock = null;
+            setTimeout(() => {
+              this.announceAggregateBonded(signedTransactionBonded)
+              signedTransactionHashLock = null;
+            }, 5000);
           } else if (statusTransaction['type'] === 'unconfirmed' && match) {
           } else if (statusTransaction['type'] === 'status' && match) {
             this.reloadBtn = false;
@@ -694,7 +696,7 @@ export class CreateTransferComponent implements OnInit {
    * @param {number} position
    * @memberof CreateTransferComponent
    */
-  otherMosaicsBuild(mosaicSelected: any, position: number){
+  otherMosaicsBuild(mosaicSelected: any, position: number) {
     this.boxOtherMosaics[position].amount = '';
     this.boxOtherMosaics[position].balance = mosaicSelected.balance;
     this.boxOtherMosaics[position].config = mosaicSelected.config;

@@ -405,7 +405,7 @@ export class CreateMultiSignatureComponent implements OnInit {
          * Create Bonded
          */
         const aggregateTransaction = AggregateTransaction.createBonded(
-          Deadline.create(environment.deadlineTransfer.deadline,environment.deadlineTransfer.chronoUnit),
+          Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
           [convertIntoMultisigTransaction.toAggregate(this.currentAccountToConvert.publicAccount)],
           this.currentAccountToConvert.network);
         const generationHash = this.dataBridge.blockInfo.generationHash;
@@ -415,13 +415,13 @@ export class CreateMultiSignatureComponent implements OnInit {
         // * Create Hash lock transaction
         // */
         const hashLockTransaction = HashLockTransaction.create(
-          Deadline.create(environment.deadlineTransfer.deadline,environment.deadlineTransfer.chronoUnit),
+          Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
           new Mosaic(new MosaicId(environment.mosaicXpxInfo.id), UInt64.fromUint(Number(10000000))),
           UInt64.fromUint(480),
           signedTransaction,
           this.currentAccountToConvert.network);
 
-        this.hashLock(this.accountToConvertSign.sign(hashLockTransaction ,generationHash), signedTransaction) //Update-sdk-dragon
+        this.hashLock(this.accountToConvertSign.sign(hashLockTransaction, generationHash), signedTransaction) //Update-sdk-dragon
       }
     } else {
       this.blockSend = false;
@@ -439,7 +439,7 @@ export class CreateMultiSignatureComponent implements OnInit {
         this.createMultsignForm.get('minRemovalDelta').value
       )
       modifyobject = {
-        deadline: Deadline.create(environment.deadlineTransfer.deadline,environment.deadlineTransfer.chronoUnit),
+        deadline: Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
         minApprovalDelta: valor['minApprovalDelta'],
         minRemovalDelta: valor['minRemovalDelta'],
         modifications: this.multisigCosignatoryModification(this.getCosignatoryListFilter(1, 2)),
@@ -448,7 +448,7 @@ export class CreateMultiSignatureComponent implements OnInit {
       // console.log(modify)
     } else {
       modifyobject = {
-        deadline: Deadline.create(environment.deadlineTransfer.deadline,environment.deadlineTransfer.chronoUnit),
+        deadline: Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
         minApprovalDelta: this.createMultsignForm.get('minApprovalDelta').value,
         minRemovalDelta: this.createMultsignForm.get('minRemovalDelta').value,
         modifications: this.multisigCosignatoryModification(this.getCosignatoryListFilter(1, 1)),
@@ -564,8 +564,10 @@ export class CreateMultiSignatureComponent implements OnInit {
         if (statusTransaction !== null && statusTransaction !== undefined && signedTransactionHashLock !== null) {
           const match = statusTransaction['hash'] === signedTransactionHashLock.hash;
           if (statusTransaction['type'] === 'confirmed' && match) {
-            this.announceAggregateBonded(signedTransactionBonded)
-            signedTransactionHashLock = null;
+            setTimeout(() => {
+              this.announceAggregateBonded(signedTransactionBonded)
+              signedTransactionHashLock = null;
+            }, 5000);
           } else if (statusTransaction['type'] === 'unconfirmed' && match) {
             // signedTransactionHashLock = null;
           } else if (match) {
