@@ -77,9 +77,7 @@ export class AuthService {
         this.sharedService.showError('', 'Dear user, the wallet is missing');
         return false;
       } else if (!this.nodeService.getNodeSelected()) {
-        this.sharedService.showError('', 'Please select a node.');
-        this.route.navigate([`/${AppConfig.routes.selectNode}`]);
-        return false;
+        this.nodeService.initNode();
       }
 
       const decrypted = this.walletService.decrypt(common, currentAccount);
