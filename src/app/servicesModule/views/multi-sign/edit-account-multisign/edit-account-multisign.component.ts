@@ -558,8 +558,10 @@ export class EditAccountMultisignComponent implements OnInit {
         if (statusTransaction !== null && statusTransaction !== undefined && signedTransactionHashLock !== null) {
           const match = statusTransaction['hash'] === signedTransactionHashLock.hash;
           if (statusTransaction['type'] === 'confirmed' && match) {
-            this.announceAggregateBonded(signedTransactionBonded)
-            signedTransactionHashLock = null;
+            setTimeout(() => {
+              this.announceAggregateBonded(signedTransactionBonded)
+              signedTransactionHashLock = null;
+            }, 5000);
           } else if (statusTransaction['type'] === 'unconfirmed' && match) {
           } else if (match) {
             this.clearForm()
@@ -710,8 +712,8 @@ export class EditAccountMultisignComponent implements OnInit {
       minRemovalDelta: 1,
       password: ''
     }, {
-        emitEvent: false
-      }
+      emitEvent: false
+    }
     );
   }
 
