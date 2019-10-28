@@ -359,7 +359,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
 
   selectAccount($event: Event, accountName?: string) {
     const event: any = $event;
-   
+
     this.convertAccountMultsignForm.enable({ emitEvent: false, onlySelf: true });
     this.convertAccountMultsignForm.get('cosignatory').patchValue('', { emitEvent: false, onlySelf: false })
     const account: any = (event === null) ? this.walletService.filterAccountWallet(accountName) : event.value;
@@ -574,8 +574,10 @@ export class ConvertAccountMultisignComponent implements OnInit {
         if (statusTransaction !== null && statusTransaction !== undefined && signedTransactionHashLock !== null) {
           const match = statusTransaction['hash'] === signedTransactionHashLock.hash;
           if (statusTransaction['type'] === 'confirmed' && match) {
-            this.announceAggregateBonded(signedTransactionBonded)
-            signedTransactionHashLock = null;
+            setTimeout(() => {
+              this.announceAggregateBonded(signedTransactionBonded)
+              signedTransactionHashLock = null;
+            }, 5000);
           } else if (statusTransaction['type'] === 'unconfirmed' && match) {
             // signedTransactionHashLock = null;
           } else if (match) {
@@ -773,8 +775,8 @@ export class ConvertAccountMultisignComponent implements OnInit {
       minRemovalDelta: 1,
       password: ''
     }, {
-        emitEvent: false
-      }
+      emitEvent: false
+    }
     );
   }
 
