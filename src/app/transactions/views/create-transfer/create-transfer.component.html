@@ -46,22 +46,22 @@
                     <i>- Multisig </i>
                   </span>
                 </div>
-                <div class="fw-300 fs-1rem mb-1rem">
+                <div class="fw-300 fs-08rem color-grey">
                   {{sender.address}}
                 </div>
               </mdb-accordion-item-head>
               <mdb-accordion-item-body class="box-accounts-height">
                 <ng-container *ngFor="let account of accounts; let i=index">
-                  <span [ngClass]="[account.active ? 'nav-link active isActive' : 'nav-link']" class="cursor-p"
-                    style="border-top: 1px solid rgba(240, 240, 240, 240); background:#f9f9f9 !important; padding-left: 1rem !important;" (click)="changeSender(account.value)" [title]="'Address: '+account.value.address">
+                  <span [ngClass]="[account.active ? 'nav-link active isActive' : 'nav-link']" class="cursor-p item-multi-account" (click)="changeSender(account.value)" [title]="'Address: '+account.value.address">
                     <span class="check-default-account" *ngIf="account.active"></span>&nbsp;{{account.value.name}}
-
-                    <span *ngIf="account.value.default" class="ml-05rem title-tab-blue pt-03rem">
+                    <span *ngIf="account.value.default" class="ml-05rem title-tab-blue pt-03rem"
+                    [ngClass]="{'isActive': account.active}">
                       <i>- Current Default </i>
                     </span>
                     <span *ngIf="account.value.isMultisign &&
                       account.value.isMultisign.cosignatories &&
-                      account.value.isMultisign.cosignatories.length > 0" class="ml-05rem title-tab-blue pt-03rem">
+                      account.value.isMultisign.cosignatories.length > 0" class="ml-05rem title-tab-blue pt-03rem"
+                      [ngClass]="{'isActive': account.active}">
                       <i>- Multisig </i>
                     </span>
                   </span>
@@ -86,12 +86,6 @@
               <span class="fs-08rem fw-400 color-error-message">Cosignatory: &nbsp;</span>
               <span class="fs-08rem color-error-message">{{listCosignatorie[0].info}}</span>
             </div>
-
-            <!-- <div class="col-11 col-md-10 col-lg-8 mx-auto d-flex justify-content-start pt-05rem pb-05rem">
-              <span class="fs-08rem fw-600 color-error-message">
-                Cosignatory {{listCosignatorie[0].info}}
-              </span>
-            </div> -->
           </ng-container>
         </ng-container>
       </div>
