@@ -181,9 +181,6 @@ export class ViewAllAccountsComponent implements OnInit {
     a.style.display = 'none';
     a.href = url;
     // the filename you want
-    console.log(this.walletService.currentWallet);
-
-
     let networkTypeName = environment.typeNetwork.label
     networkTypeName = (networkTypeName.includes(' ')) ? networkTypeName.split(' ').join('') : networkTypeName;
     a.download = `${this.walletService.currentWallet.name}_${wallet.name}_${networkTypeName}_${year}-${month}-${day}.wlt`;
