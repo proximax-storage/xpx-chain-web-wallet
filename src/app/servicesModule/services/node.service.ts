@@ -15,6 +15,10 @@ export class NodeService {
   nameItemSelectedStorage = environment.nameKeyNodeSelected;
   listNodes = data['nodes'];
 
+
+  statusNodeSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  statusNode$: Observable<boolean> = this.statusNodeSubject.asObservable();
+
   constructor(
     private sharedService: SharedService,
     private proximaxProvider: ProximaxProvider,
@@ -71,8 +75,8 @@ export class NodeService {
       this.setArrayNode([]);
     };
     // validates if a selected node exists in the storage
-     const constSelectedStorage = this.getNodeSelected();
-     const nodeSelected = (constSelectedStorage === null || constSelectedStorage === '') ? this.listNodes[Math.floor(Math.random() * this.listNodes.length)] : constSelectedStorage;
+    const constSelectedStorage = this.getNodeSelected();
+    const nodeSelected = (constSelectedStorage === null || constSelectedStorage === '') ? this.listNodes[Math.floor(Math.random() * this.listNodes.length)] : constSelectedStorage;
     // creates a new observable
 
     this.nodeObsSelected = new BehaviorSubject<any>(nodeSelected);
@@ -101,6 +105,86 @@ export class NodeService {
       }
     );
   }
+
+
+
+
+  /**
+  * Add an array of nodes in the storage
+  *
+  * @param {any} nodes
+  * @memberof NodeService
+  */
+  setArrayNode(nodes: any) {
+    localStorage.setItem(this.nameItemsArrayStorage, JSON.stringify(nodes));
+  }
+
+
+
+  /**
+   * Add new selected node in the storage
+   *
+   * @param {any} nodes
+   * @memberof NodeService
+   */
+  setSelectedNodeStorage(node: any) {
+    localStorage.setItem(this.nameItemSelectedStorage, JSON.stringify(node));
+  }
+
+  /**
+  *
+  *
+  * @param {*} value
+  * @returns
+  * @memberof DataBridgeService
+  */
+  setNodeStatus(value: boolean) {
+    return this.statusNodeSubject.next(value);
+  }
+
+
+  /**
+   * Get all nodes
+   *
+   * @returns
+   * @memberof NodeService
+   */
+  getAllNodes() {
+    return JSON.parse(localStorage.getItem(this.nameItemsArrayStorage));
+  }
+
+
+  /**
+   * Get a node selected
+   *
+   * @returns
+   * @memberof NodeService
+   */
+  getNodeSelected() {
+    return JSON.parse(localStorage.getItem(this.nameItemSelectedStorage));
+  }
+
+  /**
+   * Return node observable
+   *
+   * @returns
+   * @memberof NodeService
+   */
+  getNodeObservable() {
+    return this.nodeObsSelected.asObservable();
+  }
+
+  /**
+   *
+   *
+   * @returns {Observable<boolean>}
+   * @memberof NodeService
+   */
+  getNodeStatus(): Observable<boolean> {
+    return this.statusNode$;
+  }
+
+
 
 
   /**
@@ -144,57 +228,24 @@ export class NodeService {
 
   }
 
-  /**
-  * Add an array of nodes in the storage
-  *
-  * @param {any} nodes
-  * @memberof NodeService
-  */
-  setArrayNode(nodes: any) {
-    localStorage.setItem(this.nameItemsArrayStorage, JSON.stringify(nodes));
-  }
-
 
 
   /**
-   * Add new selected node in the storage
+   * get a new random node different from the one selected
    *
-   * @param {any} nodes
+   * @param {string} endPoint
+   * @returns 
    * @memberof NodeService
    */
-  setSelectedNodeStorage(node: any) {
-    localStorage.setItem(this.nameItemSelectedStorage, JSON.stringify(node));
-  }
+  updateNewNode(endPoint = '') {
+    let listNodeFilter = [];
+    // validates if a selected node exists in the storage
+    const constSelectedStorage = this.getNodeSelected();
+    if (constSelectedStorage) {
+      listNodeFilter = this.listNodes.filter(node => node !== constSelectedStorage)
+      const nodeSelected = listNodeFilter[Math.floor(Math.random() * listNodeFilter.length)];
+      this.addNewNodeSelected(nodeSelected);
+    }
 
-
-  /**
-   * Get all nodes
-   *
-   * @returns
-   * @memberof NodeService
-   */
-  getAllNodes() {
-    return JSON.parse(localStorage.getItem(this.nameItemsArrayStorage));
-  }
-
-
-  /**
-   * Get a node selected
-   *
-   * @returns
-   * @memberof NodeService
-   */
-  getNodeSelected() {
-    return JSON.parse(localStorage.getItem(this.nameItemSelectedStorage));
-  }
-
-  /**
-   * Return node observable
-   *
-   * @returns
-   * @memberof NodeService
-   */
-  getNodeObservable() {
-    return this.nodeObsSelected.asObservable();
   }
 }

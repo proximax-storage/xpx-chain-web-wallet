@@ -31,7 +31,7 @@ export class DataBridgeService {
   transactionSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   transaction$: Observable<any> = this.transactionSubject.asObservable();
 
-  reconnectNode = 0;
+  reconnectNode = []
   subscription: Subscription[] = [];
   audio: HTMLAudioElement;
   audio2: HTMLAudioElement;
@@ -73,14 +73,19 @@ export class DataBridgeService {
    */
   connectnWs(node?: string) {
     this.connector = [];
+    this.reconnectNode = [];
     const route = (node === undefined) ? this.nodeService.getNodeSelected() : node;
+    console.log("nodo:", route)
     this.url = `${environment.protocolWs}://${route}`;
     this.currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
-    this.currentWallet.accounts.forEach(element => {
+    for (let index = 0; index < this.currentWallet.accounts.length; index++) {
+      const element = this.currentWallet.accounts[index];
       const ad = this.proximaxProvider.createFromRawAddress(element.address);
-      const b = new Listener(this.url, WebSocket);
+      let b: any = null;
+      b = new Listener(this.url, WebSocket);
       this.connector.push(b);
       b.open().then(() => {
+        this.reconnectNode.push(false);
         this.audio = new Audio('assets/audio/ding.ogg');
         this.audio2 = new Audio('assets/audio/ding2.ogg');
         this.getBlockSocket(b);
@@ -92,11 +97,21 @@ export class DataBridgeService {
         this.getUnConfirmedAddedSocket(b, this.audio2, ad);
         this.getUnConfirmedRemovedSocket(b, this.audio2, ad);
       }, (error) => {
-        setTimeout(() => {
-          this.sharedService.showWarning('', 'Error connecting to the node');
-        }, 500);
+        this.reconnectNode.push(true);
       });
-    });
+    }
+    setTimeout(() => {
+      // console.log('this.reconnectNode', this.reconnectNode)
+      const status = this.reconnectNode.some(element => element === true);
+      // console.log('status', status)
+      if (status) {
+        this.nodeService.setNodeStatus(false);
+        this.reconnect()
+      } else {
+        this.nodeService.setNodeStatus(true);
+      }
+    }, 5000);
+    // });
     return;
   }
 
@@ -424,6 +439,8 @@ export class DataBridgeService {
    * @memberof DataBridgeService
    */
   reconnect() {
+    console.warn('reconnect...')
+    this.nodeService.updateNewNode();
     if (this.connector) {
       // console.log("Destruye conexion con el websocket");
       this.connector.forEach(element => {
@@ -431,7 +448,7 @@ export class DataBridgeService {
         element.terminate();
       });
     }
-
+    this.reconnectNode = [];
     this.connectnWs();
     return;
   }
@@ -487,7 +504,7 @@ export class DataBridgeService {
    */
   setTimeOutValidateTransaction(hash: string): void {
     setTimeout(async () => {
-      const exist = (this.transactionsService.transactionsReady.find(x => x === hash)) ? true: false;
+      const exist = (this.transactionsService.transactionsReady.find(x => x === hash)) ? true : false;
       // console.log(exist);
       if (!exist) {
         this.sharedService.showWarning(

@@ -43,7 +43,9 @@ import {
   BlockInfo,
   MosaicAliasTransaction,
   Convert,
-  RawAddress
+  RawAddress,
+  NodeHttp,
+  NodeTime
 } from 'tsjs-xpx-chain-sdk';
 import { BlockchainNetworkType } from 'tsjs-chain-xipfs-sdk';
 import { Observable } from 'rxjs/internal/Observable';
@@ -70,8 +72,8 @@ export class ProximaxProvider {
   mosaicService: MosaicService;
   namespaceService: NamespaceService;
   transactionStatusError: TransactionStatusError;
-
-  constructor(public http: HttpClient,) {
+  nodeHttp: NodeHttp
+  constructor(public http: HttpClient, ) {
   }
 
   /**
@@ -167,7 +169,7 @@ export class ProximaxProvider {
   }
 
 
-  coingecko(coin_id){
+  coingecko(coin_id) {
     return this.http.get(`${environment.coingecko.url}${coin_id}`);
   }
 
@@ -347,24 +349,24 @@ export class ProximaxProvider {
     return this.accountHttp.aggregateBondedTransactions(publicAccount, new QueryParams(100));
   }
 
-   /**
-   * get
-   *
-   * @param {string} privateKey
-   * @param {*} net
-   * @returns {Account}
-   * @memberof ProximaxProvider
-   */
+  /**
+  * get
+  *
+  * @param {string} privateKey
+  * @param {*} net
+  * @returns {Account}
+  * @memberof ProximaxProvider
+  */
   getAccountFromPrivateKey(privateKey: string, net: NetworkType): Account {
     return Account.createFromPrivateKey(privateKey, net);
   }
 
-   /**
-   *
-   *
-   * @returns {Observable<UInt64>}
-   * @memberof ProximaxProvider
-   */
+  /**
+  *
+  *
+  * @returns {Observable<UInt64>}
+  * @memberof ProximaxProvider
+  */
   getBlockchainHeight(): Observable<UInt64> {
     return this.blockchainHttp.getBlockchainHeight();//Update-sdk-dragon
   }
@@ -606,6 +608,16 @@ export class ProximaxProvider {
         err => console.error(err));
   }
 
+
+  /**
+  * Gets the node time at the moment the reply was sent and received.
+  * @summary Get the node time
+  * @memberof ProximaxProvider
+  */
+  getNodeTime(): Observable<NodeTime> {
+    return this.nodeHttp.getNodeTime();
+  }
+
   /**
    *
    *
@@ -634,6 +646,7 @@ export class ProximaxProvider {
     this.mosaicService = new MosaicService(this.accountHttp, this.mosaicHttp);
     this.namespaceService = new NamespaceService(this.namespaceHttp);
     this.transactionHttp = new TransactionHttp(this.url);
+    this.nodeHttp = new NodeHttp(this.url);
   }
 
   /**

@@ -10,6 +10,10 @@ import { TransactionsService } from '../../../../transactions/services/transacti
 import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
 import { Subscription, timer } from 'rxjs';
 import { NodeService } from 'src/app/servicesModule/services/node.service';
+import { distinctUntilChanged } from 'rxjs/operators';
+import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
+import { NodeTime } from 'tsjs-xpx-chain-sdk';
+import { NumberFormatStyle } from '@angular/common';
 
 @Component({
   selector: 'app-sidebar-main',
@@ -47,7 +51,8 @@ export class SidebarMainComponent implements OnInit {
   walletName = '';
   reset = 0;
   netType;
-  nodeSelected:string;
+  nodeSelected: string;
+  subscriptiontimer: Subscription;
 
 
   constructor(
@@ -58,7 +63,8 @@ export class SidebarMainComponent implements OnInit {
     private dashboardService: DashboardService,
     private transactionService: TransactionsService,
     private walletService: WalletService,
-     private nodeService : NodeService
+    private nodeService: NodeService,
+    private proximaxProvider: ProximaxProvider
   ) {
     this.version = environment.version
     this.netType = environment.typeNetwork.value;
@@ -76,12 +82,18 @@ export class SidebarMainComponent implements OnInit {
     this.subscription.push(this.transactionService.getAggregateBondedTransactions$().subscribe(
       next => this.viewParcial = (next && next.length > 0) ? true : false
     ));
+
+
+
   }
 
   ngOnDestroy(): void {
     this.subscription.forEach(subscription => {
       subscription.unsubscribe();
     });
+
+    if (this.subscriptiontimer !== undefined)
+      this.subscriptiontimer.unsubscribe();
   }
 
   /**
@@ -194,17 +206,13 @@ export class SidebarMainComponent implements OnInit {
         // console.log('=== NEW BLOCK === ', next);
         if (next !== null) {
           this.prorroga = false;
-          this.reconnecting = false;
           this.statusNode = true;
           this.currentBlock = next;
-          this.colorStatus = 'green-color';
-          this.statusNodeName = 'Active';
         } else {
           this.currentBlock = 0;
           this.statusNode = false;
           if (!this.reconnecting) {
-            this.colorStatus = 'color-red';
-            this.statusNodeName = 'Inactive';
+
           }
         }
       }
@@ -217,7 +225,7 @@ export class SidebarMainComponent implements OnInit {
    * @memberof SidebarMainComponent
    */
   getNodeSeletcd() {
-    this.subscription.push( this.nodeService.nodeObsSelected.subscribe(node =>{
+    this.subscription.push(this.nodeService.nodeObsSelected.subscribe(node => {
       this.nodeSelected = `${environment.protocol}://${node}`;
     }))
   }
@@ -228,33 +236,75 @@ export class SidebarMainComponent implements OnInit {
    *
    */
   validate() {
-    //emit 0 after 1 second then complete, since no second argument is supplied
-    const source = timer(30000, 50000);
-    this.subscription.push(source.subscribe(val => {
-      // console.log('CURRENT_BLOCK =>', this.currentBlock);
-      // console.log('CACHE_BLOCK =>', this.cacheBlock);
-      /*console.log('=== RESETED ===', this.reset);
-      console.log('=== CURRENT BLOCK ===', this.currentBlock);
-      console.log('=== CACHE BLOCK ===', this.cacheBlock, '\n\n\n');*/
-
-      if (this.currentBlock > this.cacheBlock) {
-        this.reconnecting = false;
-        this.cacheBlock = this.currentBlock;
-        this.prorroga = false;
-      } else if (this.prorroga) {
-        this.reset = this.reset + 1;
+    this.subscription.push(this.nodeService.getNodeStatus().subscribe(status => {
+      if (!status) {
+        this.colorStatus = 'color-red';
+        this.statusNodeName = 'Inactive';
+      } else {
         this.reconnecting = true;
-        this.statusNodeName = 'Reconnecting';
-        this.colorStatus = 'color-light-orange';
+        this.getNodeTime();
+        this.colorStatus = 'green-color';
+        this.statusNodeName = 'Active';
+      }
+    }))
+
+  }
+
+  // validateNode() {
+  //   //emit 0 after 1 second then complete, since no second argument is supplied
+  //   const source = timer(30000, 50000);
+  //   this.subscription.push(source.subscribe(val => {
+  //     // console.log('CURRENT_BLOCK =>', this.currentBlock);
+  //     // console.log('CACHE_BLOCK =>', this.cacheBlock);
+  //     console.log('=== RESETED ===', this.reset);
+  //     console.log('=== CURRENT BLOCK ===', this.currentBlock);
+  //     console.log('=== CACHE BLOCK ===', this.cacheBlock, '\n\n\n');
+
+  //     if (this.currentBlock > this.cacheBlock) {
+  //       this.reconnecting = false;
+  //       this.cacheBlock = this.currentBlock;
+  //       this.prorroga = false;
+  //     } else if (this.prorroga) {
+  //       this.reset = this.reset + 1;
+  //       this.reconnecting = true;
+  //       this.statusNodeName = 'Reconnecting';
+  //       this.colorStatus = 'color-light-orange';
+  //       this.dataBridge.closeConection(false);
+  //       this.dataBridge.connectnWs();
+  //     } else {
+  //       this.statusNodeName = 'Reconnecting';
+  //       this.colorStatus = 'color-light-orange';
+  //       this.reconnecting = true;
+  //       this.prorroga = true;
+  //     }
+  //   }));
+
+
+  // }
+
+  getNodeTime(ban = false) {
+    if (this.subscriptiontimer !== undefined)
+      this.subscriptiontimer.unsubscribe();
+    const source = timer(30000, 50000);
+    this.subscriptiontimer = source.subscribe(async val => {
+      let times: NodeTime = null;
+      try {
+        times = await this.proximaxProvider.getNodeTime().toPromise();
+      } catch (error) {
+        times = null;
+      }
+      if (times) {
+        this.colorStatus = 'green-color';
+        this.statusNodeName = 'Active';
+      } else if (this.reconnecting) {
+        this.colorStatus = 'color-red';
+        this.statusNodeName = 'Inactive';
         this.dataBridge.closeConection(false);
         this.dataBridge.connectnWs();
-      } else {
-        this.statusNodeName = 'Reconnecting';
-        this.colorStatus = 'color-light-orange';
-        this.reconnecting = true;
-        this.prorroga = true;
+        this.reconnecting = false;
       }
-    }));
+
+    })
   }
 
   /**

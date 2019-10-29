@@ -91,4 +91,14 @@ export class DashboardService {
   incrementViewDashboard() {
     this.isIncrementViewDashboard++;
   }
+
+  /**
+  *
+  *
+  * @returns {number}
+  * @memberof DashboardService
+  */
+  setCantViewDashboard(val: number): number {
+    return this.isIncrementViewDashboard = val;
+  }
 }

@@ -47,7 +47,7 @@ export class BlockchainComponent implements OnInit {
     private transactionService: TransactionsService,
     private namespaces: NamespacesService,
     private mosaicService: MosaicService,
-    private dashboardService: DashboardService
+    private dashboardService: DashboardService,
   ) { }
 
   ngOnInit() {
@@ -112,7 +112,8 @@ export class BlockchainComponent implements OnInit {
     // this.getBlock();
     this.getAllNodes();
     this.dashboardService.destroySubscription();
-    this.dataBridgeService.reconnect();
+    this.dataBridgeService.closeConection(false);
+    this.dataBridgeService.connectnWs();
     this.nemProvider.validaTransactionsSwap();
     const address: Address[] = [];
     for (let account of this.walletService.currentWallet.accounts) {
@@ -123,6 +124,7 @@ export class BlockchainComponent implements OnInit {
     this.namespaces.searchNamespacesFromAccounts(address);
     this.transactionService.searchAccountsInfo(this.walletService.currentWallet.accounts);
     this.dataBridgeService.searchBlockInfo();
+    this.dashboardService.setCantViewDashboard(0)
     this.sharedService.showSuccess('', 'Node Updated');
   }
 
