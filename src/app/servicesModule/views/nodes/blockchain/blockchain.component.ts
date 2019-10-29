@@ -123,6 +123,7 @@ export class BlockchainComponent implements OnInit {
     this.namespaces.searchNamespacesFromAccounts(address);
     this.transactionService.searchAccountsInfo(this.walletService.currentWallet.accounts);
     this.dataBridgeService.searchBlockInfo();
+    this.dataBridgeService.searchBlockInfo(true);
     this.sharedService.showSuccess('', 'Node Updated');
   }
 

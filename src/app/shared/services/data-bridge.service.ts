@@ -51,18 +51,26 @@ export class DataBridgeService {
    *
    * @memberof DataBridgeService
    */
-  async searchBlockInfo() {
-    this.proximaxProvider.getBlockchainHeight().subscribe(
-      (blockchainHeight: UInt64) => {
-        this.proximaxProvider.getBlockInfo().subscribe(
-          (blockInfo: BlockInfo) => {
-            this.setblockInfo(blockInfo);
-            this.saveBlockInfo(blockInfo);
-          }
-        );
-      }
-    );
-  }
+    async searchBlockInfo(searchHeight = false) {
+        if (searchHeight) {
+          this.proximaxProvider.getBlockchainHeight().subscribe(
+            (blockchainHeight: UInt64) => {
+              this.proximaxProvider.getBlockInfo(blockchainHeight.compact()).subscribe(
+                (blockInfo: BlockInfo) => {
+                  this.saveBlockInfo(blockInfo);
+                }
+              );
+            }
+          );
+        }else {
+          this.proximaxProvider.getBlockInfo().subscribe(
+            (blockInfo: BlockInfo) => {
+              this.setblockInfo(blockInfo);
+              this.saveBlockInfo(blockInfo);
+            }
+          );
+        }
+      }
 
   /**
    * Connect to websocket

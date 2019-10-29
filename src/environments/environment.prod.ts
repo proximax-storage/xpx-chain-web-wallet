@@ -82,7 +82,10 @@ export const environment = {
   },
   coingecko:{
     url: 'https://api.coingecko.com/api/v3/coins/',
-  }
+  },
+   blockHeightMax:{
+        heightMax: 172800
+      }
 };
 /*
  * In development mode, to ignore zone related error stack frames such as
