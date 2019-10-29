@@ -116,7 +116,9 @@ export class AuthService {
     this.mosaicService.getMosaicXPX();
     this.namespaces.searchNamespacesFromAccounts(address);
     this.transactionService.searchAccountsInfo(this.walletService.currentWallet.accounts);
-    this.dataBridgeService.searchBlockInfo();
+     this.dataBridgeService.searchBlockInfo();
+    this.dataBridgeService.searchBlockInfo(true);
+    
     this.route.navigate([`/${AppConfig.routes.dashboard}`]);
     return true;
   }
