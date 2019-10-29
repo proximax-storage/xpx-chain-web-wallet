@@ -318,6 +318,7 @@ export class SidebarMainComponent implements OnInit {
     this.walletService.setNis1AccountSelected(null);
     this.walletService.setSwapTransactions$([]);
     this.walletService.setNis1AccountsWallet$([]);
+    this.namespaces.setNamespaceChanged(null);
     this.route.navigate([`/${AppConfig.routes.auth}`]);
   }
 
