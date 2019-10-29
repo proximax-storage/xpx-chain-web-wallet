@@ -149,15 +149,7 @@ export class NemProviderService {
             this.setNis1AccountsFound$(null);
           }
         } catch (error) {
-          // Valida si es cosignatario
-          /*if (cosignatoryOf.length > 0) {
-            nis1AccountsInfo = this.buildAccountInfoNIS1(publicAccount, accountsMultisigInfo, null, cosignatoryOf, false, name, null);
-            this.setNis1AccountsFound$(nis1AccountsInfo);
-          } else {
-            this.sharedService.showWarning('', 'It was not possible to connect to the server, try later');
-            this.setNis1AccountsFound$(null);
-          }*/
-
+          console.log(error);
           this.sharedService.showWarning('', 'It was not possible to connect to the server, try later');
           this.setNis1AccountsFound$(null);
         }
@@ -169,7 +161,8 @@ export class NemProviderService {
         }
       }
     } catch (error) {
-      this.sharedService.showWarning('', 'It was not possible to connect to the server, try later');
+      console.log(error);
+      this.sharedService.showWarning('', 'It was not possible to connect to the server, try later.');
       this.setNis1AccountsFound$(null);
     }
   }
