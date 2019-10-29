@@ -434,6 +434,8 @@ export class CreateTransferComponent implements OnInit {
       message: ['', [
         Validators.maxLength(this.configurationForm.message.maxLength)
       ]],
+      typeMessage: ['plain', [
+      ]],
       password: [
         '',
         [
@@ -839,6 +841,8 @@ export class CreateTransferComponent implements OnInit {
             // console.log('COSIGNATARIO SELECCIONADO ----> ', this.cosignatorie);*/
             const generationHash = this.dataBridge.blockInfo.generationHash;
             if (this.walletService.decrypt(common, this.cosignatorie)) {
+              console.log(this.formTransfer.get("typeMessage").value);
+
               const params: TransferInterface = {
                 common: common,
                 recipient: (this.formTransfer.get("accountRecipient").value),
@@ -887,6 +891,8 @@ export class CreateTransferComponent implements OnInit {
             break;
           case false:
             if (this.walletService.decrypt(common, this.sender)) {
+              console.log(this.formTransfer.get("typeMessage").value);
+
               const params: TransferInterface = {
                 common: common,
                 recipient: (this.formTransfer.get("accountRecipient").value),

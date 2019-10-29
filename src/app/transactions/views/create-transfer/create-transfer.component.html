@@ -396,25 +396,25 @@
           <div class="row">
             <div class="col-12 col-sm-4 fw-600 d-flex justify-content-center justify-content-sm-end">
               <div class="form-check form-check-inline">
-                <input formControlName="formTransfer" checked [value]="true" type="radio" class="form-check-input"
-                  id="myComputer" name="typeFile" mdbInput>
-                <label class="form-check-label" for="myComputer">Plain</label>
+                <input formControlName="typeMessage" checked [value]="plain" type="radio" class="form-check-input"
+                  id="plainMessage" name="typeMessage" mdbInput>
+                <label class="form-check-label" for="plainMessage">Plain</label>
               </div>
             </div>
 
             <div class="col-12 col-sm-4 fw-600 d-flex justify-content-center justify-content-sm-center">
               <div class="form-check form-check-inline">
-                <input formControlName="typeFile" [value]="false" type="radio" class="form-check-input" id="DFMS"
-                  name="typeFile" mdbInput>
-                <label class="form-check-label" for="DFMS">Hexadecimal</label>
+                <input formControlName="typeMessage" [value]="hex" type="radio" class="form-check-input" id="hexMessage"
+                  name="typeMessage" mdbInput>
+                <label class="form-check-label" for="hexMessage">Hexadecimal</label>
               </div>
             </div>
 
             <div class="col-12 col-sm-4 fw-600 d-flex justify-content-center justify-content-sm-start">
               <div class="form-check form-check-inline">
-                <input formControlName="typeFile" [value]="false" type="radio" class="form-check-input" id="other"
-                  name="typeFile" mdbInput>
-                <label class="form-check-label" for="other">Encrypted</label>
+                <input formControlName="typeMessage" [value]="encrypted" type="radio" class="form-check-input" id="encrypMessage"
+                  name="typeMessage" mdbInput>
+                <label class="form-check-label" for="encrypMessage">Encrypted</label>
               </div>
             </div>
           </div>
