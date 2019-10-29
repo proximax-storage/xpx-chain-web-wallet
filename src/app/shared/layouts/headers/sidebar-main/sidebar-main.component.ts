@@ -10,10 +10,9 @@ import { TransactionsService } from '../../../../transactions/services/transacti
 import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
 import { Subscription, timer } from 'rxjs';
 import { NodeService } from 'src/app/servicesModule/services/node.service';
-import { distinctUntilChanged } from 'rxjs/operators';
 import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
 import { NodeTime } from 'tsjs-xpx-chain-sdk';
-import { NumberFormatStyle } from '@angular/common';
+import { ConnectionService } from 'ng-connection-service';
 
 @Component({
   selector: 'app-sidebar-main',
@@ -22,7 +21,8 @@ import { NumberFormatStyle } from '@angular/common';
 })
 
 export class SidebarMainComponent implements OnInit {
-
+  statusLine = 'ONLINE';
+  isConnectedLine = true;
 
   cacheBlock = 0;
   colorStatus = 'color-red';
@@ -64,7 +64,8 @@ export class SidebarMainComponent implements OnInit {
     private transactionService: TransactionsService,
     private walletService: WalletService,
     private nodeService: NodeService,
-    private proximaxProvider: ProximaxProvider
+    private proximaxProvider: ProximaxProvider,
+    private connectionService: ConnectionService
   ) {
     this.version = environment.version
     this.netType = environment.typeNetwork.value;
@@ -248,6 +249,21 @@ export class SidebarMainComponent implements OnInit {
       }
     }))
 
+    this.subscription.push(this.connectionService.monitor().subscribe(isConnected => {
+      this.isConnectedLine = isConnected;
+      if (this.isConnectedLine) {
+        this.statusLine = "ONLINE";
+      }
+      else {
+        this.statusLine = "OFFLINE";
+        this.colorStatus = 'color-red';
+        this.statusNodeName = 'Inactive';
+        this.dataBridge.closeConection(false);
+        this.dataBridge.connectnWs();
+        this.reconnecting = false;
+      }
+    }))
+
   }
 
   // validateNode() {
@@ -285,7 +301,7 @@ export class SidebarMainComponent implements OnInit {
   getNodeTime(ban = false) {
     if (this.subscriptiontimer !== undefined)
       this.subscriptiontimer.unsubscribe();
-    const source = timer(30000, 50000);
+    const source = timer(40000, 50000);
     this.subscriptiontimer = source.subscribe(async val => {
       let times: NodeTime = null;
       try {
@@ -296,7 +312,8 @@ export class SidebarMainComponent implements OnInit {
       if (times) {
         this.colorStatus = 'green-color';
         this.statusNodeName = 'Active';
-      } else if (this.reconnecting) {
+      } else if (this.reconnecting ) {
+        console.warn("reconnecting time node...")
         this.colorStatus = 'color-red';
         this.statusNodeName = 'Inactive';
         this.dataBridge.closeConection(false);

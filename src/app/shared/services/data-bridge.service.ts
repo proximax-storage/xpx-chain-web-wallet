@@ -31,7 +31,8 @@ export class DataBridgeService {
   transactionSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   transaction$: Observable<any> = this.transactionSubject.asObservable();
 
-  reconnectNode = []
+  reconnectNode = [];
+  reconnectNum = 0;
   subscription: Subscription[] = [];
   audio: HTMLAudioElement;
   audio2: HTMLAudioElement;
@@ -74,6 +75,7 @@ export class DataBridgeService {
   connectnWs(node?: string) {
     this.connector = [];
     this.reconnectNode = [];
+    
     const route = (node === undefined) ? this.nodeService.getNodeSelected() : node;
     console.log("nodo:", route)
     this.url = `${environment.protocolWs}://${route}`;
@@ -105,9 +107,14 @@ export class DataBridgeService {
       const status = this.reconnectNode.some(element => element === true);
       // console.log('status', status)
       if (status) {
+        this.reconnectNum = this.reconnectNum + 1;
+        console.log('this.reconnectNum', this.reconnectNum)
+        if (this.reconnectNum == 1)
+          this.sharedService.showWarning('', 'Error connecting to the node');
         this.nodeService.setNodeStatus(false);
         this.reconnect()
       } else {
+        this.reconnectNum = 0;
         this.nodeService.setNodeStatus(true);
       }
     }, 5000);

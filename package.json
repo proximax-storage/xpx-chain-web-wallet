@@ -53,6 +53,7 @@
     "nem-library": "^2.0.0-RC4",
     "nem-sdk": "^1.5.1",
     "ng-block-ui": "^2.1.7",
+    "ng-connection-service": "^1.0.4",
     "ng-pick-datetime": "^7.0.0",
     "ng-uikit-pro-standard": "git+https://oauth2:xds7fpVXkw8SnNJdDtUE@git.mdbootstrap.com/mdb/angular/ng-uikit-pro-standard.git",
     "ngx-chips": "^2.0.2",
