@@ -158,7 +158,7 @@ export class ViewAllAccountsComponent implements OnInit {
     const accounts = [];
     accounts.push(acc);
     const wallet = {
-      name: acc.name,
+      name: `${this.walletService.currentWallet.name}_${acc.name}`,
       accounts: accounts
     }
 
@@ -183,7 +183,7 @@ export class ViewAllAccountsComponent implements OnInit {
     // the filename you want
     let networkTypeName = environment.typeNetwork.label
     networkTypeName = (networkTypeName.includes(' ')) ? networkTypeName.split(' ').join('') : networkTypeName;
-    a.download = `${this.walletService.currentWallet.name}_${wallet.name}_${networkTypeName}_${year}-${month}-${day}.wlt`;
+    a.download = `${wallet.name}_${networkTypeName}_${year}-${month}-${day}.wlt`;
     document.body.appendChild(a);
     a.click();
     window.URL.revokeObjectURL(url);
