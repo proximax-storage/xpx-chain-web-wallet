@@ -8,7 +8,7 @@ import { ChronoUnit } from 'js-joda';
 export const environment = {
   production: false,
   itemBooksAddress: 'sw-books-mainnet',
-  version: '0.4.3',
+  version: '0.4.4',
   cacheVersion: '8-MAINNET',
   nameKeyBlockStorage: `sw-blocks`,
   nameKeyNodeSelected: `sw-selected-node-mainnet`,
@@ -34,7 +34,7 @@ export const environment = {
     deadline: 1439,
     chronoUnit: ChronoUnit.MINUTES
   },
-  timeOutTransactionNis1: 10000,
+  timeOutTransactionNis1: 20000,
   blockchainConnection: {
     host: 'arcturus.xpxsirius.io',
     port: 443,
