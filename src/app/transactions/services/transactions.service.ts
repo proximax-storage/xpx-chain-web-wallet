@@ -303,7 +303,7 @@ export class TransactionsService {
     return HashLockTransaction.create(
       Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
       new Mosaic(new MosaicId(environment.mosaicXpxInfo.id), UInt64.fromUint(Number(10000000))),
-      UInt64.fromUint(480),
+      UInt64.fromUint(environment.lockFundDuration),
       signedTransaction,
       this.walletService.currentAccount.network
     );

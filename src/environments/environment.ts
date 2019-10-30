@@ -8,8 +8,8 @@ import { ChronoUnit } from 'js-joda';
 export const environment = {
   production: false,
   itemBooksAddress: 'sw-books-mainnet',
-  version: '0.4.4',
-  cacheVersion: '9-MAINNET',
+  version: '0.4.5',
+  cacheVersion: '11-MAINNET',
   nameKeyBlockStorage: `sw-blocks`,
   nameKeyNodeSelected: `sw-selected-node-mainnet`,
   nameKeyWalletStorage: `sw-mainnet`,
@@ -85,6 +85,10 @@ export const environment = {
   coingecko:{
     url: 'https://api.coingecko.com/api/v3/coins/',
   }
+  blockHeightMax: {
+    heightMax: 172800
+  },
+  lockFundDuration: 11520
 };
 /*
  * In development mode, to ignore zone related error stack frames such as
