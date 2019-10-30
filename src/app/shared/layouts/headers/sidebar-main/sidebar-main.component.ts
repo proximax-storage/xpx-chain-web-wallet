@@ -150,6 +150,12 @@ export class SidebarMainComponent implements OnInit {
   }
 
 
+  /**
+   *
+   *
+   * @param {number} block
+   * @memberof SidebarMainComponent
+   */
   expiredNamespace(block: number) {
     this.subscription.push(this.namespaces.getNamespaceChanged().subscribe(
       async namespaceInfo => {
@@ -162,9 +168,9 @@ export class SidebarMainComponent implements OnInit {
               const element = namespaceInfo[index];
               let endHeight = element.namespaceInfo.endHeight.lower
               let result = endHeight - block;
-              if (result !== 0) {
+              if (result > 0) {
                 if (result < environment.blockHeightMax.heightMax && this.authService.isLogged) {
-                  this.sharedService.showWarning('', `This namespace is about to expire (${element.namespaceName.name})`)
+                  this.sharedService.showWarning('', `Namespace ${element.namespaceName.name} is about to expired`)
                 }
               }
             }, time);
