@@ -8,8 +8,8 @@ import { ChronoUnit } from 'js-joda';
 export const environment = {
   production: true,
   itemBooksAddress: 'sw-books-testnet',
-  version: '0.4.6',
-  cacheVersion: '02',
+  version: '0.4.7',
+  cacheVersion: '07',
   nameKeyBlockStorage: `sw-blocks`,
   nameKeyNodeSelected: `sw-selected-node-testnet`,
   nameKeyWalletStorage: `sw-testnet`,
@@ -86,7 +86,8 @@ export const environment = {
   blockHeightMax: {
     heightMax: 172800
   },
-  lockFundDuration: 11520
+  lockFundDuration: 11520,
+  delayBetweenLockFundABT: 20000
 };
 /*
  * In development mode, to ignore zone related error stack frames such as
