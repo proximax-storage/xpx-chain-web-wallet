@@ -34,7 +34,7 @@ export const environment = {
     deadline: 1439,
     chronoUnit: ChronoUnit.MINUTES
   },
-  timeOutTransactionNis1: 10000,
+  timeOutTransactionNis1: 20000,
   blockchainConnection: {
     host: 'bctestnet1.brimstone.xpxsirius.io',
     port: 443,
