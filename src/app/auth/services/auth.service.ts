@@ -77,9 +77,7 @@ export class AuthService {
         this.sharedService.showError('', 'Dear user, the wallet is missing');
         return false;
       } else if (!this.nodeService.getNodeSelected()) {
-        this.sharedService.showError('', 'Please select a node.');
-        this.route.navigate([`/${AppConfig.routes.selectNode}`]);
-        return false;
+        this.nodeService.initNode();
       }
 
       const decrypted = this.walletService.decrypt(common, currentAccount);
@@ -118,7 +116,9 @@ export class AuthService {
     this.mosaicService.getMosaicXPX();
     this.namespaces.searchNamespacesFromAccounts(address);
     this.transactionService.searchAccountsInfo(this.walletService.currentWallet.accounts);
-    this.dataBridgeService.searchBlockInfo();
+     this.dataBridgeService.searchBlockInfo();
+    this.dataBridgeService.searchBlockInfo(true);
+    
     this.route.navigate([`/${AppConfig.routes.dashboard}`]);
     return true;
   }

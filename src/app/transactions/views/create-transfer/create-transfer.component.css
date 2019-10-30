@@ -54,19 +54,10 @@
   color: white !important;
 }
 
-.isActive {
-  background: #f9f9f9 !important;
-  color: black !important;
-  height: 40px;
-  font-weight: 700;
-  padding-left: 2rem !important;
-}
-
 .check-default-account:before {
   font-family: 'FontAwesome' !important;
   content: '\f00c' !important;
 }
-
 
 .h-account {
   height: 60px;
@@ -74,18 +65,26 @@
   display: -webkit-box;
   overflow-y: hidden;
 }
-/*
-.btn.disabled, .btn:disabled {
-  background-color: #dedede !important;
-  border-color: #9a9a9a !important;
-}*/
 
 .border-separator {
   border-left: .5rem solid #f4f4f4;
   padding-left: .6rem;
 }
 
-.box-accounts-height{
+.box-accounts-height {
   overflow-y: auto;
   max-height: 118px;
+}
+
+.item-multi-account {
+  border-top: 1px solid rgba(240, 240, 240, 240);
+  background: #f9f9f9 !important;
+  padding-left: 1rem !important;
+}
+
+.isActive {
+  background: #306eb5 !important;
+  color: white !important;
+  font-weight: 700;
+  font-size: .8rem !important;
 }
