@@ -7,25 +7,25 @@ import { ChronoUnit } from 'js-joda';
 
 export const environment = {
   production: false,
-  itemBooksAddress: 'sw-books-mainnet',
+  itemBooksAddress: 'sw-books-testnet',
   version: '0.4.5',
-  cacheVersion: '11-MAINNET',
+  cacheVersion: '11',
   nameKeyBlockStorage: `sw-blocks`,
-  nameKeyNodeSelected: `sw-selected-node-mainnet`,
-  nameKeyWalletStorage: `sw-mainnet`,
-  nameKeyNodeStorage: `sw-nodes-mainnet`,
-  nameKeyNamespaces: `sw-namespaces-mainnet`,
-  nameKeyMosaicStorage: `sw-mosaics-mainnet`,
-  nameKeyVersion: 'sw-version-mainnet',
-  nameKeyWalletTransactionsNis: 'sw-transactions-nis-mainnet',
+  nameKeyNodeSelected: `sw-selected-node-testnet`,
+  nameKeyWalletStorage: `sw-testnet`,
+  nameKeyNodeStorage: `sw-nodes-testnet`,
+  nameKeyNamespaces: `sw-namespaces-testnet`,
+  nameKeyMosaicStorage: `sw-mosaics-testnet`,
+  nameKeyVersion: 'sw-version-testnet',
+  nameKeyWalletTransactionsNis: 'sw-transactions-nis',
   protocol: `https`,
   protocolWs: `wss`,
-  nodeExplorer: 'https://explorer.xpxsirius.io/#/result/hash',
+  nodeExplorer: 'https://bctestnetexplorer.xpxsirius.io/#/result/hash',
   mosaicXpxInfo: {
     name: 'prx.xpx',
     coin: 'XPX',
-    id: '402b2f579faebc59',
-    mosaicIdUint64: [2679028825, 1076571991],
+    id: '13bfc518e40549d7',
+    mosaicIdUint64: [3825551831, 331334936],
     namespaceIdUint64: [2434186742, 3220914849],
     namespaceId: 'bffb42a19116bdf6',
     divisibility: 6
@@ -34,9 +34,9 @@ export const environment = {
     deadline: 1439,
     chronoUnit: ChronoUnit.MINUTES
   },
-  timeOutTransactionNis1: 20000,
+  timeOutTransactionNis1: 10000,
   blockchainConnection: {
-    host: 'arcturus.xpxsirius.io',
+    host: 'bctestnet1.brimstone.xpxsirius.io',
     port: 443,
     protocol: 'https',
     useSecureMessage: false
@@ -49,42 +49,40 @@ export const environment = {
     }
   },
   namespaceRentalFeeSink: {
-    public_key: '9FF38184F03950C09FFFF4A90C171E4C3C566985EEACA486A59CC8B607C10BF6',
-    address_public_test: 'XA7KWF-N5CMLV-G7W3OH-Z5CV3G-3VYH3N-5EQQTK-OVJH'
+    public_key: 'F3B8194C36CC55500DCB8CD3734DFA07FE8B649219BE315C8DFAE1DAC59F3595',
+    address_public_test: 'VBH4NR-KUNINP-7HW6ZB-OECMIN-X3BCB4-ZDXKDM-KIWG'
   },
   mosaicRentalFeeSink: {
-    public_key: '94A9BB9660037E622C8F626E061DB1557CBBED0338402E82E796168E80EF9765',
-    address_public_test: 'XC5ZZN-SYLOXO-EQIAAF-N6B5S6-QAQSFF-5TEVC4-XLTV'
+    public_key: '640A0DA89F6F57E43C526520AD05C59E185D19ADC95788D8611EBAEC94DEBBA1',
+    address_public_test: 'VD6AXC-3QBCFT-SLKHT6-2UPGTN-V5Z63I-YZKJI3-YGMD'
   },
   pollsContent: {
-    public_key: '36C25BCB8E6DCCF4B885BAD8963A30C4DBC6A1D70CE342D3656B23A610E60BB0',
-    address_public_test: 'XBO3L3-K5AQTX-DXO6Z6-W6KAPO-RI4XHN-65J5VG-HOQU'
+    public_key: '945215E9D664D60E5A4FD54982C09B1F79D421EA0436FA307112A0DF74C89622',
+    address_public_test: 'VBPCBA-VFP7OG-REVIGD-TGRIKJ-PXSM4E-K446VF-SMFJ'
   },
   attestation: {
-    address_public_test: 'XCGWQ72PDEWCPXMSZOSL4KIOWFRLJU6YGYTOK632'
+    address_public_test: 'VDYN53-XXEGKK-3XHQYE-K6ZBMN-JPXN57-ZBHXA3-AW55'
   },
   nis1: {
-    url: 'https://swap.brimstone.xpxsirius.io:7890',
-    urlExplorer: 'http://explorer.nemtool.com/#/s_tx?hash=',
-    networkType: NetworkTypes.MAIN_NET,
-    burnAddress : 'ND7WVWPWNTJR75CYC3D73LSVP7WIL7BL77QNT7NZ',
-    nodes: [{
-      protocol: "https",
-      domain: "swap.brimstone.xpxsirius.io",
-      port: 7890
-    } as ServerConfig],
+    url: 'https://bctestnetswap.xpxsirius.io:7890',
+    urlExplorer: 'http://testnet-explorer.nemtool.com/#/s_tx?hash=',
+    networkType: NetworkTypes.TEST_NET,
+    burnAddress: 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN',
+    nodes: [
+      { protocol: "https", domain: "bctestnetswap.xpxsirius.io", port: 7890 } as ServerConfig
+    ],
   },
   swapAccount: {
-    addressAccountMultisig: 'XDKK47EMX4Q2NVU6TIN4RS22SZZ47UEFJ454L4NV',
-    addressAccountSimple: 'XDHQTCJLDDSNOVXPGRE25YNHXV27EAKAEUGJKRLK'
+    addressAccountMultisig: 'VAWOEOWTABXR7O3ZAK2XNA5GIBNE6PZIXDAFDWBU',
+    addressAccountSimple: 'VCWLIYQPQAJSYWMWL5BHUCA3VOWVOXZ3WTNJPTUJ'
   },
   typeNetwork: {
-    value: NetworkType.MAIN_NET,
-    label: 'MAIN NET'
+    value: NetworkType.TEST_NET,
+    label: 'PUBLIC TEST'
   },
-  coingecko:{
+  coingecko: {
     url: 'https://api.coingecko.com/api/v3/coins/',
-  }
+  },
   blockHeightMax: {
     heightMax: 172800
   },
