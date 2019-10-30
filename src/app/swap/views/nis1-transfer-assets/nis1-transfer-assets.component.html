@@ -110,7 +110,7 @@
                 <input pattern="^[+]?([0-9]*[.])?[0-9]+$" currencyMask [options]="optionsXPX" mdbInputDirective
                   mdbValidate [validateSuccess]="true" id="amount{{errorAmount}}" [validateError]="true" type="text"
                   class="form-control form-control-sm input-border input-amount" placeholder="Enter Amount"
-                  formControlName="amountXpx">
+                  formControlName="amountXpx" [maxlength]="maxAmount">
                 <span class="label-i fw-600 text-cl-m cursor-p pl-2rem" (click)="selectMaxAmount()">Use Max</span>
               </div>
               <mdb-error *ngIf="insufficientBalance">
