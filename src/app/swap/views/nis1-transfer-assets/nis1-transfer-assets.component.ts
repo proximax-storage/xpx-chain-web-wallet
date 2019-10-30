@@ -130,7 +130,7 @@ export class Nis1TransferAssetsComponent implements OnInit {
           } else if (!this.isMultisig) {
             //const assetId = this.ownedAccountSwap.mosaic.assetId;
             const assetId = this.accountToSwap.mosaic.assetId;
-            console.log(assetId);
+            // console.log(assetId);
             const msg = PlainMessage.create(this.ownedAccountSwap.publicAccount.publicKey);
             const transaction = await this.nemProvider.createTransaction(msg, assetId, quantity);
             // console.log('\nTRANSACTION CREATED -->', transaction)
@@ -321,7 +321,7 @@ export class Nis1TransferAssetsComponent implements OnInit {
           this.maxAmount = this.quantity.length;
           this.showCertifiedSwap = false;
           this.createFormTransfer();
-          // this.subscribeAmount();
+          this.subscribeAmount();
         } else if (this.isMultisig && this.accountSelected.multisigAccountsInfo.length > 0) {
           // MULTISIG ACCOUNT
           //console.log('------isMultisig------');
@@ -340,7 +340,7 @@ export class Nis1TransferAssetsComponent implements OnInit {
             this.showCertifiedSwap = false;
             // console.log(this.accountToSwap);
             this.createFormTransfer();
-            // this.subscribeAmount();
+            this.subscribeAmount();
           }
         }
       }

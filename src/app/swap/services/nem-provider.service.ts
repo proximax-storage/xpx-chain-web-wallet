@@ -134,25 +134,25 @@ export class NemProviderService {
         try {
           // SEARCH INFO OWNED SWAP
           const ownedMosaic = await this.getOwnedMosaics(addressOwnedSwap).pipe(first()).pipe((timeout(environment.timeOutTransactionNis1))).toPromise();
-          console.log('ownedMosaic --->', ownedMosaic);
+          // console.log('ownedMosaic --->', ownedMosaic);
           const xpxFound = ownedMosaic.find(el => el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx');
-          console.log('xpxFound ---->', xpxFound);
+          // console.log('xpxFound ---->', xpxFound);
           if (xpxFound) {
             const balance = await this.validateBalanceAccounts(xpxFound, addressOwnedSwap);
-            console.log('balance ---->', balance);
+            // console.log('balance ---->', balance);
             nis1AccountsInfo = this.buildAccountInfoNIS1(publicAccount, accountsMultisigInfo, balance, cosignatoryOf, false, name, xpxFound);
             this.setNis1AccountsFound$(nis1AccountsInfo);
           } else if (cosignatoryOf.length > 0) {
-            console.log('cosignatoryOf zero');
+            // console.log('cosignatoryOf zero');
             nis1AccountsInfo = this.buildAccountInfoNIS1(publicAccount, accountsMultisigInfo, null, cosignatoryOf, false, name, null);
             this.setNis1AccountsFound$(nis1AccountsInfo);
           } else {
-            console.log('The account has no balance to swap.');
+            // console.log('The account has no balance to swap.');
             this.sharedService.showWarning('', 'The account has no balance to swap.');
             this.setNis1AccountsFound$(null);
           }
         } catch (error) {
-          console.log(error);
+          // console.log(error);
           this.sharedService.showWarning('', 'It was not possible to connect to the server, try later');
           this.setNis1AccountsFound$(null);
         }
@@ -164,7 +164,7 @@ export class NemProviderService {
         }
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       this.sharedService.showWarning('', 'It was not possible to connect to the server, try later.');
       this.setNis1AccountsFound$(null);
     }
@@ -217,13 +217,13 @@ export class NemProviderService {
         // console.log('existMosaic -->', existMosaic);
         if (existMosaic) {
           const unconfirmedFormatter = parseFloat(this.amountFormatter(existMosaic.quantity, xpxFound, 6));
-          console.log('\n unconfirmedFormatter --->', unconfirmedFormatter);
+          // console.log('\n unconfirmedFormatter --->', unconfirmedFormatter);
           const quantityWhitoutFormat = realQuantity.split(',').join('');
-          console.log('\nquantityWhitoutFormat --->', quantityWhitoutFormat);
+          // console.log('\nquantityWhitoutFormat --->', quantityWhitoutFormat);
           const residue = this.transactionService.subtractAmount(parseFloat(quantityWhitoutFormat), unconfirmedFormatter);
-          console.log('\nresidue --->', residue, '\n');
+          // console.log('\nresidue --->', residue, '\n');
           const quantityFormat = this.amountFormatter(parseInt((residue).toString().split('.').join('')), xpxFound, 6);
-          console.log('quantityFormat --->', quantityFormat);
+          // console.log('quantityFormat --->', quantityFormat);
           realQuantity = quantityFormat;
         }
       }
@@ -535,19 +535,19 @@ export class NemProviderService {
   /*searchUnconfirmedSwap(accounts: AccountsInterface[], common: any) {
     const nis1Accounts = accounts.filter(account => account.nis1Account !== null && account.encrypted !== '');
     nis1Accounts.forEach(element => {
-      console.log('common --->', common);
-      console.log('Account SIRIUS --->', element);
+      // console.log('common --->', common);
+      // console.log('Account SIRIUS --->', element);
       const decrypt = Object.assign({}, common);
       const isDecrypted = this.walletService.decrypt(decrypt, element);
       if (isDecrypted) {
-        console.log('decrypt --->', decrypt);
+        // console.log('decrypt --->', decrypt);
         const accountNis1 = this.createAccountPrivateKey(decrypt.privateKey);
-        console.log(accountNis1);
+        // console.log(accountNis1);
         this.getUnconfirmedTransaction(accountNis1.address).then((transactions: Transaction[]) => {
-          console.log('UNCONFIRMED TRANSACTION ----> ', transactions);
-          console.log(transactions[0].toDTO());
+          // console.log('UNCONFIRMED TRANSACTION ----> ', transactions);
+          // console.log(transactions[0].toDTO());
 
-          console.log(transactions[0].getTransactionInfo());
+          // console.log(transactions[0].getTransactionInfo());
           /*const swapTransaction = [];
           transactions.forEach(transaction => {
             const isSigner = transaction.signer.address.plain() === accountNis1.address.plain();
@@ -560,8 +560,8 @@ export class NemProviderService {
               transaction['otherTransaction']['_assets'][0].assetId.namespaceId === 'prx' &&
               transaction['otherTransaction']['_xem']['quantity'] === 1000000
             ) {
-              console.log('SI, YO FIRME ESA TRANSACCIÓN MULTIFIRMA');
-              console.log(transaction);
+              // console.log('SI, YO FIRME ESA TRANSACCIÓN MULTIFIRMA');
+              // console.log(transaction);
               swapTransaction.push({
                 nis1PublicKey: transaction['otherTransaction'].signer.publicKey,
                 nis1Timestamp: this.getTimeStampTimeWindow(transaction),
@@ -577,8 +577,8 @@ export class NemProviderService {
               transaction['_assets'][0].assetId.namespaceId === 'prx'
             ) {
               //['signer']['address']['value']
-              console.log('SI, YO FIRME ESA TRANSACCIÓN SIMPLE');
-              console.log(transaction);
+              // console.log('SI, YO FIRME ESA TRANSACCIÓN SIMPLE');
+              // console.log(transaction);
               swapTransaction.push({
                 nis1PublicKey: transaction.signer.publicKey,
                 nis1Timestamp: this.getTimeStampTimeWindow(transaction),
@@ -588,7 +588,7 @@ export class NemProviderService {
             }
           });
 
-          console.log('swapTransaction', swapTransaction);*
+          // console.log('swapTransaction', swapTransaction);*
         });
       }
     });
