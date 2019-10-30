@@ -134,17 +134,20 @@ export class NemProviderService {
         try {
           // SEARCH INFO OWNED SWAP
           const ownedMosaic = await this.getOwnedMosaics(addressOwnedSwap).pipe(first()).pipe((timeout(environment.timeOutTransactionNis1))).toPromise();
-          //console.log('ownedMosaic', ownedMosaic);
+          console.log('ownedMosaic --->', ownedMosaic);
           const xpxFound = ownedMosaic.find(el => el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx');
-          // console.log('xpxFound', xpxFound);
+          console.log('xpxFound ---->', xpxFound);
           if (xpxFound) {
             const balance = await this.validateBalanceAccounts(xpxFound, addressOwnedSwap);
+            console.log('balance ---->', balance);
             nis1AccountsInfo = this.buildAccountInfoNIS1(publicAccount, accountsMultisigInfo, balance, cosignatoryOf, false, name, xpxFound);
             this.setNis1AccountsFound$(nis1AccountsInfo);
           } else if (cosignatoryOf.length > 0) {
+            console.log('cosignatoryOf zero');
             nis1AccountsInfo = this.buildAccountInfoNIS1(publicAccount, accountsMultisigInfo, null, cosignatoryOf, false, name, null);
             this.setNis1AccountsFound$(nis1AccountsInfo);
           } else {
+            console.log('The account has no balance to swap.');
             this.sharedService.showWarning('', 'The account has no balance to swap.');
             this.setNis1AccountsFound$(null);
           }
@@ -214,13 +217,13 @@ export class NemProviderService {
         // console.log('existMosaic -->', existMosaic);
         if (existMosaic) {
           const unconfirmedFormatter = parseFloat(this.amountFormatter(existMosaic.quantity, xpxFound, 6));
-          // console.log('\n unconfirmedFormatter --->', unconfirmedFormatter);
+          console.log('\n unconfirmedFormatter --->', unconfirmedFormatter);
           const quantityWhitoutFormat = realQuantity.split(',').join('');
-          // console.log('\nquantityWhitoutFormat --->', quantityWhitoutFormat);
+          console.log('\nquantityWhitoutFormat --->', quantityWhitoutFormat);
           const residue = this.transactionService.subtractAmount(parseFloat(quantityWhitoutFormat), unconfirmedFormatter);
-          // console.log('\nresidue --->', residue, '\n');
+          console.log('\nresidue --->', residue, '\n');
           const quantityFormat = this.amountFormatter(parseInt((residue).toString().split('.').join('')), xpxFound, 6);
-          // console.log('quantityFormat --->', quantityFormat);
+          console.log('quantityFormat --->', quantityFormat);
           realQuantity = quantityFormat;
         }
       }

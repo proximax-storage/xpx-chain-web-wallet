@@ -788,6 +788,7 @@ export class TransactionsService {
    */
   subtractAmount(quantityOne: number, quantityTwo: number, limitDecimal = 6): string {
     let residue: string[] = (quantityOne - quantityTwo).toString().replace(/,/g, "").split(".");
+    console.log(residue);
     residue[1] = residue[1].slice(0, 6);
     const missing = limitDecimal - residue[1].length;
     for (let index = 0; index < missing; index++) {
