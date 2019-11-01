@@ -43,7 +43,8 @@ import {
   BlockInfo,
   MosaicAliasTransaction,
   Convert,
-  RawAddress
+  RawAddress,
+  EncryptedMessage,
 } from 'tsjs-xpx-chain-sdk';
 import { BlockchainNetworkType } from 'tsjs-chain-xipfs-sdk';
 import { Observable } from 'rxjs/internal/Observable';
@@ -95,18 +96,22 @@ export class ProximaxProvider {
   * @returns {TransferTransaction}
   * @memberof ProximaxProvider
   */
-  buildTransferTransaction(network: NetworkType, address: Address, message?: string, amount: number = 0): TransferTransaction {
+  buildTransferTransaction(network: NetworkType, address: Address, message?: any, amount: number = 0): TransferTransaction {
     let mosaics: any = [];
     if (amount > 0) {
       mosaics = new Mosaic(new MosaicId(environment.mosaicXpxInfo.id), UInt64.fromUint(Number(amount)))
     } else {
       mosaics = []
     }
+
+    console.warn('buildTransferTransaction', message);
+
+
     return TransferTransaction.create(
       Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
       address,
       mosaics,
-      PlainMessage.create(message),
+      message,
       network
     );
   }

@@ -6,7 +6,7 @@ import {
   AbstractControl
 } from "@angular/forms";
 import { Router } from '@angular/router';
-import { MosaicId, SignedTransaction, UInt64, AccountInfo, HashLockTransaction, Deadline, Mosaic, AggregateTransaction, Account, TransactionHttp, LockFundsTransaction, TransferTransaction, PlainMessage } from "tsjs-xpx-chain-sdk";
+import { MosaicId, SignedTransaction, UInt64, AccountInfo, HashLockTransaction, Deadline, Mosaic, AggregateTransaction, Account, TransactionHttp, LockFundsTransaction, TransferTransaction, PlainMessage, EncryptedMessage } from "tsjs-xpx-chain-sdk";
 import { MosaicService, MosaicsStorage } from "../../../servicesModule/services/mosaic.service";
 import { ProximaxProvider } from "../../../shared/services/proximax.provider";
 import { DataBridgeService } from "../../../shared/services/data-bridge.service";
@@ -89,6 +89,10 @@ export class CreateTransferComponent implements OnInit {
   haveBalance = false;
   mosaicsToSend: any[];
 
+  typeMessage = '1'
+  recipientInfo = null
+  encryptedMsgDisable = false
+
   constructor(
     private dataBridge: DataBridgeService,
     private fb: FormBuilder,
@@ -113,7 +117,7 @@ export class CreateTransferComponent implements OnInit {
     this.subscribeValue();
     this.booksAddress();
     this.getAccountInfo();
-
+    this.typeMessage = '1';
 
     const amount = this.transactionService.getDataPart(this.amountFormatterSimple(this.feeCosignatory), 6);
     const formatterAmount = `<span class="fs-085rem">${amount.part1}</span><span class="fs-07rem">${amount.part2}</span>`;
@@ -264,6 +268,13 @@ export class CreateTransferComponent implements OnInit {
   changeInputType(inputType) {
     let newType = this.sharedService.changeInputType(inputType)
     this.passwordMain = newType;
+  }
+
+  changeMessageType(event) {
+    this.typeMessage = event
+
+    let recipient = this.formTransfer.get("amountXpx").value
+    console.log(event, recipient);
   }
 
   /**
@@ -433,8 +444,6 @@ export class CreateTransferComponent implements OnInit {
       cosignatorie: [null],
       message: ['', [
         Validators.maxLength(this.configurationForm.message.maxLength)
-      ]],
-      typeMessage: ['plain', [
       ]],
       password: [
         '',
@@ -841,15 +850,16 @@ export class CreateTransferComponent implements OnInit {
             // console.log('COSIGNATARIO SELECCIONADO ----> ', this.cosignatorie);*/
             const generationHash = this.dataBridge.blockInfo.generationHash;
             if (this.walletService.decrypt(common, this.cosignatorie)) {
-              console.log(this.formTransfer.get("typeMessage").value);
+              // console.log(this.typeMessage, common);
 
               const params: TransferInterface = {
                 common: common,
                 recipient: (this.formTransfer.get("accountRecipient").value),
-                message: (this.formTransfer.get("message").value === null) ? "" : this.formTransfer.get("message").value,
+                message: this.verifyMessage(this.formTransfer.get("message").value, common['privateKey']),
                 network: this.walletService.currentAccount.network,
                 mosaic: mosaicsToSend
               };
+              console.log('True', params);
 
               const account = Account.createFromPrivateKey(params.common.privateKey, params.network);
               const recipientAddress = this.proximaxProvider.createFromRawAddress(params.recipient);
@@ -867,7 +877,7 @@ export class CreateTransferComponent implements OnInit {
                 Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
                 recipientAddress,
                 allMosaics,
-                PlainMessage.create(params.message),
+                params.message,
                 params.network
               );
 
@@ -891,17 +901,20 @@ export class CreateTransferComponent implements OnInit {
             break;
           case false:
             if (this.walletService.decrypt(common, this.sender)) {
-              console.log(this.formTransfer.get("typeMessage").value);
+              // console.log(this.typeMessage, common);
 
               const params: TransferInterface = {
                 common: common,
                 recipient: (this.formTransfer.get("accountRecipient").value),
-                message: (this.formTransfer.get("message").value === null) ? "" : this.formTransfer.get("message").value,
+                message: this.verifyMessage(this.formTransfer.get("message").value, common['privateKey']),
                 network: this.walletService.currentAccount.network,
                 mosaic: mosaicsToSend
               };
 
+              console.log('False', params);
+
               const transferBuilder = this.transactionService.buildTransferTransaction(params);
+
               this.transactionSigned.push(transferBuilder.signedTransaction);
               this.saveContactFn();
               this.clearForm();
@@ -956,6 +969,9 @@ export class CreateTransferComponent implements OnInit {
     if (event !== undefined && event.value !== '') {
       this.formTransfer.get('accountRecipient').patchValue(event.value);
     }
+
+    this.verifyRecipientInfo(this.formTransfer.get('accountRecipient').value)
+
   }
 
   /**
@@ -1191,6 +1207,64 @@ export class CreateTransferComponent implements OnInit {
     // console.log(mosaics);
 
     return mosaics;
+  }
+
+  verifyMessage(message, privateKey) {
+    let result
+    console.log(privateKey);
+
+    if (message !== null) {
+      switch (this.typeMessage) {
+        case '1':
+          result = PlainMessage.create(message)
+          console.log('Plain Message', result);
+          break;
+
+        case '2':
+          result = PlainMessage.create(message)
+          console.log('Hex Message', result);
+          break;
+
+        case '3':
+          result = EncryptedMessage.create(message, this.recipientInfo.publicAccount, privateKey);
+          console.log('Encrypted Message', result);
+          break;
+      }
+    } else {
+      result = '' //PlainMessage.create('');
+    }
+
+    console.log(result);
+
+
+    return result;
+  }
+
+  async verifyRecipientInfo(recipient) {
+    console.log(recipient);
+    const invalidPublicKey = "0000000000000000000000000000000000000000000000000000000000000000"
+    let address = this.proximaxProvider.createFromRawAddress(recipient)
+
+    try {
+      if ([null].includes(recipient) === false) {
+        let accountInfo = await this.proximaxProvider.getAccountInfo(address).toPromise()
+        if (accountInfo.publicKey === invalidPublicKey) {
+          throw `The receiver's public key is not valid for sending encrypted messages`;
+        }
+        this.recipientInfo = accountInfo
+        this.encryptedMsgDisable = false
+        console.log(this.recipientInfo, this.encryptedMsgDisable);
+
+      }
+    } catch (error) {
+      console.log(error);
+      if (error.statusCode && error.statusCode === 404) {
+        this.encryptedMsgDisable = true
+      } else if ([undefined, null].includes(error.statusCode) && typeof error === 'string') {
+        this.sharedService.showError('', error)
+        this.encryptedMsgDisable = true
+      }
+    }
   }
 
   /**

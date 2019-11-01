@@ -362,7 +362,7 @@
                 <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20"
                   alt="">
                 <span class="fs-08rem">
-                  Unconfirmed/reco Fee:&nbsp;
+                  Unconfirmed/Recommended Fee:&nbsp;
                   <a [innerHTML]="getQuantity(fee)"></a> XPX
                 </span>
               </div>
@@ -396,24 +396,22 @@
           <div class="row">
             <div class="col-12 col-sm-4 fw-600 d-flex justify-content-center justify-content-sm-end">
               <div class="form-check form-check-inline">
-                <input formControlName="typeMessage" checked [value]="plain" type="radio" class="form-check-input"
-                  id="plainMessage" name="typeMessage" mdbInput>
+                <input type="radio" [(ngModel)]="typeMessage" [ngModelOptions]="{standalone: true}" (ngModelChange)="changeMessageType($event)" value="1" class="form-check-input"
+                  id="plainMessage" name="typeMessage" checked>
                 <label class="form-check-label" for="plainMessage">Plain</label>
               </div>
             </div>
 
             <div class="col-12 col-sm-4 fw-600 d-flex justify-content-center justify-content-sm-center">
               <div class="form-check form-check-inline">
-                <input formControlName="typeMessage" [value]="hex" type="radio" class="form-check-input" id="hexMessage"
-                  name="typeMessage" mdbInput>
-                <label class="form-check-label" for="hexMessage">Hexadecimal</label>
+                <input type="radio" [(ngModel)]="typeMessage" [ngModelOptions]="{standalone: true}" (ngModelChange)="changeMessageType($event)" value="2" class="form-check-input" id="hexMessage" name="typeMessage">
+                <label class="form-check-label" for="hexMessage">Hexadecimales</label>
               </div>
             </div>
 
             <div class="col-12 col-sm-4 fw-600 d-flex justify-content-center justify-content-sm-start">
               <div class="form-check form-check-inline">
-                <input formControlName="typeMessage" [value]="encrypted" type="radio" class="form-check-input" id="encrypMessage"
-                  name="typeMessage" mdbInput>
+                <input type="radio" [(ngModel)]="typeMessage" [ngModelOptions]="{standalone: true}" (ngModelChange)="changeMessageType($event)" value="3" class="form-check-input" id="encrypMessage" name="typeMessage" [disabled]="encryptedMsgDisable">
                 <label class="form-check-label" for="encrypMessage">Encrypted</label>
               </div>
             </div>
