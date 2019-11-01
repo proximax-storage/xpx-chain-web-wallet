@@ -158,7 +158,7 @@ export class ViewAllAccountsComponent implements OnInit {
     const accounts = [];
     accounts.push(acc);
     const wallet = {
-      name: acc.name,
+      name: `${this.walletService.currentWallet.name}_${acc.name}`,
       accounts: accounts
     }
 

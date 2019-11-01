@@ -10,6 +10,7 @@ import { TransactionsService } from '../../../../transactions/services/transacti
 import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
 import { Subscription, timer } from 'rxjs';
 import { NodeService } from 'src/app/servicesModule/services/node.service';
+import { NamespacesService } from 'src/app/servicesModule/services/namespaces.service';
 
 @Component({
   selector: 'app-sidebar-main',
@@ -47,7 +48,8 @@ export class SidebarMainComponent implements OnInit {
   walletName = '';
   reset = 0;
   netType;
-  nodeSelected:string;
+  nodeSelected: string;
+  alertNamespaceShowed: boolean = false;
 
 
   constructor(
@@ -58,7 +60,8 @@ export class SidebarMainComponent implements OnInit {
     private dashboardService: DashboardService,
     private transactionService: TransactionsService,
     private walletService: WalletService,
-     private nodeService : NodeService
+    private nodeService: NodeService,
+    private namespaces: NamespacesService,
   ) {
     this.version = environment.version
     this.netType = environment.typeNetwork.value;
@@ -146,6 +149,36 @@ export class SidebarMainComponent implements OnInit {
     }
   }
 
+
+  /**
+   *
+   *
+   * @param {number} block
+   * @memberof SidebarMainComponent
+   */
+  expiredNamespace(block: number) {
+    this.subscription.push(this.namespaces.getNamespaceChanged().subscribe(
+      async namespaceInfo => {
+        if (namespaceInfo && block) {
+          this.alertNamespaceShowed = true;
+          for (let index = 0; index < namespaceInfo.length; index++) {
+            let multiplier = index + 1;
+            const time = 3000 * multiplier;
+            setTimeout(() => {
+              const element = namespaceInfo[index];
+              let endHeight = element.namespaceInfo.endHeight.lower
+              let result = endHeight - block;
+              if (result > 0) {
+                if (result < environment.blockHeightMax.heightMax && this.authService.isLogged) {
+                  this.sharedService.showWarning('', `Namespace ${element.namespaceName.name} is about to expired`)
+                }
+              }
+            }, time);
+          }
+        }
+      }));
+  }
+
   /**
    *
    *
@@ -193,6 +226,9 @@ export class SidebarMainComponent implements OnInit {
       next => {
         // console.log('=== NEW BLOCK === ', next);
         if (next !== null) {
+          if (next !== 1 && !this.alertNamespaceShowed) {
+            this.expiredNamespace(next);
+          }
           this.prorroga = false;
           this.reconnecting = false;
           this.statusNode = true;
@@ -217,7 +253,7 @@ export class SidebarMainComponent implements OnInit {
    * @memberof SidebarMainComponent
    */
   getNodeSeletcd() {
-    this.subscription.push( this.nodeService.nodeObsSelected.subscribe(node =>{
+    this.subscription.push(this.nodeService.nodeObsSelected.subscribe(node => {
       this.nodeSelected = `${environment.protocol}://${node}`;
     }))
   }
@@ -288,6 +324,7 @@ export class SidebarMainComponent implements OnInit {
     this.walletService.setNis1AccountSelected(null);
     this.walletService.setSwapTransactions$([]);
     this.walletService.setNis1AccountsWallet$([]);
+    this.namespaces.setNamespaceChanged(null);
     this.route.navigate([`/${AppConfig.routes.auth}`]);
   }
 

@@ -8,8 +8,8 @@ import { ChronoUnit } from 'js-joda';
 export const environment = {
   production: true,
   itemBooksAddress: 'sw-books-testnet',
-  version: '0.4.3',
-  cacheVersion: '09',
+  version: '0.4.7',
+  cacheVersion: '07',
   nameKeyBlockStorage: `sw-blocks`,
   nameKeyNodeSelected: `sw-selected-node-testnet`,
   nameKeyWalletStorage: `sw-testnet`,
@@ -34,7 +34,7 @@ export const environment = {
     deadline: 1439,
     chronoUnit: ChronoUnit.MINUTES
   },
-  timeOutTransactionNis1: 10000,
+  timeOutTransactionNis1: 20000,
   blockchainConnection: {
     host: 'bctestnet1.brimstone.xpxsirius.io',
     port: 443,
@@ -67,7 +67,7 @@ export const environment = {
     url: 'https://bctestnetswap.xpxsirius.io:7890',
     urlExplorer: 'http://testnet-explorer.nemtool.com/#/s_tx?hash=',
     networkType: NetworkTypes.TEST_NET,
-    burnAddress : 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN',
+    burnAddress: 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN',
     nodes: [
       { protocol: "https", domain: "bctestnetswap.xpxsirius.io", port: 7890 } as ServerConfig
     ],
@@ -77,12 +77,17 @@ export const environment = {
     addressAccountSimple: 'VCWLIYQPQAJSYWMWL5BHUCA3VOWVOXZ3WTNJPTUJ'
   },
   typeNetwork: {
-      value: NetworkType.TEST_NET,
+    value: NetworkType.TEST_NET,
     label: 'PUBLIC TEST'
   },
-  coingecko:{
+  coingecko: {
     url: 'https://api.coingecko.com/api/v3/coins/',
-  }
+  },
+  blockHeightMax: {
+    heightMax: 172800
+  },
+  lockFundDuration: 11520,
+  delayBetweenLockFundABT: 20000
 };
 /*
  * In development mode, to ignore zone related error stack frames such as
