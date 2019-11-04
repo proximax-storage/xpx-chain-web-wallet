@@ -34,6 +34,7 @@ import { AccountDeleteConfirmComponent } from './views/account/account-delete-co
 import { ExportWalletComponent } from './views/wallet/export-wallet/export-wallet.component';
 import { BlockchainComponent } from './views/nodes/blockchain/blockchain.component';
 import { DeleteWalletComponent } from './views/wallet/delete-wallet/delete-wallet.component';
+import { NotificationComponent } from './views/notification/notification.component';
 
 @NgModule({
   declarations: [
@@ -70,7 +71,8 @@ import { DeleteWalletComponent } from './views/wallet/delete-wallet/delete-walle
     ExportWalletComponent,
     BlockchainComponent,
     ExportWalletComponent,
-    DeleteWalletComponent
+    DeleteWalletComponent,
+    NotificationComponent
   ],
   schemas: [ NO_ERRORS_SCHEMA ],
   imports: [

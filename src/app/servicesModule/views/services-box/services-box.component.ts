@@ -136,20 +136,20 @@ export class ServicesBoxComponent implements OnInit {
             '',
             AppConfig.routes.LinkingNamespaceMosaic
           )
-        /*  , extend: this.services.buildStructureService(
-            'EXTEND DURATION',
-            true,
-            '',
-            '',
-            AppConfig.routes.extendMosaics
-          )
-          , renew: this.services.buildStructureService(
-            'RENEW',
-            false,
-            '',
-            '',
-            ''
-          )*/
+          /*  , extend: this.services.buildStructureService(
+              'EXTEND DURATION',
+              true,
+              '',
+              '',
+              AppConfig.routes.extendMosaics
+            )
+            , renew: this.services.buildStructureService(
+              'RENEW',
+              false,
+              '',
+              '',
+              ''
+            )*/
         },
         true
       ),
@@ -309,8 +309,28 @@ export class ServicesBoxComponent implements OnInit {
         ''
       ),
 
-       // Voting
-       this.services.buildStructureService(
+      // Notifications
+      this.services.buildStructureService(
+        'Notifications',
+        true,
+        'Check alerts and information about your accounts',
+        'icon-notifications-full-color-80h-proximax-sirius-wallet.svg',
+        '',
+        {
+          view: this.services.buildStructureService(
+            'Notifications',
+            true,
+            '',
+            '',
+            AppConfig.routes.notification
+          ),
+        },
+        true,
+        ''
+      ),
+
+      // Voting
+      this.services.buildStructureService(
         'Voting',
         true,
         'Create, vote, and view results',

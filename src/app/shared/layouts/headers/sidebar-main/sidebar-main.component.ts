@@ -28,7 +28,7 @@ export class SidebarMainComponent implements OnInit {
   keyObject = Object.keys;
   prorroga = false;
   reconnecting = false;
-  routePartial = `/${AppConfig.routes.partial}`
+  routeNotification = `/${AppConfig.routes.notification}`
   routesExcludedInServices = [
     AppConfig.routes.viewAllAccount,
     AppConfig.routes.auth,
@@ -50,6 +50,8 @@ export class SidebarMainComponent implements OnInit {
   netType;
   nodeSelected: string;
   alertNamespaceShowed: boolean = false;
+  namespaceToExpire: any[] = [];
+  viewNotifications: any;
 
 
   constructor(
@@ -78,6 +80,10 @@ export class SidebarMainComponent implements OnInit {
     this.validate();
     this.subscription.push(this.transactionService.getAggregateBondedTransactions$().subscribe(
       next => this.viewParcial = (next && next.length > 0) ? true : false
+      // {
+        // this.transactionService.viewPartial(next);
+        // this.viewParcial = (next && next.length > 0) ? true : false
+      // }
     ));
   }
 
@@ -155,20 +161,28 @@ export class SidebarMainComponent implements OnInit {
       async namespaceInfo => {
         if (namespaceInfo && block) {
           this.alertNamespaceShowed = true;
+          this.namespaceToExpire = [];
           for (let index = 0; index < namespaceInfo.length; index++) {
-            let multiplier = index + 1;
-            const time = 3000 * multiplier;
-            setTimeout(() => {
-              const element = namespaceInfo[index];
-              let endHeight = element.namespaceInfo.endHeight.lower
-              let result = endHeight - block;
-              if (result !== 0) {
-                if (result < environment.blockHeightMax.heightMax && this.authService.isLogged) {
-                  this.sharedService.showWarning('', `This namespace is about to expire (${element.namespaceName.name})`)
+            const element = namespaceInfo[index];
+            let endHeight = element.namespaceInfo.endHeight.lower
+            let result = endHeight - block;
+            if (result > 0) {
+              if (result < environment.blockHeightMax.heightMax) {
+                const namespaceToExpire = {
+                  namespace: element,
+                  expired: result
                 }
+                this.namespaceToExpire.push(namespaceToExpire)
+                // this.sharedService.showWarning('', `This namespace is about to expire (${element.namespaceName.name})`)
               }
-            }, time);
+            }
           }
+          const viewNotifications = (this.namespaceToExpire && this.namespaceToExpire.length > 0) ? true : false
+          this.transactionService.setViewNotifications$(viewNotifications)
+          this.transactionService.getViewNotifications$().subscribe(next => this.viewNotifications = next)
+          // console.log('this.viewNotifications', this.viewNotifications);
+          
+          this.namespaces.namespaceExpired(this.namespaceToExpire, viewNotifications)
         }
       }));
   }

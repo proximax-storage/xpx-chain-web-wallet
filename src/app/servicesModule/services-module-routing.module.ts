@@ -31,6 +31,7 @@ import { AccountDeleteConfirmComponent } from './views/account/account-delete-co
 import { ExportWalletComponent } from "./views/wallet/export-wallet/export-wallet.component";
 import { BlockchainComponent } from './views/nodes/blockchain/blockchain.component';
 import { DeleteWalletComponent } from "./views/wallet/delete-wallet/delete-wallet.component";
+import { NotificationComponent } from './views/notification/notification.component';
 
 const routes: Routes = [
   {
@@ -372,7 +373,18 @@ const routes: Routes = [
         override: true,
       }
     }
-  }, {
+  }, 
+  {
+    path: AppConfig.routes.notification,
+    component: NotificationComponent,
+    data: {
+      meta: {
+        title: 'notification.title',
+        description: 'notification.text',
+        override: true,
+      }
+    }
+  },{
     path: AppConfig.routes.exportWallet,
     component: ExportWalletComponent,
     data: {

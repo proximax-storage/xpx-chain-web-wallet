@@ -1,0 +1,85 @@
+<div class="container-fluid mt-3rem mb-2rem animated fadeIn">
+    <app-header [params]="paramsHeader"></app-header>
+    <div class="row mt-1rem">
+        <div class="col-11 col-md-10 col-lg-9 mx-auto">
+            <div class="row ">
+                <div class="col-12 col-sm-12 fs-08rem separate-box" *ngIf="viewNamespaces === true">
+                    <div class="row">
+                        <div class="col-12 col-sm-12 fs-08rem separate-box">
+                            <div class="row box-list-account-gray pt-07rem pb-07rem">
+                                <div class="col-2 col-lg-2 d-flex align-items-center justify-content-end">
+                                    <img src="assets/images/img/icon-duration-green-16h-proximax-sirius-wallet.svg"
+                                        width="25">
+                                </div>
+                                <div class="col-8 col-lg-8 text-sm-left w-b-a">
+                                    <span class="fw-bold">Namespace: next to expire</span> <br>
+                                    <span class="fw-bold">Namespace: </span> {{namespacesExpired.length}} <br>
+                                </div>
+                                <div class="col-2 col-lg-2 d-flex align-items-center justify-content-end">
+                                    <img src="assets/images/img/icon-view-transaction-gray.svg" class="cursor-p"
+                                        width="25" title="view" (click)="viewNamespace()">
+                                    &nbsp;
+                                    <img src="assets/images/img/icon-delete-gray.svg" class="cursor-p" width="25"
+                                        title="delete" (click)="deleteNamespace()">
+                                </div>
+
+                            </div>
+
+                            <br>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+<div class="d-flex align-items-center">
+    <div mdbModal #modalNamespace="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+        aria-labelledby="modalNamespace" aria-hidden="true">
+        <div class="modal-dialog modal-md d-flex align-items-center" role="document">
+            <div class="modal-content form-elegant bord-rad-1-5rem">
+                <div class="modal-header text-center box-modal-white b-t-r-r-1-5rem b-t-l-r-1-5rem p-05rem">
+                    <span class="modal-title w-100" id="myModalLabel">
+                        <strong class="title-modal-blue">Namespace next to expire</strong>
+                    </span>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                        (click)="modalNamespace.hide()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <ng-container *ngFor="let names of namespacesExpired">
+                        <div class="row">
+                            <div class="col-12 col-sm-12 fs-08rem separate-box">
+                                <div class="box-list-account-gray pt-07rem pb-07rem" style="display: flex;
+                                flex-wrap: wrap;">
+                                    <div class="col-1 col-lg-1 d-flex align-items-center justify-content-end">
+                                        <img src="assets/images/img/icon-duration-green-16h-proximax-sirius-wallet.svg"
+                                            width="25">
+                                    </div>
+                                    <div class="col-9 col-lg-9 text-sm-left w-b-a">
+                                        <span class="fw-bold">Namespace: </span>
+                                        {{names.namespace.namespaceName.name}} <br>
+                                        <span class="fw-bold">Expires in: </span>
+                                        {{calculateDuration(names.expired)}}
+                                    </div>
+                                    <div class="col-1 col-lg-1 d-flex align-items-center justify-content-end">
+                                        <img src="assets/images/img/icon-extend-duration-gray.svg" class="cursor-p"
+                                            width="25" title="to extend" (click)="extendDuration(names)">
+                                    </div>
+
+                                </div>
+
+                                <br>
+                            </div>
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
