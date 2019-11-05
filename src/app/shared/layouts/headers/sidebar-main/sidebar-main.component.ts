@@ -156,7 +156,13 @@ export class SidebarMainComponent implements OnInit {
   }
 
 
-  expiredNamespace(block: number) {
+  /**
+   *
+   *
+   * @param {number} block
+   * @memberof SidebarMainComponent
+   */
+ expiredNamespace(block: number) {
     this.subscription.push(this.namespaces.getNamespaceChanged().subscribe(
       async namespaceInfo => {
         if (namespaceInfo && block) {
