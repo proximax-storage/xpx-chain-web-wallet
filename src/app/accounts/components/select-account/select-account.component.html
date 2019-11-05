@@ -1,0 +1,82 @@
+<ng-container *ngIf="accounts.length > 1">
+  <div class="row mt-1rem mb-1rem">
+    <div class="col-11 mx-auto">
+      <div class="row">
+        <div class="col-11 color-black cursor-p" (click)="test.toggle()">
+          <span class="fw-600 fs-08rem">{{sender.name}}</span>
+          <span *ngIf="sender.default" class="ml-05rem title-tab-blue pt-03rem">
+            <i>- Current Default</i>
+          </span>
+          <span *ngIf="sender.isMultisign &&
+                      sender.isMultisign.cosignatories &&
+                      sender.isMultisign.cosignatories.length > 0" class="ml-05rem title-tab-blue pt-03rem">
+            <i>- Multisig </i>
+          </span> <br>
+          <span class="fw-300 fs-08rem color-grey">
+            {{sender.address}}
+          </span>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12 mx-auto">
+          <hr class="m-0">
+        </div>
+      </div>
+
+      <div class="row" mdbCollapse [isCollapsed]="true" #test="bs-collapse">
+        <ng-container *ngFor="let account of accounts; let i=index">
+          <div class="col-12">
+            <span [ngClass]="[account.active ? 'nav-link active isActiveBoxAccount' : 'nav-link']"
+              class="cursor-p item-multi-account" (click)="changeAccount(account.value); test.toggle()"
+              [title]="'Address: '+account.value.address">
+              <span class="check-default-account" *ngIf="account.active"></span>&nbsp;{{account.value.name}}
+              <span *ngIf="account.value.default" class="ml-05rem title-tab-blue pt-03rem"
+                [ngClass]="{'isActiveBoxAccount': account.active}">
+                <i>- Current Default </i>
+              </span>
+              <span *ngIf="account.value.isMultisign &&
+                          account.value.isMultisign.cosignatories &&
+                          account.value.isMultisign.cosignatories.length > 0" class="ml-05rem title-tab-blue pt-03rem"
+                [ngClass]="{'isActiveBoxAccount': account.active}">
+                <i>- Multisig </i>
+              </span>
+            </span>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+
+    <!-- COSIGNATORY ACCOUNT -->
+    <ng-container *ngIf="listCosignatorie.length === 1">
+      <div class="col-11 mx-auto d-flex justify-content-start pt-1-5rem pb-05rem lh-1em cursor-p"
+        [title]="'Address: '+cosignatorie.address">
+        <span class="fs-08rem fw-400">Cosignatory: &nbsp;</span>
+        <span class="fs-08rem">{{cosignatorie.name}}</span>
+      </div>
+
+      <!-- INSUFFICIENT BALANCE -->
+      <ng-container *ngIf="listCosignatorie[0].disabled">
+        <div class="col-11 mx-auto d-flex justify-content-start pt-1-5rem pb-05rem lh-1em cursor-p"
+          [title]="'Address: '+cosignatorie.address">
+          <span class="fs-08rem fw-400 color-error-message">Cosignatory: &nbsp;</span>
+          <span class="fs-08rem color-error-message">{{listCosignatorie[0].info}}</span>
+        </div>
+      </ng-container>
+    </ng-container>
+  </div>
+
+  <div class="row">
+    <div class="col-11 mx-auto">
+      <div class="box-grey m-0">
+        <div class="row">
+          <div class="col-12 d-flex align-items-center">
+            <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" alt="">
+            <span class="fw-500">{{mosaicXpx.name | uppercase}} > Balance:&nbsp;</span>
+            <span class="" [innerHTML]="getQuantity()"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>

@@ -383,15 +383,7 @@ export class CreateTransferComponent implements OnInit {
    * @memberof CreateTransferComponent
    */
   booksAddress() {
-    this.listContacts = [];
-    const data = this.listContacts.slice(0);
-    const bookAddress = this.serviceModuleService.getBooksAddress();
-    if (bookAddress !== undefined && bookAddress !== null) {
-      for (let x of bookAddress) {
-        data.push(x);
-      }
-      this.listContacts = data;
-    }
+    this.listContacts = this.serviceModuleService.getBooksAddressBuilder();
   }
 
   /**

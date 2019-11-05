@@ -202,7 +202,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
 
-  
+
   /**
    * Get balance from account
    *

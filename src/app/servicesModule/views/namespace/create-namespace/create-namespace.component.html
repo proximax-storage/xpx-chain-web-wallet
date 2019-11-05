@@ -2,30 +2,22 @@
   <app-header [params]="paramsHeader"></app-header>
 
   <form [formGroup]="namespaceForm" (ngSubmit)="createNamespace()">
-      <div class="row mt-1rem">
-          <div class="col-11 mx-auto" *ngIf="insufficientBalance && !insufficientBalanceDuration">
-            <div class="box-transparent-border-red m-0">
-              <div class="txt-a-center">
-                <img src="assets/images/img/icon-restriction-white.svg" style="filter: invert(50%)" alt="" width="30">
-              </div>
-              <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
-                Insufficient balance.
-              </p>
-            </div>
+    <div class="row mt-1rem">
+      <div class="col-11 mx-auto" *ngIf="insufficientBalance && !insufficientBalanceDuration">
+        <div class="box-transparent-border-red m-0">
+          <div class="txt-a-center">
+            <img src="assets/images/img/icon-restriction-white.svg" style="filter: invert(50%)" alt="" width="30">
           </div>
+          <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
+            Insufficient balance.
+          </p>
         </div>
-    <div class="row">
-      
-      <div class="col-12 col-sm-7 col-md-8 mb-2rem">
+      </div>
 
+      <div class="col-12 col-md-8 mb-2rem">
+        <app-select-account (accountDebitFunds)="accountDebitFunds($event)"></app-select-account>
 
         <div class="row mt-1rem">
-          <!-- <ng-container *ngIf="insufficientBalance && !insufficientBalanceDuration">
-            <div class="col-11 mx-auto d-flex justify-content-end">
-              <span class="fs-08rem fw-600 color-error-message">Insufficient Balance</span>
-            </div>
-          </ng-container> -->
-
           <div class="col-11 mx-auto">
             <div class="md-form form-sm mt-0">
               <img class="form-control-feedback"
@@ -168,7 +160,7 @@
         </div>
       </div>
 
-      <div class="col-11 col-sm-5 col-md-4 description-p-module mt-1-5rem mb-2rem">
+      <div class="col-11 col-md-4 description-p-module mt-1-5rem mb-2rem">
         <span>
           <p>A namespace can have a maximium length of 16 alphanumerical characters while sub-namespaces can have a
             maximium length of 64 alphanumerical characters.</p>

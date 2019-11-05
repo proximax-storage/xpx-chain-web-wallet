@@ -869,9 +869,9 @@ export class TransactionsService {
    */
   validateBuildSelectAccountBalance(balanceAccount: number, feeTransaction: number, rental: number): boolean {
     const totalFee = feeTransaction + rental;
-    // console.log('totalFee', totalFee);
-    // console.log('balanceAccount', balanceAccount);
-    // console.log('balanceAccount >= totalFee', balanceAccount >= totalFee);
+    console.log('totalFee', totalFee);
+    console.log('balanceAccount', balanceAccount);
+    console.log('balanceAccount >= totalFee', balanceAccount >= totalFee);
     return balanceAccount >= totalFee;
   }
 
