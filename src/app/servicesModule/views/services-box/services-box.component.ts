@@ -233,20 +233,28 @@ export class ServicesBoxComponent implements OnInit {
 
       //Transactions Explorer
       this.services.buildStructureService(
-        'Transactions Explorer',
+        'Transactions',
         true,
         'Explore all transactions',
         'icon-transaction-explorer-full-color-80h-proximax-sirius-wallet.svg',
         '',
         {
           explorer: this.services.buildStructureService(
-            'Explore',
+            'Explor',
             true,
             '',
             '',
             AppConfig.routes.explorer
+          ),
+          partial: this.services.buildStructureService(
+            'Partial',
+            true,
+            '',
+            '',
+            AppConfig.routes.partial
           )
         },
+        
         true
       ),
 
