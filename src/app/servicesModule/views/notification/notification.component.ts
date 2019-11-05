@@ -58,7 +58,7 @@ export class NotificationComponent implements OnInit {
     // console.log('extendiendo la duracion', val.namespace.idToHex);
     // console.log(`/${AppConfig.routes.extendNamespace}/${val.namespace.idToHex}`);
     
-    this.route.navigate([`/${AppConfig.routes.extendNamespace}`]);
+    this.route.navigate([`/${AppConfig.routes.extendNamespace}/${val.namespace.idToHex}`]);
   }
 
   deleteNamespace() {

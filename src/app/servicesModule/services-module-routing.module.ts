@@ -218,6 +218,17 @@ const routes: Routes = [
         override: true,
       }
     }
+  },
+  {
+    path: `${AppConfig.routes.extendNamespace}/:id`,
+    component: ExtendDurationNamespaceComponent,
+    data: {
+      meta: {
+        title: 'extendNamespace.title',
+        description: 'extendNamespace.text',
+        override: true,
+      }
+    }
   }
   , {
     path: AppConfig.routes.addressBook,
