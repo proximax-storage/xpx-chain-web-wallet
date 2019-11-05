@@ -577,7 +577,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
             setTimeout(() => {
               this.announceAggregateBonded(signedTransactionBonded)
               signedTransactionHashLock = null;
-            }, 5000);
+            }, environment.delayBetweenLockFundABT);
           } else if (statusTransaction['type'] === 'unconfirmed' && match) {
             // signedTransactionHashLock = null;
           } else if (match) {

@@ -561,7 +561,7 @@ export class EditAccountMultisignComponent implements OnInit {
             setTimeout(() => {
               this.announceAggregateBonded(signedTransactionBonded)
               signedTransactionHashLock = null;
-            }, 5000);
+            }, environment.delayBetweenLockFundABT);
           } else if (statusTransaction['type'] === 'unconfirmed' && match) {
           } else if (match) {
             this.clearForm()
