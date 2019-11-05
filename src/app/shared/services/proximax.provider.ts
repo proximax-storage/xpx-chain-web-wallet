@@ -104,9 +104,6 @@ export class ProximaxProvider {
       mosaics = []
     }
 
-    console.warn('buildTransferTransaction', message);
-
-
     return TransferTransaction.create(
       Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
       address,

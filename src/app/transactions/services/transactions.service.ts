@@ -270,9 +270,6 @@ export class TransactionsService {
       );
     });
 
-    console.log('buildTransferTransaction', params.message);
-
-
     const transferTransaction = TransferTransaction.create(
       Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
       recipientAddress,

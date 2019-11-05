@@ -92,6 +92,7 @@ export class CreateTransferComponent implements OnInit {
   typeMessage = '1'
   recipientInfo = null
   encryptedMsgDisable = false
+  messageMaxLength: number
 
   constructor(
     private dataBridge: DataBridgeService,
@@ -112,12 +113,13 @@ export class CreateTransferComponent implements OnInit {
    */
   ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
-    this.charRest = this.configurationForm.message.maxLength;
+    this.charRest = 0 //this.configurationForm.message.maxLength;
     this.createFormTransfer();
     this.subscribeValue();
     this.booksAddress();
     this.getAccountInfo();
     this.typeMessage = '1';
+    this.messageMaxLength = this.configurationForm.message.maxLength;
 
     const amount = this.transactionService.getDataPart(this.amountFormatterSimple(this.feeCosignatory), 6);
     const formatterAmount = `<span class="fs-085rem">${amount.part1}</span><span class="fs-07rem">${amount.part2}</span>`;
@@ -272,7 +274,14 @@ export class CreateTransferComponent implements OnInit {
 
   changeMessageType(event) {
     this.typeMessage = event
+    console.log(event, this.configurationForm);
 
+
+    if (this.typeMessage === '1' || this.typeMessage === '2') {
+      this.messageMaxLength = this.configurationForm.message.maxLength
+    } else {
+      this.messageMaxLength = this.configurationForm.encryptedMessage.maxLength
+    }
     let recipient = this.formTransfer.get("amountXpx").value
     console.log(event, recipient);
   }
@@ -301,7 +310,7 @@ export class CreateTransferComponent implements OnInit {
         }
       });
 
-      this.charRest = this.configurationForm.message.maxLength;
+      this.charRest = 0 //this.configurationForm.message.maxLength;
       const accountFiltered = this.walletService.filterAccountInfo(this.sender.name);
       if (accountFiltered) {
         await this.buildCurrentAccountInfo(accountFiltered.accountInfo);
@@ -468,16 +477,19 @@ export class CreateTransferComponent implements OnInit {
     if (custom !== undefined) {
       this.cosignatorie = null;
       if (formControl !== undefined) {
+        this.charRest = 0
         this.formTransfer.controls[formControl].get(custom).reset();
         this.fee = '0.037250'
         return;
       }
 
+      this.charRest = 0
       this.formTransfer.get(custom).reset();
       this.fee = '0.037250'
       return;
     }
 
+    this.charRest = 0
     this.formTransfer.reset();
     this.fee = '0.037250'
     return;
@@ -1021,10 +1033,10 @@ export class CreateTransferComponent implements OnInit {
 
     this.subscription.push(this.formTransfer.get('message').valueChanges.subscribe(val => {
       if (val && val !== '') {
-        this.charRest = this.configurationForm.message.maxLength - val.length;
+        this.charRest = val.length//this.configurationForm.message.maxLength - val.length;
         this.calculateFee(val.length);
       } else {
-        this.charRest = this.configurationForm.message.maxLength;
+        this.charRest = 0;
         this.calculateFee(0);
       }
     }));
