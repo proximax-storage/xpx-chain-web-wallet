@@ -6,6 +6,7 @@ import { environment } from '../../../../environments/environment';
 import { SharedService } from 'src/app/shared/services/shared.service';
 import { EncryptedMessage } from 'tsjs-xpx-chain-sdk'
 import { WalletService } from "../../../wallet/services/wallet.service";
+import { TabHeadingDirective } from 'ng-uikit-pro-standard';
 
 @Component({
   selector: 'app-transfer-type',
@@ -29,6 +30,7 @@ export class TransferTypeComponent implements OnInit {
   password = null
   passwordMain = 'password'
   recipientPublicAccount = null
+  decryptedMessage: any;
 
   constructor(
     public transactionService: TransactionsService,
@@ -47,6 +49,8 @@ export class TransferTypeComponent implements OnInit {
     this.typeTransactionHex = `${this.transferTransaction.data['type'].toString(16).toUpperCase()}`;
     this.message = this.transferTransaction.data.message
     console.log(this.message);
+    this.decryptedMessage = null
+    this.panelDecrypt = 0
     if (this.transferTransaction.data.transactionInfo) {
       const height = this.transferTransaction.data.transactionInfo.height.compact();
       // console.log(typeof(height));
@@ -92,11 +96,22 @@ export class TransferTypeComponent implements OnInit {
   }
 
   decryptMessage() {
+    let common = { password: this.password }
     let firstAcount = this.walletService.currentAccount
-    let account = this.walletService.decrypt(this.password, firstAcount)
-    console.log(this.password, account, firstAcount);
+    if (this.walletService.decrypt(common, firstAcount)) {
+      console.clear();
+      console.log('Message', this.message);
+      console.log('PrivateKey', common['privateKey']);
+      console.log('SenderPublicAccount', this.recipientPublicAccount);
+      console.log('PanelDecrypt', this.panelDecrypt);
 
-    //let message = EncryptedMessage.decrypt()
+      this.decryptedMessage = EncryptedMessage.decrypt(this.message, common['privateKey'], this.recipientPublicAccount)
+
+      this.panelDecrypt = 2
+    } else {
+      this.sharedService.showError('','Password Invalid');
+      this.panelDecrypt = 0
+    }
   }
 
   async verifyRecipientInfo() {

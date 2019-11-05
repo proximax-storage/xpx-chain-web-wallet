@@ -124,9 +124,9 @@
 
                   <!-- Show Message -->
                   <div class="col-12 word-break-all" *ngIf="panelDecrypt === 2">
-                    <span class="color-black fw-400 fs-08remc">{{decryptedMessage}}</span>
+                    <span class="color-black fw-400 fs-08remc">{{decryptedMessage.payload}}</span>
                     <div class="txt-a-center">
-                      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="sm" (click)="panelDecrypt = 0">
+                      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="sm">
                         <span class="color-white">Hide Message</span>
                       </button>
                     </div>
