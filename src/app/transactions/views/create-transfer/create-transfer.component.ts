@@ -1221,9 +1221,11 @@ export class CreateTransferComponent implements OnInit {
     return mosaics;
   }
 
-  verifyMessage(message, privateKey) {
+  verifyMessage(message, senderPrivateKey) {
     let result
-    console.log(privateKey);
+    console.log(senderPrivateKey);
+    console.log(this.recipientInfo.publicAccount);
+
 
     if (message !== null) {
       switch (this.typeMessage) {
@@ -1238,7 +1240,7 @@ export class CreateTransferComponent implements OnInit {
           break;
 
         case '3':
-          result = EncryptedMessage.create(message, this.recipientInfo.publicAccount, privateKey);
+          result = EncryptedMessage.create(message, this.recipientInfo.publicAccount, senderPrivateKey);
           console.log('Encrypted Message', result);
           break;
       }

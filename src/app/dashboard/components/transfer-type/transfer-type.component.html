@@ -94,7 +94,7 @@
                   <!-- Init Decript -->
                   <div class="col-12 word-break-all box-grey" *ngIf="panelDecrypt === 0">
                     <div class="txt-a-center">
-                      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="sm" (click)="panelDecrypt = 1">
+                      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax-mini" size="sm" (click)="panelDecrypt = 1">
                         <span class="color-white">Decrypt Message</span>
                       </button>
                     </div>
@@ -113,20 +113,20 @@
                         placeholder="Enter Wallet Password">
                     </div>
                     <div class="txt-a-center">
-                      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="sm" (click)="panelDecrypt = 0">
+                      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax-mini" size="sm" (click)="hideMessage()">
                         <span class="color-white">Cancel</span>
                       </button>
-                      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="sm" (click)="decryptMessage()">
+                      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax-mini" size="sm" (click)="decryptMessage()">
                         <span class="color-white">Decrypt</span>
                       </button>
                     </div>
                   </div>
 
                   <!-- Show Message -->
-                  <div class="col-12 word-break-all" *ngIf="panelDecrypt === 2">
+                  <div class="col-12 word-break-all box-grey" *ngIf="panelDecrypt === 2">
                     <span class="color-black fw-400 fs-08remc">{{decryptedMessage.payload}}</span>
                     <div class="txt-a-center">
-                      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="sm" (click)="hideMessage()">
+                      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax-mini" size="sm" (click)="hideMessage()">
                         <span class="color-white">Hide Message</span>
                       </button>
                     </div>

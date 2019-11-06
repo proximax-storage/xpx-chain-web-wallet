@@ -50,11 +50,9 @@ export class TransferTypeComponent implements OnInit {
     this.searching = true;
     this.typeTransactionHex = `${this.transferTransaction.data['type'].toString(16).toUpperCase()}`;
     this.message = null;
-    this.message = this.transferTransaction.data.message
+    this.message = this.transferTransaction.data.message;
     console.log(this.message);
-    //this.password = null
-    this.decryptedMessage = null
-    this.panelDecrypt = 0
+    this.hideMessage()
     if (this.transferTransaction.data.transactionInfo) {
       const height = this.transferTransaction.data.transactionInfo.height.compact();
       // console.log(typeof(height));
@@ -102,15 +100,16 @@ export class TransferTypeComponent implements OnInit {
   decryptMessage() {
     let common = { password: this.password }
     let firstAcount = this.walletService.currentAccount
+    console.log(this.transferTransaction)
+
     if (this.walletService.decrypt(common, firstAcount)) {
       console.clear();
       console.log('Message', this.message);
       console.log('PrivateKey', common['privateKey']);
-      console.log('SenderPublicAccount', this.senderPublicAccount);
+      console.log('RecipientPublicAccount', this.recipientPublicAccount);
       console.log('PanelDecrypt', this.panelDecrypt);
-      this.decryptedMessage = EncryptedMessage.decrypt(this.message, common['privateKey'], this.senderPublicAccount)
+      this.decryptedMessage = EncryptedMessage.decrypt(this.message, common['privateKey'], this.recipientPublicAccount)
       console.log('DecryptedMessage', this.decryptedMessage);
-
       this.panelDecrypt = 2
     } else {
       this.sharedService.showError('','Password Invalid');
@@ -125,14 +124,14 @@ export class TransferTypeComponent implements OnInit {
   }
 
   async verifyRecipientInfo() {
-    // let address = this.proximaxProvider.createFromRawAddress(this.transferTransaction.recipient['address'])
-    // try {
-    //   let accountInfo = await this.proximaxProvider.getAccountInfo(address).toPromise()
-    //   console.log(accountInfo);
-    //   this.recipientPublicAccount = accountInfo.publicAccount
-    // } catch (e) {
+    let address = this.proximaxProvider.createFromRawAddress(this.transferTransaction.recipient['address'])
+    try {
+      let accountInfo = await this.proximaxProvider.getAccountInfo(address).toPromise()
+      console.log(accountInfo);
+      this.recipientPublicAccount = accountInfo.publicAccount
+    } catch (e) {
 
-    // }
+    }
 
     this.senderPublicAccount = this.transferTransaction.data.signer
   }
