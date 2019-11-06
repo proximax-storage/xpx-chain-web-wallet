@@ -172,6 +172,26 @@ export class TransactionsService {
   /**
    *
    *
+   * @param {number} quantity
+   * @memberof TransactionsService
+   */
+  addMissingZero(quantity: number) {
+    const part = quantity.toString().split('.');
+    const cant = (part.length === 1) ? 6 : 6 - part[1].length;
+    for (let index = 0; index < cant; index++) {
+      if (part.length === 1) {
+        part[0] += 0;
+      } else {
+        part[1] += 0;
+      }
+    }
+
+    return Number(part.join(''));
+  }
+
+  /**
+   *
+   *
    * @param {Address} [address=null]
    * @returns
    * @memberof TransactionsService
