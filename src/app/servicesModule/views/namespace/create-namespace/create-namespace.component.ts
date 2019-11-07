@@ -36,6 +36,8 @@ export class CreateNamespaceComponent implements OnInit {
   blockBtnSend: boolean = false;
   calculateRentalFee: any = '0.000000';
   configurationForm: ConfigurationForm = {};
+  cosignatory: AccountsInterface = null;
+  insufficientBalanceCosignatory: boolean = false;
   duration: any;
   durationByBlock = '5760';
   endHeight: number;
@@ -67,6 +69,7 @@ export class CreateNamespaceComponent implements OnInit {
   startHeight: number;
   statusButtonNamespace: boolean = true;
   showDuration: boolean = true;
+  showSelectAccount = true;
   subscription: Subscription[] = [];
   transactionSigned: SignedTransaction[] = [];
   transactionReady: SignedTransaction[] = [];
@@ -81,7 +84,6 @@ export class CreateNamespaceComponent implements OnInit {
     private proximaxProvider: ProximaxProvider,
     private sharedService: SharedService,
     private router: Router,
-    private dataBridgeService: DataBridgeService,
     private namespaceService: NamespacesService,
     private transactionService: TransactionsService,
     private mosaicServices: MosaicService,
@@ -94,6 +96,7 @@ export class CreateNamespaceComponent implements OnInit {
     this.lengthNamespace = this.configurationForm.namespaceName.maxLength;
     this.createForm();
     this.subscribeValueChange();
+    this.showSelectAccount = true;
     /*
     this.amountAccount = this.walletService.getAmountAccount();
     this.durationByBlock = this.transactionService.calculateDurationforDay(this.namespaceForm.get('duration').value).toString();
@@ -116,12 +119,15 @@ export class CreateNamespaceComponent implements OnInit {
    * @memberof CreateNamespaceComponent
    */
   accountDebitFunds(account: AccountsInterface) {
-    const amountAccount = this.walletService.getAmountAccount(account.address);
-    this.amountAccount = Number(this.transactionService.amountFormatterSimple(amountAccount).replace(/,/g, ''));
-    this.sender = account;
-    this.getNamespaces();
-    this.validateRentalFee();
-    this.validateFee();
+    setTimeout(() => {
+      const amountAccount = this.walletService.getAmountAccount(account.address);
+      this.amountAccount = Number(this.transactionService.amountFormatterSimple(amountAccount).replace(/,/g, ''));
+      this.sender = account;
+      this.getNamespaces();
+      console.log('call 6');
+      this.validateRentalFee();
+      this.validateFee();
+    });
   }
 
   /**
@@ -162,6 +168,7 @@ export class CreateNamespaceComponent implements OnInit {
     });
   }
 
+
   /**
    *
    *
@@ -191,6 +198,7 @@ export class CreateNamespaceComponent implements OnInit {
    * @memberof CreateNamespaceComponent
    */
   disableForm() {
+    console.log('deshabilita....');
     if (this.namespaceForm.enabled) {
       this.namespaceForm.disable();
     }
@@ -290,6 +298,28 @@ export class CreateNamespaceComponent implements OnInit {
    *
    * @memberof CreateNamespaceComponent
    */
+  selectCosignatory(event: { disabledForm: boolean, cosignatory: AccountsInterface }) {
+    console.log('event', event);
+    if(event) {
+      if (event.disabledForm) {
+        this.insufficientBalanceCosignatory = true;
+        this.disableForm();
+      } else {
+        this.insufficientBalanceCosignatory = false;
+        this.cosignatory = event.cosignatory;
+        console.log(this.cosignatory);
+      }
+    }else {
+      this.insufficientBalanceCosignatory = false;
+      this.cosignatory = null;
+    }
+  }
+
+  /**
+   *
+   *
+   * @memberof CreateNamespaceComponent
+   */
   subscribeValueChange() {
     // Duration ValueChange
     this.namespaceForm.get('duration').valueChanges.subscribe(next => {
@@ -297,6 +327,7 @@ export class CreateNamespaceComponent implements OnInit {
         if (next !== null && next !== undefined && String(next) !== '0' && next !== '') {
           if (this.showDuration) {
             this.durationByBlock = this.transactionService.calculateDurationforDay(next).toString();
+            console.log('call 1');
             this.validateRentalFee();
             // console.log(this.durationByBlock);
           }
@@ -305,6 +336,7 @@ export class CreateNamespaceComponent implements OnInit {
         }
       } else {
         this.durationByBlock = this.transactionService.calculateDurationforDay(365).toString();
+        console.log('call 2');
         this.validateRentalFee();
       }
 
@@ -322,6 +354,7 @@ export class CreateNamespaceComponent implements OnInit {
         this.namespaceForm.get('duration').setValidators([Validators.required]);
         this.showDuration = true;
         this.durationByBlock = this.transactionService.calculateDurationforDay(this.namespaceForm.get('duration').value).toString();
+        console.log('call 3');
         this.validateRentalFee();
       } else {
         this.typetransfer = 2;
@@ -332,6 +365,7 @@ export class CreateNamespaceComponent implements OnInit {
         this.showDuration = false;
         this.durationByBlock = '0';
         this.calculateRentalFee = '10.000000';
+        console.log('call 4');
         this.validateRentalFee();
       }
 
@@ -384,6 +418,7 @@ export class CreateNamespaceComponent implements OnInit {
       this.insufficientBalance = true;
       this.insufficientBalanceDuration = false;
     } else {
+      console.log('call 5');
       this.validateRentalFee();
     }
   }
@@ -394,6 +429,7 @@ export class CreateNamespaceComponent implements OnInit {
    * @memberof CreateNamespaceComponent
    */
   validateRentalFee() {
+    console.log('entra.....');
     const amount = this.rentalFee * parseFloat(this.durationByBlock);
     this.calculateRentalFee = this.transactionService.amountFormatterSimple(amount);
     if (this.namespaceForm.get('namespaceRoot').value === '' || this.namespaceForm.get('namespaceRoot').value === '1') {
@@ -408,9 +444,12 @@ export class CreateNamespaceComponent implements OnInit {
           this.insufficientBalance = false;
           this.insufficientBalanceDuration = true;
         } else {
-          this.insufficientBalance = false;
-          this.insufficientBalanceDuration = false;
-          this.enableForm();
+          console.log('JABILITALO...');
+          if (!this.insufficientBalanceCosignatory) {
+            this.insufficientBalance = false;
+            this.insufficientBalanceDuration = false;
+            this.enableForm();
+          }
         }
       }
     } else {
@@ -420,11 +459,11 @@ export class CreateNamespaceComponent implements OnInit {
         this.insufficientBalance = true;
         this.insufficientBalanceDuration = false;
       } else {
-        this.calculateRentalFee = '10,000.000000';
-        this.insufficientBalance = false;
-        this.insufficientBalanceDuration = false;
-        if (this.namespaceForm.disabled) {
-          this.namespaceForm.enable();
+        if (!this.insufficientBalanceCosignatory) {
+          this.calculateRentalFee = '10,000.000000';
+          this.insufficientBalance = false;
+          this.insufficientBalanceDuration = false;
+          this.enableForm();
         }
       }
     }

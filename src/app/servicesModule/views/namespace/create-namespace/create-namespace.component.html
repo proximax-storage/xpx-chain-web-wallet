@@ -3,19 +3,27 @@
 
   <form [formGroup]="namespaceForm" (ngSubmit)="createNamespace()">
     <div class="row mt-1rem">
-      <div class="col-11 mx-auto" *ngIf="insufficientBalance && !insufficientBalanceDuration">
-        <div class="box-transparent-border-red m-0">
-          <div class="txt-a-center">
-            <img src="assets/images/img/icon-restriction-white.svg" style="filter: invert(50%)" alt="" width="30">
-          </div>
-          <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
-            Insufficient balance.
-          </p>
-        </div>
-      </div>
 
       <div class="col-12 col-md-8 mb-2rem">
-        <app-select-account (accountDebitFunds)="accountDebitFunds($event)"></app-select-account>
+
+        <ng-container *ngIf="insufficientBalance && !insufficientBalanceDuration && !insufficientBalanceCosignatory">
+          <div class="col-12 mb-1-5rem mx-auto">
+            <div class="box-transparent-border-red m-0">
+              <div class="txt-a-center">
+                <img src="assets/images/img/icon-restriction-white.svg" style="filter: invert(50%)" alt="" width="30">
+              </div>
+              <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
+                Insufficient balance.
+              </p>
+            </div>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="showSelectAccount">
+          <app-select-account (accountDebitFunds)="accountDebitFunds($event)"
+            (cosignatoryEvent)="selectCosignatory($event)"></app-select-account>
+        </ng-container>
+
 
         <div class="row mt-1rem">
           <div class="col-11 mx-auto">
@@ -142,16 +150,16 @@
         <!-- BUTTONS -->
         <div class="row">
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-            <button [disabled]="insufficientBalance" mdbBtn type="button" rounded="true" mdbWavesEffect
-              class="btn-proximax" size="md" (click)="clearForm()">
+            <button [disabled]="insufficientBalance || insufficientBalanceCosignatory" mdbBtn type="button"
+              rounded="true" mdbWavesEffect class="btn-proximax" size="md" (click)="clearForm()">
               <span class="fs-1-2em color-white">Clear</span>
             </button>
           </div>
 
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
             <button mdbBtn type="submit" rounded="true"
-              [disabled]="namespaceForm.invalid || insufficientBalance || insufficientBalanceDuration" mdbWavesEffect
-              class="btn-proximax" size="md">
+              [disabled]="namespaceForm.invalid || insufficientBalance || insufficientBalanceDuration || insufficientBalanceCosignatory"
+              mdbWavesEffect class="btn-proximax" size="md">
               <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
                 *ngIf="blockBtnSend"></span>
               <span class="fs-1-2em color-white">Create</span>

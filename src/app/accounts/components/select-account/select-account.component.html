@@ -1,5 +1,18 @@
 <ng-container *ngIf="accounts.length > 1">
-  <div class="row mt-1rem mb-1rem">
+  <div class="row mb-1rem">
+    <ng-container *ngIf="listCosignatorie.length === 1 && listCosignatorie[0].disabled">
+      <div class="col-12 mb-1-5rem mx-auto">
+        <div class="box-transparent-border-red m-0">
+          <div class="txt-a-center">
+            <img src="assets/images/img/icon-restriction-white.svg" style="filter: invert(50%)" alt="" width="30">
+          </div>
+          <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
+            Cosignatory insufficient balance.
+          </p>
+        </div>
+      </div>
+    </ng-container>
+
     <div class="col-11 mx-auto">
       <div class="row">
         <div class="col-11 color-black cursor-p" (click)="test.toggle()">
@@ -50,19 +63,19 @@
     <!-- COSIGNATORY ACCOUNT -->
     <ng-container *ngIf="listCosignatorie.length === 1">
       <div class="col-11 mx-auto d-flex justify-content-start pt-1-5rem pb-05rem lh-1em cursor-p"
-        [title]="'Address: '+cosignatorie.address">
+        [title]="'Address: '+cosignatory.address">
         <span class="fs-08rem fw-400">Cosignatory: &nbsp;</span>
-        <span class="fs-08rem">{{cosignatorie.name}}</span>
+        <span class="fs-08rem">{{cosignatory.name}}</span>
       </div>
 
       <!-- INSUFFICIENT BALANCE -->
-      <ng-container *ngIf="listCosignatorie[0].disabled">
-        <div class="col-11 mx-auto d-flex justify-content-start pt-1-5rem pb-05rem lh-1em cursor-p"
-          [title]="'Address: '+cosignatorie.address">
+      <!-- <ng-container *ngIf="listCosignatorie[0].disabled">
+        <div class="col-11 mx-auto d-flex justify-content-start pb-05rem lh-1em cursor-p"
+          [title]="'Address: '+cosignatory.address">
           <span class="fs-08rem fw-400 color-error-message">Cosignatory: &nbsp;</span>
           <span class="fs-08rem color-error-message">{{listCosignatorie[0].info}}</span>
         </div>
-      </ng-container>
+      </ng-container> -->
     </ng-container>
   </div>
 

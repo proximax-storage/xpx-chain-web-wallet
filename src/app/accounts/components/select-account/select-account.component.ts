@@ -13,9 +13,10 @@ import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 export class SelectAccountComponent implements OnInit {
 
   @Output() accountDebitFunds = new EventEmitter();
+  @Output() cosignatoryEvent = new EventEmitter();
   accounts: any = [];
   balanceXpx: string = '0.000000';
-  cosignatorie: any = null;
+  cosignatory: AccountsInterface = null;
   feeCosignatory: any = 10044500;
   listCosignatorie: any = [];
   mosaicXpx = null;
@@ -53,6 +54,7 @@ export class SelectAccountComponent implements OnInit {
     });
   }
 
+
   /**
    *
    *
@@ -61,7 +63,6 @@ export class SelectAccountComponent implements OnInit {
    */
   changeAccount(sender: AccountsInterface) {
     this.sender = sender;
-    this.findCosignatories();
     const xpxBalance = this.walletService.getAmountAccount(this.sender.address);
     this.balanceXpx = this.transactionService.amountFormatterSimple(xpxBalance);
     this.accountDebitFunds.emit(sender);
@@ -72,6 +73,7 @@ export class SelectAccountComponent implements OnInit {
         element.active = false;
       }
     });
+    this.findCosignatories();
   }
 
   /**
@@ -80,7 +82,7 @@ export class SelectAccountComponent implements OnInit {
    * @memberof SelectAccountComponent
    */
   findCosignatories() {
-    this.cosignatorie = null;
+    this.cosignatory = null;
     this.listCosignatorie = [];
     if (this.sender.isMultisign && this.sender.isMultisign.cosignatories && this.sender.isMultisign.cosignatories.length > 0) {
       if (this.sender.isMultisign.cosignatories.length === 1) {
@@ -90,7 +92,7 @@ export class SelectAccountComponent implements OnInit {
           console.log('EXISTE COSIGNATORY ACCOUNT ', cosignatorieAccount);
           const accountFiltered: AccountsInfoInterface = this.walletService.filterAccountInfo(cosignatorieAccount.name);
           const infValidate = this.transactionService.validateBalanceCosignatorie(accountFiltered, Number(this.feeCosignatory)).infValidate;
-          this.cosignatorie = cosignatorieAccount;
+          this.cosignatory = cosignatorieAccount;
           this.listCosignatorie = [{
             label: cosignatorieAccount.name,
             value: cosignatorieAccount,
@@ -98,9 +100,18 @@ export class SelectAccountComponent implements OnInit {
             disabled: infValidate[0].disabled,
             info: infValidate[0].info
           }];
+
+          this.cosignatoryEvent.emit({
+            disabledForm: true,
+            cosignatory: null
+          });
         } else {
           // this.disabledAllField = true;
           // this.formTransfer.disable();
+          this.cosignatoryEvent.emit({
+            disabledForm: true,
+            cosignatory: this.cosignatory
+          });
         }
       } else {
         const listCosignatorie = [];
@@ -124,13 +135,23 @@ export class SelectAccountComponent implements OnInit {
           this.listCosignatorie = listCosignatorie;
           if (listCosignatorie.length === 1) {
             console.log(listCosignatorie[0].value);
-            this.cosignatorie = listCosignatorie[0].value; // emit event cosignatory
+            this.cosignatory = listCosignatorie[0].value;
+            this.cosignatoryEvent.emit({
+              disabledForm: listCosignatorie[0].disabled,
+              cosignatory: this.cosignatory
+            });
           }
         } else {
           // this.disabledAllField = true;
           // this.formTransfer.disable();
+          this.cosignatoryEvent.emit({
+            disabledForm: true,
+            cosignatory: null
+          });
         }
       }
+    }else {
+      this.cosignatoryEvent.emit(null);
     }
   }
 
