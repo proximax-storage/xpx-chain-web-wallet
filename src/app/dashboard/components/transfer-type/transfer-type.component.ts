@@ -112,12 +112,18 @@ export class TransferTypeComponent implements OnInit {
       console.log('PanelDecrypt', this.panelDecrypt);
       console.log(firstAccount.address === this.recipientPublicAccount.address.address);
 
-      if (firstAccount.address === this.recipientPublicAccount.address.address) {
+      let recipientMsg = EncryptedMessage.decrypt(this.message, common['privateKey'], this.senderPublicAccount)
+      let senderMsg = EncryptedMessage.decrypt(this.message, common['privateKey'], this.recipientPublicAccount)
+
+      console.log('recipient', recipientMsg);
+      console.log('sender', senderMsg);
+
+      if (recipientMsg.payload !== '') {
         console.log(`/// RECIPIENT ///`)
-        this.decryptedMessage = EncryptedMessage.decrypt(this.message, common['privateKey'], this.senderPublicAccount)
-      } else {
+        this.decryptedMessage = recipientMsg
+      } else if (senderMsg.payload !== '') {
         console.log(`/// SENDER ///`)
-        this.decryptedMessage = EncryptedMessage.decrypt(this.message, common['privateKey'], this.recipientPublicAccount)
+        this.decryptedMessage = senderMsg
       }
 
 
