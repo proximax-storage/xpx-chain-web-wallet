@@ -21,7 +21,7 @@
         </ng-container>
 
         <ng-container *ngIf="showSelectAccount">
-          <app-select-account (accountDebitFunds)="accountDebitFunds($event)"
+          <app-select-account (accountDebitFunds)="selectAccountDebitFunds($event)"
             (cosignatoryEvent)="selectCosignatory($event)"></app-select-account>
         </ng-container>
 
@@ -159,7 +159,7 @@
 
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
             <button mdbBtn type="submit" rounded="true"
-              [disabled]="namespaceForm.invalid || insufficientBalance || insufficientBalanceDuration || insufficientBalanceCosignatory"
+              [disabled]="namespaceForm.invalid || insufficientBalance || insufficientBalanceDuration || insufficientBalanceCosignatory || (typeTx === 2 && !cosignatory)"
               mdbWavesEffect class="btn-proximax" size="md">
               <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
                 *ngIf="blockBtnSend"></span>

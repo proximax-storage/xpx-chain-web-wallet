@@ -20,6 +20,7 @@ export class SelectAccountComponent implements OnInit {
   feeCosignatory: any = 10044500;
   listCosignatorie: any = [];
   mosaicXpx = null;
+  msgLockfungCosignatorie: string;
   sender: AccountsInterface = null;
 
 
@@ -153,6 +154,21 @@ export class SelectAccountComponent implements OnInit {
     }else {
       this.cosignatoryEvent.emit(null);
     }
+  }
+
+
+
+  /**
+   *
+   *
+   * @param {*} event
+   * @memberof SelectAccountComponent
+   */
+  selectCosignatory(event: any) {
+    this.cosignatoryEvent.emit({
+      disabledForm: event.disabled,
+      cosignatory: event.value
+    });
   }
 
   /**

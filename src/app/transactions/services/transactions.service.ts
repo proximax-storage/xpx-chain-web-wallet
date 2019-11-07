@@ -895,6 +895,21 @@ export class TransactionsService {
     return balanceAccount >= totalFee;
   }
 
+
+  /**
+   *
+   *
+   * @param {AccountsInterface} account
+   * @memberof TransactionsService
+   */
+  validateIsMultisigAccount(account: AccountsInterface){
+    if (account.isMultisign && account.isMultisign.cosignatories && account.isMultisign.cosignatories.length > 0) {
+      return true;
+    }
+
+    return false;
+  }
+
   /**
    *
    * Validate balance cosignatory
