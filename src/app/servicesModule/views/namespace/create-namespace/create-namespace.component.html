@@ -5,16 +5,17 @@
     <div class="row mt-1rem">
 
       <div class="col-12 col-md-8 mb-2rem">
-
         <ng-container *ngIf="insufficientBalance && !insufficientBalanceDuration && !insufficientBalanceCosignatory">
-          <div class="col-12 mb-1-5rem mx-auto">
-            <div class="box-transparent-border-red m-0">
-              <div class="txt-a-center">
-                <img src="assets/images/img/icon-restriction-white.svg" style="filter: invert(50%)" alt="" width="30">
+          <div class="row">
+            <div class="col-11 mb-1-5rem mx-auto">
+              <div class="box-transparent-border-red m-0">
+                <div class="txt-a-center">
+                  <img src="assets/images/img/icon-restriction-white.svg" style="filter: invert(50%)" alt="" width="30">
+                </div>
+                <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
+                  Insufficient balance.
+                </p>
               </div>
-              <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
-                Insufficient balance.
-              </p>
             </div>
           </div>
         </ng-container>
@@ -168,7 +169,7 @@
         </div>
       </div>
 
-      <div class="col-11 col-md-4 description-p-module mt-1-5rem mb-2rem">
+      <div class="col-11 col-md-4 description-p-module mb-2rem">
         <span>
           <p>A namespace can have a maximium length of 16 alphanumerical characters while sub-namespaces can have a
             maximium length of 64 alphanumerical characters.</p>
