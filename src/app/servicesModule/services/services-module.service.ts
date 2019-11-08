@@ -184,6 +184,25 @@ export class ServicesModuleService {
   getBooksAddress() {
     return JSON.parse(localStorage.getItem(this.itemBook));
   }
+
+  /**
+   *
+   *
+   * @memberof ServicesModuleService
+   */
+  getBooksAddressBuilder() {
+    let listContacts = [];
+    const data = listContacts.slice(0);
+    const bookAddress = this.getBooksAddress();
+    if (bookAddress !== undefined && bookAddress !== null) {
+      for (let x of bookAddress) {
+        data.push(x);
+      }
+      listContacts = data;
+    }
+
+    return listContacts;
+  }
 }
 
 

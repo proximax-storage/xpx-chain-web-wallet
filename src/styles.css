@@ -1019,12 +1019,34 @@ html, body {
 
 /**************************** THEME *****************************/
 
+.item-multi-account {
+  border-top: 1px solid rgba(240, 240, 240, 240);
+  background: #f9f9f9 !important;
+  padding-left: 1rem !important;
+}
+
+
+.isActiveBoxAccount {
+  background: #306eb5 !important;
+  color: white !important;
+  font-weight: 700;
+  font-size: .8rem !important;
+}
+
+
 .icono {
   width: 25px;
   padding-right: 4px;
   display: inline-block;
   line-height: 18px;
 }
+/*
+.icono {
+  width: 35px;
+  padding-right: 10px;
+  display: inline-block;
+  line-height: 18px;
+}*/
 
 .box-list-account-gray, .box-list-account {
   color: white;
