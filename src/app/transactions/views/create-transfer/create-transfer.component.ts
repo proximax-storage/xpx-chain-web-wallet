@@ -1244,7 +1244,7 @@ export class CreateTransferComponent implements OnInit {
 
   verifyMessage(message, senderPrivateKey) {
     let result
-    if (message !== null) {
+    if (message !== null && message !== '') {
       switch (this.typeMessage) {
         case '1':
           result = PlainMessage.create(message)
@@ -1262,7 +1262,7 @@ export class CreateTransferComponent implements OnInit {
           break;
       }
     } else {
-      result = '' //PlainMessage.create('');
+      result = PlainMessage.create('');
     }
 
     console.log(result);

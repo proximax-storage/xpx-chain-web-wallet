@@ -153,7 +153,7 @@ export class TransferTypeComponent implements OnInit {
     let address = this.proximaxProvider.createFromRawAddress(this.transferTransaction.recipient['address'])
     try {
       let accountInfo = await this.proximaxProvider.getAccountInfo(address).toPromise()
-      console.log(accountInfo);
+      console.log('verifyAccountRecipient', accountInfo);
       this.recipientPublicAccount = accountInfo.publicAccount
     } catch (e) {
 

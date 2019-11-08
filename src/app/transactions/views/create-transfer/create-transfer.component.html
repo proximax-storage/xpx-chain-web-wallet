@@ -348,74 +348,6 @@
       </div>
     </div>
 
-    <!-- FEE + LOCKFUND -->
-    <ng-container
-      *ngIf="sender?.isMultisign && sender?.isMultisign.cosignatories && sender?.isMultisign.cosignatories.length > 0; else showOnlyFee">
-      <div class="row">
-        <div class="col-11 col-md-10 col-lg-8 mx-auto">
-          <div class="row">
-            <div class="col-12 mx-auto">
-              <div class="box-grey d-flex justify-content-center pt-1-3rem pb-1-3rem">
-                <div class="row">
-                  <div class="col-12 text-center">
-                    <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
-                      width="20" alt="">
-                    <!-- <span class="fs-07rem">Unconfirmed/Recommended Fee: {{fee}} XPX <br></span> -->
-                    <span class="fs-08rem">
-                      Unconfirmed/Recommended Fee:&nbsp;
-                      <a [innerHTML]="getQuantity(fee)"></a> XPX
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-12 mx-auto">
-              <div class="box-grey pt-08rem pb-08rem d-flex justify-content-center">
-                <div class="row">
-                  <div class="col-12 d-flex align-items-center">
-                    <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
-                      width="20" alt="">
-
-                    <span class="fs-08rem">
-                      LockFund:&nbsp;
-                      <a [innerHTML]="getQuantity('10.000000')"></a> XPX <br>
-
-                      Unconfirmed/Recommended Fee:&nbsp;
-                      <a [innerHTML]="getQuantity('0.044500')"></a> XPX
-                    </span>
-                    <!-- <span class="fs-07rem">LockFund: 10.000000 XPX <br> Unconfirmed/Recommended Fee: 0.044500 XPX</span>  -->
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </ng-container>
-
-
-    <!-- ONLY FEE -->
-    <ng-template #showOnlyFee>
-      <!-- FEE -->
-      <div class="row">
-        <div class="col-11 col-md-10 col-lg-8 mx-auto">
-          <div class="box-grey d-flex justify-content-center pt-09rem pb-09rem">
-            <div class="row">
-              <div class="col-12 text-center">
-                <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20"
-                  alt="">
-                <span class="fs-08rem">
-                  Unconfirmed/Recommended Fee:&nbsp;
-                  <a [innerHTML]="getQuantity(fee)"></a> XPX
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </ng-template>
-
     <!-- MESSAGE SELECTOR -->
     <div class="row">
       <div class="col-11 col-md-10 col-lg-8 mx-auto">
@@ -469,6 +401,73 @@
         </div>
       </div>
     </div>
+
+    <!-- FEE + LOCKFUND -->
+    <ng-container
+      *ngIf="sender?.isMultisign && sender?.isMultisign.cosignatories && sender?.isMultisign.cosignatories.length > 0; else showOnlyFee">
+      <div class="row">
+        <div class="col-11 col-md-10 col-lg-8 mx-auto">
+          <div class="row">
+            <div class="col-12 mx-auto">
+              <div class="box-grey d-flex justify-content-center pt-1-3rem pb-1-3rem">
+                <div class="row">
+                  <div class="col-12 text-center">
+                    <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20"
+                      alt="">
+                    <!-- <span class="fs-07rem">Unconfirmed/Recommended Fee: {{fee}} XPX <br></span> -->
+                    <span class="fs-08rem">
+                      Unconfirmed/Recommended Fee:&nbsp;
+                      <a [innerHTML]="getQuantity(fee)"></a> XPX
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12 mx-auto">
+              <div class="box-grey pt-08rem pb-08rem d-flex justify-content-center">
+                <div class="row">
+                  <div class="col-12 d-flex align-items-center">
+                    <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20"
+                      alt="">
+
+                    <span class="fs-08rem">
+                      LockFund:&nbsp;
+                      <a [innerHTML]="getQuantity('10.000000')"></a> XPX <br>
+
+                      Unconfirmed/Recommended Fee:&nbsp;
+                      <a [innerHTML]="getQuantity('0.044500')"></a> XPX
+                    </span>
+                    <!-- <span class="fs-07rem">LockFund: 10.000000 XPX <br> Unconfirmed/Recommended Fee: 0.044500 XPX</span>  -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- ONLY FEE -->
+    <ng-template #showOnlyFee>
+      <!-- FEE -->
+      <div class="row">
+        <div class="col-11 col-md-10 col-lg-8 mx-auto">
+          <div class="box-grey d-flex justify-content-center pt-09rem pb-09rem">
+            <div class="row">
+              <div class="col-12 text-center">
+                <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20"
+                  alt="">
+                <span class="fs-08rem">
+                  Unconfirmed/Recommended Fee:&nbsp;
+                  <a [innerHTML]="getQuantity(fee)"></a> XPX
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
 
     <!-- password -->
     <div class="row">
