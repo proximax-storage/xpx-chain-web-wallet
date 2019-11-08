@@ -91,7 +91,7 @@ export class CreateTransferComponent implements OnInit {
 
   typeMessage = '1'
   recipientInfo = null
-  encryptedMsgDisable = false
+  encryptedMsgDisable = true
   messageMaxLength: number
 
   constructor(
@@ -1244,10 +1244,6 @@ export class CreateTransferComponent implements OnInit {
 
   verifyMessage(message, senderPrivateKey) {
     let result
-    console.log(senderPrivateKey);
-    console.log(this.recipientInfo.publicAccount);
-
-
     if (message !== null) {
       switch (this.typeMessage) {
         case '1':
@@ -1278,7 +1274,22 @@ export class CreateTransferComponent implements OnInit {
   async verifyRecipientInfo(recipient) {
     console.log(recipient);
     const invalidPublicKey = "0000000000000000000000000000000000000000000000000000000000000000"
-    let address = this.proximaxProvider.createFromRawAddress(recipient)
+    let net = environment.typeNetwork.value
+    let address;
+
+    if ([undefined, null].includes(recipient) === true) {
+      console.log('string');
+      recipient = (this.formTransfer.get('accountRecipient').value.includes('-')) ?
+      this.formTransfer.get('accountRecipient').value.split('-').join('') :
+      this.formTransfer.get('accountRecipient').value
+      console.log(recipient);
+      address = this.proximaxProvider.createFromRawAddress(this.formTransfer.get('accountRecipient').value)
+    } else {
+      console.log(this.formTransfer.get('accountRecipient').value);
+
+      console.log('object');
+      address = this.proximaxProvider.createFromRawAddress(recipient)
+    }
 
     try {
       if ([null].includes(recipient) === false) {
