@@ -95,15 +95,16 @@ export class TransferTypeBondedComponent implements OnInit {
 
   async verifyRecipientInfo() {
     let address = this.proximaxProvider.createFromRawAddress(this.transactionBuilder.recipient['address'])
+    this.senderPublicAccount = this.transactionBuilder.sender
     try {
       let accountInfo = await this.proximaxProvider.getAccountInfo(address).toPromise()
+      console.log('ALERTA');
+
       console.log(accountInfo);
       this.recipientPublicAccount = accountInfo.publicAccount
     } catch (e) {
-
+      console.log(e);
     }
-
-    this.senderPublicAccount = this.transactionBuilder.data.signer
   }
 
 }
