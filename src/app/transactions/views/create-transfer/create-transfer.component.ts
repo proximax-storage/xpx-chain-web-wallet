@@ -1039,6 +1039,27 @@ export class CreateTransferComponent implements OnInit {
         this.charRest = 0;
         this.calculateFee(0);
       }
+
+
+      if (val && val !== null) {
+        if (this.typeMessage === '1') {
+
+        } else if (this.typeMessage === '2') {
+          let REGEX = /^[a-fA-F0-9]*$/
+          let subREGEX = /[^a-fA-F0-9]*$/
+          if (val.search(REGEX) !== 0) {
+            let subStr = val.replace(subREGEX, '')
+            this.formTransfer.get('message').setValue(subStr)
+          }
+        } else if (this.typeMessage === '3') {
+          let REGEX = /[^a-zA-Z0-9 ]\s*/
+          if (val.search(REGEX) > -1) {
+            let subStr = val.replace(REGEX, '')
+            this.formTransfer.get('message').setValue(subStr)
+
+          }
+        }
+      }
     }));
 
     this.formTransfer.get('amountXpx').valueChanges.subscribe(value => {

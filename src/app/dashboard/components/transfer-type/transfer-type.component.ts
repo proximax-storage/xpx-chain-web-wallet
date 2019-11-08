@@ -115,16 +115,24 @@ export class TransferTypeComponent implements OnInit {
       let recipientMsg = EncryptedMessage.decrypt(this.message, common['privateKey'], this.senderPublicAccount)
       let senderMsg = EncryptedMessage.decrypt(this.message, common['privateKey'], this.recipientPublicAccount)
 
+      if (firstAccount.address === this.recipientPublicAccount.address.address) {
+        recipientMsg = EncryptedMessage.decrypt(this.message, common['privateKey'], this.senderPublicAccount)
+        this.decryptedMessage = recipientMsg
+      } else {
+        senderMsg = EncryptedMessage.decrypt(this.message, common['privateKey'], this.recipientPublicAccount)
+        this.decryptedMessage = senderMsg
+      }
+
       console.log('recipient', recipientMsg);
       console.log('sender', senderMsg);
 
-      if (recipientMsg.payload !== '') {
-        console.log(`/// RECIPIENT ///`)
-        this.decryptedMessage = recipientMsg
-      } else if (senderMsg.payload !== '') {
-        console.log(`/// SENDER ///`)
-        this.decryptedMessage = senderMsg
-      }
+      // if (recipientMsg.payload && recipientMsg.payload !== '') {
+      //   console.log(`/// RECIPIENT ///`)
+      //   this.decryptedMessage = recipientMsg
+      // } else if (senderMsg.payload && senderMsg.payload !== '') {
+      //   console.log(`/// SENDER ///`)
+      //   this.decryptedMessage = senderMsg
+      // }
 
 
       console.log('DecryptedMessage', this.decryptedMessage);
