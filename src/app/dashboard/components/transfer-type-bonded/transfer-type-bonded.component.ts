@@ -70,11 +70,21 @@ export class TransferTypeBondedComponent implements OnInit {
       console.log('recipient', recipientMsg);
       console.log('sender', senderMsg);
 
-      if (recipientMsg.payload && recipientMsg.payload !== '') {
-        console.log(`/// RECIPIENT ///`)
+      // if (recipientMsg.payload && recipientMsg.payload !== '') {
+      //   console.log(`/// RECIPIENT ///`)
+      //   this.decryptedMessage = recipientMsg
+      // } else if (senderMsg.payload && senderMsg.payload !== '') {
+      //   console.log(`/// SENDER ///`)
+      //   this.decryptedMessage = senderMsg
+      // }
+
+      console.log(firstAccount.address === this.recipientPublicAccount.address.address)
+
+      if (firstAccount.address === this.recipientPublicAccount.address.address) {
+        recipientMsg = EncryptedMessage.decrypt(this.message, common['privateKey'], this.senderPublicAccount)
         this.decryptedMessage = recipientMsg
-      } else if (senderMsg.payload && senderMsg.payload !== '') {
-        console.log(`/// SENDER ///`)
+      } else {
+        senderMsg = EncryptedMessage.decrypt(this.message, common['privateKey'], this.recipientPublicAccount)
         this.decryptedMessage = senderMsg
       }
 
