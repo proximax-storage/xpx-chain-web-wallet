@@ -19,7 +19,8 @@ import {
   AggregateTransaction,
   SignedTransaction,
   HashLockTransaction,
-  LockFundsTransaction
+  LockFundsTransaction,
+  InnerTransaction
 } from "tsjs-xpx-chain-sdk";
 import { ProximaxProvider } from "../../shared/services/proximax.provider";
 import { NodeService } from "../../servicesModule/services/node.service";
@@ -319,27 +320,36 @@ export class TransactionsService {
    *
    * @param signedTransaction
    */
-  buildHashLockTransaction(signedTransaction: SignedTransaction): LockFundsTransaction {
-    return HashLockTransaction.create(
+  buildHashLockTransaction(signedTransaction: SignedTransaction, signer: Account, generationHash: string): SignedTransaction {
+    const hashLockTransaction = HashLockTransaction.create(
       Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
       new Mosaic(new MosaicId(environment.mosaicXpxInfo.id), UInt64.fromUint(Number(10000000))),
       UInt64.fromUint(480),
       signedTransaction,
       this.walletService.currentAccount.network
     );
+
+    return signer.sign(hashLockTransaction, generationHash);
   }
 
   /**
    *
-   * @param sender
+   * @param signer
    * @param transaction
    */
-  buildAggregateTransaction(sender: PublicAccount, transaction: Transaction): AggregateTransaction {
-    return AggregateTransaction.createBonded(
+  buildAggregateTransaction(cosignatoryAccount: Account, arrayTx: {tx: Transaction, signer: PublicAccount}[], generationHash: string): SignedTransaction {
+    const innerTxn = [];
+    arrayTx.forEach(element => {
+      innerTxn.push(element.tx.toAggregate(element.signer));
+    });
+
+    const bondedCreated = AggregateTransaction.createBonded(
       Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
-      [transaction.toAggregate(sender)],
+      innerTxn,
       this.walletService.currentAccount.network
     );
+
+    return cosignatoryAccount.sign(bondedCreated, generationHash);
   }
 
   /**
@@ -379,6 +389,7 @@ export class TransactionsService {
   calculateDurationforDay(duration: number) {
     return duration * 5760;
   }
+
 
   /**
    *
@@ -902,7 +913,7 @@ export class TransactionsService {
    * @param {AccountsInterface} account
    * @memberof TransactionsService
    */
-  validateIsMultisigAccount(account: AccountsInterface){
+  validateIsMultisigAccount(account: AccountsInterface) {
     if (account.isMultisign && account.isMultisign.cosignatories && account.isMultisign.cosignatories.length > 0) {
       return true;
     }
