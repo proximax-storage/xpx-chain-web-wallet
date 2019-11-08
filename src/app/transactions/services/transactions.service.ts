@@ -324,7 +324,7 @@ export class TransactionsService {
     const hashLockTransaction = HashLockTransaction.create(
       Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
       new Mosaic(new MosaicId(environment.mosaicXpxInfo.id), UInt64.fromUint(Number(10000000))),
-      UInt64.fromUint(480),
+      UInt64.fromUint(environment.lockFundDuration),
       signedTransaction,
       this.walletService.currentAccount.network
     );
@@ -818,9 +818,13 @@ export class TransactionsService {
    * @memberof TransactionsService
    */
   subtractAmount(quantityOne: number, quantityTwo: number, limitDecimal = 6): string {
+    //console.log('quantityOne', quantityOne);
+    //console.log('quantityTwo', quantityTwo);
     let residue: string[] = (quantityOne - quantityTwo).toString().replace(/,/g, "").split(".");
-    residue[1] = residue[1].slice(0, 6);
-    const missing = limitDecimal - residue[1].length;
+    //console.log('residue', residue);
+    //console.log('residue.length', residue.length);
+    let missing = (residue.length > 1) ? limitDecimal - residue[1].length : 6;
+    residue[1] = (residue.length > 1) ? residue[1].slice(0, 6) : '';
     for (let index = 0; index < missing; index++) {
       residue[1] += 0;
     }
