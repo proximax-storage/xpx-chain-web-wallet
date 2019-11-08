@@ -374,7 +374,6 @@ export class CreateTransferComponent implements OnInit {
       err => {
         this.sharedService.showError('', err);
       });
-
   }
 
   /**
@@ -383,15 +382,7 @@ export class CreateTransferComponent implements OnInit {
    * @memberof CreateTransferComponent
    */
   booksAddress() {
-    this.listContacts = [];
-    const data = this.listContacts.slice(0);
-    const bookAddress = this.serviceModuleService.getBooksAddress();
-    if (bookAddress !== undefined && bookAddress !== null) {
-      for (let x of bookAddress) {
-        data.push(x);
-      }
-      this.listContacts = data;
-    }
+    this.listContacts = this.serviceModuleService.getBooksAddressBuilder();
   }
 
   /**
@@ -847,7 +838,7 @@ export class CreateTransferComponent implements OnInit {
                 mosaic: mosaicsToSend
               };
 
-              const account = Account.createFromPrivateKey(params.common.privateKey, params.network);
+              const cosignatoryAccount = Account.createFromPrivateKey(params.common.privateKey, params.network);
               const recipientAddress = this.proximaxProvider.createFromRawAddress(params.recipient);
               const mosaics = params.mosaic;
               const allMosaics = [];
@@ -867,11 +858,13 @@ export class CreateTransferComponent implements OnInit {
                 params.network
               );
 
-              //-----------------------------------------------------------------------
-              const aggregateTransaction = this.transactionService.buildAggregateTransaction(this.sender.publicAccount, transferBuilder);
-              const aggregateSigned = account.sign(aggregateTransaction, generationHash);
-              const hashLockTransaction: LockFundsTransaction = this.transactionService.buildHashLockTransaction(aggregateSigned);
-              const hashLockSigned = account.sign(hashLockTransaction, generationHash);
+              const innerTxn = [{
+                signer: this.sender.publicAccount,
+                tx: transferBuilder
+              }];
+
+              const aggregateSigned = this.transactionService.buildAggregateTransaction(cosignatoryAccount, innerTxn, generationHash);
+              const hashLockSigned = this.transactionService.buildHashLockTransaction(aggregateSigned, cosignatoryAccount, generationHash);
               this.saveContactFn();
               this.clearForm();
 

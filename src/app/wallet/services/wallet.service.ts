@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { SimpleWallet, PublicAccount, AccountInfo, MultisigAccountInfo, NamespaceId, MosaicId, Address } from 'tsjs-xpx-chain-sdk';
-import { crypto, address } from 'js-xpx-chain-library';
+import { SimpleWallet, PublicAccount, AccountInfo, MultisigAccountInfo, NamespaceId, MosaicId } from 'tsjs-xpx-chain-sdk';
+import { crypto } from 'js-xpx-chain-library';
 import { AbstractControl } from '@angular/forms';
 import { BehaviorSubject, Observable, timer, Subject } from 'rxjs';
 
@@ -8,15 +8,11 @@ import { environment } from '../../../environments/environment';
 import { SharedService } from '../../shared/services/shared.service';
 import { ProximaxProvider } from '../../shared/services/proximax.provider';
 import { first } from 'rxjs/operators';
-import { AssetTransferable, Address as AddressNEM } from 'nem-library';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WalletService {
-
-
-  // -------------------------------------------------------------------------------
 
 
   canVote = true;
@@ -33,14 +29,8 @@ export class WalletService {
   nis1AccountSeleted: any = null;
   unconfirmedTransactions: any = [];
 
-
-
-
   nis1AccountsWallet: Subject<any> = new Subject<any>();
   nis1AccountsWallet$: Observable<any> = this.nis1AccountsWallet.asObservable();
-
-  /*nis1ResponseLoadedSubject: Subject<boolean> = new Subject<boolean>();
-  nis1ResponseLoaded$: Observable<boolean> = this.nis1AccountsWallet.asObservable();*/
 
   swapTransactions: Subject<any> = new Subject<any>();
   swapTransactions$: Observable<any> = this.swapTransactions.asObservable();
@@ -344,7 +334,7 @@ export class WalletService {
    * @param {*} [address=null]
    * @memberof WalletService
    */
-  deleteContact(address = null) {
+  deleteContact(address: any = null) {
     let currentWallet = `${environment.itemBooksAddress}-${this.getCurrentWallet().name}`;
     let currentAddressBook = JSON.parse(localStorage.getItem(currentWallet));
     if (currentAddressBook !== null) {
@@ -476,12 +466,13 @@ export class WalletService {
    * @returns
    * @memberof WalletService
    */
-  getAmountAccount() {
-    const account = this.filterAccountInfo(this.proximaxProvider.createFromRawAddress(this.currentAccount.address).pretty(), true);
+  getAmountAccount(addressParam?: string) {
+    const address = (addressParam) ? addressParam : this.currentAccount.address;
+    const account = this.filterAccountInfo(this.proximaxProvider.createFromRawAddress(address).pretty(), true);
     if (account && account.accountInfo) {
       let mosaics = account.accountInfo.mosaics.slice(0);
-      let amoutMosaic = mosaics.find(mosaic => mosaic.id.toHex() == environment.mosaicXpxInfo.id);
-      return (amoutMosaic) ? amoutMosaic.amount.compact() : 0;
+      let amountMosaic = mosaics.find(mosaic => mosaic.id.toHex() == environment.mosaicXpxInfo.id);
+      return (amountMosaic) ? amountMosaic.amount.compact() : 0;
     }
 
     return 0;
