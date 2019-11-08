@@ -75,7 +75,6 @@ export class PartialComponent implements OnInit {
         this.aggregateTransactions.forEach(transaction => {
           transaction.hash = transaction.data.transactionInfo.hash;
           transaction['deadline'] = `${this.transactionService.dateFormat(transaction.data.deadline)} - UTC`;
-          
         });
       }
     ));

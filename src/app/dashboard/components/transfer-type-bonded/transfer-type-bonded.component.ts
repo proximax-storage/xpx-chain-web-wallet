@@ -16,6 +16,7 @@ export class TransferTypeBondedComponent implements OnInit {
 
   @Input() transferTransactionBonded: TransferTransaction = null;
   @Input() msg: string = '';
+  @Input() signer: any;
   transactionBuilder: TransactionsInterface = null;
 
   message: any;
@@ -38,10 +39,11 @@ export class TransferTypeBondedComponent implements OnInit {
   }
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
-    // console.log(this.transferTransactionBonded);
+    console.log(this.transferTransactionBonded);
     this.transactionBuilder = this.transactionService.getStructureDashboard(this.transferTransactionBonded);
     console.log('----build---', this.transactionBuilder);
     this.message = this.transactionBuilder.data.message
+    console.log(this.signer);
   }
 
   changeInputType(inputType) {
@@ -105,7 +107,7 @@ export class TransferTypeBondedComponent implements OnInit {
 
   async verifyRecipientInfo() {
     let address = this.proximaxProvider.createFromRawAddress(this.transactionBuilder.recipient['address'])
-    this.senderPublicAccount = this.transactionBuilder.sender
+    this.senderPublicAccount = this.signer.sender
     try {
       let accountInfo = await this.proximaxProvider.getAccountInfo(address).toPromise()
       console.log('ALERTA');

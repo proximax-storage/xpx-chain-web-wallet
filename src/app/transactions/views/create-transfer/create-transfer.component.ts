@@ -1257,6 +1257,8 @@ export class CreateTransferComponent implements OnInit {
           break;
 
         case '3':
+          console.log(senderPrivateKey);
+
           result = EncryptedMessage.create(message, this.recipientInfo.publicAccount, senderPrivateKey);
           console.log('Encrypted Message', result);
           break;
