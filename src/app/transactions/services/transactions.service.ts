@@ -20,7 +20,8 @@ import {
   SignedTransaction,
   HashLockTransaction,
   LockFundsTransaction,
-  InnerTransaction
+  InnerTransaction,
+  TransactionStatus
 } from "tsjs-xpx-chain-sdk";
 import { ProximaxProvider } from "../../shared/services/proximax.provider";
 import { NodeService } from "../../servicesModule/services/node.service";
@@ -662,6 +663,61 @@ export class TransactionsService {
       transaction: transaction,
       nameType: nameType
     };
+  }
+
+  /**
+   *
+   *
+   * @param {TransactionStatus} statusTransaction
+   * @param {SignedTransaction[]} transactionSigned
+   * @param {SignedTransaction[]} transactionReady
+   * @returns
+   * @memberof TransactionsService
+   */
+  validateStatusTx(statusTransaction: TransactionStatus, transactionSigned: SignedTransaction[], transactionReady: SignedTransaction[]) {
+    if (statusTransaction !== null && statusTransaction !== undefined && transactionSigned !== null) {
+      let dataReturn = null;
+      for (let element of transactionSigned) {
+        const match = statusTransaction['hash'] === element.hash;
+        if (match) {
+          transactionReady.push(element);
+        }
+
+        if (statusTransaction['type'] === 'confirmed' && match) {
+          dataReturn = {
+            statusBtn: false,
+            transactionSigned: transactionSigned.filter(el => el.hash !== statusTransaction['hash']),
+            transactionReady: transactionReady
+          };
+        } else if (statusTransaction['type'] === 'unconfirmed' && match) {
+          dataReturn =  {
+            statusBtn: false,
+            transactionSigned: transactionSigned,
+            transactionReady: transactionReady
+          };
+        } else if (statusTransaction['type'] === 'aggregateBondedAdded' && match) {
+          dataReturn = {
+            statusBtn: false,
+            transactionSigned: transactionSigned,
+            transactionReady: transactionReady
+          };
+        } else if (statusTransaction['type'] === 'cosignatureSignedTransaction' && match) {
+          dataReturn = {
+            statusBtn: false,
+            transactionSigned: transactionSigned,
+            transactionReady: transactionReady
+          };
+        } else if (statusTransaction['type'] === 'status' && match) {
+          dataReturn = {
+            statusBtn: false,
+            transactionSigned: transactionSigned.filter(el => el.hash !== statusTransaction['hash']),
+            transactionReady: transactionReady
+          };
+        }
+      }
+
+      return dataReturn;
+    }
   }
 
   /**

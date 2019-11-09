@@ -4,6 +4,7 @@ import { environment } from '../../../../environments/environment';
 import { SharedService } from '../../../shared/services/shared.service';
 import { TransactionsService } from '../../../transactions/services/transactions.service';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-select-account',
@@ -22,7 +23,7 @@ export class SelectAccountComponent implements OnInit {
   mosaicXpx = null;
   msgLockfungCosignatorie: string;
   sender: AccountsInterface = null;
-
+  subscription: Subscription[] = [];
 
   constructor(
     private proximaxProvider: ProximaxProvider,
@@ -39,6 +40,22 @@ export class SelectAccountComponent implements OnInit {
       divisibility: environment.mosaicXpxInfo.divisibility
     };
 
+
+    this.accountInfo();
+    this.subscription.push(this.walletService.getAccountsInfo$().subscribe(
+      next => this.accountInfo()
+    ));
+  }
+
+  /**
+   *
+   *
+   * @memberof SelectAccountComponent
+   */
+  accountInfo() {
+    this.accounts = [];
+    this.cosignatory = null;
+    this.listCosignatorie = [];
     this.walletService.currentWallet.accounts.forEach((element: AccountsInterface) => {
       this.accounts.push({
         label: element.name,
@@ -54,7 +71,6 @@ export class SelectAccountComponent implements OnInit {
       }
     });
   }
-
 
   /**
    *
