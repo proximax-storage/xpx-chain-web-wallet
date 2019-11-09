@@ -100,17 +100,17 @@ export class TransferTypeComponent implements OnInit {
   decryptMessage() {
     let common = { password: this.password }
     let firstAccount = this.walletService.currentAccount
-    console.clear();
-    console.log(this.transferTransaction)
-    console.log(firstAccount);
+    // console.clear();
+    // console.log(this.transferTransaction)
+    // console.log(firstAccount);
 
 
     if (this.walletService.decrypt(common, firstAccount)) {
-      console.log('Message', this.message);
-      console.log('PrivateKey', common['privateKey']);
-      console.log('RecipientPublicAccount', this.recipientPublicAccount);
-      console.log('PanelDecrypt', this.panelDecrypt);
-      console.log(firstAccount.address === this.recipientPublicAccount.address.address);
+      // console.log('Message', this.message);
+      // console.log('PrivateKey', common['privateKey']);
+      // console.log('RecipientPublicAccount', this.recipientPublicAccount);
+      // console.log('PanelDecrypt', this.panelDecrypt);
+      // console.log(firstAccount.address === this.recipientPublicAccount.address.address);
 
       let recipientMsg = EncryptedMessage.decrypt(this.message, common['privateKey'], this.senderPublicAccount)
       let senderMsg = EncryptedMessage.decrypt(this.message, common['privateKey'], this.recipientPublicAccount)
@@ -123,8 +123,8 @@ export class TransferTypeComponent implements OnInit {
         this.decryptedMessage = senderMsg
       }
 
-      console.log('recipient', recipientMsg);
-      console.log('sender', senderMsg);
+      // console.log('recipient', recipientMsg);
+      // console.log('sender', senderMsg);
 
       // if (recipientMsg.payload && recipientMsg.payload !== '') {
       //   console.log(`/// RECIPIENT ///`)
@@ -135,7 +135,7 @@ export class TransferTypeComponent implements OnInit {
       // }
 
 
-      console.log('DecryptedMessage', this.decryptedMessage);
+      // console.log('DecryptedMessage', this.decryptedMessage);
       this.panelDecrypt = 2
     } else {
       this.sharedService.showError('','Password Invalid');
@@ -153,7 +153,7 @@ export class TransferTypeComponent implements OnInit {
     let address = this.proximaxProvider.createFromRawAddress(this.transferTransaction.recipient['address'])
     try {
       let accountInfo = await this.proximaxProvider.getAccountInfo(address).toPromise()
-      console.log('verifyAccountRecipient', accountInfo);
+      // console.log('verifyAccountRecipient', accountInfo);
       this.recipientPublicAccount = accountInfo.publicAccount
     } catch (e) {
 

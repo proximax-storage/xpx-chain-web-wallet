@@ -274,8 +274,7 @@ export class CreateTransferComponent implements OnInit {
 
   changeMessageType(event) {
     this.typeMessage = event
-    console.log(event, this.configurationForm);
-
+    // console.log(event, this.configurationForm);
 
     if (this.typeMessage === '1' || this.typeMessage === '2') {
       this.messageMaxLength = this.configurationForm.message.maxLength
@@ -283,7 +282,7 @@ export class CreateTransferComponent implements OnInit {
       this.messageMaxLength = this.configurationForm.encryptedMessage.maxLength
     }
     let recipient = this.formTransfer.get("amountXpx").value
-    console.log(event, recipient);
+    // console.log(event, recipient);
   }
 
   /**
@@ -862,7 +861,7 @@ export class CreateTransferComponent implements OnInit {
                 network: this.walletService.currentAccount.network,
                 mosaic: mosaicsToSend
               };
-              console.log('True', params);
+              // console.log('True', params);
 
               const cosignatoryAccount = Account.createFromPrivateKey(params.common.privateKey, params.network);
               const recipientAddress = this.proximaxProvider.createFromRawAddress(params.recipient);
@@ -916,7 +915,7 @@ export class CreateTransferComponent implements OnInit {
                 mosaic: mosaicsToSend
               };
 
-              console.log('False', params);
+              // console.log('False', params);
 
               const transferBuilder = this.transactionService.buildTransferTransaction(params);
 
@@ -1241,48 +1240,48 @@ export class CreateTransferComponent implements OnInit {
       switch (this.typeMessage) {
         case '1':
           result = PlainMessage.create(message)
-          console.log('Plain Message', result);
+          // console.log('Plain Message', result);
           break;
 
         case '2':
           result = PlainMessage.create(message)
-          console.log('Hex Message', result);
+          // console.log('Hex Message', result);
           break;
 
         case '3':
           console.log(senderPrivateKey);
 
           result = EncryptedMessage.create(message, this.recipientInfo.publicAccount, senderPrivateKey);
-          console.log('Encrypted Message', result);
+          // console.log('Encrypted Message', result);
           break;
       }
     } else {
       result = PlainMessage.create('');
     }
 
-    console.log(result);
+    // console.log(result);
 
 
     return result;
   }
 
   async verifyRecipientInfo(recipient) {
-    console.log(recipient);
+    // console.log(recipient);
     const invalidPublicKey = "0000000000000000000000000000000000000000000000000000000000000000"
     let net = environment.typeNetwork.value
     let address;
 
     if ([undefined, null].includes(recipient) === true) {
-      console.log('string');
+      // console.log('string');
       recipient = (this.formTransfer.get('accountRecipient').value.includes('-')) ?
       this.formTransfer.get('accountRecipient').value.split('-').join('') :
       this.formTransfer.get('accountRecipient').value
-      console.log(recipient);
+      // console.log(recipient);
       address = this.proximaxProvider.createFromRawAddress(this.formTransfer.get('accountRecipient').value)
     } else {
-      console.log(this.formTransfer.get('accountRecipient').value);
+      // console.log(this.formTransfer.get('accountRecipient').value);
 
-      console.log('object');
+      // console.log('object');
       address = this.proximaxProvider.createFromRawAddress(recipient)
     }
 
@@ -1294,11 +1293,11 @@ export class CreateTransferComponent implements OnInit {
         }
         this.recipientInfo = accountInfo
         this.encryptedMsgDisable = false
-        console.log(this.recipientInfo, this.encryptedMsgDisable);
+        // console.log(this.recipientInfo, this.encryptedMsgDisable);
 
       }
     } catch (error) {
-      console.log(error);
+      console.warn(error);
       if (error.statusCode && error.statusCode === 404) {
         this.encryptedMsgDisable = true
       } else if ([undefined, null].includes(error.statusCode) && typeof error === 'string') {
