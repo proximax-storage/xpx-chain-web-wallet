@@ -58,6 +58,9 @@ export class TransactionsService {
   //Aggregate Transactions
   private _aggregateTransactionsSubject: BehaviorSubject<TransactionsInterface[]> = new BehaviorSubject<TransactionsInterface[]>([]);
   private _aggregateTransactions$: Observable<TransactionsInterface[]> = this._aggregateTransactionsSubject.asObservable();
+  // Notifications
+  private notificationsSubject: BehaviorSubject<any> = new BehaviorSubject<any>(false);
+  private notifications$: Observable<any> = this.notificationsSubject.asObservable();
 
   arraTypeTransaction = {
     transfer: {
@@ -114,6 +117,8 @@ export class TransactionsService {
   mosaicRentalFeeSink = environment.mosaicRentalFeeSink;
   generationHash: string = "";
   transactionsReady = [];
+  viewParcial: boolean;
+  lengthParcial: any;
 
   constructor(
     private proximaxProvider: ProximaxProvider,
@@ -509,7 +514,19 @@ export class TransactionsService {
   getTypeTransactions() {
     return this.arraTypeTransaction;
   }
+    /**
+   *
+   *
+   * @returns {Observable<any>}
+   * @memberof TransactionsService
+   */
+  getViewNotifications$(): Observable<any> {
+    return this.notifications$;
+  }
 
+  setViewNotifications$(notifications: boolean) {
+    this.notificationsSubject.next(notifications);
+  }
   /**
    *
    *
@@ -551,6 +568,10 @@ export class TransactionsService {
     return null;
   }
 
+  // viewPartial(partial){
+  //   this.lengthParcial = partial.length;
+  //   this.viewParcial = (partial && partial.length > 0) ? true : false
+  // }
   /**
    *
    *

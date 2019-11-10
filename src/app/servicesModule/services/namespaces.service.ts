@@ -28,6 +28,8 @@ export class NamespacesService {
 
   private namespacesChangedSubject: BehaviorSubject<NamespaceStorageInterface[]> = new BehaviorSubject<NamespaceStorageInterface[]>(null);
   private namespacesChanged$: Observable<NamespaceStorageInterface[]> = this.namespacesChangedSubject.asObservable();
+  expired: object[];
+  view: boolean;
 
   constructor(
     private proximaxProvider: ProximaxProvider,
@@ -151,6 +153,13 @@ export class NamespacesService {
     }
   }
 
+  namespaceExpired(namespace: object[], viewNamespace: boolean){
+    this.expired = namespace;
+    this.view = viewNamespace;
+    // console.log('------ n', namespace);
+    // console.log('------ v', viewNamespace);
+    
+  }
   /**
    *
    *
