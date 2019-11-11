@@ -1265,25 +1265,26 @@ export class CreateTransferComponent implements OnInit {
     return result;
   }
 
+
+  getValueAndVerify() {
+    let recipientValue = (this.formTransfer.get('accountRecipient').value.includes('-')) ?
+    this.formTransfer.get('accountRecipient').value.split('-').join('') :
+    this.formTransfer.get('accountRecipient').value
+
+    // console.log('get value and verify',recipientValue);
+
+    if (recipientValue.length === 40 || recipientValue.length === 46) {
+      this.verifyRecipientInfo(recipientValue)
+    }
+  }
+
   async verifyRecipientInfo(recipient) {
     // console.log(recipient);
     const invalidPublicKey = "0000000000000000000000000000000000000000000000000000000000000000"
     let net = environment.typeNetwork.value
     let address;
 
-    if ([undefined, null].includes(recipient) === true) {
-      // console.log('string');
-      recipient = (this.formTransfer.get('accountRecipient').value.includes('-')) ?
-      this.formTransfer.get('accountRecipient').value.split('-').join('') :
-      this.formTransfer.get('accountRecipient').value
-      // console.log(recipient);
-      address = this.proximaxProvider.createFromRawAddress(this.formTransfer.get('accountRecipient').value)
-    } else {
-      // console.log(this.formTransfer.get('accountRecipient').value);
-
-      // console.log('object');
-      address = this.proximaxProvider.createFromRawAddress(recipient)
-    }
+    address = this.proximaxProvider.createFromRawAddress(recipient)
 
     try {
       if ([null].includes(recipient) === false) {
@@ -1294,7 +1295,6 @@ export class CreateTransferComponent implements OnInit {
         this.recipientInfo = accountInfo
         this.encryptedMsgDisable = false
         // console.log(this.recipientInfo, this.encryptedMsgDisable);
-
       }
     } catch (error) {
       console.warn(error);

@@ -198,7 +198,7 @@
               <input mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
                 class="form-control form-control-sm input-border" style="border: 2px solid #306EB5;"
                 placeholder="Recipient" formControlName="accountRecipient" id="recipient-invalid-{{invalidRecipient}}"
-                [maxlength]="configurationForm.address.maxLength" [minlength]="configurationForm.address.minLength" (change)="verifyRecipientInfo()">
+                [maxlength]="configurationForm.address.maxLength" [minlength]="configurationForm.address.minLength" (change)="getValueAndVerify()">
               <mdb-error
                 *ngIf="validateInput('accountRecipient').invalid && (validateInput('accountRecipient').dirty || validateInput('accountRecipient').touched)">
                 <span class="fs-08rem fw-600 color-error-message">Invalid Recipient</span>
