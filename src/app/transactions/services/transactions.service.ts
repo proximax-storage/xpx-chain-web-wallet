@@ -19,7 +19,8 @@ import {
   AggregateTransaction,
   SignedTransaction,
   HashLockTransaction,
-  LockFundsTransaction
+  LockFundsTransaction,
+  InnerTransaction
 } from "tsjs-xpx-chain-sdk";
 import { ProximaxProvider } from "../../shared/services/proximax.provider";
 import { NodeService } from "../../servicesModule/services/node.service";
@@ -36,7 +37,7 @@ import { SharedService } from "../../shared/services/shared.service";
 export interface TransferInterface {
   common: { password?: any; privateKey?: any };
   recipient: string;
-  message: string;
+  message: any;
   network: NetworkType;
   mosaic: any;
 }
@@ -57,6 +58,9 @@ export class TransactionsService {
   //Aggregate Transactions
   private _aggregateTransactionsSubject: BehaviorSubject<TransactionsInterface[]> = new BehaviorSubject<TransactionsInterface[]>([]);
   private _aggregateTransactions$: Observable<TransactionsInterface[]> = this._aggregateTransactionsSubject.asObservable();
+  // Notifications
+  private notificationsSubject: BehaviorSubject<any> = new BehaviorSubject<any>(false);
+  private notifications$: Observable<any> = this.notificationsSubject.asObservable();
 
   arraTypeTransaction = {
     transfer: {
@@ -113,6 +117,8 @@ export class TransactionsService {
   mosaicRentalFeeSink = environment.mosaicRentalFeeSink;
   generationHash: string = "";
   transactionsReady = [];
+  viewParcial: boolean;
+  lengthParcial: any;
 
   constructor(
     private proximaxProvider: ProximaxProvider,
@@ -167,6 +173,26 @@ export class TransactionsService {
       }
     }
     return amount;
+  }
+
+  /**
+   *
+   *
+   * @param {number} quantity
+   * @memberof TransactionsService
+   */
+  addMissingZero(quantity: number) {
+    const part = quantity.toString().split('.');
+    const cant = (part.length === 1) ? 6 : 6 - part[1].length;
+    for (let index = 0; index < cant; index++) {
+      if (part.length === 1) {
+        part[0] += 0;
+      } else {
+        part[1] += 0;
+      }
+    }
+
+    return Number(part.join(''));
   }
 
   /**
@@ -274,7 +300,7 @@ export class TransactionsService {
       Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
       recipientAddress,
       allMosaics,
-      PlainMessage.create(params.message),
+      params.message,
       params.network
     );
 
@@ -299,27 +325,36 @@ export class TransactionsService {
    *
    * @param signedTransaction
    */
-  buildHashLockTransaction(signedTransaction: SignedTransaction): LockFundsTransaction {
-    return HashLockTransaction.create(
+  buildHashLockTransaction(signedTransaction: SignedTransaction, signer: Account, generationHash: string): SignedTransaction {
+    const hashLockTransaction = HashLockTransaction.create(
       Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
       new Mosaic(new MosaicId(environment.mosaicXpxInfo.id), UInt64.fromUint(Number(10000000))),
       UInt64.fromUint(environment.lockFundDuration),
       signedTransaction,
       this.walletService.currentAccount.network
     );
+
+    return signer.sign(hashLockTransaction, generationHash);
   }
 
   /**
    *
-   * @param sender
+   * @param signer
    * @param transaction
    */
-  buildAggregateTransaction(sender: PublicAccount, transaction: Transaction): AggregateTransaction {
-    return AggregateTransaction.createBonded(
+  buildAggregateTransaction(cosignatoryAccount: Account, arrayTx: {tx: Transaction, signer: PublicAccount}[], generationHash: string): SignedTransaction {
+    const innerTxn = [];
+    arrayTx.forEach(element => {
+      innerTxn.push(element.tx.toAggregate(element.signer));
+    });
+
+    const bondedCreated = AggregateTransaction.createBonded(
       Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
-      [transaction.toAggregate(sender)],
+      innerTxn,
       this.walletService.currentAccount.network
     );
+
+    return cosignatoryAccount.sign(bondedCreated, generationHash);
   }
 
   /**
@@ -359,6 +394,7 @@ export class TransactionsService {
   calculateDurationforDay(duration: number) {
     return duration * 5760;
   }
+
 
   /**
    *
@@ -478,7 +514,19 @@ export class TransactionsService {
   getTypeTransactions() {
     return this.arraTypeTransaction;
   }
+    /**
+   *
+   *
+   * @returns {Observable<any>}
+   * @memberof TransactionsService
+   */
+  getViewNotifications$(): Observable<any> {
+    return this.notifications$;
+  }
 
+  setViewNotifications$(notifications: boolean) {
+    this.notificationsSubject.next(notifications);
+  }
   /**
    *
    *
@@ -520,6 +568,10 @@ export class TransactionsService {
     return null;
   }
 
+  // viewPartial(partial){
+  //   this.lengthParcial = partial.length;
+  //   this.viewParcial = (partial && partial.length > 0) ? true : false
+  // }
   /**
    *
    *
@@ -873,10 +925,25 @@ export class TransactionsService {
    */
   validateBuildSelectAccountBalance(balanceAccount: number, feeTransaction: number, rental: number): boolean {
     const totalFee = feeTransaction + rental;
-    // console.log('totalFee', totalFee);
-    // console.log('balanceAccount', balanceAccount);
-    // console.log('balanceAccount >= totalFee', balanceAccount >= totalFee);
+    console.log('totalFee', totalFee);
+    console.log('balanceAccount', balanceAccount);
+    console.log('balanceAccount >= totalFee', balanceAccount >= totalFee);
     return balanceAccount >= totalFee;
+  }
+
+
+  /**
+   *
+   *
+   * @param {AccountsInterface} account
+   * @memberof TransactionsService
+   */
+  validateIsMultisigAccount(account: AccountsInterface) {
+    if (account.isMultisign && account.isMultisign.cosignatories && account.isMultisign.cosignatories.length > 0) {
+      return true;
+    }
+
+    return false;
   }
 
   /**

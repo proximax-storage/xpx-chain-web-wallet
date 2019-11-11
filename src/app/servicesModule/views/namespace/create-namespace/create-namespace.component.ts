@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { SignedTransaction, MosaicId } from 'tsjs-xpx-chain-sdk';
+import { SignedTransaction, MosaicId, Mosaic, RegisterNamespaceTransaction, Account, LockFundsTransaction, TransactionHttp } from 'tsjs-xpx-chain-sdk';
 import { FormGroup, FormBuilder, Validators, AbstractControl } from "@angular/forms";
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { Router } from '@angular/router';
@@ -7,13 +7,15 @@ import { Subscription } from 'rxjs';
 import { AppConfig } from '../../../../config/app.config';
 import { DataBridgeService } from '../../../../shared/services/data-bridge.service';
 import { MosaicService } from '../../../../servicesModule/services/mosaic.service';
-import { WalletService } from '../../../../wallet/services/wallet.service';
+import { WalletService, AccountsInterface } from '../../../../wallet/services/wallet.service';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { SharedService, ConfigurationForm } from '../../../../shared/services/shared.service';
 import { NamespacesService } from '../../../../servicesModule/services/namespaces.service';
 import { TransactionsService } from '../../../../transactions/services/transactions.service';
 import { HeaderServicesInterface } from '../../../services/services-module.service';
 import { environment } from '../../../../../environments/environment';
+import { ServicesModuleService } from '../../../../servicesModule/services/services-module.service';
+import { NodeService } from 'src/app/servicesModule/services/node.service';
 
 @Component({
   selector: 'app-create-namespace',
@@ -29,17 +31,22 @@ export class CreateNamespaceComponent implements OnInit {
     disabled: false
   }];
 
+  accounts: any = [];
   amountAccount: number;
   block: number = null;
   blockBtnSend: boolean = false;
   calculateRentalFee: any = '0.000000';
   configurationForm: ConfigurationForm = {};
+  cosignatory: AccountsInterface = null;
+  insufficientBalanceCosignatory: boolean = false;
   duration: any;
   durationByBlock = '5760';
   endHeight: number;
-  fee: string;
+  fee: string = '0.000000';
   insufficientBalance = false;
   insufficientBalanceDuration = false;
+  minimiumFeeRentalFeeToRoot = 26.393510;
+  minimiumFeeRentalFeeToSub = 10000035500;
   namespaceChangeInfo: any;
   namespaceInfo: Array<object> = [];
   namespaceForm: FormGroup;
@@ -47,52 +54,58 @@ export class CreateNamespaceComponent implements OnInit {
   namespaceName: any;
   namespaceRoot: any;
   labelNamespace: string = '';
+  listCosignatorie: any = [];
   lengthNamespace: number;
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Namespaces',
     componentName: 'Register'
   };
-  passwordMain: string = 'password';
 
-  registerRootNamespaceTransaction: any;
-  registersubamespaceTransaction: any;
+  passwordMain: string = 'password';
+  registerRootNamespaceTransaction: RegisterNamespaceTransaction;
+  registersubamespaceTransaction: RegisterNamespaceTransaction;
   rentalFee = 4576;
+  sender: AccountsInterface = null;
   status: boolean = true;
   startHeight: number;
   statusButtonNamespace: boolean = true;
   showDuration: boolean = true;
+  showSelectAccount = true;
   subscription: Subscription[] = [];
+  transactionHttp: TransactionHttp = null;
   transactionSigned: SignedTransaction[] = [];
   transactionReady: SignedTransaction[] = [];
   transactionStatus: boolean = false;
-  typetransfer: number = 1;
+  typeNamespace: number = 1;
+  typeTx: number = 1; // 1 simple, 2 multisig
   validateForm: boolean = false;
 
   constructor(
+    private nodeService: NodeService,
     private fb: FormBuilder,
     private walletService: WalletService,
     private proximaxProvider: ProximaxProvider,
     private sharedService: SharedService,
     private router: Router,
-    private dataBridgeService: DataBridgeService,
     private namespaceService: NamespacesService,
     private transactionService: TransactionsService,
-    private mosaicServices: MosaicService,
     private dataBridge: DataBridgeService
   ) { }
 
 
   ngOnInit() {
-    this.fee = '0.000000';
     this.configurationForm = this.sharedService.configurationForm;
     this.lengthNamespace = this.configurationForm.namespaceName.maxLength;
     this.createForm();
+    this.subscribeValueChange();
+    this.showSelectAccount = true;
+    this.transactionHttp = new TransactionHttp(environment.protocol + "://" + `${this.nodeService.getNodeSelected()}`);
+    /*
     this.amountAccount = this.walletService.getAmountAccount();
     this.durationByBlock = this.transactionService.calculateDurationforDay(this.namespaceForm.get('duration').value).toString();
-    this.validateRentalFee(this.rentalFee * parseFloat(this.durationByBlock));
+    this.validateRentalFee();
     this.getNamespaces();
-    this.subscribeValueChange();
-    // console.log(this.walletService.currentAccount);
+    this.subscribeValueChange();*/
   }
 
   ngOnDestroy(): void {
@@ -102,116 +115,19 @@ export class CreateNamespaceComponent implements OnInit {
   }
 
   /**
-  *
-  *
-  * @param {*} amount
-  * @param {MosaicsStorage} mosaic
-  * @memberof CreateNamespaceComponent
-  */
-  async validateRentalFee(amount: number) {
-    const accountInfo = this.walletService.filterAccountInfo();
-    if (accountInfo && accountInfo.accountInfo && accountInfo.accountInfo.mosaics && accountInfo.accountInfo.mosaics.length > 0) {
-      const xpxInBalance = accountInfo.accountInfo.mosaics.find(element => {
-        return element.id.toHex() === new MosaicId(environment.mosaicXpxInfo.id).toHex();
-      });
-
-      if (xpxInBalance) {
-        if (this.namespaceForm.get('namespaceRoot').value === '' || this.namespaceForm.get('namespaceRoot').value === '1') {
-          const invalidBalance = xpxInBalance.amount.compact() < amount;
-          const amountMosaicXpx = this.transactionService.amountFormatterSimple(xpxInBalance.amount.compact()).replace(/,/g, '');
-          
-          if (Number(amountMosaicXpx) < 26.393510) {
-            // ********** INSUFFICIENT BALANCE*************
-            this.insufficientBalance = true;
-            this.insufficientBalanceDuration = false;
-            if (this.namespaceForm.enabled) {
-              this.namespaceForm.disable();
-            }
-            return;
-          } 
-          const mosaic = await this.mosaicServices.filterMosaics([xpxInBalance.id]);
-          if (mosaic && mosaic[0].mosaicInfo) {
-            this.calculateRentalFee = this.transactionService.amountFormatterSimple(amount);
-          } else {
-            // **********INSUFFICIENT BALANCE*************
-            // console.log('AQUI FUE');
-            this.insufficientBalance = true;
-            if (this.namespaceForm.enabled) {
-              this.namespaceForm.disable();
-            }
-          }
-
-          if (invalidBalance || Number(amountMosaicXpx) < 26.393510) {
-            // **********DURATION INSUFFICIENT BALANCE*************
-            this.insufficientBalance = false;
-            this.insufficientBalanceDuration = true;
-          } else if (!invalidBalance) {
-            this.insufficientBalance = false;
-            this.insufficientBalanceDuration = false;
-            if (this.namespaceForm.disabled) {
-              this.namespaceForm.enable();
-            }
-          }
-        } else {
-          // **********SUBNAMESPACE*************
-          const invalidBalance = xpxInBalance.amount.compact() < 10000000;
-          if (invalidBalance) {
-            // **********DURATION INSUFFICIENT BALANCE*************
-            // console.log('AQUI FUE 1');
-            this.insufficientBalance = true;
-            this.insufficientBalanceDuration = false;
-          } else {
-            this.calculateRentalFee = '10,000.000000';
-            this.insufficientBalance = false;
-            this.insufficientBalanceDuration = false;
-            if (this.namespaceForm.disabled) {
-              this.namespaceForm.enable();
-            }
-          }
-        }
-      } else {
-        // **********INSUFFICIENT BALANCE*************
-        // console.log('AQUI FUE 2');
-        this.insufficientBalance = true;
-        if (this.namespaceForm.enabled) {
-          this.namespaceForm.disable();
-        }
-      }
-    } else {
-      // **********INSUFFICIENT BALANCE*************
-      // console.log('AQUI FUE 3');
-      this.insufficientBalance = true;
-      if (this.namespaceForm.enabled) {
-        this.namespaceForm.disable();
-      }
-    }
-  }
-
-
-  /**
    *
    *
+   * @param {SignedTransaction} signedTransaction
    * @memberof CreateNamespaceComponent
    */
-  builder() {
-    if (this.namespaceName !== undefined && this.namespaceName !== '') {
-      if (this.typetransfer == 1) {
-        this.registerRootNamespaceTransaction = this.proximaxProvider.registerRootNamespaceTransaction(
-          this.namespaceName,
-          this.walletService.currentAccount.network,
-          this.duration
-        );
-        this.fee = this.transactionService.amountFormatterSimple(this.registerRootNamespaceTransaction.maxFee.compact())
-      } else if (this.typetransfer == 2) {
-        const rootNamespaceName = this.namespaceForm.get('namespaceRoot').value;
-        this.registersubamespaceTransaction = this.proximaxProvider.registersubNamespaceTransaction(
-          rootNamespaceName,
-          this.namespaceName,
-          this.walletService.currentAccount.network
-        );
-        this.fee = this.transactionService.amountFormatterSimple(this.registersubamespaceTransaction.maxFee.compact())
-      }
-    }
+  announceAggregateBonded(signedTransaction: SignedTransaction) { //change
+    this.transactionHttp.announceAggregateBonded(signedTransaction).subscribe(
+      async () => {
+        this.transactionSigned.push(signedTransaction)
+      },
+      err => {
+        this.sharedService.showError('', err);
+      });
   }
 
   /**
@@ -220,7 +136,7 @@ export class CreateNamespaceComponent implements OnInit {
    * @param {*} inputType
    * @memberof CreateNamespaceComponent
    */
-  changeInputType(inputType) {
+  changeInputType(inputType: any) {
     let newType = this.sharedService.changeInputType(inputType)
     this.passwordMain = newType;
   }
@@ -253,6 +169,95 @@ export class CreateNamespaceComponent implements OnInit {
   }
 
   /**
+  *
+  *
+  * @memberof CreateNamespaceComponent
+  */
+  createNamespace() {
+    if (this.typeTx === 1) {
+      this.sendTxSimple();
+    } else if (this.typeTx === 2 && this.cosignatory) {
+      this.sendAggregateBonded();
+    } else {
+      this.sharedService.showWarning('', 'Select a cosignatory');
+    }
+  }
+
+  /**
+   *
+   *
+   * @memberof CreateNamespaceComponent
+   */
+  sendTxSimple() {
+    this.blockBtnSend = true;
+    const common = { password: this.namespaceForm.get('password').value, privateKey: '' };
+    if (this.walletService.decrypt(common, this.sender)) {
+      const signedTransaction = this.signedTransaction(common);
+      this.transactionSigned.push(signedTransaction);
+      this.proximaxProvider.announce(signedTransaction).subscribe(() => {
+        if (!this.transactionStatus) {
+          this.getTransactionStatus();
+        }
+
+        this.clearForm();
+        this.setTimeOutValidate(signedTransaction.hash);
+      }, () => {
+        this.blockBtnSend = false;
+        this.clearForm();
+        this.fee = '0.000000'
+        this.sharedService.showError('', 'Error connecting to the node');
+      }
+      );
+    } else {
+      this.blockBtnSend = false;
+    }
+  }
+
+  /**
+   *
+   *
+   * @memberof CreateNamespaceComponent
+   */
+  sendAggregateBonded() {
+    this.blockBtnSend = true;
+    const common = { password: this.namespaceForm.get('password').value, privateKey: '' };
+    if (this.walletService.decrypt(common, this.cosignatory)) {
+      const innerTransaction = (this.typeNamespace == 1) ? [{
+        signer: this.sender.publicAccount,
+        tx: this.registerRootNamespaceTransaction
+      }] : [{
+        signer: this.sender.publicAccount,
+        tx: this.registersubamespaceTransaction
+      }];
+
+      const generationHash = this.dataBridge.blockInfo.generationHash;
+      const accountCosignatory = Account.createFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
+      const aggregateSigned = this.transactionService.buildAggregateTransaction(accountCosignatory, innerTransaction, generationHash);
+      let hashLockSigned = this.transactionService.buildHashLockTransaction(aggregateSigned, accountCosignatory, generationHash);
+      this.transactionService.buildTransactionHttp().announce(hashLockSigned).subscribe(async () => {
+        this.subscription['getTransactionStatushashLock'] = this.dataBridge.getTransactionStatus().subscribe(
+          statusTransaction => {
+            if (statusTransaction !== null && statusTransaction !== undefined && hashLockSigned !== null) {
+              const match = statusTransaction['hash'] === hashLockSigned.hash;
+              if (statusTransaction['type'] === 'confirmed' && match) {
+                setTimeout(() => {
+                  this.announceAggregateBonded(aggregateSigned)
+                  hashLockSigned = null;
+                }, 5000);
+              } else if (statusTransaction['type'] === 'status' && match) {
+                this.blockBtnSend = false;
+                this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
+                hashLockSigned = null;
+              }
+            }
+          }
+        );
+      }, err => { });
+    }
+  }
+
+
+  /**
    *
    *
    * @memberof CreateNamespaceComponent
@@ -280,61 +285,22 @@ export class CreateNamespaceComponent implements OnInit {
    *
    * @memberof CreateNamespaceComponent
    */
-  createNamespace() {
-    if (this.namespaceForm.valid && !this.blockBtnSend) {
-      const validateAmount = this.transactionService.validateBuildSelectAccountBalance(this.amountAccount, Number(this.fee), Number(this.calculateRentalFee.replace(/,/g,'')));
-      if (validateAmount) {
-        this.blockBtnSend = true;
-        const common = {
-          password: this.namespaceForm.get('password').value,
-          privateKey: ''
-        }
-        if (this.walletService.decrypt(common)) {
-          const signedTransaction = this.signedTransaction(common);
-          this.transactionSigned.push(signedTransaction);
-          this.proximaxProvider.announce(signedTransaction).subscribe(
-            () => {
-              if (!this.transactionStatus) {
-                this.getTransactionStatus();
-              }
-
-              this.clearForm();
-              this.setTimeOutValidate(signedTransaction.hash);
-            }, () => {
-              this.blockBtnSend = false;
-              this.clearForm();
-              this.fee = '0.000000'
-              this.sharedService.showError('', 'Error connecting to the node');
-            }
-          );
-        } else {
-          this.blockBtnSend = false;
-        }
-      } else {
-        this.sharedService.showError('', 'Insufficient Balance');
-      }
+  disableForm() {
+    if (this.namespaceForm.enabled) {
+      this.namespaceForm.disable();
     }
   }
 
   /**
    *
    *
-   * @param {string} hash
    * @memberof CreateNamespaceComponent
    */
-  setTimeOutValidate(hash: string) {
-    setTimeout(() => {
-      let exist = false;
-      for (let element of this.transactionReady) {
-        if (hash === element.hash) {
-          exist = true;
-        }
-      }
-
-      (exist) ? '' : this.sharedService.showWarning('', 'An error has occurred');
-    }, 5000);
+  enableForm() {
+    if (this.namespaceForm.disabled) {
+      this.namespaceForm.enable();
+    }
   }
-
 
   /**
    *
@@ -348,7 +314,6 @@ export class CreateNamespaceComponent implements OnInit {
         this.namespaceInfo = [];
         if (namespaceInfo !== null && namespaceInfo !== undefined) {
           for (let data of namespaceInfo) {
-            // console.log('data---> ', data)
             let rootResponse = null;
             if (data.namespaceInfo.depth === 1) {
               rootResponse = this.namespaceService.getRootNamespace(data, data.namespaceInfo.active, this.namespace, this.namespaceInfo);
@@ -386,25 +351,246 @@ export class CreateNamespaceComponent implements OnInit {
   /**
    *
    *
-   * @memberof CreateNamespaceComponent
-   */
-  getBlock$() {
-    this.dataBridgeService.getBlock().subscribe(
-      async response => {
-        this.block = response
-      }
-    );
-  }
-
-  /**
-   *
-   *
    * @param {string} quantity
    * @returns
    * @memberof CreateNamespaceComponent
    */
   getQuantity(quantity: string) {
     return this.sharedService.amountFormat(quantity);
+  }
+
+  /**
+   *
+   *
+   * @param {*} e
+   * @memberof CreateNamespaceComponent
+   */
+  limitDuration(e: any) {
+    if (isNaN(parseInt(e.target.value))) {
+      e.target.value = '';
+      this.namespaceForm.get('duration').setValue('');
+    } else {
+      if (parseInt(e.target.value) > 365) {
+        e.target.value = '365'
+      } else if (parseInt(e.target.value) < 1) {
+        e.target.value = '';
+        this.namespaceForm.get('duration').setValue('');
+      }
+    }
+  }
+
+  /**
+   *
+   *
+   * @memberof CreateNamespaceComponent
+   */
+  selectCosignatory(event: { disabledForm: boolean, cosignatory: AccountsInterface }) {
+    console.log('event', event);
+    if (event) {
+      if (event.disabledForm) {
+        this.insufficientBalanceCosignatory = true;
+        this.disableForm();
+      } else {
+        this.insufficientBalanceCosignatory = false;
+        this.cosignatory = event.cosignatory;
+        console.log(this.cosignatory);
+      }
+    } else {
+      this.insufficientBalanceCosignatory = false;
+      this.cosignatory = null;
+    }
+  }
+
+  /**
+   *
+   *
+   * @param {*} common
+   * @returns {Promise<any>}
+   * @memberof CreateNamespaceComponent
+   */
+  signedTransaction(common: any): SignedTransaction {
+    let signedTransaction = null;
+    const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
+    const generationHash = this.dataBridge.blockInfo.generationHash;
+    if (this.typeNamespace == 1) {
+      signedTransaction = account.sign(this.registerRootNamespaceTransaction, generationHash); //Update-sdk-dragon
+    } else if (this.typeNamespace == 2) {
+      signedTransaction = account.sign(this.registersubamespaceTransaction, generationHash); //Update-sdk-dragon
+    }
+
+    return signedTransaction;
+  }
+
+  /**
+   *
+   *
+   * @param {AccountsInterface} event
+   * @memberof CreateNamespaceComponent
+   */
+  selectAccountDebitFunds(account: AccountsInterface) {
+    setTimeout(() => {
+      const amountAccount = this.walletService.getAmountAccount(account.address);
+      this.amountAccount = Number(this.transactionService.amountFormatterSimple(amountAccount).replace(/,/g, ''));
+      this.sender = account;
+      this.typeTx = (this.transactionService.validateIsMultisigAccount(this.sender)) ? 2 : 1;
+      this.getNamespaces();
+      this.validateRentalFee();
+      this.validateFee();
+    });
+  }
+
+  /**
+   *
+   *
+   * @memberof CreateNamespaceComponent
+   */
+  subscribeValueChange() {
+    // Duration ValueChange
+    this.namespaceForm.get('duration').valueChanges.subscribe(next => {
+      if (next <= 365) {
+        if (next !== null && next !== undefined && String(next) !== '0' && next !== '') {
+          if (this.showDuration) {
+            this.durationByBlock = this.transactionService.calculateDurationforDay(next).toString();
+            console.log('call 1');
+            this.validateRentalFee();
+            // console.log(this.durationByBlock);
+          }
+        } else {
+          this.calculateRentalFee = '0.000000';
+        }
+      } else {
+        this.durationByBlock = this.transactionService.calculateDurationforDay(365).toString();
+        console.log('call 2');
+        this.validateRentalFee();
+      }
+
+      this.duration = parseFloat(this.durationByBlock);
+      this.validateFee();
+    });
+
+    // namespaceRoot ValueChange
+    this.namespaceForm.get('namespaceRoot').valueChanges.subscribe(namespaceRoot => {
+      if (namespaceRoot === null || namespaceRoot === undefined) {
+        this.namespaceForm.get('namespaceRoot').setValue('1');
+      } else if (namespaceRoot === '' || namespaceRoot === '1') {
+        this.typeNamespace = 1;
+        this.lengthNamespace = this.configurationForm.namespaceName.maxLength;
+        this.namespaceForm.get('duration').setValidators([Validators.required]);
+        this.showDuration = true;
+        this.durationByBlock = this.transactionService.calculateDurationforDay(this.namespaceForm.get('duration').value).toString();
+        console.log('call 3');
+        this.validateRentalFee();
+      } else {
+        this.typeNamespace = 2;
+        this.lengthNamespace = this.configurationForm.subNamespaceName.maxLength;
+        this.namespaceForm.get('duration').patchValue('');
+        this.namespaceForm.get('duration').clearValidators();
+        this.namespaceForm.get('duration').updateValueAndValidity();
+        this.showDuration = false;
+        this.durationByBlock = '0';
+        this.calculateRentalFee = '10.000000';
+        console.log('call 4');
+        this.validateRentalFee();
+      }
+
+      this.validateFee();
+    });
+
+    // NamespaceName ValueChange
+    this.namespaceForm.get('name').valueChanges.subscribe(name => {
+      const formatter = name.toLowerCase().replace(/[^a-z0-9]/gi, '').trim();
+      if (formatter !== name) {
+        this.namespaceForm.get('name').setValue(formatter);
+      }
+
+      this.namespaceName = formatter;
+      this.validateFee()
+    })
+  }
+
+  /**
+   *
+   *
+   * @memberof CreateNamespaceComponent
+   */
+  validateFee() {
+    if (this.namespaceName !== undefined && this.namespaceName !== '') {
+      if (this.typeNamespace == 1) {
+        this.registerRootNamespaceTransaction = this.proximaxProvider.registerRootNamespaceTransaction(
+          this.namespaceName,
+          this.walletService.currentAccount.network,
+          this.duration
+        );
+
+        this.fee = this.transactionService.amountFormatterSimple(this.registerRootNamespaceTransaction.maxFee.compact());
+      } else if (this.typeNamespace == 2) {
+        const rootNamespaceName = this.namespaceForm.get('namespaceRoot').value;
+        this.registersubamespaceTransaction = this.proximaxProvider.registersubNamespaceTransaction(
+          rootNamespaceName,
+          this.namespaceName,
+          this.walletService.currentAccount.network
+        );
+
+        this.fee = this.transactionService.amountFormatterSimple(this.registersubamespaceTransaction.maxFee.compact());
+      }
+    } else {
+      this.fee = '0.000000';
+    }
+
+    const validateAmount = this.transactionService.validateBuildSelectAccountBalance(this.amountAccount, Number(this.fee), Number(this.calculateRentalFee.replace(/,/g, '')));
+    if (!validateAmount) {
+      this.insufficientBalance = true;
+      this.insufficientBalanceDuration = false;
+    } else {
+      console.log('call 5');
+      this.validateRentalFee();
+    }
+  }
+
+  /**
+   *
+   *
+   * @memberof CreateNamespaceComponent
+   */
+  validateRentalFee() {
+    console.log('entra.....');
+    const amount = this.rentalFee * parseFloat(this.durationByBlock);
+    this.calculateRentalFee = this.transactionService.amountFormatterSimple(amount);
+    if (this.namespaceForm.get('namespaceRoot').value === '' || this.namespaceForm.get('namespaceRoot').value === '1') {
+      if (this.amountAccount < this.minimiumFeeRentalFeeToRoot) {
+        // ********** INSUFFICIENT BALANCE*************
+        this.insufficientBalance = true;
+        this.insufficientBalanceDuration = false;
+        this.disableForm();
+      } else {
+        if (this.amountAccount < Number(this.calculateRentalFee)) {
+          // **********DURATION INSUFFICIENT BALANCE*************
+          this.insufficientBalance = false;
+          this.insufficientBalanceDuration = true;
+        } else {
+          console.log('JABILITALO...');
+          if (!this.insufficientBalanceCosignatory) {
+            this.insufficientBalance = false;
+            this.insufficientBalanceDuration = false;
+            this.enableForm();
+          }
+        }
+      }
+    } else {
+      const invalidBalance = this.amountAccount < Number(this.transactionService.amountFormatterSimple(this.minimiumFeeRentalFeeToSub));
+      if (invalidBalance) {
+        // **********DURATION INSUFFICIENT BALANCE*************
+        this.insufficientBalance = true;
+        this.insufficientBalanceDuration = false;
+      } else {
+        if (!this.insufficientBalanceCosignatory) {
+          this.calculateRentalFee = '10,000.000000';
+          this.insufficientBalance = false;
+          this.insufficientBalanceDuration = false;
+          this.enableForm();
+        }
+      }
+    }
   }
 
   /**
@@ -428,16 +614,28 @@ export class CreateNamespaceComponent implements OnInit {
     return validation;
   }
 
+  // ------------------------------------------------------------------------------------------------------------------------
+
+
   /**
    *
    *
-   * @param {(string | (string | number)[])} control
-   * @returns
+   * @param {string} hash
    * @memberof CreateNamespaceComponent
    */
-  getInput(control: string | (string | number)[]) {
-    return this.namespaceForm.get(control);
+  setTimeOutValidate(hash: string) {
+    setTimeout(() => {
+      let exist = false;
+      for (let element of this.transactionReady) {
+        if (hash === element.hash) {
+          exist = true;
+        }
+      }
+
+      (exist) ? '' : this.sharedService.showWarning('', 'An error has occurred');
+    }, 5000);
   }
+
 
   /**
    *
@@ -446,10 +644,8 @@ export class CreateNamespaceComponent implements OnInit {
    */
   getTransactionStatus() {
     this.transactionStatus = true;
-    // Get transaction status
     this.subscription.push(this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
-        // this.blockBtnSend = false;
         if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
           for (let element of this.transactionSigned) {
             const match = statusTransaction['hash'] === element.hash;
@@ -457,9 +653,9 @@ export class CreateNamespaceComponent implements OnInit {
               this.transactionReady.push(element);
               this.blockBtnSend = false;
             }
+
             if (statusTransaction['type'] === 'confirmed' && match) {
               this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
-            } else if (statusTransaction['type'] === 'unconfirmed' && match) {
             } else if (match) {
               this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
             }
@@ -468,141 +664,4 @@ export class CreateNamespaceComponent implements OnInit {
       }
     ));
   }
-
-  /**
-   *
-   *
-   * @param {*} e
-   * @memberof CreateNamespaceComponent
-   */
-  limitDuration(e) {
-    if (isNaN(parseInt(e.target.value))) {
-      e.target.value = '';
-      this.namespaceForm.get('duration').setValue('');
-    } else {
-      if (parseInt(e.target.value) >  365) {
-        e.target.value = '365'
-      } else if (parseInt(e.target.value) < 1) {
-        e.target.value = '';
-        this.namespaceForm.get('duration').setValue('');
-      }
-    }
-  }
-  /**
-   *
-   *
-   * @param {*} common
-   * @returns {Promise<any>}
-   * @memberof CreateNamespaceComponent
-   */
-  signedTransaction(common: any): SignedTransaction {
-    let signedTransaction = null;
-    const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
-    const generationHash = this.dataBridge.blockInfo.generationHash;
-    if (this.typetransfer == 1) {
-      signedTransaction = account.sign(this.registerRootNamespaceTransaction, generationHash); //Update-sdk-dragon
-    } else if (this.typetransfer == 2) {
-      signedTransaction = account.sign(this.registersubamespaceTransaction, generationHash); //Update-sdk-dragon
-    }
-
-    return signedTransaction;
-  }
-
-  /**
-   *
-   *
-   * @memberof CreateNamespaceComponent
-   */
-  subscribeValueChange() {
-    // Duration ValueChange
-    this.namespaceForm.get('duration').valueChanges.subscribe(
-      next => {
-        if (next <= 365) {
-          if (next !== null && next !== undefined && String(next) !== '0' && next !== '') {
-            if (this.showDuration) {
-              this.durationByBlock = this.transactionService.calculateDurationforDay(next).toString();
-              this.validateRentalFee(this.rentalFee * parseFloat(this.durationByBlock));
-              // console.log(this.durationByBlock);
-            }
-          } else {
-            this.calculateRentalFee = '0.000000';
-          }
-        } else {
-          this.durationByBlock = this.transactionService.calculateDurationforDay(365).toString();
-          this.validateRentalFee(this.rentalFee * parseFloat(this.durationByBlock));
-        }
-
-        this.duration = parseFloat(this.durationByBlock);
-        // console.log(this.duration);
-        this.builder();
-      }
-    );
-
-    // namespaceRoot ValueChange
-    this.namespaceForm.get('namespaceRoot').valueChanges.subscribe(namespaceRoot => {
-      if (namespaceRoot === null || namespaceRoot === undefined) {
-        this.namespaceForm.get('namespaceRoot').setValue('1');
-      } else {
-        // console.log('namespaceRoot', namespaceRoot);
-        if (namespaceRoot === '' || namespaceRoot === '1') {
-          this.lengthNamespace = this.configurationForm.namespaceName.maxLength;
-          this.namespaceForm.get('duration').setValidators([Validators.required]);
-          this.showDuration = true;
-          this.typetransfer = 1;
-          this.durationByBlock = this.transactionService.calculateDurationforDay(this.namespaceForm.get('duration').value).toString();
-          this.validateRentalFee(this.rentalFee * parseFloat(this.durationByBlock));
-        } else {
-          this.lengthNamespace = this.configurationForm.subNamespaceName.maxLength;
-          this.namespaceForm.get('duration').patchValue('');
-          this.namespaceForm.get('duration').clearValidators();
-          this.namespaceForm.get('duration').updateValueAndValidity();
-          this.showDuration = false;
-          this.typetransfer = 2;
-          this.durationByBlock = '0';
-          this.calculateRentalFee = '10.000000';
-          this.validateRentalFee(parseFloat(this.calculateRentalFee));
-        }
-        this.builder()
-      }
-    });
-
-    // NamespaceName ValueChange
-    this.namespaceForm.get('name').valueChanges.subscribe(name => {
-      const formatter = name.replace(/[^a-z0-9]/gi, '').trim();
-      if (formatter !== name) {
-        this.namespaceForm.get('name').setValue(formatter);
-      }
-
-      // console.log(formatter);
-      this.namespaceName = formatter;
-      this.builder()
-    })
-  }
-
-  /**
-   *
-   *
-   * @param {string} namespace
-   * @param {*} [isParent]
-   * @returns
-   * @memberof CreateNamespaceComponent
-   */
-  validateNamespace(namespace: string, isParent?: any) {
-    // Test if correct length and if name starts with hyphens
-    if (!isParent ? namespace.length > 16 : namespace.length > 64 || /^([_-])/.test(namespace)) {
-      return false;
-    }
-
-    let pattern = /^[A-Za-z0-9.\-_]*$/;
-    // Test if has special chars or space excluding hyphens
-    if (pattern.test(namespace) == false) {
-      this.validateForm = false;
-      return false;
-    } else {
-      this.validateForm = true;
-      return true;
-    }
-  }
-
-
 }

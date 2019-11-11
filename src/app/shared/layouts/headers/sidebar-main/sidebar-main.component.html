@@ -17,8 +17,10 @@
 
             <!-- PARTIAL ICON -->
             <div class="lh-1em d-flex align-items-center justify-content-end mr-08rem pr-04rem line-separator-right-01px">
-              <img class="mr-1rem" *ngIf="viewParcial === false" src="assets/images/img/icon-copy-notification-off-gray.svg" width="20px">
-              <img class="mr-1rem cursor-p" [routerLink]="routePartial" *ngIf="viewParcial === true" src="assets/images/img/icon-copy-notification-on-gray.svg" width="20px">
+              <img class="mr-1rem" *ngIf="viewNotifications === false" src="assets/images/img/icon-copy-notification-off-gray.svg" width="20px">
+              <img class="mr-1rem cursor-p" [routerLink]="routeNotification" *ngIf="viewNotifications === true" src="assets/images/img/icon-copy-notification-on-gray.svg" width="20px">
+              <!-- viewParcial === false &&  -->
+              <!-- viewParcial === true || -->
               <!-- <a [routerLink]="routePartial"><i class="fa fa-bell" aria-hidden="true"></i></a> -->
             </div>
 
