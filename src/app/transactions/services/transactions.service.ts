@@ -37,7 +37,7 @@ import { SharedService } from "../../shared/services/shared.service";
 export interface TransferInterface {
   common: { password?: any; privateKey?: any };
   recipient: string;
-  message: string;
+  message: any;
   network: NetworkType;
   mosaic: any;
 }
@@ -300,7 +300,7 @@ export class TransactionsService {
       Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
       recipientAddress,
       allMosaics,
-      PlainMessage.create(params.message),
+      params.message,
       params.network
     );
 

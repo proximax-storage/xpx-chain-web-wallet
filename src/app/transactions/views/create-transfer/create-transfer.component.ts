@@ -6,7 +6,7 @@ import {
   AbstractControl
 } from "@angular/forms";
 import { Router } from '@angular/router';
-import { MosaicId, SignedTransaction, UInt64, AccountInfo, HashLockTransaction, Deadline, Mosaic, AggregateTransaction, Account, TransactionHttp, LockFundsTransaction, TransferTransaction, PlainMessage } from "tsjs-xpx-chain-sdk";
+import { MosaicId, SignedTransaction, UInt64, AccountInfo, HashLockTransaction, Deadline, Mosaic, AggregateTransaction, Account, TransactionHttp, LockFundsTransaction, TransferTransaction, PlainMessage, EncryptedMessage } from "tsjs-xpx-chain-sdk";
 import { MosaicService, MosaicsStorage } from "../../../servicesModule/services/mosaic.service";
 import { ProximaxProvider } from "../../../shared/services/proximax.provider";
 import { DataBridgeService } from "../../../shared/services/data-bridge.service";
@@ -89,6 +89,11 @@ export class CreateTransferComponent implements OnInit {
   haveBalance = false;
   mosaicsToSend: any[];
 
+  typeMessage = '1'
+  recipientInfo = null
+  encryptedMsgDisable = true
+  messageMaxLength: number
+
   constructor(
     private dataBridge: DataBridgeService,
     private fb: FormBuilder,
@@ -108,12 +113,13 @@ export class CreateTransferComponent implements OnInit {
    */
   ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
-    this.charRest = this.configurationForm.message.maxLength;
+    this.charRest = 0 //this.configurationForm.message.maxLength;
     this.createFormTransfer();
     this.subscribeValue();
     this.booksAddress();
     this.getAccountInfo();
-
+    this.typeMessage = '1';
+    this.messageMaxLength = this.configurationForm.message.maxLength;
 
     const amount = this.transactionService.getDataPart(this.amountFormatterSimple(this.feeCosignatory), 6);
     const formatterAmount = `<span class="fs-085rem">${amount.part1}</span><span class="fs-07rem">${amount.part2}</span>`;
@@ -266,6 +272,19 @@ export class CreateTransferComponent implements OnInit {
     this.passwordMain = newType;
   }
 
+  changeMessageType(event) {
+    this.typeMessage = event
+    // console.log(event, this.configurationForm);
+
+    if (this.typeMessage === '1' || this.typeMessage === '2') {
+      this.messageMaxLength = this.configurationForm.message.maxLength
+    } else {
+      this.messageMaxLength = this.configurationForm.encryptedMessage.maxLength
+    }
+    let recipient = this.formTransfer.get("amountXpx").value
+    // console.log(event, recipient);
+  }
+
   /**
   *
   *
@@ -290,7 +309,7 @@ export class CreateTransferComponent implements OnInit {
         }
       });
 
-      this.charRest = this.configurationForm.message.maxLength;
+      this.charRest = 0 //this.configurationForm.message.maxLength;
       const accountFiltered = this.walletService.filterAccountInfo(this.sender.name);
       if (accountFiltered) {
         await this.buildCurrentAccountInfo(accountFiltered.accountInfo);
@@ -448,16 +467,19 @@ export class CreateTransferComponent implements OnInit {
     if (custom !== undefined) {
       this.cosignatorie = null;
       if (formControl !== undefined) {
+        this.charRest = 0
         this.formTransfer.controls[formControl].get(custom).reset();
         this.fee = '0.037250'
         return;
       }
 
+      this.charRest = 0
       this.formTransfer.get(custom).reset();
       this.fee = '0.037250'
       return;
     }
 
+    this.charRest = 0
     this.formTransfer.reset();
     this.fee = '0.037250'
     return;
@@ -830,13 +852,16 @@ export class CreateTransferComponent implements OnInit {
             // console.log('COSIGNATARIO SELECCIONADO ----> ', this.cosignatorie);*/
             const generationHash = this.dataBridge.blockInfo.generationHash;
             if (this.walletService.decrypt(common, this.cosignatorie)) {
+              // console.log(this.typeMessage, common);
+
               const params: TransferInterface = {
                 common: common,
                 recipient: (this.formTransfer.get("accountRecipient").value),
-                message: (this.formTransfer.get("message").value === null) ? "" : this.formTransfer.get("message").value,
+                message: this.verifyMessage(this.formTransfer.get("message").value, common['privateKey']),
                 network: this.walletService.currentAccount.network,
                 mosaic: mosaicsToSend
               };
+              // console.log('True', params);
 
               const cosignatoryAccount = Account.createFromPrivateKey(params.common.privateKey, params.network);
               const recipientAddress = this.proximaxProvider.createFromRawAddress(params.recipient);
@@ -854,7 +879,7 @@ export class CreateTransferComponent implements OnInit {
                 Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
                 recipientAddress,
                 allMosaics,
-                PlainMessage.create(params.message),
+                params.message,
                 params.network
               );
 
@@ -880,15 +905,20 @@ export class CreateTransferComponent implements OnInit {
             break;
           case false:
             if (this.walletService.decrypt(common, this.sender)) {
+              // console.log(this.typeMessage, common);
+
               const params: TransferInterface = {
                 common: common,
                 recipient: (this.formTransfer.get("accountRecipient").value),
-                message: (this.formTransfer.get("message").value === null) ? "" : this.formTransfer.get("message").value,
+                message: this.verifyMessage(this.formTransfer.get("message").value, common['privateKey']),
                 network: this.walletService.currentAccount.network,
                 mosaic: mosaicsToSend
               };
 
+              // console.log('False', params);
+
               const transferBuilder = this.transactionService.buildTransferTransaction(params);
+
               this.transactionSigned.push(transferBuilder.signedTransaction);
               this.saveContactFn();
               this.clearForm();
@@ -943,6 +973,9 @@ export class CreateTransferComponent implements OnInit {
     if (event !== undefined && event.value !== '') {
       this.formTransfer.get('accountRecipient').patchValue(event.value);
     }
+
+    this.verifyRecipientInfo(this.formTransfer.get('accountRecipient').value)
+
   }
 
   /**
@@ -992,11 +1025,32 @@ export class CreateTransferComponent implements OnInit {
 
     this.subscription.push(this.formTransfer.get('message').valueChanges.subscribe(val => {
       if (val && val !== '') {
-        this.charRest = this.configurationForm.message.maxLength - val.length;
+        this.charRest = val.length//this.configurationForm.message.maxLength - val.length;
         this.calculateFee(val.length);
       } else {
-        this.charRest = this.configurationForm.message.maxLength;
+        this.charRest = 0;
         this.calculateFee(0);
+      }
+
+
+      if (val && val !== null) {
+        if (this.typeMessage === '1') {
+
+        } else if (this.typeMessage === '2') {
+          let REGEX = /^[a-fA-F0-9]*$/
+          let subREGEX = /[^a-fA-F0-9]*$/
+          if (val.search(REGEX) !== 0) {
+            let subStr = val.replace(subREGEX, '')
+            this.formTransfer.get('message').setValue(subStr)
+          }
+        } else if (this.typeMessage === '3') {
+          let REGEX = /[^a-zA-Z0-9 ]\s*/
+          if (val.search(REGEX) > -1) {
+            let subStr = val.replace(REGEX, '')
+            this.formTransfer.get('message').setValue(subStr)
+
+          }
+        }
       }
     }));
 
@@ -1178,6 +1232,79 @@ export class CreateTransferComponent implements OnInit {
     // console.log(mosaics);
 
     return mosaics;
+  }
+
+  verifyMessage(message, senderPrivateKey) {
+    let result
+    if (message !== null && message !== '') {
+      switch (this.typeMessage) {
+        case '1':
+          result = PlainMessage.create(message)
+          // console.log('Plain Message', result);
+          break;
+
+        case '2':
+          result = PlainMessage.create(message)
+          // console.log('Hex Message', result);
+          break;
+
+        case '3':
+          console.log(senderPrivateKey);
+
+          result = EncryptedMessage.create(message, this.recipientInfo.publicAccount, senderPrivateKey);
+          // console.log('Encrypted Message', result);
+          break;
+      }
+    } else {
+      result = PlainMessage.create('');
+    }
+
+    // console.log(result);
+
+
+    return result;
+  }
+
+
+  getValueAndVerify() {
+    let recipientValue = (this.formTransfer.get('accountRecipient').value.includes('-')) ?
+    this.formTransfer.get('accountRecipient').value.split('-').join('') :
+    this.formTransfer.get('accountRecipient').value
+
+    // console.log('get value and verify',recipientValue);
+
+    if (recipientValue.length === 40 || recipientValue.length === 46) {
+      this.verifyRecipientInfo(recipientValue)
+    }
+  }
+
+  async verifyRecipientInfo(recipient) {
+    // console.log(recipient);
+    const invalidPublicKey = "0000000000000000000000000000000000000000000000000000000000000000"
+    let net = environment.typeNetwork.value
+    let address;
+
+    address = this.proximaxProvider.createFromRawAddress(recipient)
+
+    try {
+      if ([null].includes(recipient) === false) {
+        let accountInfo = await this.proximaxProvider.getAccountInfo(address).toPromise()
+        if (accountInfo.publicKey === invalidPublicKey) {
+          throw `The receiver's public key is not valid for sending encrypted messages`;
+        }
+        this.recipientInfo = accountInfo
+        this.encryptedMsgDisable = false
+        // console.log(this.recipientInfo, this.encryptedMsgDisable);
+      }
+    } catch (error) {
+      console.warn(error);
+      if (error.statusCode && error.statusCode === 404) {
+        this.encryptedMsgDisable = true
+      } else if ([undefined, null].includes(error.statusCode) && typeof error === 'string') {
+        this.sharedService.showError('', error)
+        this.encryptedMsgDisable = true
+      }
+    }
   }
 
   /**

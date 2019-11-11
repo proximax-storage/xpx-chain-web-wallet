@@ -61,7 +61,7 @@
 
               <!-- TYPE TRANSFER TRANSACTION -->
               <app-transfer-type-bonded [transferTransactionBonded]="innerTransaction"
-                *ngIf="innerTransaction.type === typeTransactions.transfer.id">
+                *ngIf="innerTransaction.type === typeTransactions.transfer.id" [signer]="aggregateBonded">
               </app-transfer-type-bonded>
             </mdb-accordion-item-body>
           </mdb-accordion-item>

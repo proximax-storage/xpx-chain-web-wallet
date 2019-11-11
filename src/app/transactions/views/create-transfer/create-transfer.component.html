@@ -198,7 +198,7 @@
               <input mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
                 class="form-control form-control-sm input-border" style="border: 2px solid #306EB5;"
                 placeholder="Recipient" formControlName="accountRecipient" id="recipient-invalid-{{invalidRecipient}}"
-                [maxlength]="configurationForm.address.maxLength" [minlength]="configurationForm.address.minLength">
+                [maxlength]="configurationForm.address.maxLength" [minlength]="configurationForm.address.minLength" (change)="getValueAndVerify()">
               <mdb-error
                 *ngIf="validateInput('accountRecipient').invalid && (validateInput('accountRecipient').dirty || validateInput('accountRecipient').touched)">
                 <span class="fs-08rem fw-600 color-error-message">Invalid Recipient</span>
@@ -348,6 +348,60 @@
       </div>
     </div>
 
+    <!-- MESSAGE SELECTOR -->
+    <div class="row">
+      <div class="col-11 col-md-10 col-lg-8 mx-auto">
+        <div class="box-grey d-flex justify-content-center pt-09rem pb-09rem">
+          <div class="row">
+            <div class="col-12 col-sm-4 fw-600 d-flex justify-content-center justify-content-sm-end">
+              <div class="form-check form-check-inline">
+                <input type="radio" [(ngModel)]="typeMessage" [ngModelOptions]="{standalone: true}"
+                  (ngModelChange)="changeMessageType($event)" value="1" class="form-check-input" id="plainMessage"
+                  name="typeMessage" checked>
+                <label class="form-check-label" for="plainMessage">Plain</label>
+              </div>
+            </div>
+
+            <div class="col-12 col-sm-4 fw-600 d-flex justify-content-center justify-content-sm-center">
+              <div class="form-check form-check-inline">
+                <input type="radio" [(ngModel)]="typeMessage" [ngModelOptions]="{standalone: true}"
+                  (ngModelChange)="changeMessageType($event)" value="2" class="form-check-input" id="hexMessage"
+                  name="typeMessage">
+                <label class="form-check-label" for="hexMessage">Hexadecimal</label>
+              </div>
+            </div>
+
+            <div class="col-12 col-sm-4 fw-600 d-flex justify-content-center justify-content-sm-start">
+              <div class="form-check form-check-inline">
+                <input type="radio" [(ngModel)]="typeMessage" [ngModelOptions]="{standalone: true}"
+                  (ngModelChange)="changeMessageType($event)" value="3" class="form-check-input" id="encrypMessage"
+                  name="typeMessage" [disabled]="encryptedMsgDisable">
+                <label class="form-check-label" for="encrypMessage">Encrypted</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MESSAGE -->
+    <div class="row">
+      <div class="col-11 col-md-10 col-lg-8 mx-auto">
+        <div class="md-form form-sm mt-1rem mb-0rem">
+          <img class="form-control-feedback" src="assets/images/img/icon-messenger-green-16h-proximax-sirius-wallet.svg"
+            alt="" style="padding: 30px 10px !important">
+          <textarea mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
+            id="message" class="md-textarea form-control" mdbInput placeholder="Message" formControlName="message"
+            [maxlength]="messageMaxLength"></textarea>
+          <span class="fs-08rem text-cl-m d-flex justify-content-end">{{ charRest }} / {{ messageMaxLength }}</span>
+          <mdb-error
+            *ngIf="validateInput('message').invalid && (validateInput('message').dirty || validateInput('message').touched)">
+            <span>Invalid Recipient</span>
+          </mdb-error>
+        </div>
+      </div>
+    </div>
+
     <!-- FEE + LOCKFUND -->
     <ng-container
       *ngIf="sender?.isMultisign && sender?.isMultisign.cosignatories && sender?.isMultisign.cosignatories.length > 0; else showOnlyFee">
@@ -358,8 +412,8 @@
               <div class="box-grey d-flex justify-content-center pt-1-3rem pb-1-3rem">
                 <div class="row">
                   <div class="col-12 text-center">
-                    <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
-                      width="20" alt="">
+                    <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20"
+                      alt="">
                     <!-- <span class="fs-07rem">Unconfirmed/Recommended Fee: {{fee}} XPX <br></span> -->
                     <span class="fs-08rem">
                       Unconfirmed/Recommended Fee:&nbsp;
@@ -374,8 +428,8 @@
               <div class="box-grey pt-08rem pb-08rem d-flex justify-content-center">
                 <div class="row">
                   <div class="col-12 d-flex align-items-center">
-                    <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
-                      width="20" alt="">
+                    <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20"
+                      alt="">
 
                     <span class="fs-08rem">
                       LockFund:&nbsp;
@@ -393,7 +447,6 @@
         </div>
       </div>
     </ng-container>
-
 
     <!-- ONLY FEE -->
     <ng-template #showOnlyFee>
@@ -415,24 +468,6 @@
         </div>
       </div>
     </ng-template>
-
-    <!-- MESSAGE -->
-    <div class="row">
-      <div class="col-11 col-md-10 col-lg-8 mx-auto">
-        <div class="md-form form-sm mt-1rem mb-0rem">
-          <img class="form-control-feedback" src="assets/images/img/icon-messenger-green-16h-proximax-sirius-wallet.svg"
-            alt="" style="padding: 30px 10px !important">
-          <textarea mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
-            id="message" class="md-textarea form-control" mdbInput placeholder="Message" formControlName="message"
-            [maxlength]="configurationForm.message.maxLength"></textarea>
-          <span class="fs-08rem text-cl-m d-flex justify-content-end">{{ charRest }}</span>
-          <mdb-error
-            *ngIf="validateInput('message').invalid && (validateInput('message').dirty || validateInput('message').touched)">
-            <span>Invalid Recipient</span>
-          </mdb-error>
-        </div>
-      </div>
-    </div>
 
     <!-- password -->
     <div class="row">
