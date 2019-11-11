@@ -1265,6 +1265,7 @@ export class CreateTransferComponent implements OnInit {
     return result;
   }
 
+
   getValueAndVerify() {
     let recipientValue = (this.formTransfer.get('accountRecipient').value.includes('-')) ?
     this.formTransfer.get('accountRecipient').value.split('-').join('') :
