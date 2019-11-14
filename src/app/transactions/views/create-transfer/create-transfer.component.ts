@@ -1053,21 +1053,15 @@ export class CreateTransferComponent implements OnInit {
             }
           }
         } else if (this.typeMessage === '2') {
-          let REGEX = /[^a-fA-F0-9]*$/
+          let REGEX = /[^A-Fa-f0-9]/g
           console.log(val, val.search(REGEX));
 
           if (val.search(REGEX) > -1) {
             let subStr = val.replace(REGEX, '')
             console.log('>', subStr);
 
-            // this.formTransfer.get('message').setValue(subStr)
+            this.formTransfer.get('message').setValue(subStr)
           }
-        // } else if (this.typeMessage === '3') {
-        //   let REGEX = /[^a-zA-Z0-9 ]\s*/
-        //   if (val.search(REGEX) > -1) {
-        //     let subStr = val.replace(REGEX, '')
-        //     this.formTransfer.get('message').setValue(subStr)
-        //   }
         }
       }
     }));
