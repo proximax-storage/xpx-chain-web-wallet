@@ -54,7 +54,7 @@
     "nem-sdk": "^1.5.1",
     "ng-block-ui": "^2.1.7",
     "ng-pick-datetime": "^7.0.0",
-    "ng-uikit-pro-standard": "git+https://oauth2:xds7fpVXkw8SnNJdDtUE@git.mdbootstrap.com/mdb/angular/ng-uikit-pro-standard.git",
+    "ng-uikit-pro-standard": "git+https://oauth2:xds7fpVXkw8SnNJdDtUE@git.mdbootstrap.com/mdb/angular/ng-uikit-pro-standard.git#8.5.0",
     "ngx-chips": "^2.0.2",
     "ngx-clipboard": "^12.2.0",
     "ngx-currency": "^2.0.0",
