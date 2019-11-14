@@ -382,13 +382,13 @@ export class ServicesBoxComponent implements OnInit {
         {
           myFiles: this.services.buildStructureService(
             'Files',
-            false,
+            true,
             '',
             '',
             AppConfig.routes.myFile,
           ), upload: this.services.buildStructureService(
             'Upload File',
-            false,
+            true,
             '',
             '',
             AppConfig.routes.uploadFile
@@ -401,7 +401,7 @@ export class ServicesBoxComponent implements OnInit {
           )
         },
         true,
-        'disable-module'
+        ''//disable-module
       ),
 
       // Agregate transactions
