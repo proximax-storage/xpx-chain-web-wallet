@@ -92,6 +92,7 @@ export class CreateTransferComponent implements OnInit {
   typeMessage = '1'
   recipientInfo = null
   encryptedMsgDisable = true
+  messageWillBeEncrypted = false
   messageMaxLength: number
 
   constructor(
@@ -276,10 +277,17 @@ export class CreateTransferComponent implements OnInit {
     this.typeMessage = event
     // console.log(event, this.configurationForm);
 
-    if (this.typeMessage === '1' || this.typeMessage === '2') {
+    if (this.typeMessage === '1') {
+      if (this.messageWillBeEncrypted === true) {
+        this.messageMaxLength = this.configurationForm.encryptedMessage.maxLength
+        this.formTransfer.get('message').setValue('')
+      } else {
+        this.messageMaxLength = this.configurationForm.message.maxLength
+        this.formTransfer.get('message').setValue('')
+      }
+    } else if (this.typeMessage === '2') {
       this.messageMaxLength = this.configurationForm.message.maxLength
-    } else {
-      this.messageMaxLength = this.configurationForm.encryptedMessage.maxLength
+      this.formTransfer.get('message').setValue('')
     }
     let recipient = this.formTransfer.get("amountXpx").value
     // console.log(event, recipient);
@@ -975,7 +983,9 @@ export class CreateTransferComponent implements OnInit {
     }
 
     this.verifyRecipientInfo(this.formTransfer.get('accountRecipient').value)
-
+    this.formTransfer.get('message').setValue('')
+    this.typeMessage = '1'
+    this.messageWillBeEncrypted = false
   }
 
   /**
@@ -1035,21 +1045,29 @@ export class CreateTransferComponent implements OnInit {
 
       if (val && val !== null) {
         if (this.typeMessage === '1') {
-
-        } else if (this.typeMessage === '2') {
-          let REGEX = /^[a-fA-F0-9]*$/
-          let subREGEX = /[^a-fA-F0-9]*$/
-          if (val.search(REGEX) !== 0) {
-            let subStr = val.replace(subREGEX, '')
-            this.formTransfer.get('message').setValue(subStr)
+          if (this.messageWillBeEncrypted === true) {
+            let REGEX = /[^a-zA-Z0-9 ]\s*/
+            if (val.search(REGEX) > -1) {
+              let subStr = val.replace(REGEX, '')
+              this.formTransfer.get('message').setValue(subStr)
+            }
           }
-        } else if (this.typeMessage === '3') {
-          let REGEX = /[^a-zA-Z0-9 ]\s*/
+        } else if (this.typeMessage === '2') {
+          let REGEX = /[^a-fA-F0-9]*$/
+          console.log(val, val.search(REGEX));
+
           if (val.search(REGEX) > -1) {
             let subStr = val.replace(REGEX, '')
-            this.formTransfer.get('message').setValue(subStr)
+            console.log('>', subStr);
 
+            // this.formTransfer.get('message').setValue(subStr)
           }
+        // } else if (this.typeMessage === '3') {
+        //   let REGEX = /[^a-zA-Z0-9 ]\s*/
+        //   if (val.search(REGEX) > -1) {
+        //     let subStr = val.replace(REGEX, '')
+        //     this.formTransfer.get('message').setValue(subStr)
+        //   }
         }
       }
     }));
@@ -1239,7 +1257,12 @@ export class CreateTransferComponent implements OnInit {
     if (message !== null && message !== '') {
       switch (this.typeMessage) {
         case '1':
-          result = PlainMessage.create(message)
+
+          if (this.messageWillBeEncrypted === true) {
+            result = EncryptedMessage.create(message, this.recipientInfo.publicAccount, senderPrivateKey);
+          } else {
+            result = PlainMessage.create(message)
+          }
           // console.log('Plain Message', result);
           break;
 
@@ -1247,21 +1270,12 @@ export class CreateTransferComponent implements OnInit {
           result = PlainMessage.create(message)
           // console.log('Hex Message', result);
           break;
-
-        case '3':
-          console.log(senderPrivateKey);
-
-          result = EncryptedMessage.create(message, this.recipientInfo.publicAccount, senderPrivateKey);
-          // console.log('Encrypted Message', result);
-          break;
       }
     } else {
       result = PlainMessage.create('');
     }
 
     // console.log(result);
-
-
     return result;
   }
 
@@ -1336,6 +1350,15 @@ export class CreateTransferComponent implements OnInit {
     }
 
     this.sharedService.showError('User repeated', `The contact "${this.formContact.name}" already exists`);
+  }
+
+  setMessageToEncrypted() {
+    console.log(this.messageWillBeEncrypted);
+    if (this.messageWillBeEncrypted === true) {
+      this.messageMaxLength = this.configurationForm.encryptedMessage.maxLength
+    } else {
+      this.messageMaxLength = this.configurationForm.message.maxLength
+    }
   }
 
   /**

@@ -353,16 +353,16 @@
       <div class="col-11 col-md-10 col-lg-8 mx-auto">
         <div class="box-grey d-flex justify-content-center pt-09rem pb-09rem">
           <div class="row">
-            <div class="col-12 col-sm-4 fw-600 d-flex justify-content-center justify-content-sm-end">
+            <div class="col-12 col-sm-6 fw-600 d-flex justify-content-center justify-content-sm-end">
               <div class="form-check form-check-inline">
                 <input type="radio" [(ngModel)]="typeMessage" [ngModelOptions]="{standalone: true}"
                   (ngModelChange)="changeMessageType($event)" value="1" class="form-check-input" id="plainMessage"
                   name="typeMessage" checked>
-                <label class="form-check-label" for="plainMessage">Plain</label>
+                <label class="form-check-label" for="plainMessage">Regular</label>
               </div>
             </div>
 
-            <div class="col-12 col-sm-4 fw-600 d-flex justify-content-center justify-content-sm-center">
+            <div class="col-12 col-sm-6 fw-600 d-flex justify-content-center justify-content-sm-center">
               <div class="form-check form-check-inline">
                 <input type="radio" [(ngModel)]="typeMessage" [ngModelOptions]="{standalone: true}"
                   (ngModelChange)="changeMessageType($event)" value="2" class="form-check-input" id="hexMessage"
@@ -371,12 +371,30 @@
               </div>
             </div>
 
-            <div class="col-12 col-sm-4 fw-600 d-flex justify-content-center justify-content-sm-start">
+            <!-- <div class="col-12 col-sm-4 fw-600 d-flex justify-content-center justify-content-sm-start">
               <div class="form-check form-check-inline">
                 <input type="radio" [(ngModel)]="typeMessage" [ngModelOptions]="{standalone: true}"
                   (ngModelChange)="changeMessageType($event)" value="3" class="form-check-input" id="encrypMessage"
                   name="typeMessage" [disabled]="encryptedMsgDisable">
                 <label class="form-check-label" for="encrypMessage">Encrypted</label>
+              </div>
+            </div> -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MESSAGE ENCRYPTED -->
+    <div class="row" *ngIf="typeMessage === '1' && encryptedMsgDisable === false">
+      <div class="col-11 col-md-10 col-lg-8 mx-auto">
+        <div class="box-grey d-flex justify-content-center pt-09rem pb-09rem">
+          <div class="row">
+            <div class="col-12 fw-600 d-flex justify-content-center justify-content-sm-end">
+              <div class="form-check form-check-inline">
+                <mdb-checkbox [(ngModel)]="messageWillBeEncrypted" [ngModelOptions]="{standalone: true}"
+                  (ngModelChange)="setMessageToEncrypted()">
+                  <span class="fs-08rem txt-a-center line-h-1-2em mb-06rem">Encrypted</span>
+                </mdb-checkbox>
               </div>
             </div>
           </div>
