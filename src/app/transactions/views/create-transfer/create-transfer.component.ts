@@ -1,33 +1,44 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import {
   FormGroup,
   FormBuilder,
   Validators,
   AbstractControl
-} from "@angular/forms";
-import { Router } from '@angular/router';
-import { MosaicId, SignedTransaction, UInt64, AccountInfo, HashLockTransaction, Deadline, Mosaic, AggregateTransaction, Account, TransactionHttp, LockFundsTransaction, TransferTransaction, PlainMessage, EncryptedMessage } from "tsjs-xpx-chain-sdk";
-import { MosaicService, MosaicsStorage } from "../../../servicesModule/services/mosaic.service";
-import { ProximaxProvider } from "../../../shared/services/proximax.provider";
-import { DataBridgeService } from "../../../shared/services/data-bridge.service";
+} from '@angular/forms';
+import {
+  MosaicId,
+  SignedTransaction,
+  UInt64,
+  AccountInfo,
+  Deadline,
+  Mosaic,
+  Account,
+  TransactionHttp,
+  PlainMessage,
+  EncryptedMessage,
+  TransferTransaction
+} from 'tsjs-xpx-chain-sdk';
+import { Subscription } from 'rxjs';
+import { ModalDirective } from 'ng-uikit-pro-standard';
+import * as FeeCalculationStrategy from 'tsjs-xpx-chain-sdk/dist/src/model/transaction/FeeCalculationStrategy';
+import { MosaicService, MosaicsStorage } from '../../../servicesModule/services/mosaic.service';
+import { ProximaxProvider } from '../../../shared/services/proximax.provider';
+import { DataBridgeService } from '../../../shared/services/data-bridge.service';
 import { WalletService, AccountsInterface, AccountsInfoInterface } from '../../../wallet/services/wallet.service';
 import { SharedService, ConfigurationForm } from '../../../shared/services/shared.service';
 import { TransactionsService, TransferInterface } from '../../services/transactions.service';
 import { environment } from '../../../../environments/environment';
 import { ServicesModuleService, HeaderServicesInterface } from '../../../servicesModule/services/services-module.service';
-import { Subscription } from 'rxjs';
-import { ModalDirective } from 'ng-uikit-pro-standard';
-import { NodeService } from 'src/app/servicesModule/services/node.service';
-import * as FeeCalculationStrategy from 'tsjs-xpx-chain-sdk/dist/src/model/transaction/FeeCalculationStrategy';
-import { AppConfig } from 'src/app/config/app.config';
+import { NodeService } from '../../../servicesModule/services/node.service';
+import { AppConfig } from '../../../config/app.config';
 
 
 @Component({
-  selector: "app-create-transfer",
-  templateUrl: "./create-transfer.component.html",
-  styleUrls: ["./create-transfer.component.css"]
+  selector: 'app-create-transfer',
+  templateUrl: './create-transfer.component.html',
+  styleUrls: ['./create-transfer.component.css']
 })
-export class CreateTransferComponent implements OnInit {
+export class CreateTransferComponent implements OnInit, OnDestroy {
 
   @ViewChild('basicModal', { static: true }) basicModal: ModalDirective;
   accounts: any = [];
@@ -37,15 +48,15 @@ export class CreateTransferComponent implements OnInit {
   balanceXpx = '0.000000';
   boxOtherMosaics = [];
   blockSendButton = false;
-  reloadBtn: boolean = false;
+  reloadBtn = false;
   charRest: number;
   cosignatorie: any = null;
   configurationForm: ConfigurationForm;
-  currentBlock: number = 0;
-  disabledBtnAddMosaic: boolean = false;
-  errorOtherMosaics: boolean = false;
+  currentBlock = 0;
+  disabledBtnAddMosaic = false;
+  errorOtherMosaics = false;
   formTransfer: FormGroup;
-  passwordMain: string = 'password';
+  passwordMain = 'password';
   saveContact: boolean;
   formContact = {
     name: '',
@@ -60,9 +71,9 @@ export class CreateTransferComponent implements OnInit {
   mosaicXpx: { id: string, name: string; divisibility: number } = null;
   listContacts: any = [];
   listCosignatorie: any = [];
-  fee: any = '0.037250'
+  fee: any = '0.037250';
   feeCosignatory: any = 10044500;
-  goBack: string = `/${AppConfig.routes.service}`;
+  goBack = `/${AppConfig.routes.service}`;
   optionsXPX = {
     prefix: '',
     thousands: ',',
@@ -81,7 +92,7 @@ export class CreateTransferComponent implements OnInit {
   // subscribe = ['accountInfo', 'transactionStatus', 'char', 'block'];
   title = 'Make a Transaction';
   transactionHttp: TransactionHttp = null;
-  transactionStatus: boolean = false;
+  transactionStatus = false;
   transactionSigned: SignedTransaction[] = [];
   transactionReady: SignedTransaction[] = [];
   subscription: Subscription[] = [];
@@ -89,11 +100,11 @@ export class CreateTransferComponent implements OnInit {
   haveBalance = false;
   mosaicsToSend: any[];
 
-  typeMessage = '1'
-  recipientInfo = null
-  encryptedMsgDisable = true
-  messageWillBeEncrypted = false
-  messageMaxLength: number
+  typeMessage = '1';
+  recipientInfo = null;
+  encryptedMsgDisable = true;
+  messageWillBeEncrypted = false;
+  messageMaxLength: number;
 
   constructor(
     private dataBridge: DataBridgeService,
@@ -114,7 +125,7 @@ export class CreateTransferComponent implements OnInit {
    */
   ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
-    this.charRest = 0 //this.configurationForm.message.maxLength;
+    this.charRest = 0; // this.configurationForm.message.maxLength;
     this.createFormTransfer();
     this.subscribeValue();
     this.booksAddress();
@@ -125,7 +136,7 @@ export class CreateTransferComponent implements OnInit {
     const amount = this.transactionService.getDataPart(this.amountFormatterSimple(this.feeCosignatory), 6);
     const formatterAmount = `<span class="fs-085rem">${amount.part1}</span><span class="fs-07rem">${amount.part2}</span>`;
     this.msgLockfungCosignatorie = `Cosignatory has sufficient balance (${formatterAmount} XPX) to cover LockFund Fee`;
-    this.transactionHttp = new TransactionHttp(environment.protocol + "://" + `${this.nodeService.getNodeSelected()}`); //change
+    this.transactionHttp = new TransactionHttp(environment.protocol + '://' + `${this.nodeService.getNodeSelected()}`); // change
 
     // Mosaic by default
     this.mosaicXpx = {
@@ -153,14 +164,26 @@ export class CreateTransferComponent implements OnInit {
     }));
   }
 
+
   /**
-  *
-  *
-  * @param {string} amount
-  * @param {(string | [])} mosaicId
-  * @param {number} position
-  * @memberof CreateTransferComponent
-  */
+   *
+   *
+   * @memberof CreateTransferComponent
+   */
+  ngOnDestroy(): void {
+    this.subscription.forEach(subscription => {
+      subscription.unsubscribe();
+    });
+  }
+
+  /**
+   *
+   *
+   * @param {string} amount
+   * @param {(string | [])} mosaicId
+   * @param {number} position
+   * @memberof CreateTransferComponent
+   */
   async amountOtherMosaicChanged(amount: string, mosaicId: string | [], position: number) {
     if (amount !== null && amount !== undefined) {
       const mosaic = await this.mosaicServices.filterMosaics([new MosaicId(mosaicId)]);
@@ -170,17 +193,6 @@ export class CreateTransferComponent implements OnInit {
     } else {
       this.boxOtherMosaics[position].amountToBeSent = '0';
     }
-  }
-
-  /**
-*
-*
-* @param {string} amount
-* @memberof CreateTransferComponent
-*/
-  amountFormatterSimple(amount: any): string {
-    this.calculateFee(this.formTransfer.get('message').value);
-    return this.transactionService.amountFormatterSimple(amount);
   }
 
   /**
@@ -195,8 +207,8 @@ export class CreateTransferComponent implements OnInit {
       if (accountInfo.mosaics.length > 0) {
         const mosaics = await this.mosaicServices.filterMosaics(accountInfo.mosaics.map(n => n.id));
         if (mosaics.length > 0) {
-          for (let mosaic of mosaics) {
-            let configInput = {
+          for (const mosaic of mosaics) {
+            const configInput = {
               prefix: '',
               thousands: ',',
               decimal: '.',
@@ -263,37 +275,6 @@ export class CreateTransferComponent implements OnInit {
 
 
   /**
-   *
-   *
-   * @param {*} inputType
-   * @memberof CreateTransferComponent
-   */
-  changeInputType(inputType) {
-    let newType = this.sharedService.changeInputType(inputType)
-    this.passwordMain = newType;
-  }
-
-  changeMessageType(event) {
-    this.typeMessage = event
-    // console.log(event, this.configurationForm);
-
-    if (this.typeMessage === '1') {
-      if (this.messageWillBeEncrypted === true) {
-        this.messageMaxLength = this.configurationForm.encryptedMessage.maxLength
-        this.formTransfer.get('message').setValue('')
-      } else {
-        this.messageMaxLength = this.configurationForm.message.maxLength
-        this.formTransfer.get('message').setValue('')
-      }
-    } else if (this.typeMessage === '2') {
-      this.messageMaxLength = this.configurationForm.message.maxLength
-      this.formTransfer.get('message').setValue('')
-    }
-    let recipient = this.formTransfer.get("amountXpx").value
-    // console.log(event, recipient);
-  }
-
-  /**
   *
   *
   * @param {AccountsInterface} accountToSend
@@ -317,7 +298,7 @@ export class CreateTransferComponent implements OnInit {
         }
       });
 
-      this.charRest = 0 //this.configurationForm.message.maxLength;
+      this.charRest = 0; // this.configurationForm.message.maxLength;
       const accountFiltered = this.walletService.filterAccountInfo(this.sender.name);
       if (accountFiltered) {
         await this.buildCurrentAccountInfo(accountFiltered.accountInfo);
@@ -336,14 +317,49 @@ export class CreateTransferComponent implements OnInit {
   /**
    *
    *
+   * @param {*} recipient
    * @memberof CreateTransferComponent
    */
-  ngOnDestroy(): void {
-    this.subscription.forEach(subscription => {
-      subscription.unsubscribe();
-    });
+  async verifyRecipientInfo(recipient: string) {
+    // console.log(recipient);
+    const invalidPublicKey = '0000000000000000000000000000000000000000000000000000000000000000'
+    const net = environment.typeNetwork.value;
+    let address;
+
+    address = this.proximaxProvider.createFromRawAddress(recipient);
+
+    try {
+      if ([null].includes(recipient) === false) {
+        const accountInfo = await this.proximaxProvider.getAccountInfo(address).toPromise();
+        if (accountInfo.publicKey === invalidPublicKey) {
+          throw new Error(`The receiver's public key is not valid for sending encrypted messages`);
+        }
+        this.recipientInfo = accountInfo;
+        this.encryptedMsgDisable = false;
+        // console.log(this.recipientInfo, this.encryptedMsgDisable);
+      }
+    } catch (error) {
+      console.warn(error);
+      if (error.statusCode && error.statusCode === 404) {
+        this.encryptedMsgDisable = true;
+      } else if ([undefined, null].includes(error.statusCode) && typeof error === 'string') {
+        this.sharedService.showError('', error);
+        this.encryptedMsgDisable = true;
+      }
+    }
   }
 
+  /**
+   *
+   *
+   * @param {*} amount
+   * @returns {string}
+   * @memberof CreateTransferComponent
+   */
+  amountFormatterSimple(amount: any): string {
+    this.calculateFee(this.formTransfer.get('message').value);
+    return this.transactionService.amountFormatterSimple(amount);
+  }
 
   /**
    *
@@ -354,7 +370,7 @@ export class CreateTransferComponent implements OnInit {
    * @memberof CreateTransferComponent
    */
   addZeros(cant: any, amount: string = '0') {
-    let x = '0';
+    const x = '0';
     if (amount === '0') {
       for (let index = 0; index < cant - 1; index++) {
         amount += x;
@@ -393,10 +409,10 @@ export class CreateTransferComponent implements OnInit {
    *
    * @param signedTransaction
    */
-  announceAggregateBonded(signedTransaction: SignedTransaction) { //change
+  announceAggregateBonded(signedTransaction: SignedTransaction) { // change
     this.transactionHttp.announceAggregateBonded(signedTransaction).subscribe(
       async () => {
-        this.transactionSigned.push(signedTransaction)
+        this.transactionSigned.push(signedTransaction);
       },
       err => {
         this.sharedService.showError('', err);
@@ -420,14 +436,14 @@ export class CreateTransferComponent implements OnInit {
    */
   calculateFee(message: number) {
     this.mosaicsToSend = this.validateMosaicsToSend();
-    const x = TransferTransaction.calculateSize(PlainMessage.create(this.formTransfer.get("message").value).size(), this.mosaicsToSend.length);
+    const x = TransferTransaction.calculateSize(PlainMessage.create(this.formTransfer.get('message').value).size(), this.mosaicsToSend.length);
     const b = FeeCalculationStrategy.calculateFee(x);
     if (message > 0) {
-      this.fee = this.transactionService.amountFormatterSimple(b.compact())
+      this.fee = this.transactionService.amountFormatterSimple(b.compact());
     } else if (message === 0 && this.mosaicsToSend.length === 0) {
-      this.fee = '0.037250'
+      this.fee = '0.037250';
     } else {
-      this.fee = this.transactionService.amountFormatterSimple(b.compact())
+      this.fee = this.transactionService.amountFormatterSimple(b.compact());
     }
   }
 
@@ -466,6 +482,43 @@ export class CreateTransferComponent implements OnInit {
   /**
    *
    *
+   * @param {*} inputType
+   * @memberof CreateTransferComponent
+   */
+  changeInputType(inputType: any) {
+    const newType = this.sharedService.changeInputType(inputType);
+    this.passwordMain = newType;
+  }
+
+  /**
+   *
+   *
+   * @param {string} event
+   * @memberof CreateTransferComponent
+   */
+  changeMessageType(event) {
+    this.typeMessage = event
+    // console.log(event, this.configurationForm);
+
+    if (this.typeMessage === '1') {
+      if (this.messageWillBeEncrypted === true) {
+        this.messageMaxLength = this.configurationForm.encryptedMessage.maxLength
+        this.formTransfer.get('message').setValue('')
+      } else {
+        this.messageMaxLength = this.configurationForm.message.maxLength
+        this.formTransfer.get('message').setValue('')
+      }
+    } else if (this.typeMessage === '2') {
+      this.messageMaxLength = this.configurationForm.message.maxLength
+      this.formTransfer.get('message').setValue('')
+    }
+    let recipient = this.formTransfer.get("amountXpx").value
+    // console.log(event, recipient);
+  }
+
+  /**
+   *
+   *
    * @param {(string | (string | number)[])} [custom]
    * @param {(string | number)} [formControl]
    * @returns
@@ -475,21 +528,21 @@ export class CreateTransferComponent implements OnInit {
     if (custom !== undefined) {
       this.cosignatorie = null;
       if (formControl !== undefined) {
-        this.charRest = 0
+        this.charRest = 0;
         this.formTransfer.controls[formControl].get(custom).reset();
-        this.fee = '0.037250'
+        this.fee = '0.037250';
         return;
       }
 
-      this.charRest = 0
+      this.charRest = 0;
       this.formTransfer.get(custom).reset();
-      this.fee = '0.037250'
+      this.fee = '0.037250';
       return;
     }
 
-    this.charRest = 0
+    this.charRest = 0;
     this.formTransfer.reset();
-    this.fee = '0.037250'
+    this.fee = '0.037250';
     return;
   }
 
@@ -596,7 +649,7 @@ export class CreateTransferComponent implements OnInit {
       this.subscription['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
         statusTransaction => {
           if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
-            for (let element of this.transactionSigned) {
+            for (const element of this.transactionSigned) {
               const match = statusTransaction['hash'] === element.hash;
               if (match) {
                 this.transactionReady.push(element);
@@ -640,7 +693,7 @@ export class CreateTransferComponent implements OnInit {
           const match = statusTransaction['hash'] === signedTransactionHashLock.hash;
           if (statusTransaction['type'] === 'confirmed' && match) {
             setTimeout(() => {
-              this.announceAggregateBonded(signedTransactionBonded)
+              this.announceAggregateBonded(signedTransactionBonded);
               signedTransactionHashLock = null;
             }, environment.delayBetweenLockFundABT);
           } else if (statusTransaction['type'] === 'unconfirmed' && match) {
@@ -822,19 +875,21 @@ export class CreateTransferComponent implements OnInit {
 
 
   /**
-  *
-  */
+   *
+   *
+   * @memberof CreateTransferComponent
+   */
   saveContactFn() {
     this.getBooksAddress = this.serviceModuleService.getBooksAddress();
     if (this.getBooksAddress) {
-      const contact = this.getBooksAddress.find(el => el.value === this.formTransfer.get("accountRecipient").value.split('-').join(''));
+      const contact = this.getBooksAddress.find(el => el.value === this.formTransfer.get('accountRecipient').value.split('-').join(''));
       if (!contact) {
-        this.formContact.address = this.formTransfer.get("accountRecipient").value.split('-').join('');
+        this.formContact.address = this.formTransfer.get('accountRecipient').value.split('-').join('');
         this.saveContact = false;
         this.basicModal.show();
       }
     } else {
-      this.formContact.address = this.formTransfer.get("accountRecipient").value.split('-').join('');
+      this.formContact.address = this.formTransfer.get('accountRecipient').value.split('-').join('');
       this.saveContact = false;
       this.basicModal.show();
     }
@@ -849,8 +904,8 @@ export class CreateTransferComponent implements OnInit {
     if (this.formTransfer.valid && (!this.blockSendButton || !this.errorOtherMosaics)) {
       this.reloadBtn = true;
       this.blockSendButton = true;
-      if (this.transactionService.validateBuildSelectAccountBalance(Number(this.balanceXpx.split(',').join('')), Number(this.fee), Number(this.formTransfer.get("amountXpx").value))) {
-        const common = { password: this.formTransfer.get("password").value };
+      if (this.transactionService.validateBuildSelectAccountBalance(Number(this.balanceXpx.split(',').join('')), Number(this.fee), Number(this.formTransfer.get('amountXpx').value))) {
+        const common = { password: this.formTransfer.get('password').value };
         const mosaicsToSend = this.validateMosaicsToSend();
         const type = (this.cosignatorie) ? true : false;
         switch (type) {
@@ -863,9 +918,9 @@ export class CreateTransferComponent implements OnInit {
               // console.log(this.typeMessage, common);
 
               const params: TransferInterface = {
-                common: common,
-                recipient: (this.formTransfer.get("accountRecipient").value),
-                message: this.verifyMessage(this.formTransfer.get("message").value, common['privateKey']),
+                common,
+                recipient: (this.formTransfer.get('accountRecipient').value),
+                message: this.verifyMessage(this.formTransfer.get('message').value, common['privateKey']),
                 network: this.walletService.currentAccount.network,
                 mosaic: mosaicsToSend
               };
@@ -916,9 +971,9 @@ export class CreateTransferComponent implements OnInit {
               // console.log(this.typeMessage, common);
 
               const params: TransferInterface = {
-                common: common,
-                recipient: (this.formTransfer.get("accountRecipient").value),
-                message: this.verifyMessage(this.formTransfer.get("message").value, common['privateKey']),
+                common,
+                recipient: (this.formTransfer.get('accountRecipient').value),
+                message: this.verifyMessage(this.formTransfer.get('message').value, common['privateKey']),
                 network: this.walletService.currentAccount.network,
                 mosaic: mosaicsToSend
               };
@@ -961,9 +1016,11 @@ export class CreateTransferComponent implements OnInit {
 
   /**
    *
-   * @param $event
+   *
+   * @param {*} $event
+   * @memberof CreateTransferComponent
    */
-  selectCosignatorie($event) {
+  selectCosignatorie($event: any) {
     if ($event) {
       this.cosignatorie = $event.value;
     } else {
@@ -982,10 +1039,10 @@ export class CreateTransferComponent implements OnInit {
       this.formTransfer.get('accountRecipient').patchValue(event.value);
     }
 
-    this.verifyRecipientInfo(this.formTransfer.get('accountRecipient').value)
-    this.formTransfer.get('message').setValue('')
-    this.typeMessage = '1'
-    this.messageWillBeEncrypted = false
+    this.verifyRecipientInfo(this.formTransfer.get('accountRecipient').value);
+    this.formTransfer.get('message').setValue('');
+    this.typeMessage = '1';
+    this.messageWillBeEncrypted = false;
   }
 
   /**
@@ -1021,7 +1078,7 @@ export class CreateTransferComponent implements OnInit {
           this.blockSendButton = false;
           this.msgErrorUnsupported = '';
         }
-      } else if (!this.formTransfer.get('accountRecipient').getError("required") && this.formTransfer.get('accountRecipient').valid) {
+      } else if (!this.formTransfer.get('accountRecipient').getError('required') && this.formTransfer.get('accountRecipient').valid) {
         this.blockSendButton = true;
         this.msgErrorUnsupported = 'Recipient Address Network unsupported';
       } else {
@@ -1035,7 +1092,7 @@ export class CreateTransferComponent implements OnInit {
 
     this.subscription.push(this.formTransfer.get('message').valueChanges.subscribe(val => {
       if (val && val !== '') {
-        this.charRest = val.length//this.configurationForm.message.maxLength - val.length;
+        this.charRest = val.length;
         this.calculateFee(val.length);
       } else {
         this.charRest = 0;
@@ -1046,17 +1103,17 @@ export class CreateTransferComponent implements OnInit {
       if (val && val !== null) {
         if (this.typeMessage === '1') {
           if (this.messageWillBeEncrypted === true) {
-            let REGEX = /[^a-zA-Z0-9 ]\s*/
+            let REGEX = /[^a-zA-Z0-9 ]\s*/;
             if (val.search(REGEX) > -1) {
-              let subStr = val.replace(REGEX, '')
-              this.formTransfer.get('message').setValue(subStr)
+              let subStr = val.replace(REGEX, '');
+              this.formTransfer.get('message').setValue(subStr);
             }
           }
         } else if (this.typeMessage === '2') {
-          let REGEX = /[^A-Fa-f0-9]/g
+          let REGEX = /[^A-Fa-f0-9]/g;
           if (val.search(REGEX) > -1) {
-            let subStr = val.replace(REGEX, '')
-            this.formTransfer.get('message').setValue(subStr)
+            let subStr = val.replace(REGEX, '');
+            this.formTransfer.get('message').setValue(subStr);
           }
         }
       }
@@ -1067,7 +1124,7 @@ export class CreateTransferComponent implements OnInit {
         const a = Number(value);
         let validateAmount = false;
         if (this.sender) {
-          let accountInfo = this.walletService.filterAccountInfo(this.sender.name);
+          const accountInfo = this.walletService.filterAccountInfo(this.sender.name);
           // console.log('Account INfo- ---->', accountInfo);
           if (accountInfo !== undefined && accountInfo !== null && Object.keys(accountInfo).length > 0) {
             if (accountInfo.accountInfo.mosaics.length > 0) {
@@ -1075,14 +1132,14 @@ export class CreateTransferComponent implements OnInit {
                 return element.id.toHex() === new MosaicId(environment.mosaicXpxInfo.id).toHex();
               });
 
-              let arrAmount = value.toString().replace(/,/g, "").split('.');
+              const arrAmount = value.toString().replace(/,/g, '').split('.');
               let decimal;
               let realAmount;
 
               if (arrAmount.length < 2) {
                 decimal = this.addZeros(environment.mosaicXpxInfo.divisibility);
               } else {
-                let arrDecimals = arrAmount[1].split('');
+                const arrDecimals = arrAmount[1].split('');
                 decimal = this.addZeros(environment.mosaicXpxInfo.divisibility - arrDecimals.length, arrAmount[1]);
               }
 
@@ -1138,7 +1195,7 @@ export class CreateTransferComponent implements OnInit {
         });
 
         if (filtered !== undefined && filtered !== null) {
-          let arrAmount = amount.toString().replace(/,/g, "").split('.');
+          const arrAmount = amount.toString().replace(/,/g, '').split('.');
           let decimal;
           let realAmount;
 
@@ -1146,13 +1203,13 @@ export class CreateTransferComponent implements OnInit {
             if (arrAmount.length < 2) {
               decimal = this.addZeros(mosaic.mosaicInfo['properties'].divisibility);
             } else {
-              let arrDecimals = arrAmount[1].split('');
+              const arrDecimals = arrAmount[1].split('');
               decimal = this.addZeros(mosaic.mosaicInfo['properties'].divisibility - arrDecimals.length, arrAmount[1]);
             }
 
-            realAmount = `${arrAmount[0]}${decimal}`
+            realAmount = `${arrAmount[0]}${decimal}`;
           } else {
-            realAmount = arrAmount[0]
+            realAmount = arrAmount[0];
           }
 
           const invalidBalance = Number(realAmount) > filtered.amount.compact();
@@ -1191,18 +1248,18 @@ export class CreateTransferComponent implements OnInit {
    */
   validateMosaicsToSend() {
     const mosaics = [];
-    const amountXpx = this.formTransfer.get("amountXpx").value;
+    const amountXpx = this.formTransfer.get('amountXpx').value;
 
     if (amountXpx !== '' && amountXpx !== null && Number(amountXpx) !== 0) {
       // console.log(amountXpx);
-      let arrAmount = amountXpx.toString().replace(/,/g, "").split('.');
+      const arrAmount = amountXpx.toString().replace(/,/g, '').split('.');
       let decimal;
       let realAmount;
 
       if (arrAmount.length < 2) {
         decimal = this.addZeros(environment.mosaicXpxInfo.divisibility);
       } else {
-        let arrDecimals = arrAmount[1].split('');
+        const arrDecimals = arrAmount[1].split('');
         decimal = this.addZeros(environment.mosaicXpxInfo.divisibility - arrDecimals.length, arrAmount[1]);
       }
       realAmount = `${arrAmount[0]}${decimal}`;
@@ -1214,7 +1271,7 @@ export class CreateTransferComponent implements OnInit {
 
     this.boxOtherMosaics.forEach(element => {
       if (element.id !== '' && element.amount !== '' && Number(element.amount) !== 0) {
-        let arrAmount = element.amount.toString().replace(/,/g, "").split('.');
+        const arrAmount = element.amount.toString().replace(/,/g, '').split('.');
         let decimal;
         let realAmount;
 
@@ -1222,13 +1279,13 @@ export class CreateTransferComponent implements OnInit {
           if (arrAmount.length < 2) {
             decimal = this.addZeros(element.config.precision);
           } else {
-            let arrDecimals = arrAmount[1].split('');
+            const arrDecimals = arrAmount[1].split('');
             decimal = this.addZeros(element.config.precision - arrDecimals.length, arrAmount[1]);
           }
 
-          realAmount = `${arrAmount[0]}${decimal}`
+          realAmount = `${arrAmount[0]}${decimal}`;
         } else {
-          realAmount = arrAmount[0]
+          realAmount = arrAmount[0];
         }
         mosaics.push({
           id: element.id,
@@ -1242,8 +1299,16 @@ export class CreateTransferComponent implements OnInit {
     return mosaics;
   }
 
-  verifyMessage(message, senderPrivateKey) {
-    let result
+  /**
+   *
+   *
+   * @param {string} message
+   * @param {*} senderPrivateKey
+   * @returns
+   * @memberof CreateTransferComponent
+   */
+  verifyMessage(message: string, senderPrivateKey: any) {
+    let result;
     if (message !== null && message !== '') {
       switch (this.typeMessage) {
         case '1':
@@ -1251,13 +1316,13 @@ export class CreateTransferComponent implements OnInit {
           if (this.messageWillBeEncrypted === true) {
             result = EncryptedMessage.create(message, this.recipientInfo.publicAccount, senderPrivateKey);
           } else {
-            result = PlainMessage.create(message)
+            result = PlainMessage.create(message);
           }
           // console.log('Plain Message', result);
           break;
 
         case '2':
-          result = PlainMessage.create(message)
+          result = PlainMessage.create(message);
           // console.log('Hex Message', result);
           break;
       }
@@ -1269,45 +1334,18 @@ export class CreateTransferComponent implements OnInit {
     return result;
   }
 
-
+  /**
+   *
+   *
+   * @memberof CreateTransferComponent
+   */
   getValueAndVerify() {
-    let recipientValue = (this.formTransfer.get('accountRecipient').value.includes('-')) ?
-    this.formTransfer.get('accountRecipient').value.split('-').join('') :
-    this.formTransfer.get('accountRecipient').value
-
-    // console.log('get value and verify',recipientValue);
+    const recipientValue = (this.formTransfer.get('accountRecipient').value.includes('-')) ?
+      this.formTransfer.get('accountRecipient').value.split('-').join('') :
+      this.formTransfer.get('accountRecipient').value;
 
     if (recipientValue.length === 40 || recipientValue.length === 46) {
-      this.verifyRecipientInfo(recipientValue)
-    }
-  }
-
-  async verifyRecipientInfo(recipient) {
-    // console.log(recipient);
-    const invalidPublicKey = "0000000000000000000000000000000000000000000000000000000000000000"
-    let net = environment.typeNetwork.value
-    let address;
-
-    address = this.proximaxProvider.createFromRawAddress(recipient)
-
-    try {
-      if ([null].includes(recipient) === false) {
-        let accountInfo = await this.proximaxProvider.getAccountInfo(address).toPromise()
-        if (accountInfo.publicKey === invalidPublicKey) {
-          throw `The receiver's public key is not valid for sending encrypted messages`;
-        }
-        this.recipientInfo = accountInfo
-        this.encryptedMsgDisable = false
-        // console.log(this.recipientInfo, this.encryptedMsgDisable);
-      }
-    } catch (error) {
-      console.warn(error);
-      if (error.statusCode && error.statusCode === 404) {
-        this.encryptedMsgDisable = true
-      } else if ([undefined, null].includes(error.statusCode) && typeof error === 'string') {
-        this.sharedService.showError('', error)
-        this.encryptedMsgDisable = true
-      }
+      this.verifyRecipientInfo(recipientValue);
     }
   }
 
