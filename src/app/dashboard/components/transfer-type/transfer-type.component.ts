@@ -122,22 +122,22 @@ export class TransferTypeComponent implements OnInit {
    * @memberof TransferTypeComponent
    */
   decryptMessage() {
-    let common = { password: this.password }
-    let firstAccount = this.walletService.currentAccount
+    let common = { password: this.password };
+    let firstAccount = this.walletService.currentAccount;
     if (this.walletService.decrypt(common, firstAccount)) {
-      let recipientMsg = EncryptedMessage.decrypt(this.message, common['privateKey'], this.senderPublicAccount)
-      let senderMsg = EncryptedMessage.decrypt(this.message, common['privateKey'], this.recipientPublicAccount)
+      let recipientMsg = EncryptedMessage.decrypt(this.message, common['privateKey'], this.senderPublicAccount);
+      let senderMsg = EncryptedMessage.decrypt(this.message, common['privateKey'], this.recipientPublicAccount);
       if (firstAccount.address === this.recipientPublicAccount.address.address) {
-        recipientMsg = EncryptedMessage.decrypt(this.message, common['privateKey'], this.senderPublicAccount)
-        this.decryptedMessage = recipientMsg
+        recipientMsg = EncryptedMessage.decrypt(this.message, common['privateKey'], this.senderPublicAccount);
+        this.decryptedMessage = recipientMsg;
       } else {
-        senderMsg = EncryptedMessage.decrypt(this.message, common['privateKey'], this.recipientPublicAccount)
+        senderMsg = EncryptedMessage.decrypt(this.message, common['privateKey'], this.recipientPublicAccount);
         this.decryptedMessage = senderMsg
       }
 
-      this.panelDecrypt = 2
+      this.panelDecrypt = 2;
     } else {
-      this.panelDecrypt = 0
+      this.panelDecrypt = 0;
     }
   }
 
