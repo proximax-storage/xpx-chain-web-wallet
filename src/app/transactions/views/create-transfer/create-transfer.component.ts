@@ -397,7 +397,7 @@ export class CreateTransferComponent implements OnInit {
    *
    * @param signedTransaction
    */
-  announceAggregateBonded(signedTransaction: SignedTransaction) { //change
+  announceAggregateBonded(signedTransaction: SignedTransaction) { // change
     this.transactionHttp.announceAggregateBonded(signedTransaction).subscribe(
       async () => {
         this.transactionSigned.push(signedTransaction)
@@ -627,7 +627,7 @@ export class CreateTransferComponent implements OnInit {
       this.subscription['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
         statusTransaction => {
           if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
-            for (let element of this.transactionSigned) {
+            for (const element of this.transactionSigned) {
               const match = statusTransaction['hash'] === element.hash;
               if (match) {
                 this.transactionReady.push(element);
