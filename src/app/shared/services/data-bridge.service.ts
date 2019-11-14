@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { first } from "rxjs/operators";
+import { first } from 'rxjs/operators';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
-import { Listener, TransactionStatus, BlockInfo, UInt64, Address, AggregateTransactionCosignature } from "tsjs-xpx-chain-sdk";
+import { Listener, TransactionStatus, BlockInfo, UInt64, Address, AggregateTransactionCosignature } from 'tsjs-xpx-chain-sdk';
 import { environment } from '../../../environments/environment';
 import { NodeService } from '../../servicesModule/services/node.service';
 import { SharedService } from './shared.service';
@@ -15,7 +15,7 @@ import { NamespacesService } from '../../servicesModule/services/namespaces.serv
 })
 export class DataBridgeService {
   block: number;
-  url: any
+  url: any;
   connector: Listener[] = [];
   currentWallet: CurrentWalletInterface = null;
   destroyConection = false;
@@ -62,7 +62,7 @@ export class DataBridgeService {
               );
             }
           );
-        }else {
+        } else {
           this.proximaxProvider.getBlockInfo().subscribe(
             (blockInfo: BlockInfo) => {
               this.setblockInfo(blockInfo);
@@ -162,21 +162,21 @@ export class DataBridgeService {
 
 
   /**
-  *
-  * @returns
-  * @memberof DataBridgeService
-  */
+   *
+   *
+   * @returns
+   * @memberof DataBridgeService
+   */
   getBlock() {
     return this.block$;
   }
 
   /**
-  * Get the status from the block
-  *
-  * @param {Listener} connector
-  * @param {HTMLAudioElement} audio
-  * @memberof DataBridgeService
-  */
+   *
+   *
+   * @param {Listener} connector
+   * @memberof DataBridgeService
+   */
   getBlockSocket(connector: Listener) {
     connector.newBlock().subscribe((blockInfo: BlockInfo) => {
       /*console.log('new block -->', blockInfo.numTransactions);
@@ -201,8 +201,8 @@ export class DataBridgeService {
       console.log(aggregateBondedAdded.transactionInfo.hash)
       console.log("------------------------------------------------------------------\n\n")*/
       this.setTransactionStatus({
-        'type': 'aggregateBondedAdded',
-        'hash': aggregateBondedAdded.transactionInfo.hash
+        type: 'aggregateBondedAdded',
+        hash: aggregateBondedAdded.transactionInfo.hash
       });
 
       const aggregateBondedSubject = await this.transactionsService.getAggregateBondedTransactions$().pipe(first()).toPromise();
@@ -231,8 +231,8 @@ export class DataBridgeService {
        console.log(aggregateBondedRemoved)
        console.log("------------------------------------------------------------------\n\n")*/
       this.setTransactionStatus({
-        'type': 'aggregateBondedRemoved',
-        'hash': aggregateBondedRemoved
+        type: 'aggregateBondedRemoved',
+        hash: aggregateBondedRemoved
       });
 
       const agregateBondedTransactions = await this.transactionsService.getAggregateBondedTransactions$().pipe(first()).toPromise();
@@ -258,8 +258,8 @@ export class DataBridgeService {
       console.log(cosignatureAdded.parentHash)
       console.log("------------------------------------------------------------------\n\n")*/
       this.setTransactionStatus({
-        'type': 'cosignatureAdded',
-        'hash': cosignatureAdded.parentHash
+        type: 'cosignatureAdded',
+        hash: cosignatureAdded.parentHash
       });
 
       const allAggregateBondedSubject = await this.transactionsService.getAggregateBondedTransactions$().pipe(first()).toPromise();
@@ -311,8 +311,8 @@ export class DataBridgeService {
       console.log(confirmedTransaction.transactionInfo.hash)
       console.log("------------------------------------------------------------------ \n\n")*/
       this.setTransactionStatus({
-        'type': 'confirmed',
-        'hash': confirmedTransaction.transactionInfo.hash
+        type: 'confirmed',
+        hash: confirmedTransaction.transactionInfo.hash
       });
 
       const confirmedSubject = await this.transactionsService.getConfirmedTransactions$().pipe(first()).toPromise();
@@ -346,13 +346,13 @@ export class DataBridgeService {
        console.log("------------------------------------------------------------------\n\n")*/
       this.sharedService.showWarning('', status.status.split('_').join(' '));
       this.setTransactionStatus({
-        'type': 'status',
-        'hash': status.hash
+        type: 'status',
+        hash: status.hash
       });
 
       this.transactionsService.setTransactionReady(status.hash);
     });
-    //});
+    // });
   }
 
   /**
@@ -369,8 +369,8 @@ export class DataBridgeService {
       console.log(unconfirmedAdded)
       console.log("------------------------------------------------------------------\n\n");*/
       this.setTransactionStatus({
-        'type': 'unconfirmed',
-        'hash': unconfirmedAdded.transactionInfo.hash
+        type: 'unconfirmed',
+        hash: unconfirmedAdded.transactionInfo.hash
       });
 
       const unconfirmedSubject = await this.transactionsService.getUnconfirmedTransactions$().pipe(first()).toPromise();
@@ -399,8 +399,8 @@ export class DataBridgeService {
       console.log(unconfirmedRemoved)
       console.log("------------------------------------------------------------------\n\n")*/
       this.setTransactionStatus({
-        'type': 'removedTransaction',
-        'hash': unconfirmedRemoved
+        type: 'removedTransaction',
+        hash: unconfirmedRemoved
       });
 
       const unconfirmedSubject = await this.transactionsService.getUnconfirmedTransactions$().pipe(first()).toPromise();
@@ -446,12 +446,13 @@ export class DataBridgeService {
 
 
   /**
-  * Set a BlockInfo for a given block height
-  *
-  * @param {BlockInfo} params
-  * @memberof DataBridgeService
-  */
-  saveBlockInfo(blockInfo: BlockInfo) { //Update-sdk-dragon
+   *
+   *
+   * @param {BlockInfo} blockInfo
+   * @returns
+   * @memberof DataBridgeService
+   */
+  saveBlockInfo(blockInfo: BlockInfo) { // Update-sdk-dragon
     if (blockInfo !== null) {
       this.block = blockInfo.height.compact();
       this.blockSubject.next(this.block);
@@ -473,7 +474,7 @@ export class DataBridgeService {
     this.blockInfo = blockInfo;
     this.transactionsService.generationHash = this.blockInfo.generationHash;
     this.namespaces.generationHash = this.blockInfo.generationHash;
-    this.blockInfoSubject.next(this.blockInfo)
+    this.blockInfoSubject.next(this.blockInfo);
   }
 
   /**
@@ -495,12 +496,12 @@ export class DataBridgeService {
    */
   setTimeOutValidateTransaction(hash: string): void {
     setTimeout(async () => {
-      const exist = (this.transactionsService.transactionsReady.find(x => x === hash)) ? true: false;
+      const exist = (this.transactionsService.transactionsReady.find(x => x === hash)) ? true : false;
       // console.log(exist);
       if (!exist) {
         this.sharedService.showWarning(
-          "",
-          "An error has occurred with your transaction"
+          '',
+          'An error has occurred with your transaction'
         );
       }
     }, 10000);
