@@ -152,6 +152,18 @@ export class CreateTransferComponent implements OnInit {
     }));
   }
 
+
+  /**
+   *
+   *
+   * @memberof CreateTransferComponent
+   */
+  ngOnDestroy(): void {
+    this.subscription.forEach(subscription => {
+      subscription.unsubscribe();
+    });
+  }
+
   /**
   *
   *
@@ -169,17 +181,6 @@ export class CreateTransferComponent implements OnInit {
     } else {
       this.boxOtherMosaics[position].amountToBeSent = '0';
     }
-  }
-
-  /**
-*
-*
-* @param {string} amount
-* @memberof CreateTransferComponent
-*/
-  amountFormatterSimple(amount: any): string {
-    this.calculateFee(this.formTransfer.get('message').value);
-    return this.transactionService.amountFormatterSimple(amount);
   }
 
   /**
@@ -262,30 +263,6 @@ export class CreateTransferComponent implements OnInit {
 
 
   /**
-   *
-   *
-   * @param {*} inputType
-   * @memberof CreateTransferComponent
-   */
-  changeInputType(inputType) {
-    let newType = this.sharedService.changeInputType(inputType)
-    this.passwordMain = newType;
-  }
-
-  changeMessageType(event) {
-    this.typeMessage = event
-    // console.log(event, this.configurationForm);
-
-    if (this.typeMessage === '1' || this.typeMessage === '2') {
-      this.messageMaxLength = this.configurationForm.message.maxLength
-    } else {
-      this.messageMaxLength = this.configurationForm.encryptedMessage.maxLength
-    }
-    let recipient = this.formTransfer.get("amountXpx").value
-    // console.log(event, recipient);
-  }
-
-  /**
   *
   *
   * @param {AccountsInterface} accountToSend
@@ -328,14 +305,49 @@ export class CreateTransferComponent implements OnInit {
   /**
    *
    *
+   * @param {*} recipient
    * @memberof CreateTransferComponent
    */
-  ngOnDestroy(): void {
-    this.subscription.forEach(subscription => {
-      subscription.unsubscribe();
-    });
+  async verifyRecipientInfo(recipient: string) {
+    // console.log(recipient);
+    const invalidPublicKey = "0000000000000000000000000000000000000000000000000000000000000000"
+    let net = environment.typeNetwork.value
+    let address;
+
+    address = this.proximaxProvider.createFromRawAddress(recipient)
+
+    try {
+      if ([null].includes(recipient) === false) {
+        let accountInfo = await this.proximaxProvider.getAccountInfo(address).toPromise()
+        if (accountInfo.publicKey === invalidPublicKey) {
+          throw `The receiver's public key is not valid for sending encrypted messages`;
+        }
+        this.recipientInfo = accountInfo
+        this.encryptedMsgDisable = false
+        // console.log(this.recipientInfo, this.encryptedMsgDisable);
+      }
+    } catch (error) {
+      console.warn(error);
+      if (error.statusCode && error.statusCode === 404) {
+        this.encryptedMsgDisable = true
+      } else if ([undefined, null].includes(error.statusCode) && typeof error === 'string') {
+        this.sharedService.showError('', error)
+        this.encryptedMsgDisable = true
+      }
+    }
   }
 
+  /**
+   *
+   *
+   * @param {*} amount
+   * @returns {string}
+   * @memberof CreateTransferComponent
+   */
+  amountFormatterSimple(amount: any): string {
+    this.calculateFee(this.formTransfer.get('message').value);
+    return this.transactionService.amountFormatterSimple(amount);
+  }
 
   /**
    *
@@ -453,6 +465,33 @@ export class CreateTransferComponent implements OnInit {
         ]
       ]
     });
+  }
+
+  /**
+   *
+   *
+   * @param {*} inputType
+   * @memberof CreateTransferComponent
+   */
+  changeInputType(inputType: any) {
+    let newType = this.sharedService.changeInputType(inputType)
+    this.passwordMain = newType;
+  }
+
+  /**
+   *
+   *
+   * @param {string} event
+   * @memberof CreateTransferComponent
+   */
+  changeMessageType(event: string) {
+    this.typeMessage = event
+    if (this.typeMessage === '1' || this.typeMessage === '2') {
+      this.messageMaxLength = this.configurationForm.message.maxLength
+    } else {
+      this.messageMaxLength = this.configurationForm.encryptedMessage.maxLength
+    }
+    let recipient = this.formTransfer.get("amountXpx").value
   }
 
   /**
@@ -814,8 +853,10 @@ export class CreateTransferComponent implements OnInit {
 
 
   /**
-  *
-  */
+   *
+   *
+   * @memberof CreateTransferComponent
+   */
   saveContactFn() {
     this.getBooksAddress = this.serviceModuleService.getBooksAddress();
     if (this.getBooksAddress) {
@@ -953,9 +994,11 @@ export class CreateTransferComponent implements OnInit {
 
   /**
    *
-   * @param $event
+   *
+   * @param {*} $event
+   * @memberof CreateTransferComponent
    */
-  selectCosignatorie($event) {
+  selectCosignatorie($event: any) {
     if ($event) {
       this.cosignatorie = $event.value;
     } else {
@@ -975,7 +1018,6 @@ export class CreateTransferComponent implements OnInit {
     }
 
     this.verifyRecipientInfo(this.formTransfer.get('accountRecipient').value)
-
   }
 
   /**
@@ -1234,7 +1276,15 @@ export class CreateTransferComponent implements OnInit {
     return mosaics;
   }
 
-  verifyMessage(message, senderPrivateKey) {
+  /**
+   *
+   *
+   * @param {string} message
+   * @param {*} senderPrivateKey
+   * @returns
+   * @memberof CreateTransferComponent
+   */
+  verifyMessage(message: string, senderPrivateKey: any) {
     let result
     if (message !== null && message !== '') {
       switch (this.typeMessage) {
@@ -1265,45 +1315,18 @@ export class CreateTransferComponent implements OnInit {
     return result;
   }
 
-
+  /**
+   *
+   *
+   * @memberof CreateTransferComponent
+   */
   getValueAndVerify() {
     let recipientValue = (this.formTransfer.get('accountRecipient').value.includes('-')) ?
-    this.formTransfer.get('accountRecipient').value.split('-').join('') :
-    this.formTransfer.get('accountRecipient').value
-
-    // console.log('get value and verify',recipientValue);
+      this.formTransfer.get('accountRecipient').value.split('-').join('') :
+      this.formTransfer.get('accountRecipient').value;
 
     if (recipientValue.length === 40 || recipientValue.length === 46) {
-      this.verifyRecipientInfo(recipientValue)
-    }
-  }
-
-  async verifyRecipientInfo(recipient) {
-    // console.log(recipient);
-    const invalidPublicKey = "0000000000000000000000000000000000000000000000000000000000000000"
-    let net = environment.typeNetwork.value
-    let address;
-
-    address = this.proximaxProvider.createFromRawAddress(recipient)
-
-    try {
-      if ([null].includes(recipient) === false) {
-        let accountInfo = await this.proximaxProvider.getAccountInfo(address).toPromise()
-        if (accountInfo.publicKey === invalidPublicKey) {
-          throw `The receiver's public key is not valid for sending encrypted messages`;
-        }
-        this.recipientInfo = accountInfo
-        this.encryptedMsgDisable = false
-        // console.log(this.recipientInfo, this.encryptedMsgDisable);
-      }
-    } catch (error) {
-      console.warn(error);
-      if (error.statusCode && error.statusCode === 404) {
-        this.encryptedMsgDisable = true
-      } else if ([undefined, null].includes(error.statusCode) && typeof error === 'string') {
-        this.sharedService.showError('', error)
-        this.encryptedMsgDisable = true
-      }
+      this.verifyRecipientInfo(recipientValue);
     }
   }
 
