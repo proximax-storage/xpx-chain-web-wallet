@@ -20,16 +20,15 @@ export class TransferTypeComponent implements OnInit {
   msg = '';
   typeMsg = null
   amountTwoPart: { part1: string; part2: string; };
+  decryptedMessage: any;
   nis1hash: any;
   routeNis1Explorer = environment.nis1.urlExplorer;
-  // E7620BC08F46B1B56A9DF29541513318FD51965229D4A4B3B3DAAFE82819DE46
   message: any;
   panelDecrypt: number = 0;
-  password = null
-  passwordMain = 'password'
-  recipientPublicAccount = null
-  senderPublicAccount = null
-  decryptedMessage: any;
+  password = null;
+  passwordMain = 'password';
+  recipientPublicAccount = null;
+  senderPublicAccount = null;
 
   constructor(
     public transactionService: TransactionsService,
@@ -130,7 +129,7 @@ export class TransferTypeComponent implements OnInit {
         this.decryptedMessage = recipientMsg;
       } else {
         senderMsg = EncryptedMessage.decrypt(this.message, common['privateKey'], this.recipientPublicAccount);
-        this.decryptedMessage = senderMsg
+        this.decryptedMessage = senderMsg;
       }
 
       this.panelDecrypt = 2;
