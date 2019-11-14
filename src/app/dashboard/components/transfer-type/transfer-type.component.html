@@ -94,7 +94,8 @@
                   <!-- Init Decript -->
                   <div class="col-12 word-break-all box-grey" *ngIf="panelDecrypt === 0">
                     <div class="txt-a-center">
-                      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax-mini" size="sm" (click)="panelDecrypt = 1">
+                      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax-mini" size="sm"
+                        (click)="panelDecrypt = 1">
                         <span class="color-white">Decrypt Message</span>
                       </button>
                     </div>
@@ -103,20 +104,23 @@
                   <!-- Enter Wallet Password -->
                   <div class="col-12 word-break-all box-grey" *ngIf="panelDecrypt === 1">
                     <div class="md-form form-sm mt-1rem mb-0rem">
-                      <img class="form-control-feedback" src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
+                      <img class="form-control-feedback"
+                        src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
                       <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
                         src="assets/images/img/icon-show-hide-password.svg" *ngIf="passwordMain === 'password'">
                       <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
                         src="assets/images/img/icon-show-hide-password-grey.svg" *ngIf="passwordMain === 'text'">
-                      <input maxlength="30" minlength="8" mdbInputDirective mdbValidate [validateSuccess]="true" [(ngModel)]="password"
-                        [validateError]="true" [type]="passwordMain" id="password" class="form-control form-control-sm input-border"
-                        placeholder="Enter Wallet Password">
+                      <input maxlength="30" minlength="8" mdbInputDirective mdbValidate [validateSuccess]="true"
+                        [(ngModel)]="password" [validateError]="true" [type]="passwordMain" id="password"
+                        class="form-control form-control-sm input-border" placeholder="Enter Wallet Password">
                     </div>
                     <div class="txt-a-center">
-                      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax-mini" size="sm" (click)="hideMessage()">
+                      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax-mini" size="sm"
+                        (click)="hideMessage()">
                         <span class="color-white">Cancel</span>
                       </button>
-                      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax-mini" size="sm" (click)="decryptMessage()">
+                      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax-mini" size="sm"
+                        (click)="decryptMessage()">
                         <span class="color-white">Decrypt</span>
                       </button>
                     </div>
@@ -126,7 +130,8 @@
                   <div class="col-12 word-break-all box-grey" *ngIf="panelDecrypt === 2">
                     <span class="color-black fw-400 fs-08remc">{{decryptedMessage.payload}}</span>
                     <div class="txt-a-center">
-                      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax-mini" size="sm" (click)="hideMessage()">
+                      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax-mini" size="sm"
+                        (click)="hideMessage()">
                         <span class="color-white">Hide Message</span>
                       </button>
                     </div>
@@ -153,7 +158,6 @@
     </div>
   </div>
 </ng-container>
-
 
 <ng-container *ngIf="simple === false">
   <div class="row mt-04rem mr-1rem ml-1rem">
@@ -204,15 +208,9 @@
         </div>
 
         <!-- Message -->
-        <div class="col-12 mt-1rem lh-1em" *ngIf="message.type === 0">
+        <div class="col-12 mt-1rem lh-1em">
           <span class="fw-600 fs-085rem">Message: <br></span>
-          <span class="fs-075rem w-w-b-w "> {{ message.payload }} </span>
-        </div>
-
-        <!-- Encrypted Message -->
-        <div class="col-12 mt-1rem lh-1em" *ngIf="message.type === 1">
-          <span class="fw-600 fs-085rem">Encrypted Message:<br></span>
-          <span class="fs-075rem w-w-b-w "> {{ message.payload }} </span>
+          <span class="fs-075rem w-w-b-w "> {{msg}} </span>
         </div>
 
         <!-- Height -->
@@ -290,7 +288,8 @@
         <div class="col-12 mt-05rem lh-1em box-modal-grey-dark p-1rem color-white">
           <span class="fw-600 fs-075rem">NIS1 Hash: <br></span>
           <span class="fs-075rem w-w-b-w ">
-            <a [href]="routeNis1Explorer+nis1hash" class="color-white cursor-p" target="_blank">{{nis1hash | uppercase}}</a>
+            <a [href]="routeNis1Explorer+nis1hash" class="color-white cursor-p"
+              target="_blank">{{nis1hash | uppercase}}</a>
           </span>
         </div>
       </div>

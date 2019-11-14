@@ -4,7 +4,6 @@ import {
   UInt64,
   TransferTransaction,
   Deadline,
-  PlainMessage,
   NetworkType,
   TransactionHttp,
   Account,
@@ -18,9 +17,7 @@ import {
   Address,
   AggregateTransaction,
   SignedTransaction,
-  HashLockTransaction,
-  LockFundsTransaction,
-  InnerTransaction
+  HashLockTransaction
 } from "tsjs-xpx-chain-sdk";
 import { ProximaxProvider } from "../../shared/services/proximax.provider";
 import { NodeService } from "../../servicesModule/services/node.service";
@@ -32,7 +29,6 @@ import {
   AccountsInfoInterface,
   AccountsInterface
 } from "../../wallet/services/wallet.service";
-import { SharedService } from "../../shared/services/shared.service";
 
 export interface TransferInterface {
   common: { password?: any; privateKey?: any };

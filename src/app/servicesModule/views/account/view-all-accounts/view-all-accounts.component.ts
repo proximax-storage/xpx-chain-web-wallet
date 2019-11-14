@@ -132,9 +132,10 @@ export class ViewAllAccountsComponent implements OnInit {
   deleteVerification(account) {
     let erasable = false;
 
-    if (account.default || account.encrypted === '') {
+    if (account.default) {
       erasable = false;
     } else {
+      erasable = true;
       if (this.currentWallet.accounts.length === 2) {
         let noPrivateKey = this.currentWallet.accounts.filter(account => account.encrypted === "")
         if (noPrivateKey.length > 0) {
