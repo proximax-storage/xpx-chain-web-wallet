@@ -39,16 +39,16 @@ export class TransferTypeComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.verifyRecipientInfo();
   }
 
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
+    this.verifyRecipientInfo();
+    this.hideMessage();
     this.searching = true;
     this.typeTransactionHex = `${this.transferTransaction.data['type'].toString(16).toUpperCase()}`;
     this.message = null;
     this.message = this.transferTransaction.data.message;
-    this.hideMessage();
     if (this.transferTransaction.data.transactionInfo) {
       const height = this.transferTransaction.data.transactionInfo.height.compact();
     }
@@ -107,9 +107,6 @@ export class TransferTypeComponent implements OnInit {
       this.recipientPublicAccount.address.address,
       this.senderPublicAccount.address.address
     ]
-
-    console.log(this.recipientPublicAccount, this.senderPublicAccount, firstAccount);
-    console.log(availableAddress.includes(firstAccount.address));
 
     if (availableAddress.includes(firstAccount.address)) {
       this.showEncryptedMessage = true;
