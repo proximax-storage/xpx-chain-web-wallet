@@ -39,9 +39,7 @@ export class TransferTypeComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.verifyRecipientInfo()
-    console.log(this.transferTransaction);
-
+    this.verifyRecipientInfo();
   }
 
 
