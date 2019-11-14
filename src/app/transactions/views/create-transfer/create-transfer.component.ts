@@ -1381,7 +1381,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
   }
 
   setMessageToEncrypted() {
-    console.log(this.messageWillBeEncrypted);
+    // console.log(this.messageWillBeEncrypted);
     if (this.messageWillBeEncrypted === true) {
       this.messageMaxLength = this.configurationForm.encryptedMessage.maxLength
     } else {

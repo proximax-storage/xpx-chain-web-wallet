@@ -29,6 +29,7 @@ export class TransferTypeComponent implements OnInit {
   passwordMain = 'password';
   recipientPublicAccount = null;
   senderPublicAccount = null;
+  showEncryptedMessage = false;
 
   constructor(
     public transactionService: TransactionsService,
@@ -100,6 +101,19 @@ export class TransferTypeComponent implements OnInit {
     } catch (e) {}
 
     this.senderPublicAccount = this.transferTransaction.data.signer;
+    let firstAccount = this.walletService.currentAccount;
+
+    let availableAddress = [
+      this.recipientPublicAccount.address.address,
+      this.senderPublicAccount.address.address
+    ]
+
+    console.log(this.recipientPublicAccount, this.senderPublicAccount, firstAccount);
+    console.log(availableAddress.includes(firstAccount.address));
+
+    if (availableAddress.includes(firstAccount.address)) {
+      this.showEncryptedMessage = true;
+    }
   }
 
   /**

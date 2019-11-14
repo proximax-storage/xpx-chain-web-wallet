@@ -26,6 +26,7 @@ export class TransferTypeBondedComponent implements OnInit {
   recipientPublicAccount = null
   senderPublicAccount = null
   decryptedMessage: any;
+  showEncryptedMessage = false;
 
   constructor(
     public transactionService: TransactionsService,
@@ -35,7 +36,7 @@ export class TransferTypeBondedComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.verifyRecipientInfo()
+
   }
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
@@ -44,6 +45,7 @@ export class TransferTypeBondedComponent implements OnInit {
     // console.log('----build---', this.transactionBuilder);
     this.message = this.transactionBuilder.data.message
     // console.log(this.signer);
+    this.verifyRecipientInfo()
   }
 
   changeInputType(inputType) {
@@ -104,6 +106,16 @@ export class TransferTypeBondedComponent implements OnInit {
       this.recipientPublicAccount = accountInfo.publicAccount
     } catch (e) {
       console.warn(e);
+    }
+
+    let firstAccount = this.walletService.currentAccount;
+    let availableAddress = [
+      this.recipientPublicAccount.address.address,
+      this.senderPublicAccount.address.address
+    ]
+
+    if (availableAddress.includes(firstAccount.address)) {
+      this.showEncryptedMessage = true;
     }
   }
 
