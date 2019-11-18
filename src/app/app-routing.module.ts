@@ -29,8 +29,8 @@ const routes: Routes = [
     }]
   }, {
     path: ``,
-    component: WrapperMainComponent,
-    canActivate: [LoggedGuard],
+    // component: WrapperMainComponent,
+    // canActivate: [LoggedGuard],
     children: [{
       path: '',
       loadChildren: './dashboard/dashboard.module#DashboardModule'
