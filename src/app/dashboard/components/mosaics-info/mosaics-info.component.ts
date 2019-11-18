@@ -58,9 +58,34 @@ export class MosaicsInfoComponent implements OnInit {
       for (let mosaic of mosaics) {
         const id = this.findMosaic(mosaic);
         // me quedé validando que me retorne el mosaico id y no namespace id, ya que en mosaicInfo no muestra
-        console.log('\n\n---My mosaic---', id);
+        // console.log('\n\n---My mosaic---', id);
         if (id.length > 0) {
+          let amount = 0;
+          id.forEach(element => {
+            // console.log(element.amount.compact());
+            amount += element.amount.compact();
+          });
 
+
+          // MOSAIC IS XPX
+          if (this.proximaxProvider.getMosaicId(mosaic.idMosaic).toHex() === environment.mosaicXpxInfo.id) {
+            this.viewMosaicXpx = true;
+            this.mosaicXpx = {
+              id: environment.mosaicXpxInfo.id,
+              name: environment.mosaicXpxInfo.name,
+              amountFormatter: this.transactionService.amountFormatterSimple(amount),
+              mosaicInfo: mosaic
+            }
+          } else {
+            const nameMosaic = this.getName(mosaic);
+            this.quantity.push({
+              id: this.proximaxProvider.getMosaicId(mosaic.idMosaic).toHex(),
+              name: nameMosaic,
+              amountFormatter: this.transactionService.amountFormatter(amount, mosaic.mosaicInfo),
+              mosaicInfo: mosaic,
+              existMosaic: true
+            });
+          }
         } else {
           this.quantity.push({
             id: this.proximaxProvider.getMosaicId(mosaic.idMosaic).toHex(),
@@ -70,42 +95,6 @@ export class MosaicsInfoComponent implements OnInit {
             existMosaic: false
           });
         }
-
-
-        /* if (id) {
-           const amount = this.getAmount(mosaic, id);
-           console.log('\n\namountamount', amount);
-
-           // MOSAIC IS XPX
-           if (this.proximaxProvider.getMosaicId(mosaic.idMosaic).toHex() === environment.mosaicXpxInfo.id) {
-             this.viewMosaicXpx = true;
-             this.mosaicXpx = {
-               id: environment.mosaicXpxInfo.id,
-               name: environment.mosaicXpxInfo.name,
-               amountFormatter: amount,
-               mosaicInfo: mosaic
-             }
-           } else {
-             const nameMosaic = this.getName(mosaic);
-             this.quantity.push({
-               id: id.id.toHex(),
-               name: nameMosaic,
-               amountFormatter: amount,
-               mosaicInfo: mosaic,
-               existMosaic: true
-             });
-
-             console.log('this.quantitythis.quantitythis.quantity', this.quantity);
-           }
-         } else {
-           this.quantity.push({
-             id: this.proximaxProvider.getMosaicId(mosaic.idMosaic).toHex(),
-             name: '',
-             amountFormatter: '',
-             mosaicInfo: mosaic,
-             existMosaic: false
-           });
-         }*/
       }
     } else {
       this.transferTransaction['mosaics'].forEach((_element: Mosaic) => {
@@ -129,9 +118,8 @@ export class MosaicsInfoComponent implements OnInit {
    * @param mosaicStorage
    */
   findMosaic(mosaicStorage: MosaicsStorage) {
-    console.log('this.mosaicsArray', this.mosaicsArray);
     // Create MosaicId from mosaic and namespace string id (ex: nem:xem or domain.subdom.subdome:token)
-    const dataReturn = [];
+    const dataReturn: Mosaic[] = [];
     this.mosaicsArray.forEach(element => {
       const mosaicId = this.proximaxProvider.getMosaicId(mosaicStorage.idMosaic).toHex();
       const byMosaicId = element.id.toHex() === mosaicId;
@@ -148,19 +136,6 @@ export class MosaicsInfoComponent implements OnInit {
     });
 
     return dataReturn;
-    /*const mosaicId = this.proximaxProvider.getMosaicId(mosaicStorage.idMosaic).toHex();
-    const byMosaicId = this.mosaicsArray.filter(next => next.id.toHex() === mosaicId);
-    if (byMosaicId) {
-      console.log('\n\n byMosaicId', byMosaicId);
-      return byMosaicId;
-    } else if (mosaicStorage.isNamespace) {
-      const namespaceId = this.proximaxProvider.getNamespaceId(mosaicStorage.isNamespace).toHex();
-      const byNamespaceId = this.mosaicsArray.filter(next => next.id.toHex() === namespaceId);
-      console.log('\n\n isNamespace', byNamespaceId);
-      return byNamespaceId;
-    }*/
-
-    return null;
   }
 
   /**
@@ -181,9 +156,6 @@ export class MosaicsInfoComponent implements OnInit {
    * @param mosaic
    */
   getName(mosaic: MosaicsStorage) {
-    return (
-      mosaic.mosaicNames &&
-      mosaic.mosaicNames.names.length > 0
-    ) ? mosaic.mosaicNames.names[0].name : '';
+    return (mosaic.mosaicNames && mosaic.mosaicNames.names.length > 0) ? mosaic.mosaicNames.names[0].name : '';
   }
 }
