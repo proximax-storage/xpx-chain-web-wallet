@@ -55,7 +55,14 @@
       </div>
     </div>
 
-    <div class="row mt-05rem" *ngIf="message.type === 1">
+    <div class="row mt-05rem" *ngIf="message.type === 1 && showEncryptedMessage === false">
+      <div class="col-12 lh-1em">
+        <span class="fw-600 fs-065rem">Message:&nbsp;</span>
+        <span class="fs-065rem">Encrypted</span>
+      </div>
+    </div>
+
+    <div class="row mt-05rem" *ngIf="message.type === 1 && showEncryptedMessage === true">
       <div class="col-12 lh-1em">
         <span class="fw-600 fs-065rem">Encrypted Message:&nbsp;</span>
       </div>
