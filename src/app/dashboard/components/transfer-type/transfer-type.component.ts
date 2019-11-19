@@ -29,6 +29,7 @@ export class TransferTypeComponent implements OnInit {
   passwordMain = 'password';
   recipientPublicAccount = null;
   senderPublicAccount = null;
+  showEncryptedMessage = false;
 
   constructor(
     public transactionService: TransactionsService,
@@ -38,16 +39,16 @@ export class TransferTypeComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.verifyRecipientInfo();
   }
 
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
+    this.verifyRecipientInfo();
+    this.hideMessage();
     this.searching = true;
     this.typeTransactionHex = `${this.transferTransaction.data['type'].toString(16).toUpperCase()}`;
     this.message = null;
     this.message = this.transferTransaction.data.message;
-    this.hideMessage();
     if (this.transferTransaction.data.transactionInfo) {
       const height = this.transferTransaction.data.transactionInfo.height.compact();
     }
@@ -100,6 +101,16 @@ export class TransferTypeComponent implements OnInit {
     } catch (e) {}
 
     this.senderPublicAccount = this.transferTransaction.data.signer;
+    let firstAccount = this.walletService.currentAccount;
+
+    let availableAddress = [
+      this.recipientPublicAccount.address.address,
+      this.senderPublicAccount.address.address
+    ]
+
+    if (availableAddress.includes(firstAccount.address)) {
+      this.showEncryptedMessage = true;
+    }
   }
 
   /**
