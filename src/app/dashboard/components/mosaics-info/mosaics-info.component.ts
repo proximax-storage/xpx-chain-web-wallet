@@ -50,12 +50,12 @@ export class MosaicsInfoComponent implements OnInit {
       this.receive = this.receive;
     }
 
-    console.log('\n\n-----this.mosaicsArray----', this.mosaicsArray);
-    const mosaics: MosaicsStorage[] = await this.mosaicService.filterMosaics(this.mosaicsArray.map((mosaic: Mosaic) => { return mosaic.id }));
-    console.log('\n\n----mosaicos encontrados-----', mosaics);
+    // console.log('\n\n-----this.mosaicsArray----', this.mosaicsArray);
+    const mosaics: MosaicsStorage[] = await this.mosaicService.filterMosaics(this.mosaicsArray.map((mosaic: Mosaic) => mosaic.id));
+    // console.log('\n\n----mosaicos encontrados-----', mosaics);
     this.searching = false;
     if (mosaics.length > 0) {
-      for (let mosaic of mosaics) {
+      for (const mosaic of mosaics) {
         const id = this.findMosaic(mosaic);
         // me quedé validando que me retorne el mosaico id y no namespace id, ya que en mosaicInfo no muestra
         // console.log('\n\n---My mosaic---', id);
@@ -75,7 +75,7 @@ export class MosaicsInfoComponent implements OnInit {
               name: environment.mosaicXpxInfo.name,
               amountFormatter: this.transactionService.amountFormatterSimple(amount),
               mosaicInfo: mosaic
-            }
+            };
           } else {
             const nameMosaic = this.getName(mosaic);
             this.quantity.push({
