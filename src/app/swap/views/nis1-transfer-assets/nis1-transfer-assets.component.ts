@@ -285,6 +285,7 @@ export class Nis1TransferAssetsComponent implements OnInit {
       this.isLogged = true;
       this.showBtnBack = true;
       this.ownedAccountSwap = this.walletService.filterAccountWallet(this.accountSelected.nameAccount);
+      console.log('this.ownedAccountSwapthis.ownedAccountSwapthis.ownedAccountSwap', this.ownedAccountSwap);
       if (moreAccounts !== '0') {
         this.nameBtnBack = 'Back to Select Account';
         this.goToBackRoute = `/${AppConfig.routes.swapListCosigners}`;

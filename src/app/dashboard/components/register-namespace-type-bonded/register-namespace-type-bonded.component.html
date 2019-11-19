@@ -1,0 +1,85 @@
+<ng-container *ngIf="transactionBuilder?.data">
+  <div class="row mt-05rem">
+    <div class="col-12 lh-1em">
+      <span class="fw-600 fs-065rem">Type: &nbsp;</span>
+      <span class="fs-065rem w-w-b-w">{{transactionBuilder.data['type'].toString(16).toUpperCase()}}</span>
+    </div>
+  </div>
+
+  <!-- ID -->
+  <div class="row mt-05rem">
+    <div class="col-12 lh-1em">
+      <span class="fw-600 fs-065rem">ID: &nbsp;</span>
+      <span class="fs-065rem w-w-b-w">{{transactionBuilder?.data.namespaceId.id.toHex().toUpperCase()}}</span>
+    </div>
+  </div>
+
+  <!-- Name -->
+  <div class="row mt-05rem">
+    <div class="col-12 lh-1em">
+      <span class="fw-600 fs-065rem">Name: &nbsp;</span>
+      <span class="fs-065rem w-w-b-w">{{transactionBuilder?.data.namespaceName}}</span>
+    </div>
+  </div>
+
+  <!-- Namespace type -->
+  <div class="row mt-05rem">
+    <div class="col-12 lh-1em">
+      <span class="fw-600 fs-065rem">Namespace Type: &nbsp;</span>
+      <span class="fs-065rem w-w-b-w" *ngIf="transactionBuilder.data.namespaceType === 0">
+        {{transactionBuilder.data.namespaceType}} - ROOT_NS
+      </span>
+
+      <span class="fs-065rem w-w-b-w" *ngIf="transactionBuilder.data.namespaceType !== 0">
+        {{transactionBuilder.data.namespaceType}} - SUB_NS
+      </span>
+    </div>
+  </div>
+
+  <!-- Duration -->
+  <ng-container *ngIf="transactionBuilder?.data.duration !== undefined">
+    <div class="row mt-05rem">
+      <div class="col-12 lh-1em">
+        <span class="fw-600 fs-065rem">Duration: &nbsp;</span>
+        <span class="fs-065rem w-w-b-w">
+          <strong>
+            (Blocks: {{transactionBuilder?.data.duration.compact()}})
+          </strong> -
+          {{transactionService.calculateDuration(transactionBuilder?.data.duration)}}
+        </span>
+      </div>
+    </div>
+  </ng-container>
+
+
+  <!-- transactionInfo -->
+  <ng-container *ngIf="transactionBuilder.data['transactionInfo']">
+    <div class="row mt-05rem">
+      <div class="col-12 lh-1em">
+        <span class="fw-600 fs-065rem">Aggregate Id: &nbsp;</span>
+        <span class="fs-065rem w-w-b-w">{{transactionBuilder.data['transactionInfo']['aggregateId']}}</span>
+      </div>
+    </div>
+  </ng-container>
+
+  <div class="row mt-05rem">
+    <div class="col-12 lh-1em">
+      <span class="fw-600 fs-065rem">Signer Address: &nbsp;</span>
+      <span class="fs-065rem w-w-b-w">{{transactionBuilder.data?.signer.address.pretty()}}</span>
+    </div>
+  </div>
+
+  <div class="row mt-05rem">
+    <div class="col-12 lh-1em">
+      <span class="fw-600 fs-065rem">Signer Public Key: <br></span>
+      <span class="fs-065rem w-w-b-w">{{transactionBuilder.data?.signer.publicKey}}</span>
+    </div>
+  </div>
+
+  <div class="row mt-05rem">
+    <div class="col-12 lh-1em">
+      <span class="fw-600 fs-065rem">Signature: <br></span>
+      <span class="fs-065rem w-w-b-w">{{transactionBuilder.data?.signature}}</span>
+    </div>
+  </div>
+</ng-container>

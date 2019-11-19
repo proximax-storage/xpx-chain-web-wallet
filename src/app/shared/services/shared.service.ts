@@ -54,6 +54,9 @@ export class SharedService {
     message: {
       maxLength: 1024
     },
+    encryptedMessage: {
+      maxLength: 400
+    },
     tags: {
       minLength: 1,
       maxLength: 240
@@ -262,7 +265,10 @@ export interface ConfigurationForm {
   };
   message?: {
     maxLength: 1024
-  }
+  };
+  encryptedMessage?: {
+    maxLength: 400
+  };
   nameWallet?: {
     minLength: number;
     maxLength: number;

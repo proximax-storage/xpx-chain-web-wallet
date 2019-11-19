@@ -1,8 +1,10 @@
 import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
+import { EncryptedMessage } from 'tsjs-xpx-chain-sdk'
 import { TransactionsInterface, TransactionsService } from '../../../transactions/services/transactions.service';
-import { MosaicService, MosaicsStorage } from 'src/app/servicesModule/services/mosaic.service';
-import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
+import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { environment } from '../../../../environments/environment';
+import { SharedService } from '../../../shared/services/shared.service';
+import { WalletService } from "../../../wallet/services/wallet.service";
 
 @Component({
   selector: 'app-transfer-type',
@@ -16,25 +18,41 @@ export class TransferTypeComponent implements OnInit {
   simple = null;
   typeTransactionHex: string;
   msg = '';
+  typeMsg = null
   amountTwoPart: { part1: string; part2: string; };
+  decryptedMessage: any;
   nis1hash: any;
   routeNis1Explorer = environment.nis1.urlExplorer;
-  // E7620BC08F46B1B56A9DF29541513318FD51965229D4A4B3B3DAAFE82819DE46
+  message: any;
+  panelDecrypt: number = 0;
+  password = null;
+  passwordMain = 'password';
+  recipientPublicAccount = null;
+  senderPublicAccount = null;
+  showEncryptedMessage = false;
 
   constructor(
-    public transactionService: TransactionsService
+    public transactionService: TransactionsService,
+    public sharedService: SharedService,
+    public proximaxProvider: ProximaxProvider,
+    public walletService: WalletService
   ) { }
 
   ngOnInit() {
   }
 
+
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
+    this.verifyRecipientInfo();
+    this.hideMessage();
     this.searching = true;
     this.typeTransactionHex = `${this.transferTransaction.data['type'].toString(16).toUpperCase()}`;
+    this.message = null;
+    this.message = this.transferTransaction.data.message;
     if (this.transferTransaction.data.transactionInfo) {
       const height = this.transferTransaction.data.transactionInfo.height.compact();
-      // console.log(typeof(height));
     }
+
     if (this.transferTransaction.data['message'].payload !== '') {
       try {
         const simple = false;
@@ -70,4 +88,75 @@ export class TransferTypeComponent implements OnInit {
     }
   }
 
+  /**
+   *
+   *
+   * @memberof TransferTypeComponent
+   */
+  async verifyRecipientInfo() {
+    let address = this.proximaxProvider.createFromRawAddress(this.transferTransaction.recipient['address']);
+    try {
+      let accountInfo = await this.proximaxProvider.getAccountInfo(address).toPromise();
+      this.recipientPublicAccount = accountInfo.publicAccount;
+    } catch (e) {}
+
+    this.senderPublicAccount = this.transferTransaction.data.signer;
+    let firstAccount = this.walletService.currentAccount;
+
+    let availableAddress = [
+      this.recipientPublicAccount.address.address,
+      this.senderPublicAccount.address.address
+    ]
+
+    if (availableAddress.includes(firstAccount.address)) {
+      this.showEncryptedMessage = true;
+    }
+  }
+
+  /**
+   *
+   *
+   * @param {*} inputType
+   * @memberof TransferTypeComponent
+   */
+  changeInputType(inputType: string) {
+    let newType = this.sharedService.changeInputType(inputType);
+    this.passwordMain = newType;
+  }
+
+  /**
+   *
+   *
+   * @memberof TransferTypeComponent
+   */
+  decryptMessage() {
+    let common = { password: this.password };
+    let firstAccount = this.walletService.currentAccount;
+    if (this.walletService.decrypt(common, firstAccount)) {
+      let recipientMsg = EncryptedMessage.decrypt(this.message, common['privateKey'], this.senderPublicAccount);
+      let senderMsg = EncryptedMessage.decrypt(this.message, common['privateKey'], this.recipientPublicAccount);
+      if (firstAccount.address === this.recipientPublicAccount.address.address) {
+        recipientMsg = EncryptedMessage.decrypt(this.message, common['privateKey'], this.senderPublicAccount);
+        this.decryptedMessage = recipientMsg;
+      } else {
+        senderMsg = EncryptedMessage.decrypt(this.message, common['privateKey'], this.recipientPublicAccount);
+        this.decryptedMessage = senderMsg;
+      }
+
+      this.panelDecrypt = 2;
+    } else {
+      this.panelDecrypt = 0;
+    }
+  }
+
+  /**
+   *
+   *
+   * @memberof TransferTypeComponent
+   */
+  hideMessage() {
+    this.password = '';
+    this.decryptedMessage = null;
+    this.panelDecrypt = 0;
+  }
 }

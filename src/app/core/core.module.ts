@@ -35,6 +35,8 @@ import { FilterObjectPipe } from '../shared/pipes/filter-object.pipe';
 import { BoxDataSignerHashComponent } from '../dashboard/components/box-data-signer-hash/box-data-signer-hash.component';
 import { AuthComponent } from '../auth/views/auth/auth.component';
 import { HeaderComponent } from '../servicesModule/components/header/header.component';
+import { SelectAccountComponent } from '../accounts/components/select-account/select-account.component';
+import { RegisterNamespaceTypeBondedComponent } from '../dashboard/components/register-namespace-type-bonded/register-namespace-type-bonded.component';
 
 
 
@@ -52,6 +54,7 @@ const ngxUiLoaderConfig: NgxUiLoaderConfig = {
 };
 
 const components = [
+  RegisterNamespaceTypeBondedComponent,
   AuthComponent,
   HeaderComponent,
   TransferTypeComponent,
@@ -71,7 +74,9 @@ const components = [
   VoteTypeComponent,
   SwapCertificateComponent,
   TransferTypeBondedComponent,
-  BoxDataSignerHashComponent
+  BoxDataSignerHashComponent,
+  SelectAccountComponent
+
 ]
 
 const moduls = [
