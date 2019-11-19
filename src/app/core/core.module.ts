@@ -36,6 +36,7 @@ import { BoxDataSignerHashComponent } from '../dashboard/components/box-data-sig
 import { AuthComponent } from '../auth/views/auth/auth.component';
 import { HeaderComponent } from '../servicesModule/components/header/header.component';
 import { SelectAccountComponent } from '../accounts/components/select-account/select-account.component';
+import { RegisterNamespaceTypeBondedComponent } from '../dashboard/components/register-namespace-type-bonded/register-namespace-type-bonded.component';
 
 
 
@@ -53,6 +54,7 @@ const ngxUiLoaderConfig: NgxUiLoaderConfig = {
 };
 
 const components = [
+  RegisterNamespaceTypeBondedComponent,
   AuthComponent,
   HeaderComponent,
   TransferTypeComponent,
