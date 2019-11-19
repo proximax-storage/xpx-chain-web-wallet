@@ -124,13 +124,11 @@ export class MosaicService {
         });
 
         // console.log('findMosaicsByNamespace', findMosaicsByNamespace);
-
         // Search mosaics by namespace Id
         if (findMosaicsByNamespace.length > 0) {
           // busca los namespaceId de los mosaicos que no fueron encontrados
           const otherMosaics = await this.searchMosaicFromNamespace(findMosaicsByNamespace);
           // console.log('otherMosaics', otherMosaics);
-
           otherMosaics.forEach(element => {
             mosaicsTosaved.push(element);
           });
@@ -138,21 +136,20 @@ export class MosaicService {
 
 
         // console.log('mosaicsTosaved1 ', mosaicsTosaved);
-
         if (mosaicsFound.length > 0) {
           const mosaicsName: MosaicNames[] = await this.getMosaicsName(mosaicsId);
           mosaicsFound.forEach(infoMosaic => {
+            const existMosaicName = (mosaicsName) ? mosaicsName.find(x => x.mosaicId.toHex() === infoMosaic.mosaicId.toHex()) : null;
             mosaicsTosaved.push({
               idMosaic: [infoMosaic.mosaicId.id.lower, infoMosaic.mosaicId.id.higher],
-              isNamespace: null,
-              mosaicNames: (mosaicsName) ? mosaicsName.find(x => x.mosaicId.toHex() === infoMosaic.mosaicId.toHex()) : null,
+              isNamespace: (existMosaicName) ? [existMosaicName.names[0].namespaceId.id.lower, existMosaicName.names[0].namespaceId.id.higher] : null,
+              mosaicNames: existMosaicName,
               mosaicInfo: infoMosaic
             });
           });
         }
       }
       // console.log('mosaicsTosaved', mosaicsTosaved);
-
       this.saveMosaicStorage(mosaicsTosaved);
       return mosaicsTosaved;
     } catch (error) {
@@ -221,6 +218,7 @@ export class MosaicService {
           }
         });
 
+        // console.log('toSearch --> ', toSearch);
         if (toSearch.length > 0) {
           const mosaicsSearched = await this.searchInfoMosaics(toSearch);
           if (mosaicsSearched && mosaicsSearched.length > 0) {
@@ -230,15 +228,19 @@ export class MosaicService {
           }
         }
 
+        // console.log('aqui 11......', dataReturn);
+
         return this.filterMosaicToReturn(dataReturn);
       } else {
         const infoMosaics: MosaicsStorage[] = await this.searchInfoMosaics(mosaicsId);
+        // console.log('infoMosaics --> ', infoMosaics);
         return this.filterMosaicToReturn(infoMosaics);
       }
     } else {
       const accountInfo = this.walletService.filterAccountInfo(this.walletService.currentAccount.name);
       if (accountInfo && accountInfo.accountInfo && accountInfo.accountInfo.mosaics && accountInfo.accountInfo.mosaics.length > 0) {
         const mosaicsId = accountInfo.accountInfo.mosaics.map(x => x.id);
+        // console.log('aqui 2222......');
         return this.filterMosaics(mosaicsId);
       } else {
         return [];
