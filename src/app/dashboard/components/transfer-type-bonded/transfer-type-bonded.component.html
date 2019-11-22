@@ -47,7 +47,7 @@
     </div>
   </div>
 
-  <ng-container *ngIf="message && message.payload !== ''">
+  <ng-container *ngIf="msg === '' && message && message.payload !== '';">
     <div class="row mt-05rem" *ngIf="message.type === 0">
       <div class="col-12 lh-1em">
         <span class="fw-600 fs-065rem">Message:&nbsp;</span>
@@ -84,9 +84,9 @@
             src="assets/images/img/icon-show-hide-password.svg" *ngIf="passwordMain === 'password'">
           <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
             src="assets/images/img/icon-show-hide-password-grey.svg" *ngIf="passwordMain === 'text'">
-          <input maxlength="30" minlength="8" mdbInputDirective mdbValidate [validateSuccess]="true" [(ngModel)]="password"
-            [validateError]="true" [type]="passwordMain" id="password" class="form-control form-control-sm input-border"
-            placeholder="Enter Wallet Password">
+          <input maxlength="30" minlength="8" mdbInputDirective mdbValidate [validateSuccess]="true"
+            [(ngModel)]="password" [validateError]="true" [type]="passwordMain" id="password"
+            class="form-control form-control-sm input-border" placeholder="Enter Wallet Password">
         </div>
         <div class="txt-a-center">
           <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax-mini" size="sm"
@@ -109,11 +109,15 @@
           </button>
         </div>
       </div>
+    </div>
+  </ng-container>
 
-      <!-- <div class="col-12 lh-1em box-grey" *ngIf="transactionBuilder.data['message'].type === 1">
-        <span class="fs-065rem w-w-b-w">{{transactionBuilder.data['message'].payload}}</span>
-      </div> -->
-
+  <ng-container *ngIf="msg !== ''">
+    <div class="row mt-05rem" *ngIf="message.type === 0">
+      <div class="col-12 lh-1em">
+        <span class="fw-600 fs-065rem">Message:&nbsp;</span>
+        <span class="fs-065rem w-w-b-w">{{ msg }}</span>
+      </div>
     </div>
   </ng-container>
 
