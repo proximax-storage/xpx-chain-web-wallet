@@ -213,6 +213,7 @@ export class DetailAccountComponent implements OnInit {
           this.showPassword = false;
           this.showPrivateKey = false;
         } else if (value === 'save') {
+          this.privateKey = common['privateKey'].toUpperCase();
           this.printAccountInfo();
         } else if (value === 'nis1') {
           this.aceptChanges();
@@ -347,8 +348,8 @@ export class DetailAccountComponent implements OnInit {
 
   printAccountInfo() {
     // console.log('Run PDF');
-    // console.log(this.privateKey);
-    // console.log(this.address);
+    console.log(this.privateKey);
+    console.log(this.address);
 
     let doc = new jsPDF({
       unit: 'px'
