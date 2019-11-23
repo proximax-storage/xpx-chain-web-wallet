@@ -40,7 +40,8 @@
       <div class="col-12 mt-1rem">
         <div class="row d-flex align-items-center">
           <div class="col-12">
-            <span class="fw-600 fs-095rem color-black">Transactions ({{aggregateBonded?.data.innerTransactions.length}})</span>
+            <span class="fw-600 fs-095rem color-black">Transactions
+              ({{aggregateBonded?.data.innerTransactions.length}})</span>
           </div>
         </div>
         <hr class="mt-0">
@@ -63,6 +64,10 @@
               <app-transfer-type-bonded [transferTransactionBonded]="innerTransaction"
                 *ngIf="innerTransaction.type === typeTransactions.transfer.id" [signer]="aggregateBonded">
               </app-transfer-type-bonded>
+
+              <app-register-namespace-type-bonded [registerNamespaceTransaction]="innerTransaction"
+                *ngIf="innerTransaction.type === typeTransactions.registerNameSpace.id">
+              </app-register-namespace-type-bonded>
             </mdb-accordion-item-body>
           </mdb-accordion-item>
         </mdb-accordion>

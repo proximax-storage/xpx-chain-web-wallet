@@ -20,16 +20,16 @@ export class TransferTypeComponent implements OnInit {
   msg = '';
   typeMsg = null
   amountTwoPart: { part1: string; part2: string; };
+  decryptedMessage: any;
   nis1hash: any;
   routeNis1Explorer = environment.nis1.urlExplorer;
-  // E7620BC08F46B1B56A9DF29541513318FD51965229D4A4B3B3DAAFE82819DE46
   message: any;
   panelDecrypt: number = 0;
-  password = null
-  passwordMain = 'password'
-  recipientPublicAccount = null
-  senderPublicAccount = null
-  decryptedMessage: any;
+  password = null;
+  passwordMain = 'password';
+  recipientPublicAccount = null;
+  senderPublicAccount = null;
+  showEncryptedMessage = false;
 
   constructor(
     public transactionService: TransactionsService,
@@ -39,16 +39,16 @@ export class TransferTypeComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.verifyRecipientInfo();
   }
 
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
+    this.verifyRecipientInfo();
+    this.hideMessage();
     this.searching = true;
     this.typeTransactionHex = `${this.transferTransaction.data['type'].toString(16).toUpperCase()}`;
     this.message = null;
     this.message = this.transferTransaction.data.message;
-    this.hideMessage();
     if (this.transferTransaction.data.transactionInfo) {
       const height = this.transferTransaction.data.transactionInfo.height.compact();
     }
@@ -101,6 +101,16 @@ export class TransferTypeComponent implements OnInit {
     } catch (e) {}
 
     this.senderPublicAccount = this.transferTransaction.data.signer;
+    let firstAccount = this.walletService.currentAccount;
+
+    let availableAddress = [
+      this.recipientPublicAccount.address.address,
+      this.senderPublicAccount.address.address
+    ]
+
+    if (availableAddress.includes(firstAccount.address)) {
+      this.showEncryptedMessage = true;
+    }
   }
 
   /**
@@ -130,7 +140,7 @@ export class TransferTypeComponent implements OnInit {
         this.decryptedMessage = recipientMsg;
       } else {
         senderMsg = EncryptedMessage.decrypt(this.message, common['privateKey'], this.recipientPublicAccount);
-        this.decryptedMessage = senderMsg
+        this.decryptedMessage = senderMsg;
       }
 
       this.panelDecrypt = 2;
