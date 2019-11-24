@@ -202,10 +202,13 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
    * @memberof CreateTransferComponent
    */
   async buildCurrentAccountInfo(accountInfo: AccountInfo) {
+    console.log('accountInfo.mosaics', accountInfo.mosaics);
     const mosaicsSelect: any = [];
     if (accountInfo !== undefined && accountInfo !== null) {
       if (accountInfo.mosaics.length > 0) {
         const mosaics = await this.mosaicServices.filterMosaics(accountInfo.mosaics.map(n => n.id));
+        // console.log('mosaics', mosaics);
+
         if (mosaics.length > 0) {
           for (const mosaic of mosaics) {
             const configInput = {
@@ -264,8 +267,12 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
               this.balanceXpx = amount;
             }
           }
+
+
           this.allMosaics = mosaicsSelect;
           this.selectOtherMosaics = mosaicsSelect;
+          // console.log(this.allMosaics);
+          // console.log(this.selectOtherMosaics);
         }
       }
     }
