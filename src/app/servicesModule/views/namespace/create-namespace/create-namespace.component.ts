@@ -238,13 +238,16 @@ export class CreateNamespaceComponent implements OnInit, OnDestroy {
         this.clearForm();
         this.subscription['getTransactionStatushashLock'] = this.dataBridge.getTransactionStatus().subscribe(
           statusTransaction => {
+            this.clearForm();
             if (statusTransaction !== null && statusTransaction !== undefined && hashLockSigned !== null) {
               const match = statusTransaction['hash'] === hashLockSigned.hash;
               if (statusTransaction['type'] === 'confirmed' && match) {
                 setTimeout(() => {
                   this.announceAggregateBonded(aggregateSigned);
+                  this.blockBtnSend = false;
+                  this.announceAggregateBonded(aggregateSigned)
                   hashLockSigned = null;
-                }, 5000);
+                }, environment.delayBetweenLockFundABT);
               } else if (statusTransaction['type'] === 'status' && match) {
                 this.blockBtnSend = false;
                 this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
@@ -387,7 +390,6 @@ export class CreateNamespaceComponent implements OnInit, OnDestroy {
    * @memberof CreateNamespaceComponent
    */
   selectCosignatory(event: { disabledForm: boolean, cosignatory: AccountsInterface }) {
-    // console.log('event', event);
     if (event) {
       if (event.disabledForm) {
         this.insufficientBalanceCosignatory = true;
@@ -395,7 +397,6 @@ export class CreateNamespaceComponent implements OnInit, OnDestroy {
       } else {
         this.insufficientBalanceCosignatory = false;
         this.cosignatory = event.cosignatory;
-        // console.log(this.cosignatory);
       }
     } else {
       this.insufficientBalanceCosignatory = false;
@@ -453,16 +454,13 @@ export class CreateNamespaceComponent implements OnInit, OnDestroy {
         if (next !== null && next !== undefined && String(next) !== '0' && next !== '') {
           if (this.showDuration) {
             this.durationByBlock = this.transactionService.calculateDurationforDay(next).toString();
-            // console.log('call 1');
             this.validateRentalFee();
-            // console.log(this.durationByBlock);
           }
         } else {
           this.calculateRentalFee = '0.000000';
         }
       } else {
         this.durationByBlock = this.transactionService.calculateDurationforDay(365).toString();
-        // console.log('call 2');
         this.validateRentalFee();
       }
 
@@ -480,7 +478,6 @@ export class CreateNamespaceComponent implements OnInit, OnDestroy {
         this.namespaceForm.get('duration').setValidators([Validators.required]);
         this.showDuration = true;
         this.durationByBlock = this.transactionService.calculateDurationforDay(this.namespaceForm.get('duration').value).toString();
-        // console.log('call 3');
         this.validateRentalFee();
       } else {
         this.typeNamespace = 2;
@@ -491,7 +488,6 @@ export class CreateNamespaceComponent implements OnInit, OnDestroy {
         this.showDuration = false;
         this.durationByBlock = '0';
         this.calculateRentalFee = '10.000000';
-        // console.log('call 4');
         this.validateRentalFee();
       }
 
@@ -644,32 +640,17 @@ export class CreateNamespaceComponent implements OnInit, OnDestroy {
     }, 5000);
   }
 
-
-  /**
-   *
-   *
-   * @memberof CreateNamespaceComponent
-   */
   getTransactionStatus() {
-    this.transactionStatus = true;
-    this.subscription.push(this.dataBridge.getTransactionStatus().subscribe(
-      statusTransaction => {
-        if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
-          for (const element of this.transactionSigned) {
-            const match = statusTransaction['hash'] === element.hash;
-            if (match) {
-              this.transactionReady.push(element);
-              this.blockBtnSend = false;
-            }
-
-            if (statusTransaction['type'] === 'confirmed' && match) {
-              this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
-            } else if (match) {
-              this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
-            }
-          }
+    // Get transaction status
+    if (!this.subscription['transactionStatus']) {
+      this.subscription['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
+        statusTransaction => {
+          const response = this.transactionService.validateStatusTx(statusTransaction, this.transactionSigned, this.transactionReady);
+          this.transactionReady = response.transactionReady;
+          this.blockBtnSend = response.statusBtn;
+          this.transactionSigned = response.transactionSigned;
         }
-      }
-    ));
+      );
+    }
   }
 }
