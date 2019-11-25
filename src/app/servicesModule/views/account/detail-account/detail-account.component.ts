@@ -347,10 +347,6 @@ export class DetailAccountComponent implements OnInit {
   }
 
   printAccountInfo() {
-    // console.log('Run PDF');
-    console.log(this.privateKey);
-    console.log(this.address);
-
     let doc = new jsPDF({
       unit: 'px'
     });
