@@ -242,10 +242,10 @@ export class CreateNamespaceComponent implements OnInit, OnDestroy {
             if (statusTransaction !== null && statusTransaction !== undefined && hashLockSigned !== null) {
               const match = statusTransaction['hash'] === hashLockSigned.hash;
               if (statusTransaction['type'] === 'confirmed' && match) {
+                this.blockBtnSend = false;
                 setTimeout(() => {
                   this.announceAggregateBonded(aggregateSigned);
                   this.blockBtnSend = false;
-                  this.announceAggregateBonded(aggregateSigned)
                   hashLockSigned = null;
                 }, environment.delayBetweenLockFundABT);
               } else if (statusTransaction['type'] === 'status' && match) {
