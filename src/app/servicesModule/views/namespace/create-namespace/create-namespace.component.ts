@@ -1,12 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { SignedTransaction, MosaicId, Mosaic, RegisterNamespaceTransaction, Account, LockFundsTransaction, TransactionHttp } from 'tsjs-xpx-chain-sdk';
-import { FormGroup, FormBuilder, Validators, AbstractControl } from "@angular/forms";
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { SignedTransaction, RegisterNamespaceTransaction, Account, TransactionHttp } from 'tsjs-xpx-chain-sdk';
+import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AppConfig } from '../../../../config/app.config';
 import { DataBridgeService } from '../../../../shared/services/data-bridge.service';
-import { MosaicService } from '../../../../servicesModule/services/mosaic.service';
 import { WalletService, AccountsInterface } from '../../../../wallet/services/wallet.service';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { SharedService, ConfigurationForm } from '../../../../shared/services/shared.service';
@@ -14,15 +13,14 @@ import { NamespacesService } from '../../../../servicesModule/services/namespace
 import { TransactionsService } from '../../../../transactions/services/transactions.service';
 import { HeaderServicesInterface } from '../../../services/services-module.service';
 import { environment } from '../../../../../environments/environment';
-import { ServicesModuleService } from '../../../../servicesModule/services/services-module.service';
-import { NodeService } from 'src/app/servicesModule/services/node.service';
+import { NodeService } from '../../../../servicesModule/services/node.service';
 
 @Component({
   selector: 'app-create-namespace',
   templateUrl: './create-namespace.component.html',
   styleUrls: ['./create-namespace.component.css']
 })
-export class CreateNamespaceComponent implements OnInit {
+export class CreateNamespaceComponent implements OnInit, OnDestroy {
   @BlockUI() blockUI: NgBlockUI;
   arrayselect: Array<object> = [{
     value: '1',
@@ -34,15 +32,15 @@ export class CreateNamespaceComponent implements OnInit {
   accounts: any = [];
   amountAccount: number;
   block: number = null;
-  blockBtnSend: boolean = false;
+  blockBtnSend = false;
   calculateRentalFee: any = '0.000000';
   configurationForm: ConfigurationForm = {};
   cosignatory: AccountsInterface = null;
-  insufficientBalanceCosignatory: boolean = false;
+  insufficientBalanceCosignatory = false;
   duration: any;
   durationByBlock = '5760';
   endHeight: number;
-  fee: string = '0.000000';
+  fee = '0.000000';
   insufficientBalance = false;
   insufficientBalanceDuration = false;
   minimiumFeeRentalFeeToRoot = 26.393510;
@@ -53,7 +51,7 @@ export class CreateNamespaceComponent implements OnInit {
   namespace: Array<object> = [];
   namespaceName: any;
   namespaceRoot: any;
-  labelNamespace: string = '';
+  labelNamespace = '';
   listCosignatorie: any = [];
   lengthNamespace: number;
   paramsHeader: HeaderServicesInterface = {
@@ -61,24 +59,24 @@ export class CreateNamespaceComponent implements OnInit {
     componentName: 'Register'
   };
 
-  passwordMain: string = 'password';
+  passwordMain = 'password';
   registerRootNamespaceTransaction: RegisterNamespaceTransaction;
   registersubamespaceTransaction: RegisterNamespaceTransaction;
   rentalFee = 4576;
   sender: AccountsInterface = null;
-  status: boolean = true;
+  status = true;
   startHeight: number;
-  statusButtonNamespace: boolean = true;
-  showDuration: boolean = true;
+  statusButtonNamespace = true;
+  showDuration = true;
   showSelectAccount = true;
   subscription: Subscription[] = [];
   transactionHttp: TransactionHttp = null;
   transactionSigned: SignedTransaction[] = [];
   transactionReady: SignedTransaction[] = [];
-  transactionStatus: boolean = false;
-  typeNamespace: number = 1;
-  typeTx: number = 1; // 1 simple, 2 multisig
-  validateForm: boolean = false;
+  transactionStatus = false;
+  typeNamespace = 1;
+  typeTx = 1; // 1 simple, 2 multisig
+  validateForm = false;
 
   constructor(
     private nodeService: NodeService,
@@ -99,7 +97,7 @@ export class CreateNamespaceComponent implements OnInit {
     this.createForm();
     this.subscribeValueChange();
     this.showSelectAccount = true;
-    this.transactionHttp = new TransactionHttp(environment.protocol + "://" + `${this.nodeService.getNodeSelected()}`);
+    this.transactionHttp = new TransactionHttp(environment.protocol + '://' + `${this.nodeService.getNodeSelected()}`);
     /*
     this.amountAccount = this.walletService.getAmountAccount();
     this.durationByBlock = this.transactionService.calculateDurationforDay(this.namespaceForm.get('duration').value).toString();
@@ -120,10 +118,12 @@ export class CreateNamespaceComponent implements OnInit {
    * @param {SignedTransaction} signedTransaction
    * @memberof CreateNamespaceComponent
    */
-  announceAggregateBonded(signedTransaction: SignedTransaction) { //change
+  announceAggregateBonded(signedTransaction: SignedTransaction) { // change
     this.transactionHttp.announceAggregateBonded(signedTransaction).subscribe(
       async () => {
-        this.transactionSigned.push(signedTransaction)
+        this.blockBtnSend = false;
+        this.fee = '0.000000';
+        this.transactionSigned.push(signedTransaction);
       },
       err => {
         this.sharedService.showError('', err);
@@ -137,7 +137,7 @@ export class CreateNamespaceComponent implements OnInit {
    * @memberof CreateNamespaceComponent
    */
   changeInputType(inputType: any) {
-    let newType = this.sharedService.changeInputType(inputType)
+    const newType = this.sharedService.changeInputType(inputType);
     this.passwordMain = newType;
   }
 
@@ -147,7 +147,7 @@ export class CreateNamespaceComponent implements OnInit {
    * @memberof CreateNamespaceComponent
    */
   createForm() {
-    //Form namespace default
+    // Form namespace default
     this.namespaceForm = this.fb.group({
       name: ['', [
         Validators.required,
@@ -169,10 +169,10 @@ export class CreateNamespaceComponent implements OnInit {
   }
 
   /**
-  *
-  *
-  * @memberof CreateNamespaceComponent
-  */
+   *
+   *
+   * @memberof CreateNamespaceComponent
+   */
   createNamespace() {
     if (this.typeTx === 1) {
       this.sendTxSimple();
@@ -204,7 +204,7 @@ export class CreateNamespaceComponent implements OnInit {
       }, () => {
         this.blockBtnSend = false;
         this.clearForm();
-        this.fee = '0.000000'
+        this.fee = '0.000000';
         this.sharedService.showError('', 'Error connecting to the node');
       }
       );
@@ -235,6 +235,7 @@ export class CreateNamespaceComponent implements OnInit {
       const aggregateSigned = this.transactionService.buildAggregateTransaction(accountCosignatory, innerTransaction, generationHash);
       let hashLockSigned = this.transactionService.buildHashLockTransaction(aggregateSigned, accountCosignatory, generationHash);
       this.transactionService.buildTransactionHttp().announce(hashLockSigned).subscribe(async () => {
+        this.clearForm();
         this.subscription['getTransactionStatushashLock'] = this.dataBridge.getTransactionStatus().subscribe(
           statusTransaction => {
             this.clearForm();
@@ -242,6 +243,7 @@ export class CreateNamespaceComponent implements OnInit {
               const match = statusTransaction['hash'] === hashLockSigned.hash;
               if (statusTransaction['type'] === 'confirmed' && match) {
                 setTimeout(() => {
+                  this.announceAggregateBonded(aggregateSigned);
                   this.blockBtnSend = false;
                   this.announceAggregateBonded(aggregateSigned)
                   hashLockSigned = null;
@@ -315,7 +317,7 @@ export class CreateNamespaceComponent implements OnInit {
         this.namespace = [];
         this.namespaceInfo = [];
         if (namespaceInfo !== null && namespaceInfo !== undefined) {
-          for (let data of namespaceInfo) {
+          for (const data of namespaceInfo) {
             let rootResponse = null;
             if (data.namespaceInfo.depth === 1) {
               rootResponse = this.namespaceService.getRootNamespace(data, data.namespaceInfo.active, this.namespace, this.namespaceInfo);
@@ -327,7 +329,7 @@ export class CreateNamespaceComponent implements OnInit {
             this.namespaceInfo = rootResponse.namespaceInfo;
           }
 
-          let arrayNamespaces = this.namespace.sort(function (a: any, b: any) {
+          const arrayNamespaces = this.namespace.sort(function (a: any, b: any) {
             return a.label === b.label ? 0 : +(a.label > b.label) || -1;
           });
 
@@ -368,12 +370,13 @@ export class CreateNamespaceComponent implements OnInit {
    * @memberof CreateNamespaceComponent
    */
   limitDuration(e: any) {
+    // tslint:disable-next-line: radix
     if (isNaN(parseInt(e.target.value))) {
       e.target.value = '';
       this.namespaceForm.get('duration').setValue('');
     } else {
       if (parseInt(e.target.value) > 365) {
-        e.target.value = '365'
+        e.target.value = '365';
       } else if (parseInt(e.target.value) < 1) {
         e.target.value = '';
         this.namespaceForm.get('duration').setValue('');
@@ -412,10 +415,10 @@ export class CreateNamespaceComponent implements OnInit {
     let signedTransaction = null;
     const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
     const generationHash = this.dataBridge.blockInfo.generationHash;
-    if (this.typeNamespace == 1) {
-      signedTransaction = account.sign(this.registerRootNamespaceTransaction, generationHash); //Update-sdk-dragon
-    } else if (this.typeNamespace == 2) {
-      signedTransaction = account.sign(this.registersubamespaceTransaction, generationHash); //Update-sdk-dragon
+    if (this.typeNamespace === 1) {
+      signedTransaction = account.sign(this.registerRootNamespaceTransaction, generationHash); // Update-sdk-dragon
+    } else if (this.typeNamespace === 2) {
+      signedTransaction = account.sign(this.registersubamespaceTransaction, generationHash); // Update-sdk-dragon
     }
 
     return signedTransaction;
@@ -499,8 +502,8 @@ export class CreateNamespaceComponent implements OnInit {
       }
 
       this.namespaceName = formatter;
-      this.validateFee()
-    })
+      this.validateFee();
+    });
   }
 
   /**
@@ -532,7 +535,11 @@ export class CreateNamespaceComponent implements OnInit {
       this.fee = '0.000000';
     }
 
-    const validateAmount = this.transactionService.validateBuildSelectAccountBalance(this.amountAccount, Number(this.fee), Number(this.calculateRentalFee.replace(/,/g, '')));
+    const validateAmount = this.transactionService.validateBuildSelectAccountBalance(
+      this.amountAccount,
+      Number(this.fee),
+      Number(this.calculateRentalFee.replace(/,/g, ''))
+    );
     if (!validateAmount) {
       this.insufficientBalance = true;
       this.insufficientBalanceDuration = false;
@@ -621,13 +628,15 @@ export class CreateNamespaceComponent implements OnInit {
   setTimeOutValidate(hash: string) {
     setTimeout(() => {
       let exist = false;
-      for (let element of this.transactionReady) {
+      for (const element of this.transactionReady) {
         if (hash === element.hash) {
           exist = true;
         }
       }
 
-      (exist) ? '' : this.sharedService.showWarning('', 'An error has occurred');
+      if (!exist) {
+        this.sharedService.showWarning('', 'An error has occurred');
+      }
     }, 5000);
   }
 
