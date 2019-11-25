@@ -4,7 +4,6 @@ import {
   UInt64,
   TransferTransaction,
   Deadline,
-  PlainMessage,
   NetworkType,
   TransactionHttp,
   Account,
@@ -33,12 +32,11 @@ import {
   AccountsInfoInterface,
   AccountsInterface
 } from "../../wallet/services/wallet.service";
-import { SharedService } from "../../shared/services/shared.service";
 
 export interface TransferInterface {
   common: { password?: any; privateKey?: any };
   recipient: string;
-  message: string;
+  message: any;
   network: NetworkType;
   mosaic: any;
 }
@@ -59,6 +57,9 @@ export class TransactionsService {
   //Aggregate Transactions
   private _aggregateTransactionsSubject: BehaviorSubject<TransactionsInterface[]> = new BehaviorSubject<TransactionsInterface[]>([]);
   private _aggregateTransactions$: Observable<TransactionsInterface[]> = this._aggregateTransactionsSubject.asObservable();
+  // Notifications
+  private notificationsSubject: BehaviorSubject<any> = new BehaviorSubject<any>(false);
+  private notifications$: Observable<any> = this.notificationsSubject.asObservable();
 
   arraTypeTransaction = {
     transfer: {
@@ -115,6 +116,8 @@ export class TransactionsService {
   mosaicRentalFeeSink = environment.mosaicRentalFeeSink;
   generationHash: string = "";
   transactionsReady = [];
+  viewParcial: boolean;
+  lengthParcial: any;
 
   constructor(
     private proximaxProvider: ProximaxProvider,
@@ -296,7 +299,7 @@ export class TransactionsService {
       Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
       recipientAddress,
       allMosaics,
-      PlainMessage.create(params.message),
+      params.message,
       params.network
     );
 
@@ -510,7 +513,19 @@ export class TransactionsService {
   getTypeTransactions() {
     return this.arraTypeTransaction;
   }
+    /**
+   *
+   *
+   * @returns {Observable<any>}
+   * @memberof TransactionsService
+   */
+  getViewNotifications$(): Observable<any> {
+    return this.notifications$;
+  }
 
+  setViewNotifications$(notifications: boolean) {
+    this.notificationsSubject.next(notifications);
+  }
   /**
    *
    *
@@ -552,6 +567,10 @@ export class TransactionsService {
     return null;
   }
 
+  // viewPartial(partial){
+  //   this.lengthParcial = partial.length;
+  //   this.viewParcial = (partial && partial.length > 0) ? true : false
+  // }
   /**
    *
    *

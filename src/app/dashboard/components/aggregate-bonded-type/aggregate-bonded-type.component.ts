@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, SimpleChanges, OnChanges } from '@angular/core';
 import { PaginationInstance } from 'ngx-pagination';
 import { TransactionsInterface, TransactionsService } from '../../../transactions/services/transactions.service';
 import { environment } from '../../../../environments/environment';
@@ -8,7 +8,7 @@ import { environment } from '../../../../environments/environment';
   templateUrl: './aggregate-bonded-type.component.html',
   styleUrls: ['./aggregate-bonded-type.component.css']
 })
-export class AggregateBondedTypeComponent implements OnInit {
+export class AggregateBondedTypeComponent implements OnInit, OnChanges {
 
   @Input() aggregateBonded: TransactionsInterface;
   configCustom: PaginationInstance = {
@@ -32,5 +32,8 @@ export class AggregateBondedTypeComponent implements OnInit {
       const nameType = Object.keys(this.typeTransactions).find(x => this.typeTransactions[x].id === element.type);
       element['nameType'] = (nameType) ? this.typeTransactions[nameType].name : element.type.toString(16).toUpperCase();
     });
+
+    console.log(this.aggregateBonded);
+
   }
 }

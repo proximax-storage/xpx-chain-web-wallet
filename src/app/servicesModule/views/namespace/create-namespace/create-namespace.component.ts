@@ -537,7 +537,7 @@ export class CreateNamespaceComponent implements OnInit {
       this.insufficientBalance = true;
       this.insufficientBalanceDuration = false;
     } else {
-      console.log('call 5');
+      // console.log('call 5');
       this.validateRentalFee();
     }
   }
@@ -548,7 +548,7 @@ export class CreateNamespaceComponent implements OnInit {
    * @memberof CreateNamespaceComponent
    */
   validateRentalFee() {
-    console.log('entra.....');
+    // console.log('entra.....');
     const amount = this.rentalFee * parseFloat(this.durationByBlock);
     this.calculateRentalFee = this.transactionService.amountFormatterSimple(amount);
     if (this.namespaceForm.get('namespaceRoot').value === '' || this.namespaceForm.get('namespaceRoot').value === '1') {
@@ -563,7 +563,7 @@ export class CreateNamespaceComponent implements OnInit {
           this.insufficientBalance = false;
           this.insufficientBalanceDuration = true;
         } else {
-          console.log('JABILITALO...');
+          // console.log('JABILITALO...');
           if (!this.insufficientBalanceCosignatory) {
             this.insufficientBalance = false;
             this.insufficientBalanceDuration = false;

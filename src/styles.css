@@ -1982,6 +1982,15 @@ ul.stepper.horizontal .step-title {
   background: #306eb5 !important;
 }
 
+.btn-proximax-mini {
+  min-width: 120px !important;
+  padding: 5px 15px !important;
+  font-weight: bold !important;
+  font-size: 12px !important;
+  text-align: center !important;
+  background: #306eb5 !important;
+}
+
 .ls-002rem {
   letter-spacing: .02rem !important;
 }
