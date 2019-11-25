@@ -75,9 +75,9 @@ export class NemProviderService {
     const part = quantity.toString().split('.');
     const cant = (part.length === 1) ? 6 : 6 - part[1].length;
     for (let index = 0; index < cant; index++) {
-      if(part.length === 1) {
+      if (part.length === 1) {
         part[0] += 0;
-      }else {
+      } else {
         part[1] += 0;
       }
     }
@@ -629,12 +629,15 @@ export class NemProviderService {
       case 551:
       case 565:
       case 582:
-      case 591:
       case 610:
       case 622:
       case 672:
       case 711:
         this.sharedService.showError('', 'Some data is invalid');
+        break;
+
+      case 591:
+        this.sharedService.showError('', 'Invalid Timestamp');
         break;
 
       case 501:

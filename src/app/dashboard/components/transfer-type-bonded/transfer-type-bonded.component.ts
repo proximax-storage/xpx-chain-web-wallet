@@ -1,30 +1,29 @@
-import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, SimpleChanges, OnChanges } from '@angular/core';
 import { TransferTransaction } from 'tsjs-xpx-chain-sdk';
 import { TransactionsService, TransactionsInterface } from '../../../transactions/services/transactions.service';
 import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
-import { environment } from '../../../../environments/environment';
 import { SharedService } from 'src/app/shared/services/shared.service';
-import { EncryptedMessage } from 'tsjs-xpx-chain-sdk'
-import { WalletService } from "../../../wallet/services/wallet.service";
+import { EncryptedMessage } from 'tsjs-xpx-chain-sdk';
+import { WalletService } from '../../../wallet/services/wallet.service';
 
 @Component({
   selector: 'app-transfer-type-bonded',
   templateUrl: './transfer-type-bonded.component.html',
   styleUrls: ['./transfer-type-bonded.component.css']
 })
-export class TransferTypeBondedComponent implements OnInit {
+export class TransferTypeBondedComponent implements OnInit, OnChanges {
 
   @Input() transferTransactionBonded: TransferTransaction = null;
-  @Input() msg: string = '';
+  @Input() msg = '';
   @Input() signer: any;
   transactionBuilder: TransactionsInterface = null;
 
   message: any;
-  panelDecrypt: number = 0;
-  password = null
-  passwordMain = 'password'
-  recipientPublicAccount = null
-  senderPublicAccount = null
+  panelDecrypt = 0;
+  password = null;
+  passwordMain = 'password';
+  recipientPublicAccount = null;
+  senderPublicAccount = null;
   decryptedMessage: any;
   showEncryptedMessage = false;
 
@@ -40,83 +39,84 @@ export class TransferTypeBondedComponent implements OnInit {
   }
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
-    // console.log(this.transferTransactionBonded);
     this.transactionBuilder = this.transactionService.getStructureDashboard(this.transferTransactionBonded);
-    // console.log('----build---', this.transactionBuilder);
-    this.message = this.transactionBuilder.data.message
-    // console.log(this.signer);
-    this.verifyRecipientInfo()
+    this.message = this.transactionBuilder.data.message;
+    this.verifyRecipientInfo();
   }
 
-  changeInputType(inputType) {
-    let newType = this.sharedService.changeInputType(inputType)
-    this.passwordMain = newType;
-  }
-
-  decryptMessage() {
-    let common = { password: this.password }
-    let firstAccount = this.walletService.currentAccount
-    // console.clear();
-    // console.log(this.transactionBuilder)
-    // console.log(firstAccount);
-    // console.log(this.walletService.decrypt(common, firstAccount));
-
-    if (this.walletService.decrypt(common, firstAccount)) {
-      // console.log('Message', this.message);
-      // console.log('PrivateKey', common['privateKey']);
-      // console.log('SenderRecipientPublicAccount', this.senderPublicAccount);
-      // console.log('RecipientPublicAccount', this.recipientPublicAccount);
-      // console.log('PanelDecrypt', this.panelDecrypt);
-
-      let recipientMsg = EncryptedMessage.decrypt(this.message, common['privateKey'], this.senderPublicAccount)
-      let senderMsg = EncryptedMessage.decrypt(this.message, common['privateKey'], this.recipientPublicAccount)
-
-      // console.log('recipient', recipientMsg);
-      // console.log('sender', senderMsg);
-      // console.log(firstAccount.address === this.recipientPublicAccount.address.address)
-
-      if (firstAccount.address === this.recipientPublicAccount.address.address) {
-        recipientMsg = EncryptedMessage.decrypt(this.message, common['privateKey'], this.senderPublicAccount)
-        this.decryptedMessage = recipientMsg
-      } else {
-        senderMsg = EncryptedMessage.decrypt(this.message, common['privateKey'], this.recipientPublicAccount)
-        this.decryptedMessage = senderMsg
-      }
-
-      // console.log('DecryptedMessage', this.decryptedMessage);
-      this.panelDecrypt = 2
-    } else {
-      this.sharedService.showError('', 'Password Invalid');
-      this.panelDecrypt = 0
-    }
-  }
-
-  hideMessage() {
-    this.password = ''
-    this.decryptedMessage = null
-    this.panelDecrypt = 0
-  }
-
+  /**
+   *
+   *
+   * @memberof TransferTypeBondedComponent
+   */
   async verifyRecipientInfo() {
-    let address = this.proximaxProvider.createFromRawAddress(this.transactionBuilder.recipient['address'])
-    this.senderPublicAccount = this.signer.sender
+    const address = this.proximaxProvider.createFromRawAddress(this.transactionBuilder.recipient['address']);
+    this.senderPublicAccount = this.signer.sender;
     try {
-      let accountInfo = await this.proximaxProvider.getAccountInfo(address).toPromise()
+      const accountInfo = await this.proximaxProvider.getAccountInfo(address).toPromise();
       // console.log(accountInfo);
-      this.recipientPublicAccount = accountInfo.publicAccount
+      this.recipientPublicAccount = accountInfo.publicAccount;
     } catch (e) {
       console.warn(e);
     }
 
-    let firstAccount = this.walletService.currentAccount;
-    let availableAddress = [
+    const firstAccount = this.walletService.currentAccount;
+    const availableAddress = [
       this.recipientPublicAccount.address.address,
       this.senderPublicAccount.address.address
-    ]
+    ];
 
     if (availableAddress.includes(firstAccount.address)) {
       this.showEncryptedMessage = true;
     }
   }
 
+
+  /**
+   *
+   *
+   * @param {*} inputType
+   * @memberof TransferTypeBondedComponent
+   */
+  changeInputType(inputType) {
+    const newType = this.sharedService.changeInputType(inputType);
+    this.passwordMain = newType;
+  }
+
+  /**
+   *
+   *
+   * @memberof TransferTypeBondedComponent
+   */
+  decryptMessage() {
+    const common = { password: this.password };
+    const firstAccount = this.walletService.currentAccount;
+    if (this.walletService.decrypt(common, firstAccount)) {
+      let recipientMsg = EncryptedMessage.decrypt(this.message, common['privateKey'], this.senderPublicAccount);
+      let senderMsg = EncryptedMessage.decrypt(this.message, common['privateKey'], this.recipientPublicAccount);
+      if (firstAccount.address === this.recipientPublicAccount.address.address) {
+        recipientMsg = EncryptedMessage.decrypt(this.message, common['privateKey'], this.senderPublicAccount);
+        this.decryptedMessage = recipientMsg;
+      } else {
+        senderMsg = EncryptedMessage.decrypt(this.message, common['privateKey'], this.recipientPublicAccount);
+        this.decryptedMessage = senderMsg;
+      }
+
+      this.panelDecrypt = 2;
+    } else {
+      this.sharedService.showError('', 'Password Invalid');
+      this.panelDecrypt = 0;
+    }
+  }
+
+  /**
+   *
+   *
+   * @memberof TransferTypeBondedComponent
+   */
+  hideMessage() {
+    this.password = '';
+    this.decryptedMessage = null;
+    this.panelDecrypt = 0;
+  }
 }
