@@ -116,9 +116,9 @@ export class AuthService {
     this.mosaicService.getMosaicXPX();
     this.namespaces.searchNamespacesFromAccounts(address);
     this.transactionService.searchAccountsInfo(this.walletService.currentWallet.accounts);
-     this.dataBridgeService.searchBlockInfo();
-    this.dataBridgeService.searchBlockInfo(true);
-    
+    this.dataBridgeService.searchBlockInfo();
+    this.dataBridgeService.searchBlockInfo(true);
+
     this.route.navigate([`/${AppConfig.routes.dashboard}`]);
     return true;
   }
@@ -127,8 +127,8 @@ export class AuthService {
    * Allow to load the component in the routing
    *
    * @param {*} params
-   * @memberof LoginService
-   **/
+   * @memberof AuthService
+   */
   setLogged(params: any) {
     this.eventShowModalSubject.next(0);
     this.logged = params;
@@ -163,7 +163,7 @@ export class AuthService {
 
 
   /**
-   *Set value to log in and log out
+   * set value to log in and log out
    *
    * @returns
    * @memberof LoginService
@@ -188,6 +188,4 @@ export class AuthService {
     });
     return r;
   }
-
-
 }
