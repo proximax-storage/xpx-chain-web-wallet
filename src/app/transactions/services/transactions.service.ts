@@ -846,6 +846,7 @@ export class TransactionsService {
    * @memberof TransactionsService
    */
   setTransactionsAggregateBonded$(transactions: TransactionsInterface[]) {
+    console.log('-------transactions-------', transactions);
     this._aggregateTransactionsSubject.next(transactions);
   }
 
