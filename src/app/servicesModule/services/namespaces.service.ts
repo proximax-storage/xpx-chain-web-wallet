@@ -1,5 +1,5 @@
-import { Injectable } from "@angular/core";
-import { BehaviorSubject, Observable } from "rxjs";
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
 import {
   NamespaceInfo,
   NamespaceId,
@@ -9,18 +9,19 @@ import {
   NetworkType,
   Deadline,
   SignedTransaction,
-  AddressAliasTransaction
-} from "tsjs-xpx-chain-sdk";
-import { ProximaxProvider } from "../../shared/services/proximax.provider";
+  AddressAliasTransaction,
+  Account
+} from 'tsjs-xpx-chain-sdk';
+import { ProximaxProvider } from '../../shared/services/proximax.provider';
 import { WalletService } from '../../wallet/services/wallet.service';
 import { environment } from '../../../environments/environment';
 // import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
 
 @Injectable({
-  providedIn: "root"
+  providedIn: 'root'
 })
 export class NamespacesService {
-  generationHash:string;
+  generationHash: string;
   namespaceViewCache: NamespaceName[] = [];
   namespaceFromAccount: NamespaceInfo[] = null;
   private namespaceFromAccountSubject: BehaviorSubject<NamespaceInfo[]> = new BehaviorSubject<NamespaceInfo[]>(null);
@@ -48,7 +49,7 @@ export class NamespacesService {
   addressAliasTransaction(param: AddressAliasTransactionInterface): AddressAliasTransaction {
     const network = (param.network !== undefined) ? param.network : this.walletService.currentAccount.network;
     const addressAliasTransaction = AddressAliasTransaction.create(
-      Deadline.create(environment.deadlineTransfer.deadline,environment.deadlineTransfer.chronoUnit),
+      Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
       param.aliasActionType,
       param.namespaceId,
       param.address,
@@ -69,7 +70,7 @@ export class NamespacesService {
     const missingId: NamespaceId[] = [];
     const namespacesStorage: NamespaceStorageInterface[] = this.getNamespacesStorage();
     if (namespacesStorage.length > 0 && namespaceId.length > 0) {
-      for (let id of namespaceId) {
+      for (const id of namespaceId) {
         const x = namespacesStorage.find(next => next.idToHex === id.toHex());
         if (x && Object.keys(x).length > 0) {
           dataFound.push(x);
@@ -77,16 +78,16 @@ export class NamespacesService {
           missingId.push(id);
         }
       }
-    }else {
+    } else {
       namespaceId.forEach(namespaceId => {
-        missingId.push(namespaceId)
+        missingId.push(namespaceId);
       });
     }
 
     if (missingId.length > 0 && recursive) {
-      for (let id of missingId) {
+      for (const id of missingId) {
         try {
-          //Gets array of NamespaceInfo for an account
+          // Gets array of NamespaceInfo for an account
           const namespaceInfo: NamespaceInfo = await this.proximaxProvider.getNamespace(id).toPromise();
           if (namespaceInfo && Object.keys(namespaceInfo).length > 0) {
             await this.saveNamespaceStorage([namespaceInfo]);
@@ -111,11 +112,11 @@ export class NamespacesService {
    */
   async getNamespacesName(namespaceIds: NamespaceId[]) {
     try {
-      //Gets array of NamespaceName for an account
+      // Gets array of NamespaceName for an account
       const namespaceName = await this.proximaxProvider.namespaceHttp.getNamespacesName(namespaceIds).toPromise();
       return namespaceName;
     } catch (error) {
-      //Nothing!
+      // Nothing!
       return [];
     }
   }
@@ -153,12 +154,12 @@ export class NamespacesService {
     }
   }
 
-  namespaceExpired(namespace: object[], viewNamespace: boolean){
+  namespaceExpired(namespace: object[], viewNamespace: boolean) {
     this.expired = namespace;
     this.view = viewNamespace;
     // console.log('------ n', namespace);
     // console.log('------ v', viewNamespace);
-    
+
   }
   /**
    *
@@ -168,10 +169,10 @@ export class NamespacesService {
    * @memberof NamespacesService
    */
   async searchNamespacesFromAccounts(allAddress: Address[]) {
-    let allNamespaces: NamespaceInfo[] = [];
-    for (let address of allAddress) {
+    const allNamespaces: NamespaceInfo[] = [];
+    for (const address of allAddress) {
       try {
-        //Gets array of NamespaceInfo for an account
+        // Gets array of NamespaceInfo for an account
         const namespaceInfo: NamespaceInfo[] = await this.proximaxProvider.getNamespaceFromAccount(address).toPromise();
         if (namespaceInfo && namespaceInfo.length > 0) {
           namespaceInfo.forEach(element => {
@@ -193,23 +194,23 @@ export class NamespacesService {
    * @memberof NamespacesService
    */
   async saveNamespaceStorage(namespaceInfo: NamespaceInfo[]) {
-    // console.log('----namespaceInfo----', namespaceInfo);
+    // console.log('\n\n\n ----namespaceInfo----', namespaceInfo, '\n\n\n');
     const namespacesStorage: NamespaceStorageInterface[] = this.getNamespacesStorage();
     const names = await this.proximaxProvider.namespaceHttp.getNamespacesName(namespaceInfo.map(x => x.id)).toPromise();
     // console.log('----names---', names);
     const namespacesFound: NamespaceStorageInterface[] = [];
-    for (let info of namespaceInfo) {
+    for (const info of namespaceInfo) {
       namespacesFound.push({
         id: [info.id.id.lower, info.id.id.higher],
         idToHex: info.id.toHex(),
         namespaceName: names.find(name => name.namespaceId.toHex() === info.id.toHex()),
         namespaceInfo: info
       });
-    };
+    }
 
     const namespaceToSaved = namespacesFound.slice(0);
     if (namespacesStorage.length > 0 && namespaceToSaved.length > 0) {
-      for (let namespacesSaved of namespacesStorage) {
+      for (const namespacesSaved of namespacesStorage) {
         const existNamespace = namespaceToSaved.find(b => b.idToHex === namespacesSaved.idToHex);
         // console.log('----existe?----', existNamespace);
         if (!existNamespace) {
@@ -224,14 +225,13 @@ export class NamespacesService {
   }
 
   /**
- *
- *
- * @memberof NamespacesService
- */
+   *
+   *
+   * @memberof NamespacesService
+   */
   destroyDataNamespace() {
     this.namespaceFromAccountSubject.next(null);
   }
-
 
   /**
    *
@@ -249,6 +249,25 @@ export class NamespacesService {
     }
 
     this.setNamespaceChanged(namespacesCurrentAccount);
+  }
+
+  /**
+   *
+   *
+   * @memberof NamespacesService
+   */
+  filterNamespacesFromAccount(publicKey: string): NamespaceStorageInterface[] {
+    let namespacesFound = [];
+    const namespacesStorage: NamespaceStorageInterface[] = this.getNamespacesStorage();
+    const currentAccount = this.proximaxProvider.createAddressFromPublicKey(publicKey, this.walletService.getAccountDefault().network).pretty();
+    if (namespacesStorage.length > 0) {
+      namespacesFound = namespacesStorage.filter((next: NamespaceStorageInterface) =>
+        this.proximaxProvider.createFromRawAddress(next.namespaceInfo.owner.address['address']).pretty() === currentAccount
+      );
+    }
+
+    // console.log('namespacesFound', namespacesFound);
+    return namespacesFound;
   }
 
   /**
@@ -321,7 +340,7 @@ export class NamespacesService {
    * @param rootNamespace
    * @param status
    */
-  getRootNamespace(rootNamespace: any, status: boolean, currentNamespace: any, namespaceInfo: any): {currentNamespace: any, namespaceInfo: any} {
+  getRootNamespace(rootNamespace: any, status: boolean, currentNamespace: any, namespaceInfo: any): { currentNamespace: any, namespaceInfo: any } {
     const sts = status ? false : true;
     currentNamespace.push({
       value: `${rootNamespace.namespaceName.name}`,
@@ -336,8 +355,8 @@ export class NamespacesService {
     });
 
     return {
-      currentNamespace: currentNamespace,
-      namespaceInfo: namespaceInfo
+      currentNamespace,
+      namespaceInfo
     };
   }
 
@@ -349,17 +368,23 @@ export class NamespacesService {
    * @param currentNamespace
    * @param namespaceInfo
    */
-  getSubNivelNamespace(subNamespace: NamespaceStorageInterface, status: boolean, depth: number, currentNamespace: any, namespaceInfo: any): {currentNamespace: any, namespaceInfo: any} {
+  getSubNivelNamespace(
+    subNamespace: NamespaceStorageInterface,
+    status: boolean,
+    depth: number,
+    currentNamespace: any,
+    namespaceInfo: any
+  ): { currentNamespace: any, namespaceInfo: any } {
     const sts = status ? false : true;
     let disabled = false;
     let name = '';
     if (depth === 2) {
-      //Assign level 2
+      // Assign level 2
       const level2 = subNamespace.namespaceName.name;
       name = level2;
     } else if (depth === 3) {
       disabled = true;
-      //Assign el level3
+      // Assign el level3
       const level3 = subNamespace.namespaceName.name;
       name = level3;
     }
@@ -368,18 +393,18 @@ export class NamespacesService {
       value: name,
       label: name,
       selected: sts,
-      disabled: disabled
+      disabled
     });
 
     namespaceInfo.push({
-      name: name,
+      name,
       dataNamespace: subNamespace
     });
 
     // console.log(currentNamespace);
     return {
-      currentNamespace: currentNamespace,
-      namespaceInfo: namespaceInfo
+      currentNamespace,
+      namespaceInfo
     };
   }
 
@@ -417,7 +442,7 @@ export interface AddressAliasTransactionInterface {
 
 export interface NamespacesOfAccountsInterface {
   nameAccount: string;
-  namespaces: NamespaceStorageInterface[]
+  namespaces: NamespaceStorageInterface[];
 }
 
 export interface NamespaceStorageInterface {

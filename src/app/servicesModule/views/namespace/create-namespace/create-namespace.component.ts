@@ -243,10 +243,10 @@ export class CreateNamespaceComponent implements OnInit, OnDestroy {
             if (statusTransaction !== null && statusTransaction !== undefined && hashLockSigned !== null) {
               const match = statusTransaction['hash'] === hashLockSigned.hash;
               if (statusTransaction['type'] === 'confirmed' && match) {
+                this.blockBtnSend = false;
                 setTimeout(() => {
                   this.announceAggregateBonded(aggregateSigned);
                   this.blockBtnSend = false;
-                  this.announceAggregateBonded(aggregateSigned)
                   hashLockSigned = null;
                 }, environment.delayBetweenLockFundABT);
               } else if (statusTransaction['type'] === 'status' && match) {
@@ -310,11 +310,13 @@ export class CreateNamespaceComponent implements OnInit, OnDestroy {
   /**
    *
    *
+   * @param {AccountsInterface} account
    * @memberof CreateNamespaceComponent
    */
-  getNamespaces() {
+  getNamespaces(account: AccountsInterface) {
     this.subscription.push(this.namespaceService.getNamespaceChanged().subscribe(
-      async namespaceInfo => {
+      async namespaceInfoData => {
+        const namespaceInfo = this.namespaceService.filterNamespacesFromAccount(account.publicAccount.publicKey);
         this.namespace = [];
         this.namespaceInfo = [];
         if (namespaceInfo !== null && namespaceInfo !== undefined) {
@@ -330,7 +332,7 @@ export class CreateNamespaceComponent implements OnInit, OnDestroy {
             this.namespaceInfo = rootResponse.namespaceInfo;
           }
 
-          const arrayNamespaces = this.namespace.sort(function (a: any, b: any) {
+          const arrayNamespaces = this.namespace.sort((a: any, b: any) => {
             return a.label === b.label ? 0 : +(a.label > b.label) || -1;
           });
 
@@ -343,8 +345,7 @@ export class CreateNamespaceComponent implements OnInit, OnDestroy {
 
           this.arrayselect = this.arrayselect.concat(arrayNamespaces);
         }
-      },
-      error => {
+      }, error => {
         // console.log(error);
         this.blockUI.stop();
         this.router.navigate([AppConfig.routes.home]);
@@ -437,7 +438,7 @@ export class CreateNamespaceComponent implements OnInit, OnDestroy {
       this.amountAccount = Number(this.transactionService.amountFormatterSimple(amountAccount).replace(/,/g, ''));
       this.sender = account;
       this.typeTx = (this.transactionService.validateIsMultisigAccount(this.sender)) ? 2 : 1;
-      this.getNamespaces();
+      this.getNamespaces(account);
       this.validateRentalFee();
       this.validateFee();
     });
@@ -505,6 +506,28 @@ export class CreateNamespaceComponent implements OnInit, OnDestroy {
       this.namespaceName = formatter;
       this.validateFee();
     });
+  }
+
+  /**
+   *
+   *
+   * @param {string} hash
+   * @memberof CreateNamespaceComponent
+   */
+  setTimeOutValidate(hash: string) {
+    setTimeout(() => {
+      let exist = false;
+      for (const element of this.transactionReady) {
+        if (hash === element.hash) {
+          exist = true;
+        }
+      }
+
+      if (!exist) {
+        this.blockBtnSend = false;
+        this.sharedService.showWarning('', 'An error has occurred');
+      }
+    }, 5000);
   }
 
   /**
@@ -620,36 +643,23 @@ export class CreateNamespaceComponent implements OnInit, OnDestroy {
   // ------------------------------------------------------------------------------------------------------------------------
 
 
-  /**
-   *
-   *
-   * @param {string} hash
-   * @memberof CreateNamespaceComponent
-   */
-  setTimeOutValidate(hash: string) {
-    setTimeout(() => {
-      let exist = false;
-      for (const element of this.transactionReady) {
-        if (hash === element.hash) {
-          exist = true;
-        }
-      }
 
-      if (!exist) {
-        this.sharedService.showWarning('', 'An error has occurred');
-      }
-    }, 5000);
-  }
 
   getTransactionStatus() {
     // Get transaction status
     if (!this.subscription['transactionStatus']) {
       this.subscription['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
         statusTransaction => {
+          /*console.log('statusTransaction', statusTransaction);
+          console.log('this.transactionSigned', this.transactionSigned);
+          console.log('this.transactionReady', this.transactionReady);*/
           const response = this.transactionService.validateStatusTx(statusTransaction, this.transactionSigned, this.transactionReady);
-          this.transactionReady = response.transactionReady;
-          this.blockBtnSend = response.statusBtn;
-          this.transactionSigned = response.transactionSigned;
+          // console.log('response', response);
+          if (response) {
+            this.transactionReady = response.transactionReady;
+            this.blockBtnSend = response.statusBtn;
+            this.transactionSigned = response.transactionSigned;
+          }
         }
       );
     }
