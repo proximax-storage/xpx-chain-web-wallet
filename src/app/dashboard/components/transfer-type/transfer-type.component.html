@@ -176,20 +176,20 @@
       <div class="row">
         <div class="col-12">
           <!-- Name type -->
-          <span class="color-black fw-bold fs-1-5rem">{{transferTransaction.nameType}}</span>
+          <span class="color-black fw-600 fs-1-2rem">{{transferTransaction.nameType}}</span>
 
           <!-- Income -->
           <ng-container *ngIf="transferTransaction?.receive === true">
             <img class="mr-1rem ml-1rem h-1-4em"
               src="assets/images/img/arrow-transaction-receive-green-proximax-sirius-explorer.svg">
-            <span class="color-black  fw-600 fs-1-2rem">Received</span>
+            <span class="color-black fw-600 fs-1-2rem">Received</span>
           </ng-container>
 
           <!-- Outcome -->
           <ng-container *ngIf="transferTransaction?.receive === false">
             <img class="mr-1rem ml-1rem h-1-4em"
               src="assets/images/img/arrow-transaction-sender-orange-proximax-sirius-explorer.svg">
-            <span class="color-black  fw-600 fs-1-2rem">Sent</span>
+            <span class="color-black fw-600 fs-1-2rem">Sent</span>
           </ng-container>
         </div>
 

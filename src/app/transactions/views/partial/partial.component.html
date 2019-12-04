@@ -116,11 +116,13 @@
                           <span class="fw-600 fs-095rem color-black"> XPX </span>
                         </div>
                       </ng-container>
+
                       <!-- Deadline -->
                       <div class="col-12 mt-05rem line-h-09em">
                         <span class="fw-600 fs-08rem">Deadline:&nbsp;&nbsp;</span>
                         <span class="fs-065rem"> {{deadline}}</span>
                       </div>
+
                       <!-- Type -->
                       <div class="col-12 mt-05rem line-h-09em">
                         <span class="fw-600 fs-08rem">Type:&nbsp;&nbsp;</span>
@@ -182,13 +184,16 @@
                               <app-transfer-type-bonded *ngIf="innerTransaction.type === typeTransactions.transfer.id"
                                 [transferTransactionBonded]="innerTransaction" [msg]="msg" [signer]="dataSelected">
                               </app-transfer-type-bonded>
+
+                              <app-register-namespace-type-bonded *ngIf="innerTransaction.type === typeTransactions.registerNameSpace.id"
+                                [registerNamespaceTransaction]="innerTransaction" [msg]="msg" [signer]="dataSelected">
+                              </app-register-namespace-type-bonded>
                             </mdb-accordion-item-body>
                           </mdb-accordion-item>
                         </mdb-accordion>
                       </div>
                     </div>
                   </div>
-
 
                   <!-- Action Required -->
                   <div class="col-12 col-md-6">
