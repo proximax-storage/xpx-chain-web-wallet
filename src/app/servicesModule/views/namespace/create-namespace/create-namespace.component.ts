@@ -316,6 +316,8 @@ export class CreateNamespaceComponent implements OnInit, OnDestroy {
   getNamespaces(account: AccountsInterface) {
     this.subscription.push(this.namespaceService.getNamespaceChanged().subscribe(
       async namespaceInfoData => {
+        console.log(namespaceInfoData);
+
         const namespaceInfo = this.namespaceService.filterNamespacesFromAccount(account.publicAccount.publicKey);
         this.namespace = [];
         this.namespaceInfo = [];

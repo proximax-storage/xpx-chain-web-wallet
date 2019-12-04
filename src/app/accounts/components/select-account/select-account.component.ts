@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
 import { AccountsInterface, WalletService, AccountsInfoInterface } from '../../../wallet/services/wallet.service';
 import { environment } from '../../../../environments/environment';
 import { SharedService } from '../../../shared/services/shared.service';
@@ -11,7 +11,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './select-account.component.html',
   styleUrls: ['./select-account.component.css']
 })
-export class SelectAccountComponent implements OnInit {
+export class SelectAccountComponent implements OnInit, OnDestroy {
 
   @Output() accountDebitFunds = new EventEmitter();
   @Output() cosignatoryEvent = new EventEmitter();
@@ -51,6 +51,12 @@ export class SelectAccountComponent implements OnInit {
     const formatterAmount = `<span class="fs-085rem">${amount.part1}</span><span class="fs-07rem">${amount.part2}</span>`;
     this.msgLockfungCosignatorie = `Cosignatory has sufficient balance (${formatterAmount} XPX) to cover LockFund Fee`;
 
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.forEach(subscription => {
+      subscription.unsubscribe();
+    });
   }
 
   /**
