@@ -257,17 +257,19 @@ export class NamespacesService {
    * @memberof NamespacesService
    */
   filterNamespacesFromAccount(publicKey: string): NamespaceStorageInterface[] {
-    let namespacesFound = [];
-    const namespacesStorage: NamespaceStorageInterface[] = this.getNamespacesStorage();
-    const currentAccount = this.proximaxProvider.createAddressFromPublicKey(publicKey, this.walletService.getAccountDefault().network).pretty();
-    if (namespacesStorage.length > 0) {
-      namespacesFound = namespacesStorage.filter((next: NamespaceStorageInterface) =>
-        this.proximaxProvider.createFromRawAddress(next.namespaceInfo.owner.address['address']).pretty() === currentAccount
-      );
-    }
+    if (this.walletService.getAccountDefault()) {
+      let namespacesFound = [];
+      const namespacesStorage: NamespaceStorageInterface[] = this.getNamespacesStorage();
+      const currentAccount = this.proximaxProvider.createAddressFromPublicKey(publicKey, this.walletService.getAccountDefault().network).pretty();
+      if (namespacesStorage.length > 0) {
+        namespacesFound = namespacesStorage.filter((next: NamespaceStorageInterface) =>
+          this.proximaxProvider.createFromRawAddress(next.namespaceInfo.owner.address['address']).pretty() === currentAccount
+        );
+      }
 
-    // console.log('namespacesFound', namespacesFound);
-    return namespacesFound;
+      // console.log('namespacesFound', namespacesFound);
+      return namespacesFound;
+    }
   }
 
   /**
