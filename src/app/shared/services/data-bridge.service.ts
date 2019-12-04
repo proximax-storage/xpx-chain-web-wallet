@@ -326,7 +326,12 @@ export class DataBridgeService {
         this.transactionsService.setTransactionReady(confirmedTransaction.transactionInfo.hash);
         this.transactionsService.setTransactionsConfirmed$(transactionPushed);
         this.transactionsService.searchAccountsInfo(this.walletService.currentWallet.accounts);
-        this.namespaces.searchNamespacesFromAccounts([this.proximaxProvider.createFromRawAddress(this.walletService.getCurrentAccount().address)]);
+        const arrayAddress = [];
+        this.walletService.currentWallet.accounts.forEach(element => {
+          const ad = this.proximaxProvider.createFromRawAddress(element.address);
+          arrayAddress.push(ad);
+        });
+        this.namespaces.searchNamespacesFromAccounts(arrayAddress);
       }
     });
   }
