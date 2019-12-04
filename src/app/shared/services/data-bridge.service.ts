@@ -51,26 +51,26 @@ export class DataBridgeService {
    *
    * @memberof DataBridgeService
    */
-    async searchBlockInfo(searchHeight = false) {
-        if (searchHeight) {
-          this.proximaxProvider.getBlockchainHeight().subscribe(
-            (blockchainHeight: UInt64) => {
-              this.proximaxProvider.getBlockInfo(blockchainHeight.compact()).subscribe(
-                (blockInfo: BlockInfo) => {
-                  this.saveBlockInfo(blockInfo);
-                }
-              );
-            }
-          );
-        } else {
-          this.proximaxProvider.getBlockInfo().subscribe(
-            (blockInfo: BlockInfo) => {
-              this.setblockInfo(blockInfo);
-              this.saveBlockInfo(blockInfo);
-            }
-          );
-        }
-      }
+  async searchBlockInfo(searchHeight = false) {
+    if (searchHeight) {
+      this.proximaxProvider.getBlockchainHeight().subscribe(
+        (blockchainHeight: UInt64) => {
+          this.proximaxProvider.getBlockInfo(blockchainHeight.compact()).subscribe(
+            (blockInfo: BlockInfo) => {
+              this.saveBlockInfo(blockInfo);
+            }
+          );
+        }
+      );
+    } else {
+      this.proximaxProvider.getBlockInfo().subscribe(
+        (blockInfo: BlockInfo) => {
+          this.setblockInfo(blockInfo);
+          this.saveBlockInfo(blockInfo);
+        }
+      );
+    }
+  }
 
   /**
    * Connect to websocket
@@ -279,6 +279,17 @@ export class DataBridgeService {
                   this.proximaxProvider.createPublicAccount(cosignatureAdded.signer, this.walletService.currentAccount.network)
                 )
               );
+
+              // Add sign
+              currentTransaction['totalSigned'] = (currentTransaction['totalSigned']) ? currentTransaction['totalSigned'] : 0;
+              this.walletService.getCurrentWallet().accounts.forEach(element => {
+                const publicAccount = this.proximaxProvider.createPublicAccount(element.publicAccount.publicKey);
+                const x = currentTransaction.data.signedByAccount(publicAccount);
+                if (x) {
+                  currentTransaction['totalSigned'] += 1;
+                  currentTransaction['isSigned'] = true;
+                }
+              });
             }
           } else {
             audio.play();
@@ -289,6 +300,17 @@ export class DataBridgeService {
                 this.proximaxProvider.createPublicAccount(cosignatureAdded.signer, this.walletService.currentAccount.network)
               )
             );
+
+            // Add sign
+            currentTransaction['totalSigned'] = (currentTransaction['totalSigned']) ? currentTransaction['totalSigned'] : 0;
+            this.walletService.getCurrentWallet().accounts.forEach(element => {
+              const publicAccount = this.proximaxProvider.createPublicAccount(element.publicAccount.publicKey);
+              const x = currentTransaction.data.signedByAccount(publicAccount);
+              if (x) {
+                currentTransaction['totalSigned'] += 1;
+                currentTransaction['isSigned'] = true;
+              }
+            });
           }
         }
       } else {
