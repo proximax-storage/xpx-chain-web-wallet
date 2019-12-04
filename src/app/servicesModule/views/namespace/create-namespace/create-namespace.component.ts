@@ -36,6 +36,7 @@ export class CreateNamespaceComponent implements OnInit, OnDestroy {
   calculateRentalFee: any = '0.000000';
   configurationForm: ConfigurationForm = {};
   cosignatory: AccountsInterface = null;
+  isMultisig = false;
   insufficientBalanceCosignatory = false;
   duration: any;
   durationByBlock = '5760';
