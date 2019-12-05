@@ -12,8 +12,6 @@ import { AliasMosaicsToNamespaceComponent } from './views/mosaic/alias-mosaics-t
 import { UploadFileComponent } from './views/storage/upload-file/upload-file.component';
 import { MyFileComponent } from './views/storage/my-file/my-file.component';
 import { AddContactsComponent } from './views/address-book/add-contacts/add-contacts.component';
-import { CreateApostilleComponent } from './views/apostille/create-apostille/create-apostille.component';
-import { AuditApostilleComponent } from './views/apostille/audit-apostille/audit-apostille.component';
 import { ExportWalletComponent } from './views/wallet/export-wallet/export-wallet.component';
 import { BlockchainComponent } from './views/nodes/blockchain/blockchain.component';
 import { DeleteWalletComponent } from './views/wallet/delete-wallet/delete-wallet.component';
@@ -170,26 +168,6 @@ const routes: Routes = [
       meta: {
         title: 'aliasMosaicsToNamespace.title',
         description: 'aliasMosaicsToNamespace.text',
-        override: true,
-      }
-    }
-  }, {
-    path: AppConfig.routes.audiApostille,
-    component: AuditApostilleComponent,
-    data: {
-      meta: {
-        title: 'audiApostille.title',
-        description: 'audiApostille.text',
-        override: true,
-      }
-    }
-  }, {
-    path: AppConfig.routes.createApostille,
-    component: CreateApostilleComponent,
-    data: {
-      meta: {
-        title: 'createApostille.title',
-        description: 'createApostille.text',
         override: true,
       }
     }

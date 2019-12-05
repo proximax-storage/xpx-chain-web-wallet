@@ -52,6 +52,9 @@ const routes: Routes = [
     }, {
       path: '',
       loadChildren: './accounts/accounts.module#AccountsModule'
+    }, {
+      path: '',
+      loadChildren: './apostille/apostille.module#ApostilleModule'
     }]
   }, {
     path: '**',

@@ -6,16 +6,16 @@ import { KeyPair, convert } from 'js-xpx-chain-library';
 import { PaginationInstance } from 'ngx-pagination';
 import { Subscription } from 'rxjs';
 import * as FeeCalculationStrategy from 'tsjs-xpx-chain-sdk/dist/src/model/transaction/FeeCalculationStrategy';
-import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
-import { ConfigurationForm, SharedService } from '../../../../shared/services/shared.service';
-import { ApostilleService, NtyDataInterface } from '../services/apostille.service';
-import { WalletService } from '../../../../wallet/services/wallet.service';
-import { HeaderServicesInterface } from '../../../services/services-module.service';
-import { AppConfig } from '../../../../config/app.config';
-import { StorageService, SearchResultInterface } from '../../storage/services/storage.service';
-import { DataBridgeService } from '../../../../shared/services/data-bridge.service';
-import { environment } from '../../../../../environments/environment';
-import { TransactionsService } from '../../../../transactions/services/transactions.service';
+import { ProximaxProvider } from '../../../shared/services/proximax.provider';
+import { ConfigurationForm, SharedService } from '../../../shared/services/shared.service';
+import { ApostilleService, NtyDataInterface } from '../../services/apostille.service';
+import { WalletService } from '../../../wallet/services/wallet.service';
+import { HeaderServicesInterface } from '../../../servicesModule/services/services-module.service';
+import { AppConfig } from '../../../config/app.config';
+import { StorageService, SearchResultInterface } from '../../../servicesModule/views/storage/services/storage.service';
+import { DataBridgeService } from '../../../shared/services/data-bridge.service';
+import { environment } from '../../../../environments/environment';
+import { TransactionsService } from '../../../transactions/services/transactions.service';
 
 declare const Buffer: any;
 

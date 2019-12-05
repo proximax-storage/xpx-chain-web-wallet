@@ -1,17 +1,16 @@
 import { Injectable } from '@angular/core';
 import { SignedTransaction, Address } from 'tsjs-xpx-chain-sdk';
 import { Subscription } from 'rxjs';
-import * as crypto from 'crypto-js'
+import * as crypto from 'crypto-js';
 import * as JSZip from 'jszip';
 import * as qrcode from 'qrcode-generator';
 import * as jsPDF from 'jspdf';
 import { saveAs } from 'file-saver';
-import { DataBridgeService } from '../../../../shared/services/data-bridge.service';
-import { SharedService } from '../../../../shared/services/shared.service';
-import { environment } from '../../../../../environments/environment';
+import { DataBridgeService } from '../../shared/services/data-bridge.service';
+import { SharedService } from '../../shared/services/shared.service';
+import { environment } from '../../../environments/environment';
 import { Verifier } from './audit-apostille-verifier';
-import { StreamHelper, IpfsConnection, IpfsClient } from 'tsjs-chain-xipfs-sdk';
-import { StorageService } from '../../storage/services/storage.service';
+import { StorageService } from '../../servicesModule/views/storage/services/storage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +18,7 @@ import { StorageService } from '../../storage/services/storage.service';
 export class ApostilleService {
 
   blackListTransaction: SignedTransaction[] = [];
-  file: File = null
+  file: File = null;
   subscription: Subscription[] = [];
   whiteListTransaction: SignedZipInterface[] = [];
   b6: string;
@@ -165,7 +164,7 @@ export class ApostilleService {
    */
   loadFileStorage(file: File, b6: any) {
     this.file = file;
-    this.b6 = btoa(b6)
+    this.b6 = btoa(b6);
   }
 
   /**
@@ -304,7 +303,7 @@ export class ApostilleService {
    */
   pdfcertificatePublic(base64ImageString: string, ntyData: NtyDataInterface) {
     let date = new Date();
-    var doc = new jsPDF()
+    var doc = new jsPDF();
     doc.addImage(this.getCertificatePublic(), 'JPEG', 0, 0, 210, 298);
     doc.addImage(base64ImageString, 'gif', 52, 244, 51, 50);
     doc.setFontType('normal');
@@ -349,10 +348,10 @@ export class ApostilleService {
   setAccountWalletStorage(nty: NtyDataInterface) {
     let proxinty = JSON.parse(localStorage.getItem('proxi-nty'));
     if (!proxinty) {
-      localStorage.setItem('proxi-nty', JSON.stringify([nty]))
+      localStorage.setItem('proxi-nty', JSON.stringify([nty]));
     } else {
-      proxinty.push(nty)
-      localStorage.setItem('proxi-nty', JSON.stringify(proxinty))
+      proxinty.push(nty);
+      localStorage.setItem('proxi-nty', JSON.stringify(proxinty));
     }
   }
 }

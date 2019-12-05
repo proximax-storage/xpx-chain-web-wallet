@@ -1,16 +1,16 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { TransferTransaction } from 'tsjs-xpx-chain-sdk';
-import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
-import { NodeService } from '../../../services/node.service';
+import { ProximaxProvider } from '../../../shared/services/proximax.provider';
+import { NodeService } from '../../../servicesModule/services/node.service';
 import { Verifier } from './audit-apistille-verifier';
-import { ResultAuditInterface, HeaderServicesInterface } from '../../../services/services-module.service';
-import { AppConfig } from '../../../../config/app.config';
+import { ResultAuditInterface, HeaderServicesInterface } from '../../../servicesModule/services/services-module.service';
+import { AppConfig } from '../../../config/app.config';
 import { TransactionsService, TransactionsInterface } from 'src/app/transactions/services/transactions.service';
 import { ModalDirective } from 'ng-uikit-pro-standard';
 import { PaginationInstance } from 'ngx-pagination';
 import * as JSZip from 'jszip';
-import { StorageService } from '../../storage/services/storage.service';
-import { environment } from '../../../../../environments/environment';
+import { StorageService } from '../../../servicesModule/views/storage/services/storage.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-audit-apostille',
