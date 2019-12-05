@@ -46,6 +46,24 @@ const routes: Routes = [
     }, {
       path: '',
       loadChildren: './multi-sign/multi-sign.module#MultiSignModule'
+    }, {
+      path: '',
+      loadChildren: './voting/voting.module#VotingModule'
+    }, {
+      path: '',
+      loadChildren: './accounts/accounts.module#AccountsModule'
+    }, {
+      path: '',
+      loadChildren: './apostille/apostille.module#ApostilleModule'
+    }, {
+      path: '',
+      loadChildren: './mosaics/mosaics.module#MosaicsModule'
+    }, {
+      path: '',
+      loadChildren: './namespace/namespace.module#NamespaceModule'
+    }, {
+      path: '',
+      loadChildren: './storage/storage.module#StorageModule'
     }]
   }, {
     path: '**',
