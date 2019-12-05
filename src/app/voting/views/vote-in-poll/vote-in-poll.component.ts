@@ -6,15 +6,15 @@ import * as qrcode from 'qrcode-generator';
 import { Subscription } from 'rxjs';
 import { ModalDirective } from 'ng-uikit-pro-standard';
 import * as Highcharts from 'highcharts';
-import { CreatePollStorageService, PollInterface } from '../../../../servicesModule/services/create-poll-storage.service';
-import { AppConfig } from '../../../../config/app.config';
-import { WalletService } from '../../../../wallet/services/wallet.service';
-import { SharedService, ConfigurationForm } from '../../../../shared/services/shared.service';
-import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
-import { environment } from '../../../../../environments/environment';
-import { NodeService } from '../../../../servicesModule/services/node.service';
-import { DataBridgeService } from '../../../../shared/services/data-bridge.service';
-import { TransactionsService, TransactionsInterface } from '../../../../transactions/services/transactions.service';
+import { CreatePollStorageService, PollInterface } from '../../../servicesModule/services/create-poll-storage.service';
+import { AppConfig } from '../../../config/app.config';
+import { WalletService } from '../../../wallet/services/wallet.service';
+import { SharedService, ConfigurationForm } from '../../../shared/services/shared.service';
+import { ProximaxProvider } from '../../../shared/services/proximax.provider';
+import { environment } from '../../../../environments/environment';
+import { NodeService } from '../../../servicesModule/services/node.service';
+import { DataBridgeService } from '../../../shared/services/data-bridge.service';
+import { TransactionsService, TransactionsInterface } from '../../../transactions/services/transactions.service';
 
 @Component({
   selector: 'app-vote-in-poll',

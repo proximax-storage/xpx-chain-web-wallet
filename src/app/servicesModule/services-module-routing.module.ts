@@ -18,11 +18,8 @@ import { ViewAllAccountsComponent } from './views/account/view-all-accounts/view
 import { AccountCreatedComponent } from './views/account/account-created/account-created.component';
 import { SelectionAccountTypeComponent } from './views/account/selection-account-creation-type/selection-account-creation-type.component';
 import { AddContactsComponent } from './views/address-book/add-contacts/add-contacts.component';
-import { CreatePollComponent } from './views/voting/create-poll/create-poll.component';
 import { CreateApostilleComponent } from './views/apostille/create-apostille/create-apostille.component';
 import { AuditApostilleComponent } from './views/apostille/audit-apostille/audit-apostille.component';
-import { PollsComponent } from './views/voting/polls/polls.component';
-import { VoteInPollComponent } from './views/voting/vote-in-poll/vote-in-poll.component';
 import { AccountDeleteComponent } from './views/account/account-delete/account-delete/account-delete.component';
 import { AccountDeleteConfirmComponent } from './views/account/account-delete-confirm/account-delete-confirm.component';
 import { ExportWalletComponent } from './views/wallet/export-wallet/export-wallet.component';
@@ -144,16 +141,6 @@ const routes: Routes = [
       }
     }
   }, {
-    path: AppConfig.routes.createPoll,
-    component: CreatePollComponent,
-    data: {
-      meta: {
-        title: 'createPoll.title',
-        description: 'createPoll.text',
-        override: true,
-      }
-    }
-  }, {
     path: AppConfig.routes.uploadFile,
     component: UploadFileComponent,
     data: {
@@ -170,28 +157,6 @@ const routes: Routes = [
       meta: {
         title: 'myFile.title',
         description: 'myFile.text',
-        override: true,
-      }
-    }
-  },
-  {
-    path: AppConfig.routes.polls,
-    component: PollsComponent,
-    data: {
-      meta: {
-        title: 'polls.title',
-        description: 'polls.text',
-        override: true,
-      }
-    }
-  },
-  {
-    path: `${AppConfig.routes.voteInPoll}/:id`,
-    component: VoteInPollComponent,
-    data: {
-      meta: {
-        title: 'voteInPoll.title',
-        description: 'voteInPoll.text',
         override: true,
       }
     }

@@ -18,13 +18,8 @@ import { ViewAllAccountsComponent } from './views/account/view-all-accounts/view
 import { AccountCreatedComponent } from './views/account/account-created/account-created.component';
 import { SelectionAccountTypeComponent } from './views/account/selection-account-creation-type/selection-account-creation-type.component';
 import { AddContactsComponent } from './views/address-book/add-contacts/add-contacts.component';
-import { CreatePollComponent } from './views/voting/create-poll/create-poll.component';
-import { PollsComponent } from './views/voting/polls/polls.component';
-import { ResultPollComponent } from './views/voting/result-poll/result-poll.component';
 import { CreateApostilleComponent } from './views/apostille/create-apostille/create-apostille.component';
 import { AuditApostilleComponent } from './views/apostille/audit-apostille/audit-apostille.component';
-import { VoteInPollComponent } from './views/voting/vote-in-poll/vote-in-poll.component';
-import { HighchartsChartComponent } from './views/voting/vote-in-poll/highcharts-chart.component';
 import { AccountDeleteComponent } from './views/account/account-delete/account-delete/account-delete.component';
 import { AccountDeleteConfirmComponent } from './views/account/account-delete-confirm/account-delete-confirm.component';
 import { ExportWalletComponent } from './views/wallet/export-wallet/export-wallet.component';
@@ -51,13 +46,8 @@ import { NotificationComponent } from './views/notification/notification.compone
     AccountCreatedComponent,
     SelectionAccountTypeComponent,
     AddContactsComponent,
-    CreatePollComponent,
-    PollsComponent,
-    ResultPollComponent,
     CreateApostilleComponent,
     AuditApostilleComponent,
-    VoteInPollComponent,
-    HighchartsChartComponent,
     AccountDeleteComponent,
     AccountDeleteConfirmComponent,
     ExportWalletComponent,

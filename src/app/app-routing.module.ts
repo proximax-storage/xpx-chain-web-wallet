@@ -46,6 +46,9 @@ const routes: Routes = [
     }, {
       path: '',
       loadChildren: './multi-sign/multi-sign.module#MultiSignModule'
+    }, {
+      path: '',
+      loadChildren: './voting/voting.module#VotingModule'
     }]
   }, {
     path: '**',

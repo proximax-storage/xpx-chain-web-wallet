@@ -3,15 +3,15 @@ import { PublicAccount, Account, Address } from 'tsjs-xpx-chain-sdk';
 import { MdbStepperComponent } from 'ng-uikit-pro-standard';
 import { Subscription } from 'rxjs';
 
-import { environment } from '../../../../../environments/environment';
-import { WalletService, AccountsInterface } from '../../../../../app/wallet/services/wallet.service';
+import { environment } from '../../../../environments/environment';
+import { WalletService, AccountsInterface } from '../../../wallet/services/wallet.service';
 import { FormBuilder, FormGroup, Validators, AbstractControl, FormControl, } from '@angular/forms';
-import { ConfigurationForm, SharedService } from '../../../../../app/shared/services/shared.service';
-import { AppConfig } from '../../../../../app/config/app.config';
-import { CreatePollStorageService } from '../../../../../app/servicesModule/services/create-poll-storage.service';
-import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
-import { ServicesModuleService } from '../../../services/services-module.service';
-import { TransactionsService } from '../../../../../app/transactions/services/transactions.service';
+import { ConfigurationForm, SharedService } from '../../../shared/services/shared.service';
+import { AppConfig } from '../../../config/app.config';
+import { CreatePollStorageService } from '../../../servicesModule/services/create-poll-storage.service';
+import { ProximaxProvider } from '../../../shared/services/proximax.provider';
+import { ServicesModuleService } from '../../../servicesModule/services/services-module.service';
+import { TransactionsService } from '../../../transactions/services/transactions.service';
 
 @Component({
   selector: 'app-create-poll',
