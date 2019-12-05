@@ -5,12 +5,12 @@ import { NodeService } from '../../../servicesModule/services/node.service';
 import { Verifier } from './audit-apistille-verifier';
 import { ResultAuditInterface, HeaderServicesInterface } from '../../../servicesModule/services/services-module.service';
 import { AppConfig } from '../../../config/app.config';
-import { TransactionsService, TransactionsInterface } from 'src/app/transactions/services/transactions.service';
+import { TransactionsService, TransactionsInterface } from '../../../transactions/services/transactions.service';
 import { ModalDirective } from 'ng-uikit-pro-standard';
 import { PaginationInstance } from 'ngx-pagination';
 import * as JSZip from 'jszip';
-import { StorageService } from '../../../servicesModule/views/storage/services/storage.service';
 import { environment } from '../../../../environments/environment';
+import { StorageService } from '../../../storage/views/services/storage.service';
 
 @Component({
   selector: 'app-audit-apostille',
@@ -40,9 +40,9 @@ export class AuditApostilleComponent implements OnInit {
   isProcessing = false;
   p = 1;
   url: any;
-  currentView: boolean = true;
+  currentView = true;
   modalInfo: TransactionsInterface = null;
-  searching: boolean = false;
+  searching = false;
   configFilesSelected: PaginationInstance = {
     id: 'fileStorage',
     itemsPerPage: 6,

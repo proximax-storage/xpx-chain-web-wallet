@@ -58,6 +58,9 @@ const routes: Routes = [
     }, {
       path: '',
       loadChildren: './mosaics/mosaics.module#MosaicsModule'
+    }, {
+      path: '',
+      loadChildren: './storage/storage.module#StorageModule'
     }]
   }, {
     path: '**',

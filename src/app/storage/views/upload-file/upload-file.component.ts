@@ -1,9 +1,8 @@
 import { Component, OnInit, ChangeDetectorRef, AfterViewInit, EventEmitter } from '@angular/core';
-import { Router } from '@angular/router';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { UploadInput, humanizeBytes, UploadOutput, UploadFile } from 'ng-uikit-pro-standard';
-import { Mosaic, MosaicId, UInt64, PlainMessage, TransferTransaction } from 'tsjs-xpx-chain-sdk';
+import { PlainMessage, TransferTransaction } from 'tsjs-xpx-chain-sdk';
 import {
   Uploader,
   PrivacyType,
@@ -14,15 +13,15 @@ import {
   BlockchainNetworkConnection,
   IpfsConnection
 } from 'tsjs-chain-xipfs-sdk';
-import { AppConfig } from '../../../../config/app.config';
-import { ConfigurationForm, SharedService } from '../../../../shared/services/shared.service';
-import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
-import { WalletService } from '../../../../wallet/services/wallet.service';
-import { environment } from '../../../../../environments/environment';
-import { HeaderServicesInterface } from '../../../services/services-module.service';
 import * as FeeCalculationStrategy from 'tsjs-xpx-chain-sdk/dist/src/model/transaction/FeeCalculationStrategy';
-import { TransactionsService } from 'src/app/transactions/services/transactions.service';
 import { Subscription } from 'rxjs';
+import { AppConfig } from '../../../config/app.config';
+import { ConfigurationForm, SharedService } from '../../../shared/services/shared.service';
+import { ProximaxProvider } from '../../../shared/services/proximax.provider';
+import { WalletService } from '../../../wallet/services/wallet.service';
+import { environment } from '../../../../environments/environment';
+import { TransactionsService } from '../../../transactions/services/transactions.service';
+import { HeaderServicesInterface } from '../../../servicesModule/services/services-module.service';
 
 @Component({
   selector: 'app-upload-file',
@@ -40,7 +39,7 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
   };
   configurationForm: ConfigurationForm = {};
   uploadForm: FormGroup;
-  blockUpload: boolean = false;
+  blockUpload = false;
   uploading: false;
   files: any[];
   uploadInput: any;
@@ -55,7 +54,7 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
   goBack = `/${AppConfig.routes.service}`;
   errorMatchPassword: string;
   mosaics: any[];
-  noEncripted: boolean = false;
+  noEncripted = false;
   fee: any = '0.000000';
   subscription: Subscription[] = [];
   vestedBalance: { part1: string; part2: string; };
@@ -80,7 +79,7 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
     this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
     this.initialiseStorage();
-    this.balance()
+    this.balance();
   }
 
   ngAfterViewInit() {
@@ -95,7 +94,7 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
         part2: '000000'
       }
     ));
-    let vestedBalance = this.vestedBalance.part1.concat(this.vestedBalance.part2).replace(/,/g, '');
+    const vestedBalance = this.vestedBalance.part1.concat(this.vestedBalance.part2).replace(/,/g, '');
     this.amountAccount = Number(vestedBalance);
 
     if (this.amountAccount === 0) {
@@ -118,7 +117,7 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
         const common = {
           password: this.uploadForm.get('walletPassword').value,
           privateKey: ''
-        }
+        };
 
         if (this.walletService.decrypt(common)) {
           this.blockUpload = true;
@@ -158,12 +157,11 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
             this.blockUpload = false;
             this.sharedService.showError('Error', error);
           }
-        }
-        else {
+        } else {
           this.blockUpload = false;
         }
       } else {
-        //show error here
+        // show error here
 
       }
     } else {
@@ -177,11 +175,11 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
     const x = TransferTransaction.calculateSize(PlainMessage.create(message).size(), mosaicsToSend.length);
     const b = FeeCalculationStrategy.calculateFee(x);
     if (message > 0) {
-      this.fee = this.transactionService.amountFormatterSimple(b.compact())
+      this.fee = this.transactionService.amountFormatterSimple(b.compact());
     } else if (message === 0 && mosaicsToSend.length === 0) {
-      this.fee = '0.000000'
+      this.fee = '0.000000';
     } else {
-      this.fee = this.transactionService.amountFormatterSimple(b.compact())
+      this.fee = this.transactionService.amountFormatterSimple(b.compact());
     }
   }
 
@@ -333,8 +331,8 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
             this.sharedService.showError('', 'Please enter the encryption private key');
           }
           break;
-      };
-      //this.blockUpload = false;
+      }
+      // this.blockUpload = false;
     }
   }
 
@@ -382,12 +380,12 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
         ]);
         break;
       default:
-        this.uploadForm.controls.encryptionPasswords.get('password').setValidators(null)
+        this.uploadForm.controls.encryptionPasswords.get('password').setValidators(null);
         this.uploadForm.controls.encryptionPasswords.get('confirm_password').setValidators(null);
         this.uploadForm.controls.encryptionPasswords.get('password').updateValueAndValidity({ emitEvent: false, onlySelf: true });
         this.uploadForm.controls.encryptionPasswords.get('confirm_password').updateValueAndValidity({ emitEvent: false, onlySelf: true });
-        this.uploadForm.controls.encryptionPasswords.get('password').patchValue('')
-        this.uploadForm.controls.encryptionPasswords.get('confirm_password').patchValue('')
+        this.uploadForm.controls.encryptionPasswords.get('password').patchValue('');
+        this.uploadForm.controls.encryptionPasswords.get('confirm_password').patchValue('');
         this.noEncripted = true;
         this.showEncryptionPassword = false;
         this.showEncryptionKeyPair = false;
@@ -415,7 +413,7 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
       new IpfsConnection(storageHost, storagePort, storageOptions)
     );
 
-    //set the default network mosaic
+    // set the default network mosaic
     this.mosaics = [];
     this.uploader = new Uploader(connectionConfig);
   }
@@ -455,7 +453,7 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
    * @memberof UploadFileComponent
    */
   readFile(file: Blob) {
-    return new Promise<Uint8Array>(function (resolve, reject) {
+    return new Promise<Uint8Array>(function(resolve, reject) {
       const reader = new FileReader();
       reader.onload = () => {
         const fileContent = reader.result as ArrayBuffer;
@@ -474,7 +472,7 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
    * @memberof UploadFileComponent
    */
   readFileToBuffer(file: Blob) {
-    return new Promise<Buffer>(function (resolve, reject) {
+    return new Promise<Buffer>(function(resolve, reject) {
       const reader = new FileReader();
       reader.onloadend = () => {
         const fileContent = Buffer.from(reader.result as ArrayBuffer);
@@ -504,18 +502,18 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
   }
 
   builderMessage(files) {
-    let valor = {
-      "privacyType": 1001,
-      "data": {
-        "contentType": files.type,
-        "dataHash": "Qmf9vKuR6MnTEGYXhzwpMib5EFGoXPWCJh3mXTvasb3Cas",
-        "description": "",
-        "name": files.name,
-        "timestamp": files.lastModifiedDate
+    const valor = {
+      'privacyType': 1001,
+      'data': {
+        'contentType': files.type,
+        'dataHash': 'Qmf9vKuR6MnTEGYXhzwpMib5EFGoXPWCJh3mXTvasb3Cas',
+        'description': '',
+        'name': files.name,
+        'timestamp': files.lastModifiedDate
       },
-      "version": "1.0"
-    }
-    this.calculateFee(JSON.stringify(valor))
+      'version': '1.0'
+    };
+    this.calculateFee(JSON.stringify(valor));
   }
 
   /**

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators, FormGroup, AbstractControl } from '@angular/forms';
-import * as crypto from 'crypto-js'
+import * as crypto from 'crypto-js';
 import { Account, UInt64, TransferTransaction, PlainMessage } from 'tsjs-xpx-chain-sdk';
 import { KeyPair, convert } from 'js-xpx-chain-library';
 import { PaginationInstance } from 'ngx-pagination';
@@ -12,7 +12,7 @@ import { ApostilleService, NtyDataInterface } from '../../services/apostille.ser
 import { WalletService } from '../../../wallet/services/wallet.service';
 import { HeaderServicesInterface } from '../../../servicesModule/services/services-module.service';
 import { AppConfig } from '../../../config/app.config';
-import { StorageService, SearchResultInterface } from '../../../servicesModule/views/storage/services/storage.service';
+import { StorageService, SearchResultInterface} from '../../../storage/views/services/storage.service';
 import { DataBridgeService } from '../../../shared/services/data-bridge.service';
 import { environment } from '../../../../environments/environment';
 import { TransactionsService } from '../../../transactions/services/transactions.service';
@@ -48,11 +48,11 @@ export class CreateApostilleComponent implements OnInit {
     extraButton: 'Audit',
     routerExtraButton: `/${AppConfig.routes.audiApostille}`
   };
-  passwordMain: string = 'password';
+  passwordMain = 'password';
   processComplete = false;
   rawFileContent: any;
   storeInDfms = false;
-  searching: boolean = false;
+  searching = false;
   subscription: Subscription[] = [];
   typeEncrypted: Array<object> = [
     { value: '1', label: 'MD5', disabled: true },
@@ -61,14 +61,14 @@ export class CreateApostilleComponent implements OnInit {
     { value: '4', label: 'SHA3', disabled: true, },
     { value: '5', label: 'SHA512', disabled: true, }
   ];
-  extensionFile: string = '';
+  extensionFile = '';
   typeFile: string;
   files: File[] = [];
   maxFileSize = 5;
-  fee: string = '0.000000';
+  fee = '0.000000';
   vestedBalance: { part1: string; part2: string; };
   amountAccount: number;
-  insufficientBalance: boolean = false;
+  insufficientBalance = false;
 
   constructor(
     private apostilleService: ApostilleService,
@@ -106,10 +106,10 @@ export class CreateApostilleComponent implements OnInit {
         part2: '000000'
       }
     ));
-    let vestedBalance = this.vestedBalance.part1.concat(this.vestedBalance.part2).replace(/,/g,'');
+    const vestedBalance = this.vestedBalance.part1.concat(this.vestedBalance.part2).replace(/,/g, '');
     this.amountAccount = Number(vestedBalance);
 
-    if(this.amountAccount < 0.056750){
+    if (this.amountAccount < 0.056750) {
       this.apostilleFormOne.disable();
       this.insufficientBalance = true;
     }
@@ -117,7 +117,7 @@ export class CreateApostilleComponent implements OnInit {
   }
 
   changeInputType(inputType) {
-    let newType = this.sharedService.changeInputType(inputType)
+    const newType = this.sharedService.changeInputType(inputType);
     this.passwordMain = newType;
   }
 
@@ -147,16 +147,16 @@ export class CreateApostilleComponent implements OnInit {
     const x = TransferTransaction.calculateSize(PlainMessage.create(message).size(), mosaicsToSend.length);
     const b = FeeCalculationStrategy.calculateFee(x);
     if (message > 0) {
-      this.fee = this.transactionService.amountFormatterSimple(b.compact())
+      this.fee = this.transactionService.amountFormatterSimple(b.compact());
     } else if (message === 0 && mosaicsToSend.length === 0) {
-      this.fee = '0.000000'
-    }else {
-      this.fee = this.transactionService.amountFormatterSimple(b.compact())
+      this.fee = '0.000000';
+    } else {
+      this.fee = this.transactionService.amountFormatterSimple(b.compact());
     }
   }
 
-  builderMessage(hash){
-    this.calculateFee(JSON.stringify(hash))
+  builderMessage(hash) {
+    this.calculateFee(JSON.stringify(hash));
   }
   /**
    *
@@ -166,7 +166,7 @@ export class CreateApostilleComponent implements OnInit {
   async initForm() {
     this.searching = true;
     this.processComplete = false;
-    this.blockBtn = false
+    this.blockBtn = false;
     this.filesStorage = await this.storageService.getFiles();
     this.searching = false;
     this.fileReader([]);
@@ -232,7 +232,7 @@ export class CreateApostilleComponent implements OnInit {
       this.apostilleFormOne.get('typeFile').setValue(true);
     } else {
       this.apostilleFormTwo.reset();
-      this.fee = '0.056750'
+      this.fee = '0.056750';
       this.apostilleFormTwo.get('typePrivatePublic').setValue(true);
       this.apostilleFormTwo.get('typeEncrypted').setValue('3');
     }
@@ -290,20 +290,20 @@ export class CreateApostilleComponent implements OnInit {
       this.nameFile = 'No file selected yet...';
       this.file = '';
       this.rawFileContent = '';
-      this.fee = '0.000000'
+      this.fee = '0.000000';
     }
   }
 
-  isPrivate(){
-    this.fee = '0.072750'
+  isPrivate() {
+    this.fee = '0.072750';
 
   }
 
-  isPublic(){
-    const apostilleHashPrefix = 'fe4e545903'; //checkSum
-    //create an encrypted hash (contenido del archivo)
+  isPublic() {
+    const apostilleHashPrefix = 'fe4e545903'; // checkSum
+    // create an encrypted hash (contenido del archivo)
     const hash = this.apostilleService.encryptData(this.file.toString());
-    //concatenates the hash prefix and the result gives the apostilleHash
+    // concatenates the hash prefix and the result gives the apostilleHash
     const apostilleHash = apostilleHashPrefix + hash.toString();
     this.builderMessage(apostilleHash);
 
@@ -319,7 +319,7 @@ export class CreateApostilleComponent implements OnInit {
     if (validateAmount) {
     this.blockBtn = true;
     if (this.apostilleFormOne.valid && this.apostilleFormTwo.valid) {
-      const pw: any = { password: this.apostilleFormTwo.get('password').value }
+      const pw: any = { password: this.apostilleFormTwo.get('password').value };
       if (this.walletService.decrypt(pw)) {
         this.apostilleService.loadFileStorage(this.originalFile, pw.privateKey);
         if (this.apostilleFormTwo.get('typePrivatePublic').value === true) {
@@ -406,9 +406,9 @@ export class CreateApostilleComponent implements OnInit {
    * @memberof ApostilleCreateComponent
    */
   preparePrivateApostille(common: any) {
-    //Create an account from my private key
+    // Create an account from my private key
     const ownerAccount = Account.createFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
-    //create an encrypted hash
+    // create an encrypted hash
     const hash = this.apostilleService.encryptData(this.file.toString());
     // The string contentHash is converted to byte
     const fileHash = this.apostilleService.hexStringToByte(hash.toString());
@@ -430,7 +430,7 @@ export class CreateApostilleComponent implements OnInit {
     const dedicatedAccount = Account.createFromPrivateKey(dedicatedPrivateKey, this.walletService.currentAccount.network);
     // Build the transfer type transaction
     // console.log('MY NETWORK --->', this.walletService.currentAccount.network);
-    let transferTransaction: TransferTransaction = this.proximaxProvider.buildTransferTransaction(
+    const transferTransaction: TransferTransaction = this.proximaxProvider.buildTransferTransaction(
       this.walletService.currentAccount.network,
       this.proximaxProvider.createFromRawAddress(dedicatedAccount.address.plain()),
       JSON.stringify(apostilleHash)
@@ -440,7 +440,7 @@ export class CreateApostilleComponent implements OnInit {
     // console.log('TRANSACTION BUILDER ---> ', transferTransaction);
     // Sign the transaction
     const generationHash = this.dataBridgeService.blockInfo.generationHash;
-    const signedTransaction = ownerAccount.sign(transferTransaction, generationHash);  //Update-sdk-dragon
+    const signedTransaction = ownerAccount.sign(transferTransaction, generationHash);  // Update-sdk-dragon
     // console.log('TRANSACTION SIGNED ---> ', signedTransaction);
     const date = new Date();
     this.ntyData = {
@@ -451,7 +451,7 @@ export class CreateApostilleComponent implements OnInit {
       owner: ownerAccount.address,
       fromMultisig: ownerAccount.address,
       dedicatedAccount: dedicatedAccount.address.plain(),
-      dedicatedPrivateKey: dedicatedPrivateKey,// (this.apostilleCreateForm.get('typePrivatePublic').value == true) ? None (public sink) : nty.dedicatedPrivateKey,
+      dedicatedPrivateKey, // (this.apostilleCreateForm.get('typePrivatePublic').value == true) ? None (public sink) : nty.dedicatedPrivateKey,
       txHash: signedTransaction.hash.toLowerCase(),
       txMultisigHash: '',
       timeStamp: date.toUTCString(),
@@ -462,7 +462,7 @@ export class CreateApostilleComponent implements OnInit {
     this.base64ImageString = apostilleBuilder.qrCode;
     // announce the transaction
     this.apostilleService.setWhiteList({
-      signedTransaction: signedTransaction,
+      signedTransaction,
       storeInDfms: this.storeInDfms,
       zip: apostilleBuilder.zipFile,
       nty: this.ntyData
@@ -527,19 +527,19 @@ export class CreateApostilleComponent implements OnInit {
    */
   preparePublicApostille(common: any) {
     // console.log(this.nameFile);
-    //create a hash prefix (dice si es privado o publico)
-    const apostilleHashPrefix = 'fe4e545903'; //checkSum
-    //create an encrypted hash (contenido del archivo)
+    // create a hash prefix (dice si es privado o publico)
+    const apostilleHashPrefix = 'fe4e545903'; // checkSum
+    // create an encrypted hash (contenido del archivo)
     const hash = this.apostilleService.encryptData(this.file.toString());
-    //concatenates the hash prefix and the result gives the apostilleHash
+    // concatenates the hash prefix and the result gives the apostilleHash
     const apostilleHash = apostilleHashPrefix + hash.toString();
-    //Generate an account to send the transaction with the apostilleHash
+    // Generate an account to send the transaction with the apostilleHash
     const sinkAddress = this.proximaxProvider.createFromRawAddress(environment.attestation.address_public_test);
-    //Create an account from my private key
+    // Create an account from my private key
     const myAccount = Account.createFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
-    //Arm the transaction type transfer
+    // Arm the transaction type transfer
     // console.log('MY NETWORK --->', this.walletService.currentAccount.network);
-    let transferTransaction: any = this.proximaxProvider.buildTransferTransaction(
+    const transferTransaction: any = this.proximaxProvider.buildTransferTransaction(
       this.walletService.currentAccount.network,
       sinkAddress,
       JSON.stringify(apostilleHash)
@@ -549,7 +549,7 @@ export class CreateApostilleComponent implements OnInit {
     // console.log('TRANSACTION BUILDED ---> ', transferTransaction);
     // Sign the transaction
     const generationHash = this.dataBridgeService.blockInfo.generationHash;
-    const signedTransaction = myAccount.sign(transferTransaction, generationHash); //Update-sdk-dragon
+    const signedTransaction = myAccount.sign(transferTransaction, generationHash); // Update-sdk-dragon
     // console.log('TRANSACTION SIGNED ---> ', signedTransaction);
     const date = new Date();
     this.ntyData = {
@@ -571,7 +571,7 @@ export class CreateApostilleComponent implements OnInit {
     const apostilleBuilder = this.apostilleService.buildApostille(this.ntyData, this.rawFileContent);
     this.base64ImageString = apostilleBuilder.qrCode;
     this.apostilleService.setWhiteList({
-      signedTransaction: signedTransaction,
+      signedTransaction,
       storeInDfms: this.storeInDfms,
       zip: apostilleBuilder.zipFile,
       nty: this.ntyData

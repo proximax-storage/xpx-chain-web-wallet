@@ -14,14 +14,14 @@ import {
 } from 'tsjs-chain-xipfs-sdk';
 import { saveAs } from 'file-saver';
 import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
-import { AppConfig } from '../../../../config/app.config';
-import { TransactionsService } from '../../../../transactions/services/transactions.service';
-import { WalletService } from '../../../../wallet/services/wallet.service';
-import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
-import { SharedService, ConfigurationForm } from '../../../../shared/services/shared.service';
-import { environment } from '../../../../../environments/environment';
+import { AppConfig } from '../../../config/app.config';
+import { TransactionsService } from '../../../transactions/services/transactions.service';
+import { WalletService } from '../../../wallet/services/wallet.service';
+import { ProximaxProvider } from '../../../shared/services/proximax.provider';
+import { SharedService, ConfigurationForm } from '../../../shared/services/shared.service';
+import { environment } from '../../../../environments/environment';
 import { SearchResultInterface } from '../services/storage.service';
-import { HeaderServicesInterface } from 'src/app/servicesModule/services/services-module.service';
+import { HeaderServicesInterface } from '../../../servicesModule/services/services-module.service';
 
 
 @Component({

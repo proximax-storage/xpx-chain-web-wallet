@@ -223,7 +223,7 @@ export class CreateNamespaceComponent implements OnInit, OnDestroy {
     this.blockBtnSend = true;
     const common = { password: this.namespaceForm.get('password').value, privateKey: '' };
     if (this.walletService.decrypt(common, this.cosignatory)) {
-      const innerTransaction = (this.typeNamespace == 1) ? [{
+      const innerTransaction = (this.typeNamespace === 1) ? [{
         signer: this.sender.publicAccount,
         tx: this.registerRootNamespaceTransaction
       }] : [{

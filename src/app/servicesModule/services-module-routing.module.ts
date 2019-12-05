@@ -6,8 +6,6 @@ import { ServicesBoxComponent } from './views/services-box/services-box.componen
 import { CreateNamespaceComponent } from './views/namespace/create-namespace/create-namespace.component';
 import { ExtendDurationNamespaceComponent } from './views/namespace/extend-duration-namespace/extend-duration-namespace.component';
 import { ListContactsComponent } from './views/address-book/list-contacts/list-contacts.component';
-import { UploadFileComponent } from './views/storage/upload-file/upload-file.component';
-import { MyFileComponent } from './views/storage/my-file/my-file.component';
 import { AddContactsComponent } from './views/address-book/add-contacts/add-contacts.component';
 import { ExportWalletComponent } from './views/wallet/export-wallet/export-wallet.component';
 import { BlockchainComponent } from './views/nodes/blockchain/blockchain.component';
@@ -42,26 +40,6 @@ const routes: Routes = [
       meta: {
         title: 'createNamespace.title',
         description: 'createNamespace.text',
-        override: true,
-      }
-    }
-  }, {
-    path: AppConfig.routes.uploadFile,
-    component: UploadFileComponent,
-    data: {
-      meta: {
-        title: 'uploadFile.title',
-        description: 'uploadFile.text',
-        override: true,
-      }
-    }
-  }, {
-    path: AppConfig.routes.myFile,
-    component: MyFileComponent,
-    data: {
-      meta: {
-        title: 'myFile.title',
-        description: 'myFile.text',
         override: true,
       }
     }

@@ -10,7 +10,7 @@ import { DataBridgeService } from '../../shared/services/data-bridge.service';
 import { SharedService } from '../../shared/services/shared.service';
 import { environment } from '../../../environments/environment';
 import { Verifier } from './audit-apostille-verifier';
-import { StorageService } from '../../servicesModule/views/storage/services/storage.service';
+import { StorageService } from '../../storage/views/services/storage.service';
 
 @Injectable({
   providedIn: 'root'

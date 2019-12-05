@@ -341,7 +341,12 @@ export class TransactionsService {
    * @param signer
    * @param transaction
    */
-  buildAggregateTransaction(cosignatoryAccount: Account, arrayTx: {tx: Transaction, signer: PublicAccount}[], generationHash: string): SignedTransaction {
+  buildAggregateTransaction(
+    cosignatoryAccount: Account,
+    arrayTx: { tx: Transaction, signer: PublicAccount }[],
+    generationHash: string,
+    otherCosigners: Account[] = [],
+  ): SignedTransaction {
     const innerTxn = [];
     arrayTx.forEach(element => {
       innerTxn.push(element.tx.toAggregate(element.signer));
@@ -352,6 +357,10 @@ export class TransactionsService {
       innerTxn,
       this.walletService.currentAccount.network
     );
+
+    if (otherCosigners.length > 0) {
+      return cosignatoryAccount.signTransactionWithCosignatories(bondedCreated, otherCosigners, generationHash);
+    }
 
     return cosignatoryAccount.sign(bondedCreated, generationHash);
   }
@@ -513,12 +522,12 @@ export class TransactionsService {
   getTypeTransactions() {
     return this.arraTypeTransaction;
   }
-    /**
-   *
-   *
-   * @returns {Observable<any>}
-   * @memberof TransactionsService
-   */
+  /**
+ *
+ *
+ * @returns {Observable<any>}
+ * @memberof TransactionsService
+ */
   getViewNotifications$(): Observable<any> {
     return this.notifications$;
   }
@@ -709,7 +718,7 @@ export class TransactionsService {
             transactionReady
           };
         } else if (statusTransaction['type'] === 'unconfirmed' && match) {
-          dataReturn =  {
+          dataReturn = {
             statusBtn: false,
             transactionSigned,
             transactionReady
