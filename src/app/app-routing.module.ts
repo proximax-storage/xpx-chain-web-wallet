@@ -49,6 +49,9 @@ const routes: Routes = [
     }, {
       path: '',
       loadChildren: './voting/voting.module#VotingModule'
+    }, {
+      path: '',
+      loadChildren: './accounts/accounts.module#AccountsModule'
     }]
   }, {
     path: '**',

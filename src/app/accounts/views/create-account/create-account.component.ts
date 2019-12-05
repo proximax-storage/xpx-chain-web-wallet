@@ -3,17 +3,17 @@ import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/fo
 import { NetworkType, SimpleWallet } from 'tsjs-xpx-chain-sdk';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Password } from 'nem-library';
-import { WalletService, AccountsInterface } from '../../../../wallet/services/wallet.service';
-import { environment } from '../../../../../environments/environment';
-import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
-import { AppConfig } from '../../../../config/app.config';
-import { ConfigurationForm, SharedService } from '../../../../shared/services/shared.service';
-import { DataBridgeService } from '../../../../shared/services/data-bridge.service';
-import { DashboardService } from '../../../../dashboard/services/dashboard.service';
-import { NamespacesService } from '../../../services/namespaces.service';
-import { TransactionsService } from '../../../../transactions/services/transactions.service';
-import { ServicesModuleService } from '../../../../servicesModule/services/services-module.service';
-import { NemProviderService } from '../../../../swap/services/nem-provider.service';
+import { WalletService, AccountsInterface } from '../../../wallet/services/wallet.service';
+import { environment } from '../../../../environments/environment';
+import { ProximaxProvider } from '../../../shared/services/proximax.provider';
+import { AppConfig } from '../../../config/app.config';
+import { ConfigurationForm, SharedService } from '../../../shared/services/shared.service';
+import { DataBridgeService } from '../../../shared/services/data-bridge.service';
+import { DashboardService } from '../../../dashboard/services/dashboard.service';
+import { NamespacesService } from '../../../servicesModule/services/namespaces.service';
+import { TransactionsService } from '../../../transactions/services/transactions.service';
+import { ServicesModuleService } from '../../../servicesModule/services/services-module.service';
+import { NemProviderService } from '../../../swap/services/nem-provider.service';
 
 @Component({
   selector: 'app-create-account',
@@ -24,10 +24,10 @@ export class CreateAccountComponent implements OnInit {
 
   buttonSend = '';
   componentName = '';
-  configurationForm: ConfigurationForm = {}
+  configurationForm: ConfigurationForm = {};
   currentWallet = [];
   errorWalletExist: string;
-  foundXpx: boolean = false;
+  foundXpx = false;
   isValid = false;
   moduleName = 'Accounts';
   othersAccounts = [];
@@ -38,13 +38,13 @@ export class CreateAccountComponent implements OnInit {
     backToService: `/${AppConfig.routes.service}`
   };
   nis1Account: any = null;
-  saveNis1: boolean = false;
-  passwordMain: string = 'password';
-  pvkMain: string = 'password';
+  saveNis1 = false;
+  passwordMain = 'password';
+  pvkMain = 'password';
   privateKey: any;
   prefix: any;
 
-  spinnerButton: boolean = false;
+  spinnerButton = false;
 
   constructor(
     private activateRoute: ActivatedRoute,
@@ -62,7 +62,7 @@ export class CreateAccountComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    let param = this.activateRoute.snapshot.paramMap.get('id');
+    const param = this.activateRoute.snapshot.paramMap.get('id');
     this.componentName = (param === '0') ? 'Create Account' : 'Import Account';
     this.buttonSend = (param === '0') ? 'Create' : 'Import';
     this.configurationForm = this.sharedService.configurationForm;
@@ -84,7 +84,7 @@ export class CreateAccountComponent implements OnInit {
    * @memberof CreateAccountComponent
    */
   changeInputType(inputType: string, isPvk: boolean) {
-    let newType = this.sharedService.changeInputType(inputType);
+    const newType = this.sharedService.changeInputType(inputType);
     if (isPvk) {
       this.pvkMain = newType;
     } else {
@@ -135,12 +135,12 @@ export class CreateAccountComponent implements OnInit {
   async createAccount() {
     if (this.formCreateAccount.valid && this.isValid) {
       const allAccounts = this.walletService.currentWallet.accounts.slice(0);
-      let walletName = this.formCreateAccount.get('nameWallet').value
+      let walletName = this.formCreateAccount.get('nameWallet').value;
       walletName = (walletName.includes(' ') === true) ? walletName.split(' ').join('_') : walletName;
       const nameAccount = walletName;
       if (Object.keys(allAccounts).find(elm => allAccounts[elm].name !== nameAccount)) {
         const password = this.proximaxProvider.createPassword(this.formCreateAccount.get('password').value);
-        let common = { password: this.formCreateAccount.get('password').value };
+        const common = { password: this.formCreateAccount.get('password').value };
         const currentAccount: AccountsInterface = allAccounts.find(next => next.firstAccount);
         if (this.walletService.decrypt(common, currentAccount)) {
           const network = environment.typeNetwork.value;

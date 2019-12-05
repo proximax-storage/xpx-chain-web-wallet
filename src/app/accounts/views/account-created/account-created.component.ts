@@ -3,13 +3,11 @@ import { Router } from '@angular/router';
 import * as qrcode from 'qrcode-generator';
 import * as jsPDF from 'jspdf';
 import { Subscription } from 'rxjs';
-import { timeout } from 'rxjs/operators';
-import { AppConfig } from '../../../../config/app.config';
-import { WalletService } from '../../../../wallet/services/wallet.service';
-import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
-import { SharedService } from '../../../../shared/services/shared.service';
-import { environment } from '../../../../../environments/environment';
-import { NemProviderService } from '../../../../swap/services/nem-provider.service';
+import { AppConfig } from '../../../config/app.config';
+import { WalletService } from '../../../wallet/services/wallet.service';
+import { ProximaxProvider } from '../../../shared/services/proximax.provider';
+import { SharedService } from '../../../shared/services/shared.service';
+import { NemProviderService } from '../../../swap/services/nem-provider.service';
 
 @Component({
   selector: 'app-account-created',
@@ -35,7 +33,7 @@ export class AccountCreatedComponent implements OnInit {
   routeContinue = `/${AppConfig.routes.viewAllAccount}`;
   viewPrivateKey = false;
   viewPublicKey = false;
-  disabledContinue: boolean = true;
+  disabledContinue = true;
   subscription: Subscription[] = [];
 
   constructor(
@@ -65,7 +63,7 @@ export class AccountCreatedComponent implements OnInit {
           }
           this.disabledContinue = false;
         }, error => {
-          this.disabledContinue = false
+          this.disabledContinue = false;
           this.routeContinue = `/${AppConfig.routes.viewAllAccount}`;
         }));
       } else {
@@ -103,7 +101,7 @@ export class AccountCreatedComponent implements OnInit {
    * @param margin
    */
   qrConstruntion(url, size = 2, margin = 0) {
-    let qr = qrcode(10, 'H');
+    const qr = qrcode(10, 'H');
     qr.addData(url);
     qr.make();
     return qr.createDataURL(size, margin);
@@ -118,23 +116,23 @@ export class AccountCreatedComponent implements OnInit {
     // console.log(this.privateKey);
     // console.log(this.address);
 
-    let doc = new jsPDF({
+    const doc = new jsPDF({
       unit: 'px'
     });
-    doc.addImage(this.imgBackground, 'JPEG', 120, 60, 210, 125)
+    doc.addImage(this.imgBackground, 'JPEG', 120, 60, 210, 125);
 
     // QR Code Address
-    doc.addImage(this.qrConstruntion(this.privateKey, 1, 0), 153, 102)
+    doc.addImage(this.qrConstruntion(this.privateKey, 1, 0), 153, 102);
 
     // Addres number
-    doc.setFontSize(8)
-    doc.setTextColor('#000000')
-    doc.text(this.address, 147, 159, { maxWidth: 132 })
+    doc.setFontSize(8);
+    doc.setTextColor('#000000');
+    doc.text(this.address, 147, 159, { maxWidth: 132 });
 
-    doc.save('Your_Paper_Wallet')
+    doc.save('Your_Paper_Wallet');
   }
 
-  setImgBackground(){
+  setImgBackground() {
     this.imgBackground = this.sharedService.walletCreatedCertified();
   }
 }

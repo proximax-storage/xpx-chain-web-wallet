@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HeaderServicesInterface, ServicesModuleService } from 'src/app/servicesModule/services/services-module.service';
 import { ConfigurationForm, SharedService } from 'src/app/shared/services/shared.service';
-import { FormGroup, FormControl, Validators, AbstractControl, FormBuilder } from '@angular/forms';
+import { FormGroup, Validators, AbstractControl, FormBuilder } from '@angular/forms';
 import { AppConfig } from 'src/app/config/app.config';
 import { WalletService, AccountsInterface } from 'src/app/wallet/services/wallet.service';
 import { TransactionsService } from 'src/app/transactions/services/transactions.service';
@@ -28,10 +28,12 @@ export class AccountDeleteConfirmComponent implements OnInit {
   Information = `This action will delete this Account. It cannot be undone. If you have not saved your Private Key, access will be permanently lost.`
   configurationForm: ConfigurationForm;
   validatingForm: FormGroup;
-  ban: boolean = false;
+  ban = false;
   texAlert = 'I have read the warning, understand the consequences, and wish to proceed'
-  passwordMain: string = 'password';
-  constructor(private activateRoute: ActivatedRoute,
+  passwordMain = 'password';
+
+  constructor(
+    private activateRoute: ActivatedRoute,
     private serviceModuleService: ServicesModuleService,
     private sharedService: SharedService,
     private walletService: WalletService,
@@ -40,10 +42,10 @@ export class AccountDeleteConfirmComponent implements OnInit {
     private transactionsService: TransactionsService) {
     this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
-
   }
+
   ngOnInit() {
-    let name = this.activateRoute.snapshot.paramMap.get('name');
+    const name = this.activateRoute.snapshot.paramMap.get('name');
     this.currenAccount = this.walletService.filterAccountWallet(name);
   }
   /**
@@ -105,13 +107,13 @@ export class AccountDeleteConfirmComponent implements OnInit {
     if (this.validatingForm.valid && !this.ban) {
       this.ban = true;
       const accountDecrypt = this.currenAccount;
-      let common: any = { password: this.validatingForm.get("password").value };
+      const common: any = { password: this.validatingForm.get("password").value };
 
       if (this.walletService.decrypt(common, accountDecrypt)) {
         const revalidateMultisig = true;
 
         if (this.currenAccount.firstAccount === true) {
-          let defaultAccount = this.walletService.getAccountDefault();
+          const defaultAccount = this.walletService.getAccountDefault();
           defaultAccount.firstAccount = true;
         }
 
@@ -122,8 +124,8 @@ export class AccountDeleteConfirmComponent implements OnInit {
         this.router.navigate([`/${AppConfig.routes.viewAllAccount}`]);
 
         // Delete contact of current account
-        let contacts = this.serviceModuleService.getBooksAddress();
-        let newContacts = contacts.filter(element => element.value !== this.currenAccount.address);
+        const contacts = this.serviceModuleService.getBooksAddress();
+        const newContacts = contacts.filter(element => element.value !== this.currenAccount.address);
         this.serviceModuleService.setBookAddress(newContacts, '');
       } else {
         this.ban = false;
@@ -135,7 +137,7 @@ export class AccountDeleteConfirmComponent implements OnInit {
 
   }
   changeInputType(inputType) {
-    let newType = this.sharedService.changeInputType(inputType)
+    const newType = this.sharedService.changeInputType(inputType)
     this.passwordMain = newType;
   }
 

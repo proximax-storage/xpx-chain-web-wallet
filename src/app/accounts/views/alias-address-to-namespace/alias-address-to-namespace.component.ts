@@ -3,14 +3,14 @@ import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/fo
 import { AliasActionType, Address, NamespaceId, MosaicId } from 'tsjs-xpx-chain-sdk';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { AppConfig } from '../../../../config/app.config';
-import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
-import { NamespacesService, NamespaceStorageInterface, AddressAliasTransactionInterface } from '../../../../servicesModule/services/namespaces.service';
-import { DataBridgeService } from '../../../../shared/services/data-bridge.service';
-import { SharedService, ConfigurationForm } from '../../../../shared/services/shared.service';
-import { WalletService } from '../../../../wallet/services/wallet.service';
-import { HeaderServicesInterface, ServicesModuleService } from '../../../services/services-module.service';
-import { TransactionsService } from '../../../../transactions/services/transactions.service';
+import { AppConfig } from '../../../config/app.config';
+import { ProximaxProvider } from '../../../shared/services/proximax.provider';
+import { NamespacesService, NamespaceStorageInterface, AddressAliasTransactionInterface } from '../../../servicesModule/services/namespaces.service';
+import { DataBridgeService } from '../../../shared/services/data-bridge.service';
+import { SharedService, ConfigurationForm } from '../../../shared/services/shared.service';
+import { WalletService } from '../../../wallet/services/wallet.service';
+import { HeaderServicesInterface, ServicesModuleService } from '../../../servicesModule/services/services-module.service';
+import { TransactionsService } from '../../../transactions/services/transactions.service';
 
 @Component({
   selector: 'app-alias-address-to-namespace',
@@ -24,9 +24,9 @@ export class AliasAddressToNamespaceComponent implements OnInit {
   };
   arrayNamespaceStorage: NamespaceStorageInterface[] = [];
   backToService = `/${AppConfig.routes.service}`;
-  blockSend: boolean = false;
+  blockSend = false;
   configurationForm: ConfigurationForm = {};
-  disabledAddressBook: boolean = false;
+  disabledAddressBook = false;
   LinkToNamespaceForm: FormGroup;
   loading = false;
   namespaceSelect: Array<object> = [];
@@ -50,10 +50,10 @@ export class AliasAddressToNamespaceComponent implements OnInit {
   namespaceId: NamespaceId;
   address: any;
   addressAliasTransaction: any;
-  fee: string = '0.000000';
+  fee = '0.000000';
   amountAccount: number;
   mosaicstoHex: any;
-  passwordMain: string = 'password';
+  passwordMain = 'password';
 
   constructor(
     private fb: FormBuilder,
@@ -152,7 +152,7 @@ export class AliasAddressToNamespaceComponent implements OnInit {
         for (let namespaceStorage of this.arrayNamespaceStorage) {
           if (namespaceStorage.namespaceInfo) {
             // console.log('INFO ---> ', namespaceStorage, '\n\n');
-            let address: string = '';
+            let address = '';
             let isLinked = false;
             let disabled = false;
             let label = namespaceStorage.namespaceName.name;//await this.namespaceService.getNameParentNamespace(namespaceStorage);

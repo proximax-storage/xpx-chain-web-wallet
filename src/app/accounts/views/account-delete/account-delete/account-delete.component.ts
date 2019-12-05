@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HeaderServicesInterface, ServicesModuleService } from 'src/app/servicesModule/services/services-module.service';
 import { AppConfig } from 'src/app/config/app.config';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -14,7 +14,7 @@ import { PublicAccount } from 'tsjs-xpx-chain-sdk';
   templateUrl: './account-delete.component.html',
   styleUrls: ['./account-delete.component.css']
 })
-export class AccountDeleteComponent implements OnInit {
+export class AccountDeleteComponent implements OnInit, OnDestroy {
   // validatingForm: FormGroup;
   currenAccount: AccountsInterface = null;
   paramsHeader: HeaderServicesInterface = {
@@ -25,13 +25,13 @@ export class AccountDeleteComponent implements OnInit {
   };
   routes = {
     viewAllAccount: `/${AppConfig.routes.viewAllAccount}`,
-    deleteAccountConfirm: `/${AppConfig.routes.deleteAccountConfirm}/`,
+    deleteAccountConfirm: `/${AppConfig.routes.deleteAccountConfirm}/`
   };
   accountInfo: AccountsInfoInterface = null;
   subscribeAccount = null;
-  accountValid: boolean = false;
+  accountValid = false;
   viewPublicKey = false;
-  showPassword: boolean = true;
+  showPassword = true;
   title = 'Accounts that are associated with this device.';
   texAlert = 'Would you like to permanently delete this account?'
   accountName: string;

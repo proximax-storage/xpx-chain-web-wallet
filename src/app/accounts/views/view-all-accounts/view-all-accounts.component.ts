@@ -1,12 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { environment } from '../../../../../environments/environment';
-import { WalletService, AccountsInterface } from '../../../../wallet/services/wallet.service';
-import { AppConfig } from '../../../../config/app.config';
-import { SharedService } from '../../../../shared/services/shared.service';
-import { TransactionsService } from '../../../../transactions/services/transactions.service';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { environment } from '../../../../environments/environment';
+import { WalletService, AccountsInterface } from '../../../wallet/services/wallet.service';
+import { AppConfig } from '../../../config/app.config';
+import { SharedService } from '../../../shared/services/shared.service';
+import { TransactionsService } from '../../../transactions/services/transactions.service';
 import { Subscription } from 'rxjs';
 import { NamespacesService } from 'src/app/servicesModule/services/namespaces.service';
-import { HeaderServicesInterface } from '../../../services/services-module.service';
+import { HeaderServicesInterface } from '../../../servicesModule/services/services-module.service';
 import * as CryptoJS from 'crypto-js';
 
 @Component({
@@ -14,7 +14,7 @@ import * as CryptoJS from 'crypto-js';
   templateUrl: './view-all-accounts.component.html',
   styleUrls: ['./view-all-accounts.component.css']
 })
-export class ViewAllAccountsComponent implements OnInit {
+export class ViewAllAccountsComponent implements OnInit, OnDestroy{
 
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Accounts',
@@ -23,7 +23,7 @@ export class ViewAllAccountsComponent implements OnInit {
     routerExtraButton: `/${AppConfig.routes.selectTypeCreationAccount}`
 
   };
-  accountChanged: boolean = false;
+  accountChanged = false;
   currentWallet: any = [];
   objectKeys = Object.keys;
   routes = {
@@ -65,7 +65,7 @@ export class ViewAllAccountsComponent implements OnInit {
     // console.log('build',this.walletService.currentWallet)
     const currentWallet = Object.assign({}, this.walletService.currentWallet);
     if (currentWallet && Object.keys(currentWallet).length > 0) {
-      for (let element of currentWallet.accounts) {
+      for (const element of currentWallet.accounts) {
         const accountFiltered = this.walletService.filterAccountInfo(element.name);
         if (accountFiltered && accountFiltered.accountInfo) {
           const mosaicsNoXpx = accountFiltered.accountInfo.mosaics.filter(next => next.id.toHex() !== environment.mosaicXpxInfo.id);
@@ -137,16 +137,16 @@ export class ViewAllAccountsComponent implements OnInit {
     } else {
       erasable = true;
       if (this.currentWallet.accounts.length === 2) {
-        let noPrivateKey = this.currentWallet.accounts.filter(account => account.encrypted === "")
+        const noPrivateKey = this.currentWallet.accounts.filter(account => account.encrypted === '');
         if (noPrivateKey.length > 0) {
-          erasable = false
+          erasable = false;
         }
       } else {
-        erasable = true
+        erasable = true;
       }
     }
 
-    return erasable
+    return erasable;
   }
 
   /**
@@ -155,22 +155,22 @@ export class ViewAllAccountsComponent implements OnInit {
    * @memberof ViewAllAccountsComponent
    */
   exportAccount(account: any) {
-    let acc = Object.assign({}, account);
+    const acc = Object.assign({}, account);
     const accounts = [];
     accounts.push(acc);
     const wallet = {
       name: `${this.walletService.currentWallet.name}_${acc.name}`,
-      accounts: accounts
-    }
+      accounts
+    };
 
     wallet.accounts[0].name = 'Primary_Account';
     wallet.accounts[0].firstAccount = true;
     wallet.accounts[0].default = true;
 
-    let wordArray = CryptoJS.enc.Utf8.parse(JSON.stringify(wallet));
-    let file = CryptoJS.enc.Base64.stringify(wordArray);
+    const wordArray = CryptoJS.enc.Utf8.parse(JSON.stringify(wallet));
+    const file = CryptoJS.enc.Base64.stringify(wordArray);
     // Word array to base64
-    const now = Date.now()
+    const now = Date.now();
     const date = new Date(now);
     const year = date.getFullYear();
     const month = ((date.getMonth() + 1) < 10) ? `0${(date.getMonth() + 1)}` : date.getMonth() + 1;
@@ -182,7 +182,7 @@ export class ViewAllAccountsComponent implements OnInit {
     a.style.display = 'none';
     a.href = url;
     // the filename you want
-    let networkTypeName = environment.typeNetwork.label
+    let networkTypeName = environment.typeNetwork.label;
     networkTypeName = (networkTypeName.includes(' ')) ? networkTypeName.split(' ').join('') : networkTypeName;
     a.download = `${wallet.name}_${networkTypeName}_${year}-${month}-${day}.wlt`;
     document.body.appendChild(a);

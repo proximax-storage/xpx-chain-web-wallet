@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { AppConfig } from '../../../../config/app.config';
-import { HeaderServicesInterface } from '../../../../servicesModule/services/services-module.service';
+import { AppConfig } from '../../../config/app.config';
+import { HeaderServicesInterface } from '../../../servicesModule/services/services-module.service';
 
 @Component({
   selector: 'app-selection-account-creation-type',

@@ -4,13 +4,13 @@ import * as qrcode from 'qrcode-generator';
 import * as jsPDF from 'jspdf';
 import { ActivatedRoute } from '@angular/router';
 
-import { WalletService, AccountsInterface, AccountsInfoInterface } from "../../../../wallet/services/wallet.service";
-import { SharedService, ConfigurationForm } from "../../../../shared/services/shared.service"
-import { AppConfig } from '../../../../config/app.config';
-import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
-import { ServicesModuleService, ContactsStorageInterface, HeaderServicesInterface } from '../../../services/services-module.service';
-import { environment } from '../../../../../environments/environment';
-import { NemProviderService } from '../../../../swap/services/nem-provider.service';
+import { WalletService, AccountsInterface, AccountsInfoInterface } from '../../../wallet/services/wallet.service';
+import { SharedService, ConfigurationForm } from '../../../shared/services/shared.service';
+import { AppConfig } from '../../../config/app.config';
+import { ProximaxProvider } from '../../../shared/services/proximax.provider';
+import { ServicesModuleService, ContactsStorageInterface, HeaderServicesInterface } from '../../../servicesModule/services/services-module.service';
+import { environment } from '../../../../environments/environment';
+import { NemProviderService } from '../../../swap/services/nem-provider.service';
 
 
 @Component({
@@ -29,38 +29,38 @@ export class DetailAccountComponent implements OnInit {
   address = '';
   accountName = '';
   accountInfo: AccountsInfoInterface = null;
-  accountValid: boolean = false;
+  accountValid = false;
   configurationForm: ConfigurationForm;
   currenAccount: AccountsInterface = null;
   checked: boolean;
   descriptionPrivateKey = `Make sure you store your private key in a safe place.
   Access to your digital assets cannot be recovered without it.`;
   editNameAccount = false;
-  newNameAccount: string = '';
-  passwordMain: string = 'password';
+  newNameAccount = '';
+  passwordMain = 'password';
   privateKey = '';
   publicKey = '';
   routes = {
     backToService: `/${AppConfig.routes.service}`,
     viewAllAccounts: `/${AppConfig.routes.viewAllAccount}`
   };
-  showPassword: boolean = true;
+  showPassword = true;
   subscribeAccount = null;
   titleAddress = 'Address:';
   titlePrivateKey = 'Private Key:';
   titlePublickey = 'Public Key:';
   validatingForm: FormGroup;
   valueInitNis: boolean;
-  valueInitShow: boolean = false;
-  showPrivateKey: boolean = false;
+  valueInitShow = false;
+  showPrivateKey = false;
   saveNis1Account: any;
-  imgBackground: string = '';
-  blockBtnAction: boolean = false;
-  toggleBtnShowPrivateKey: boolean = false;
-  actionBtnShowPrivateKey: boolean = false;
-  toggleBtnSwapThisAccount: boolean = false;
-  actionBtnSwapThisAccount: boolean = false;
-  actionBtnSavePaperWallet: boolean = false;
+  imgBackground = '';
+  blockBtnAction = false;
+  toggleBtnShowPrivateKey = false;
+  actionBtnShowPrivateKey = false;
+  toggleBtnSwapThisAccount = false;
+  actionBtnSwapThisAccount = false;
+  actionBtnSavePaperWallet = false;
 
 
   constructor(
@@ -73,7 +73,7 @@ export class DetailAccountComponent implements OnInit {
   ) {
     this.imgBackground = this.sharedService.walletCreatedCertified();
     this.configurationForm = this.sharedService.configurationForm;
-    let param = this.activateRoute.snapshot.paramMap.get('name');
+    const param = this.activateRoute.snapshot.paramMap.get('name');
     this.currenAccount = (param) ? this.walletService.filterAccountWallet(param) : this.walletService.filterAccountWallet('', true);
     this.checked = (this.currenAccount.nis1Account !== null);
     // console.log('this.checked', this.checked);
@@ -92,7 +92,7 @@ export class DetailAccountComponent implements OnInit {
             this.accountInfo !== null &&
             this.accountInfo !== undefined &&
             this.accountInfo.accountInfo &&
-            this.accountInfo.accountInfo.publicKey !== "0000000000000000000000000000000000000000000000000000000000000000"
+            this.accountInfo.accountInfo.publicKey !== '0000000000000000000000000000000000000000000000000000000000000000'
           );
 
           if (this.subscribeAccount) {
@@ -141,7 +141,7 @@ export class DetailAccountComponent implements OnInit {
    * @memberof DetailAccountComponent
    */
   changeInputType(inputType) {
-    let newType = this.sharedService.changeInputType(inputType)
+    const newType = this.sharedService.changeInputType(inputType);
     this.passwordMain = newType;
   }
 
@@ -176,7 +176,7 @@ export class DetailAccountComponent implements OnInit {
             name: this.accountName,
             address: this.address
           }
-        }
+        };
         const saved = this.serviceModuleService.saveContacts(paramsStorage);
 
         if (!saved) {
@@ -282,7 +282,7 @@ export class DetailAccountComponent implements OnInit {
       accounts.push(this.currenAccount);
       this.walletService.currentWallet.accounts = accounts;
 
-      let allWallets = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
+      const allWallets = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
       const walletsStorage = allWallets.filter(el => el.name !== this.walletService.currentWallet.name);
       walletsStorage.push(this.walletService.currentWallet);
       localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
@@ -313,7 +313,7 @@ export class DetailAccountComponent implements OnInit {
           accounts.push(this.currenAccount);
           this.walletService.currentWallet.accounts = accounts;
 
-          let allWallets = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
+          const allWallets = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
           const walletsStorage = allWallets.filter(el => el.name !== this.walletService.currentWallet.name);
           walletsStorage.push(this.walletService.currentWallet);
           localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
@@ -340,14 +340,14 @@ export class DetailAccountComponent implements OnInit {
   }
 
   qrConstruntion(url, size = 2, margin = 0) {
-    let qr = qrcode(10, 'H');
+    const qr = qrcode(10, 'H');
     qr.addData(url);
     qr.make();
     return qr.createDataURL(size, margin);
   }
 
   printAccountInfo() {
-    let doc = new jsPDF({
+    const doc = new jsPDF({
       unit: 'px'
     });
     doc.addImage(this.imgBackground, 'JPEG', 120, 60, 205, 132);
