@@ -3,8 +3,6 @@ import { Routes, RouterModule } from '@angular/router';
 import { AppConfig } from '../../app/config/app.config';
 import { ExplorerComponent } from './views/explorer/explorer.component';
 import { ServicesBoxComponent } from './views/services-box/services-box.component'
-import { CreateNamespaceComponent } from './views/namespace/create-namespace/create-namespace.component';
-import { ExtendDurationNamespaceComponent } from './views/namespace/extend-duration-namespace/extend-duration-namespace.component';
 import { ListContactsComponent } from './views/address-book/list-contacts/list-contacts.component';
 import { AddContactsComponent } from './views/address-book/add-contacts/add-contacts.component';
 import { ExportWalletComponent } from './views/wallet/export-wallet/export-wallet.component';
@@ -34,48 +32,6 @@ const routes: Routes = [
       }
     }
   }, {
-    path: AppConfig.routes.createNamespace,
-    component: CreateNamespaceComponent,
-    data: {
-      meta: {
-        title: 'createNamespace.title',
-        description: 'createNamespace.text',
-        override: true,
-      }
-    }
-  }, {
-    path: AppConfig.routes.renewNamespace,
-    component: ExtendDurationNamespaceComponent,
-    data: {
-      meta: {
-        title: 'renewNamespace.title',
-        description: 'renewNamespace.text',
-        override: true,
-      }
-    }
-  }, {
-    path: AppConfig.routes.extendNamespace,
-    component: ExtendDurationNamespaceComponent,
-    data: {
-      meta: {
-        title: 'extendNamespace.title',
-        description: 'extendNamespace.text',
-        override: true,
-      }
-    }
-  },
-  {
-    path: `${AppConfig.routes.extendNamespace}/:id`,
-    component: ExtendDurationNamespaceComponent,
-    data: {
-      meta: {
-        title: 'extendNamespace.title',
-        description: 'extendNamespace.text',
-        override: true,
-      }
-    }
-  }
-  , {
     path: AppConfig.routes.addressBook,
     component: ListContactsComponent,
     data: {

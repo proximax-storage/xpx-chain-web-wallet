@@ -4,16 +4,16 @@ import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/fo
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { AppConfig } from '../../../../config/app.config';
-import { DataBridgeService } from '../../../../shared/services/data-bridge.service';
-import { WalletService, AccountsInterface } from '../../../../wallet/services/wallet.service';
-import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
-import { SharedService, ConfigurationForm } from '../../../../shared/services/shared.service';
-import { NamespacesService } from '../../../../servicesModule/services/namespaces.service';
-import { TransactionsService } from '../../../../transactions/services/transactions.service';
-import { HeaderServicesInterface } from '../../../services/services-module.service';
-import { environment } from '../../../../../environments/environment';
-import { NodeService } from '../../../../servicesModule/services/node.service';
+import { AppConfig } from '../../../config/app.config';
+import { DataBridgeService } from '../../../shared/services/data-bridge.service';
+import { WalletService, AccountsInterface } from '../../../wallet/services/wallet.service';
+import { ProximaxProvider } from '../../../shared/services/proximax.provider';
+import { SharedService, ConfigurationForm } from '../../../shared/services/shared.service';
+import { NamespacesService } from '../../../servicesModule/services/namespaces.service';
+import { TransactionsService } from '../../../transactions/services/transactions.service';
+import { HeaderServicesInterface } from '../../../servicesModule/services/services-module.service';
+import { environment } from '../../../../environments/environment';
+import { NodeService } from '../../../servicesModule/services/node.service';
 
 @Component({
   selector: 'app-create-namespace',

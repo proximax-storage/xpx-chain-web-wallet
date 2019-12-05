@@ -2,17 +2,17 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
 import { SignedTransaction, MosaicId, NamespaceInfo } from 'tsjs-xpx-chain-sdk';
-import { NamespacesService, NamespaceStorageInterface } from '../../../services/namespaces.service';
-import { AppConfig } from '../../../../config/app.config';
-import { DataBridgeService } from '../../../../shared/services/data-bridge.service';
-import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
-import { MosaicService } from '../../../services/mosaic.service';
-import { SharedService, ConfigurationForm } from '../../../../shared/services/shared.service';
-import { WalletService } from '../../../../wallet/services/wallet.service';
-import { TransactionsService } from '../../../../transactions/services/transactions.service';
+import { NamespacesService, NamespaceStorageInterface } from '../../../servicesModule/services/namespaces.service';
+import { AppConfig } from '../../../config/app.config';
+import { DataBridgeService } from '../../../shared/services/data-bridge.service';
+import { ProximaxProvider } from '../../../shared/services/proximax.provider';
+import { MosaicService } from '../../../servicesModule/services/mosaic.service';
+import { SharedService, ConfigurationForm } from '../../../shared/services/shared.service';
+import { WalletService } from '../../../wallet/services/wallet.service';
+import { TransactionsService } from '../../../transactions/services/transactions.service';
 import { Subscription } from 'rxjs';
-import { HeaderServicesInterface } from '../../../services/services-module.service';
-import { environment } from '../../../../../environments/environment';
+import { HeaderServicesInterface } from '../../../servicesModule/services/services-module.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-extend-duration-namespace',
@@ -29,12 +29,12 @@ export class ExtendDurationNamespaceComponent implements OnInit {
   }];
 
   amountAccount: number;
-  block: number = 0;
-  blockBtnSend: boolean = false;
-  calculateRentalFee: string = '0.000000';
+  block = 0;
+  blockBtnSend = false;
+  calculateRentalFee = '0.000000';
   configurationForm: ConfigurationForm = {};
   durationByBlock = '5760';
-  endHeight: number = 0;
+  endHeight = 0;
   extendNamespaceRootTransaction: any;
   extendDurationNamespaceForm: FormGroup;
   fee = '';
@@ -46,21 +46,21 @@ export class ExtendDurationNamespaceComponent implements OnInit {
     moduleName: 'Namespaces',
     componentName: 'Extend Duration'
   };
-  passwordMain: string = 'password';
+  passwordMain = 'password';
 
   rentalFee = 4576;
-  status: boolean = true;
-  startHeight: number = 0;
-  statusTransaction: boolean = false;
+  status = true;
+  startHeight = 0;
+  statusTransaction = false;
   subscription: Subscription[] = [];
   transactionSigned: SignedTransaction[] = [];
   transactionReady: SignedTransaction[] = [];
-  transactionStatus: boolean = false;
+  transactionStatus = false;
   subtractionHeight: any;
   totalBlock: any;
-  exceededDuration: boolean = false;
-  invalidDuration: boolean = true;
-  noNamespace: boolean = false;
+  exceededDuration = false;
+  invalidDuration = true;
+  noNamespace = false;
 
 
   constructor(
@@ -95,7 +95,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
         if (next !== null && next !== undefined && String(next) !== '0') {
           this.durationByBlock = this.transactionService.calculateDurationforDay(next).toString();
           this.totalBlock = this.subtractionHeight + Number(this.durationByBlock);
-          if( this.totalBlock <= 2102400 ){
+          if ( this.totalBlock <= 2102400 ) {
             // 5 years = 10512000
             this.totalBlock;
             this.exceededDuration = false;
@@ -151,7 +151,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
   }
 
   changeInputType(inputType) {
-    let newType = this.sharedService.changeInputType(inputType)
+    const newType = this.sharedService.changeInputType(inputType);
     this.passwordMain = newType;
   }
 
@@ -201,7 +201,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
     this.insufficientBalanceDuration = false;
   }
 
-  calculateSubtractionHeight(){
+  calculateSubtractionHeight() {
     this.subtractionHeight = this.endHeight - this.block;
     this.totalBlock = this.subtractionHeight + Number(this.durationByBlock);
 
@@ -224,13 +224,13 @@ export class ExtendDurationNamespaceComponent implements OnInit {
    */
   extendDuration() {
     if (this.extendDurationNamespaceForm.valid && !this.blockBtnSend) {
-      const validateAmount = this.transactionService.validateBuildSelectAccountBalance(this.amountAccount, Number(this.fee), Number(this.calculateRentalFee.replace(/,/g,'')));
+      const validateAmount = this.transactionService.validateBuildSelectAccountBalance(this.amountAccount, Number(this.fee), Number(this.calculateRentalFee.replace(/,/g, '')));
       if (validateAmount) {
         this.blockBtnSend = true;
         const common = {
           password: this.extendDurationNamespaceForm.get('password').value,
           privateKey: ''
-        }
+        };
         if (this.walletService.decrypt(common)) {
           const signedTransaction = this.signedTransaction(common);
           this.transactionSigned.push(signedTransaction);
@@ -267,7 +267,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
     this.subscription.push(this.dataBridgeService.getTransactionStatus().subscribe(
       statusTransaction => {
         if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
-          for (let element of this.transactionSigned) {
+          for (const element of this.transactionSigned) {
             const statusTransactionHash = statusTransaction.hash;
             const match = statusTransactionHash === element.hash;
             if (match) {
@@ -300,7 +300,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
 
         if (namespaceInfo !== undefined && namespaceInfo !== null && namespaceInfo.length > 0) {
           const arrayselect = [];
-          for (let namespaceRoot of namespaceInfo) {
+          for (const namespaceRoot of namespaceInfo) {
             if (namespaceRoot.namespaceInfo.depth === 1) {
               arrayselect.push({
                 id: `${this.proximaxProvider.getNamespaceId(namespaceRoot.id).toHex()}`,
@@ -355,7 +355,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
       if (parseInt(e.target.value) > 365) {
         this.exceededDuration = true;
       } else if (parseInt(e.target.value) < 1) {
-        e.target.value = ''
+        e.target.value = '';
         this.extendDurationNamespaceForm.get('duration').setValue('');
       }
     }
@@ -380,7 +380,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
         this.calculateSubtractionHeight();
       }
       this.builder();
-      this.invalidDuration = false
+      this.invalidDuration = false;
     } else {
       this.extendDurationNamespaceForm.get('duration').disable();
       this.extendDurationNamespaceForm.get('duration').patchValue('');
@@ -420,7 +420,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
   setTimeOutValidate(hash: string) {
     setTimeout(() => {
       let exist = false;
-      for (let element of this.transactionReady) {
+      for (const element of this.transactionReady) {
         if (hash === element.hash) {
           exist = true;
         }
@@ -440,7 +440,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
   signedTransaction(common: any): SignedTransaction {
     const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
     const generationHash = this.dataBridgeService.blockInfo.generationHash;
-    const signedTransaction = account.sign(this.extendNamespaceRootTransaction, generationHash);  //Update-sdk-dragon
+    const signedTransaction = account.sign(this.extendNamespaceRootTransaction, generationHash);  // Update-sdk-dragon
     return signedTransaction;
   }
 

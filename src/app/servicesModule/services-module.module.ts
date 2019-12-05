@@ -3,9 +3,7 @@ import { ServicesModuleRoutingModule } from './services-module-routing.module';
 import { ServicesBoxComponent } from './views/services-box/services-box.component';
 import { CoreModule } from '../core/core.module';
 import { ExplorerComponent } from './views/explorer/explorer.component';
-import { CreateNamespaceComponent } from './views/namespace/create-namespace/create-namespace.component';
 import { ListContactsComponent } from './views/address-book/list-contacts/list-contacts.component';
-import { ExtendDurationNamespaceComponent } from './views/namespace/extend-duration-namespace/extend-duration-namespace.component';
 import { AddContactsComponent } from './views/address-book/add-contacts/add-contacts.component';
 import { ExportWalletComponent } from './views/wallet/export-wallet/export-wallet.component';
 import { BlockchainComponent } from './views/nodes/blockchain/blockchain.component';
@@ -16,9 +14,7 @@ import { NotificationComponent } from './views/notification/notification.compone
   declarations: [
     ServicesBoxComponent,
     ExplorerComponent,
-    CreateNamespaceComponent,
     ListContactsComponent,
-    ExtendDurationNamespaceComponent,
     AddContactsComponent,
     ExportWalletComponent,
     BlockchainComponent,

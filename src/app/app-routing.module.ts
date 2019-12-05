@@ -60,6 +60,9 @@ const routes: Routes = [
       loadChildren: './mosaics/mosaics.module#MosaicsModule'
     }, {
       path: '',
+      loadChildren: './namespace/namespace.module#NamespaceModule'
+    }, {
+      path: '',
       loadChildren: './storage/storage.module#StorageModule'
     }]
   }, {
