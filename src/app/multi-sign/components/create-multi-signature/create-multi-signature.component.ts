@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { NgBlockUI, BlockUI } from 'ng-block-ui';
-import { AppConfig } from 'src/app/config/app.config';
-import { SharedService, ConfigurationForm } from 'src/app/shared/services/shared.service';
+import { AppConfig } from '../../../config/app.config';
+import { SharedService, ConfigurationForm } from '../../../shared/services/shared.service';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
-import { WalletService, AccountsInfoInterface, AccountsInterface } from 'src/app/wallet/services/wallet.service';
+import { WalletService, AccountsInfoInterface, AccountsInterface } from '../../../wallet/services/wallet.service';
 import {
   Account, PublicAccount,
   ModifyMultisigAccountTransaction,
@@ -14,8 +14,6 @@ import {
   Address,
   MultisigCosignatoryModificationType,
   HashLockTransaction,
-  Listener,
-  LockFundsTransaction,
   TransactionHttp,
   SignedTransaction,
   AggregateTransaction,
@@ -23,13 +21,13 @@ import {
   MosaicId,
   AccountInfo
 } from 'tsjs-xpx-chain-sdk';
-import { environment } from '../../../../../../environments/environment';
-import { NodeService } from 'src/app/servicesModule/services/node.service';
-import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
-import { ServicesModuleService } from 'src/app/servicesModule/services/services-module.service';
-import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
-import { TransactionsService } from 'src/app/transactions/services/transactions.service';
-import { MultiSignService } from 'src/app/servicesModule/services/multi-sign.service';
+import { NodeService } from '../../../servicesModule/services/node.service';
+import { DataBridgeService } from '../../../shared/services/data-bridge.service';
+import { ServicesModuleService } from '../../../servicesModule/services/services-module.service';
+import { ProximaxProvider } from '../../../shared/services/proximax.provider';
+import { TransactionsService } from '../../../transactions/services/transactions.service';
+import { MultiSignService } from '../../../servicesModule/services/multi-sign.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-create-multi-signature',
@@ -63,14 +61,14 @@ export class CreateMultiSignatureComponent implements OnInit {
   currentAccountToConvert: AccountsInterface;
   cosignatoryList: CosignatoryList[] = [];
   headElements: string[];
-  minApprovaMaxLength: number = 1;
-  minApprovaMinLength: number = 1;
+  minApprovaMaxLength = 1;
+  minApprovaMinLength = 1;
   accountToConvertSign: Account;
-  transactionHttp: TransactionHttp
+  transactionHttp: TransactionHttp;
   balance: string;
   isMultisig: boolean;
   consginerFirmName: string;
-  consginerFirmAccount: AccountsInterface
+  consginerFirmAccount: AccountsInterface;
 
   constructor(
     private fb: FormBuilder,

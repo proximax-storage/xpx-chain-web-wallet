@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AppConfig } from "../../app/config/app.config";
+import { AppConfig } from '../../app/config/app.config';
 import { ExplorerComponent } from './views/explorer/explorer.component';
-import { ServicesBoxComponent } from "./views/services-box/services-box.component"
+import { ServicesBoxComponent } from './views/services-box/services-box.component'
 import { DetailAccountComponent } from './views/account/detail-account/detail-account.component';
 import { CreateNamespaceComponent } from './views/namespace/create-namespace/create-namespace.component';
 import { ExtendDurationNamespaceComponent } from './views/namespace/extend-duration-namespace/extend-duration-namespace.component';
@@ -13,14 +13,11 @@ import { MosaicsSupplyChangeComponent } from './views/mosaic/mosaics-supply-chan
 import { AliasMosaicsToNamespaceComponent } from './views/mosaic/alias-mosaics-to-namespace/alias-mosaics-to-namespace.component';
 import { UploadFileComponent } from './views/storage/upload-file/upload-file.component';
 import { MyFileComponent } from './views/storage/my-file/my-file.component';
-import { MultiSignatureContractComponent } from './views/multi-sign/multi-signature-contract/multi-signature-contract.component';
 import { CreateAccountComponent } from './views/account/create-account/create-account.component';
 import { ViewAllAccountsComponent } from './views/account/view-all-accounts/view-all-accounts.component';
 import { AccountCreatedComponent } from './views/account/account-created/account-created.component';
 import { SelectionAccountTypeComponent } from './views/account/selection-account-creation-type/selection-account-creation-type.component';
 import { AddContactsComponent } from './views/address-book/add-contacts/add-contacts.component';
-import { ConvertAccountMultisignComponent } from './views/multi-sign/convert-account-multisign/convert-account-multisign.component';
-import { EditAccountMultisignComponent } from './views/multi-sign/edit-account-multisign/edit-account-multisign.component';
 import { CreatePollComponent } from './views/voting/create-poll/create-poll.component';
 import { CreateApostilleComponent } from './views/apostille/create-apostille/create-apostille.component';
 import { AuditApostilleComponent } from './views/apostille/audit-apostille/audit-apostille.component';
@@ -28,9 +25,9 @@ import { PollsComponent } from './views/voting/polls/polls.component';
 import { VoteInPollComponent } from './views/voting/vote-in-poll/vote-in-poll.component';
 import { AccountDeleteComponent } from './views/account/account-delete/account-delete/account-delete.component';
 import { AccountDeleteConfirmComponent } from './views/account/account-delete-confirm/account-delete-confirm.component';
-import { ExportWalletComponent } from "./views/wallet/export-wallet/export-wallet.component";
+import { ExportWalletComponent } from './views/wallet/export-wallet/export-wallet.component';
 import { BlockchainComponent } from './views/nodes/blockchain/blockchain.component';
-import { DeleteWalletComponent } from "./views/wallet/delete-wallet/delete-wallet.component";
+import { DeleteWalletComponent } from './views/wallet/delete-wallet/delete-wallet.component';
 import { NotificationComponent } from './views/notification/notification.component';
 
 const routes: Routes = [
@@ -282,17 +279,6 @@ const routes: Routes = [
     }
   },
   {
-    path: AppConfig.routes.MultiSign,
-    component: MultiSignatureContractComponent,
-    data: {
-      meta: {
-        title: 'multiSign.title',
-        description: 'multiSign.text',
-        override: true,
-      }
-    }
-  },
-  {
     path: AppConfig.routes.blockchain,
     component: BlockchainComponent,
     data: {
@@ -301,38 +287,6 @@ const routes: Routes = [
         description: 'blockchain.text',
         override: true,
       }
-    }
-  },
-  {
-    path: AppConfig.routes.convertToAccountMultisign,
-    component: ConvertAccountMultisignComponent,
-    data: {
-      meta: {
-        title: 'convertToAccountMultisign.title',
-        description: 'convertToAccountMultisign.text',
-        override: true,
-      }
-    }
-  },
-  {
-    path: `${AppConfig.routes.convertToAccountMultisign}/:name`,
-    component: ConvertAccountMultisignComponent,
-    data: {
-      meta: {
-        title: 'convertToAccountMultisign.title',
-        description: 'convertToAccountMultisign.text',
-        override: true,
-      }
-    }
-  }, {
-    path: `${AppConfig.routes.editAccountMultisign}/:name`,
-    component: EditAccountMultisignComponent,
-    data: {
-      meta: {
-        title: 'editAccountMultisign.title',
-        description: 'editAccountMultisign.text',
-        override: true,
-      },
     }
   }, {
     path: AppConfig.routes.LinkingNamespaceMosaic,
@@ -384,7 +338,7 @@ const routes: Routes = [
         override: true,
       }
     }
-  }, 
+  },
   {
     path: AppConfig.routes.notification,
     component: NotificationComponent,
@@ -395,7 +349,7 @@ const routes: Routes = [
         override: true,
       }
     }
-  },{
+  }, {
     path: AppConfig.routes.exportWallet,
     component: ExportWalletComponent,
     data: {
