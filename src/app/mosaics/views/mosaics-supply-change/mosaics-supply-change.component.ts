@@ -2,14 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { MosaicSupplyType, UInt64, SignedTransaction, MosaicId } from 'tsjs-xpx-chain-sdk';
-import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
-import { SharedService, ConfigurationForm } from '../../../../shared/services/shared.service';
-import { MosaicService, MosaicsStorage } from '../../../../servicesModule/services/mosaic.service';
-import { DataBridgeService } from '../../../../shared/services/data-bridge.service';
-import { WalletService } from '../../../../wallet/services/wallet.service';
-import { TransactionsService } from '../../../../transactions/services/transactions.service';
-import { AppConfig } from '../../../../config/app.config';
-import { HeaderServicesInterface } from '../../../services/services-module.service';
+import { ProximaxProvider } from '../../../shared/services/proximax.provider';
+import { SharedService, ConfigurationForm } from '../../../shared/services/shared.service';
+import { MosaicService, MosaicsStorage } from '../../../servicesModule/services/mosaic.service';
+import { DataBridgeService } from '../../../shared/services/data-bridge.service';
+import { WalletService } from '../../../wallet/services/wallet.service';
+import { TransactionsService } from '../../../transactions/services/transactions.service';
+import { AppConfig } from '../../../config/app.config';
+import { HeaderServicesInterface } from '../../../servicesModule/services/services-module.service';
 import { Subscription } from 'rxjs';
 
 

@@ -6,9 +6,6 @@ import { ExplorerComponent } from './views/explorer/explorer.component';
 import { CreateNamespaceComponent } from './views/namespace/create-namespace/create-namespace.component';
 import { ListContactsComponent } from './views/address-book/list-contacts/list-contacts.component';
 import { ExtendDurationNamespaceComponent } from './views/namespace/extend-duration-namespace/extend-duration-namespace.component';
-import { CreateMosaicComponent } from './views/mosaic/create-mosaic/create-mosaic.component';
-import { MosaicsSupplyChangeComponent } from './views/mosaic/mosaics-supply-change/mosaics-supply-change.component';
-import { AliasMosaicsToNamespaceComponent } from './views/mosaic/alias-mosaics-to-namespace/alias-mosaics-to-namespace.component';
 import { UploadFileComponent } from './views/storage/upload-file/upload-file.component';
 import { MyFileComponent } from './views/storage/my-file/my-file.component';
 import { AddContactsComponent } from './views/address-book/add-contacts/add-contacts.component';
@@ -24,9 +21,6 @@ import { NotificationComponent } from './views/notification/notification.compone
     CreateNamespaceComponent,
     ListContactsComponent,
     ExtendDurationNamespaceComponent,
-    CreateMosaicComponent,
-    MosaicsSupplyChangeComponent,
-    AliasMosaicsToNamespaceComponent,
     UploadFileComponent,
     MyFileComponent,
     AddContactsComponent,

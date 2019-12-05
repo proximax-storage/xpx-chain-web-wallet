@@ -3,14 +3,14 @@ import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/fo
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { Subscription } from 'rxjs';
 import { UInt64, Deadline, AggregateTransaction, MosaicSupplyType, SignedTransaction, MosaicId } from 'tsjs-xpx-chain-sdk';
-import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
-import { SharedService, ConfigurationForm } from '../../../../shared/services/shared.service';
-import { DataBridgeService } from '../../../../shared/services/data-bridge.service';
-import { WalletService, AccountsInterface, AccountsInfoInterface } from '../../../../wallet/services/wallet.service';
-import { TransactionsService } from '../../../../transactions/services/transactions.service';
-import { environment } from '../../../../../environments/environment';
-import { HeaderServicesInterface } from '../../../services/services-module.service';
-import { MosaicService } from '../../../../servicesModule/services/mosaic.service';
+import { ProximaxProvider } from '../../../shared/services/proximax.provider';
+import { SharedService, ConfigurationForm } from '../../../shared/services/shared.service';
+import { DataBridgeService } from '../../../shared/services/data-bridge.service';
+import { WalletService, AccountsInterface, AccountsInfoInterface } from '../../../wallet/services/wallet.service';
+import { TransactionsService } from '../../../transactions/services/transactions.service';
+import { environment } from '../../../../environments/environment';
+import { HeaderServicesInterface } from '../../../servicesModule/services/services-module.service';
+import { MosaicService } from '../../../servicesModule/services/mosaic.service';
 
 
 @Component({

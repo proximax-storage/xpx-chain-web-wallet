@@ -55,6 +55,9 @@ const routes: Routes = [
     }, {
       path: '',
       loadChildren: './apostille/apostille.module#ApostilleModule'
+    }, {
+      path: '',
+      loadChildren: './mosaics/mosaics.module#MosaicsModule'
     }]
   }, {
     path: '**',

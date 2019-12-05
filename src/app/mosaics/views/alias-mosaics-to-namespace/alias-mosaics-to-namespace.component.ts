@@ -3,15 +3,15 @@ import { Validators, FormGroup, FormBuilder, AbstractControl } from '@angular/fo
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { NamespaceId, MosaicId, UInt64, AliasActionType } from 'tsjs-xpx-chain-sdk';
-import { AppConfig } from '../../../../config/app.config';
-import { MosaicService } from '../../../../servicesModule/services/mosaic.service';
-import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
-import { NamespacesService, NamespaceStorageInterface } from '../../../../servicesModule/services/namespaces.service';
-import { DataBridgeService } from '../../../../shared/services/data-bridge.service';
-import { SharedService, ConfigurationForm } from '../../../../shared/services/shared.service';
-import { WalletService } from '../../../../wallet/services/wallet.service';
-import { HeaderServicesInterface } from '../../../services/services-module.service';
-import { TransactionsService } from '../../../../transactions/services/transactions.service';
+import { AppConfig } from '../../../config/app.config';
+import { MosaicService } from '../../../servicesModule/services/mosaic.service';
+import { ProximaxProvider } from '../../../shared/services/proximax.provider';
+import { NamespacesService, NamespaceStorageInterface } from '../../../servicesModule/services/namespaces.service';
+import { DataBridgeService } from '../../../shared/services/data-bridge.service';
+import { SharedService, ConfigurationForm } from '../../../shared/services/shared.service';
+import { WalletService } from '../../../wallet/services/wallet.service';
+import { HeaderServicesInterface } from '../../../servicesModule/services/services-module.service';
+import { TransactionsService } from '../../../transactions/services/transactions.service';
 
 
 @Component({

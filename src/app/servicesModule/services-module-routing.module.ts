@@ -6,9 +6,6 @@ import { ServicesBoxComponent } from './views/services-box/services-box.componen
 import { CreateNamespaceComponent } from './views/namespace/create-namespace/create-namespace.component';
 import { ExtendDurationNamespaceComponent } from './views/namespace/extend-duration-namespace/extend-duration-namespace.component';
 import { ListContactsComponent } from './views/address-book/list-contacts/list-contacts.component';
-import { CreateMosaicComponent } from './views/mosaic/create-mosaic/create-mosaic.component';
-import { MosaicsSupplyChangeComponent } from './views/mosaic/mosaics-supply-change/mosaics-supply-change.component';
-import { AliasMosaicsToNamespaceComponent } from './views/mosaic/alias-mosaics-to-namespace/alias-mosaics-to-namespace.component';
 import { UploadFileComponent } from './views/storage/upload-file/upload-file.component';
 import { MyFileComponent } from './views/storage/my-file/my-file.component';
 import { AddContactsComponent } from './views/address-book/add-contacts/add-contacts.component';
@@ -130,26 +127,6 @@ const routes: Routes = [
         override: true,
       }
     },
-  }, {
-    path: AppConfig.routes.createMosaic,
-    component: CreateMosaicComponent,
-    data: {
-      meta: {
-        title: 'createMosaic.title',
-        description: 'createMosaic.text',
-        override: true,
-      }
-    }
-  }, {
-    path: AppConfig.routes.MosaicSupplyChange,
-    component: MosaicsSupplyChangeComponent,
-    data: {
-      meta: {
-        title: 'mosaicsSupplyChange.title',
-        description: 'mosaicsSupplyChange.text',
-        override: true,
-      }
-    }
   },
   {
     path: AppConfig.routes.blockchain,
@@ -158,16 +135,6 @@ const routes: Routes = [
       meta: {
         title: 'blockchain.title',
         description: 'blockchain.text',
-        override: true,
-      }
-    }
-  }, {
-    path: AppConfig.routes.LinkingNamespaceMosaic,
-    component: AliasMosaicsToNamespaceComponent,
-    data: {
-      meta: {
-        title: 'aliasMosaicsToNamespace.title',
-        description: 'aliasMosaicsToNamespace.text',
         override: true,
       }
     }
