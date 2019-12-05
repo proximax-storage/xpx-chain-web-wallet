@@ -14,14 +14,10 @@ import { MosaicsSupplyChangeComponent } from './views/mosaic/mosaics-supply-chan
 import { AliasMosaicsToNamespaceComponent } from './views/mosaic/alias-mosaics-to-namespace/alias-mosaics-to-namespace.component';
 import { UploadFileComponent } from './views/storage/upload-file/upload-file.component';
 import { MyFileComponent } from './views/storage/my-file/my-file.component';
-import { MultiSignatureContractComponent } from './views/multi-sign/multi-signature-contract/multi-signature-contract.component';
-import { CreateMultiSignatureComponent } from './views/multi-sign/components/create-multi-signature/create-multi-signature.component';
 import { ViewAllAccountsComponent } from './views/account/view-all-accounts/view-all-accounts.component';
 import { AccountCreatedComponent } from './views/account/account-created/account-created.component';
 import { SelectionAccountTypeComponent } from './views/account/selection-account-creation-type/selection-account-creation-type.component';
 import { AddContactsComponent } from './views/address-book/add-contacts/add-contacts.component';
-import { ConvertAccountMultisignComponent } from './views/multi-sign/convert-account-multisign/convert-account-multisign.component';
-import { EditAccountMultisignComponent } from './views/multi-sign/edit-account-multisign/edit-account-multisign.component';
 import { CreatePollComponent } from './views/voting/create-poll/create-poll.component';
 import { PollsComponent } from './views/voting/polls/polls.component';
 import { ResultPollComponent } from './views/voting/result-poll/result-poll.component';
@@ -51,14 +47,10 @@ import { NotificationComponent } from './views/notification/notification.compone
     AliasMosaicsToNamespaceComponent,
     UploadFileComponent,
     MyFileComponent,
-    MultiSignatureContractComponent,
-    CreateMultiSignatureComponent,
     ViewAllAccountsComponent,
     AccountCreatedComponent,
     SelectionAccountTypeComponent,
     AddContactsComponent,
-    ConvertAccountMultisignComponent,
-    EditAccountMultisignComponent,
     CreatePollComponent,
     PollsComponent,
     ResultPollComponent,
@@ -74,12 +66,10 @@ import { NotificationComponent } from './views/notification/notification.compone
     DeleteWalletComponent,
     NotificationComponent
   ],
-  schemas: [ NO_ERRORS_SCHEMA ],
+  schemas: [NO_ERRORS_SCHEMA],
   imports: [
     CoreModule,
     ServicesModuleRoutingModule
-  ], exports: [
-    CreateMultiSignatureComponent
   ]
 })
 export class ServicesModule { }

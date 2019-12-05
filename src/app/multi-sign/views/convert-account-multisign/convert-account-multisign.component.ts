@@ -19,16 +19,16 @@ import {
   MultisigAccountInfo
 } from 'tsjs-xpx-chain-sdk';
 import { Subscription } from 'rxjs';
-import { AppConfig } from '../../../../config/app.config';
-import { SharedService, ConfigurationForm } from '../../../../shared/services/shared.service';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
-import { WalletService, AccountsInfoInterface, AccountsInterface } from '../../../../wallet/services/wallet.service';
-import { environment } from '../../../../../environments/environment';
-import { ServicesModuleService, HeaderServicesInterface } from '../../../../servicesModule/services/services-module.service';
-import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
-import { NodeService } from '../../../../servicesModule/services/node.service';
-import { DataBridgeService } from '../../../../shared/services/data-bridge.service';
-import { TransactionsService, TransactionsInterface } from '../../../../transactions/services/transactions.service';
+import { AppConfig } from '../../../config/app.config';
+import { SharedService, ConfigurationForm } from '../../../shared/services/shared.service';
+import { WalletService, AccountsInfoInterface, AccountsInterface } from '../../../wallet/services/wallet.service';
+import { environment } from '../../../../environments/environment';
+import { ServicesModuleService, HeaderServicesInterface } from '../../../servicesModule/services/services-module.service';
+import { ProximaxProvider } from '../../../shared/services/proximax.provider';
+import { NodeService } from '../../../servicesModule/services/node.service';
+import { DataBridgeService } from '../../../shared/services/data-bridge.service';
+import { TransactionsService, TransactionsInterface } from '../../../transactions/services/transactions.service';
 import { ActivatedRoute } from '@angular/router';
 
 
@@ -48,8 +48,8 @@ export class ConvertAccountMultisignComponent implements OnInit {
     viewDetails: `/${AppConfig.routes.account}/`
   };
   subscribe: Subscription[] = [];
-  minApprovaMaxLength: number = 1;
-  minApprovaMinLength: number = 1;
+  minApprovaMaxLength = 1;
+  minApprovaMinLength = 1;
   currentAccounts: any = [];
   currentAccountToConvert: AccountsInterface;
   subscribeAccount = null;
@@ -58,21 +58,20 @@ export class ConvertAccountMultisignComponent implements OnInit {
   accountValid: boolean;
   mdbBtnAddCosignatory: boolean;
   cosignatoryList: CosignatoryList[] = [];
-  transactionHttp: TransactionHttp
+  transactionHttp: TransactionHttp;
   listContact: ContactsListInterface[] = [];
-  passwordMain: string = 'password'
+  passwordMain = 'password';
   showContacts: boolean;
   isMultisig: boolean;
   searchContact: boolean;
   blockSend: boolean;
   notBalance: boolean;
   disable: boolean;
-  fee: any = '0.000000'
-  feeLockfund: number = 10000000;
-
-  feeTransaction: number = 44500;
-  totalFee: number = 0;
-  blockBtnSend: boolean = false;
+  fee: any = '0.000000';
+  feeLockfund = 10000000;
+  feeTransaction = 44500;
+  totalFee = 0;
+  blockBtnSend = false;
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Accounts > Multisign',
     componentName: 'Convert to Multisig Account'
@@ -85,7 +84,9 @@ export class ConvertAccountMultisignComponent implements OnInit {
     disabledPartial: false,
     info: '',
     subInfo: ''
-  }
+  };
+
+
   constructor(
     private fb: FormBuilder,
     private sharedService: SharedService,
@@ -414,7 +415,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
 
     for (let element of listContactfilter) {
       const account = this.walletService.filterAccountWallet(element.label);
-      let isMultisig: boolean = false;
+      let isMultisig = false;
       if (account)
         isMultisig = this.isMultisign(account)
       listContactReturn.push({
@@ -791,7 +792,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
       );
 
       let isMultisig: MultisigAccountInfo = null;
-      let valueIsMultisig: boolean = false;
+      let valueIsMultisig = false;
       try {
         isMultisig = await this.proximaxProvider.getMultisigAccountInfo(cosignatory.address).toPromise();
       } catch (error) {
