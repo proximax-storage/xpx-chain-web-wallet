@@ -1,4 +1,4 @@
-import { NgModule, ModuleWithProviders } from '@angular/core';
+import { ModuleWithProviders } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AppConfig } from './config/app.config';
 import { WrapperAuthComponent } from './shared/layouts/wrappers/wrapper-auth/wrapper-auth.component';
@@ -23,7 +23,7 @@ const routes: Routes = [
     }, {
       path: '',
       loadChildren: './wallet/wallet.module#WalletModule'
-    },{
+    }, {
       path: '',
       loadChildren: './swap-not-logged/swap-not-logged.module#SwapNotLoggedModule'
     }]
@@ -40,9 +40,30 @@ const routes: Routes = [
     }, {
       path: '',
       loadChildren: './servicesModule/services-module.module#ServicesModule'
-    },{
+    }, {
       path: '',
       loadChildren: './swap-logged/swap-logged.module#SwapLoggedModule'
+    }, {
+      path: '',
+      loadChildren: './multi-sign/multi-sign.module#MultiSignModule'
+    }, {
+      path: '',
+      loadChildren: './voting/voting.module#VotingModule'
+    }, {
+      path: '',
+      loadChildren: './accounts/accounts.module#AccountsModule'
+    }, {
+      path: '',
+      loadChildren: './apostille/apostille.module#ApostilleModule'
+    }, {
+      path: '',
+      loadChildren: './mosaics/mosaics.module#MosaicsModule'
+    }, {
+      path: '',
+      loadChildren: './namespace/namespace.module#NamespaceModule'
+    }, {
+      path: '',
+      loadChildren: './storage/storage.module#StorageModule'
     }]
   }, {
     path: '**',
