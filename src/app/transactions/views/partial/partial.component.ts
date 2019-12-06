@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { PublicAccount, AggregateTransaction, Account, MultisigAccountInfo, Address, Transaction, MultisigCosignatoryModification, ModifyMultisigAccountTransaction, UInt64 } from 'tsjs-xpx-chain-sdk';
 import { PaginationInstance } from 'ngx-pagination';
 import { ModalDirective } from 'ng-uikit-pro-standard';
@@ -16,7 +16,7 @@ import { environment } from '../../../../environments/environment';
   templateUrl: './partial.component.html',
   styleUrls: ['./partial.component.css']
 })
-export class PartialComponent implements OnInit {
+export class PartialComponent implements OnInit, OnDestroy {
 
   @ViewChild('modalPartialTransaction', { static: true }) modalPartial: ModalDirective;
   account: AccountsInterface = null;
@@ -31,25 +31,25 @@ export class PartialComponent implements OnInit {
   };
 
   dataSelected: TransactionsInterface = null;
-  filter: string = '';
+  filter = '';
   goBack = `/${AppConfig.routes.service}`;
   maxSize = 0;
   moduleName = 'Transactions';
   multisigInfo: MultisigAccountInfo[] = [];
   nis1hash = null;
   elements: any = [];
-  headElements = ['Deadline', 'Account linked to the transaction', 'Hash'];
+  headElements = ['Sign/add', 'Deadline', 'Account linked to the transaction', 'Hash'];
   hideSign = false;
   objectKeys = Object.keys;
   onlySigner = false;
-  password: string = '';
-  passwordMain: string = 'password'
+  password = '';
+  passwordMain = 'password';
   subscription: Subscription[] = [];
   typeTransactions: any;
   validateAccount = false;
   configurationForm: ConfigurationForm;
-  showSwap: boolean = false;
-  msg: string = '';
+  showSwap = false;
+  msg = '';
   routeNis1Hash = environment.nis1.urlExplorer;
   deadline: string;
 
@@ -71,8 +71,22 @@ export class PartialComponent implements OnInit {
     this.typeTransactions = this.transactionService.getTypeTransactions();
     this.subscription.push(this.transactionService.getAggregateBondedTransactions$().subscribe(
       next => {
-        this.aggregateTransactions = next.sort((a, b) => (this.transactionService.dateFormat(a.data.deadline) < this.transactionService.dateFormat(b.data.deadline)) ? 1 : -1);
+        console.log('xxxxxxxxxxxxxxxxxxxxxxxxxx');
+        this.aggregateTransactions = next.sort((a, b) => (
+          this.transactionService.dateFormat(a.data.deadline) < this.transactionService.dateFormat(b.data.deadline)
+        ) ? 1 : -1);
+
         this.aggregateTransactions.forEach(transaction => {
+          transaction['totalSigned'] = 0;
+          this.walletService.getCurrentWallet().accounts.forEach(element => {
+            const publicAccount = this.proximaxProvider.createPublicAccount(element.publicAccount.publicKey);
+            const x = transaction.data.signedByAccount(publicAccount);
+            if (x) {
+              transaction['totalSigned'] += 1;
+              transaction['isSigned'] = true;
+            }
+          });
+
           transaction.hash = transaction.data.transactionInfo.hash;
           transaction['deadline'] = `${this.transactionService.dateFormat(transaction.data.deadline)} - UTC`;
         });
@@ -91,8 +105,14 @@ export class PartialComponent implements OnInit {
     });
   }
 
+  /**
+   *
+   *
+   * @param {*} inputType
+   * @memberof PartialComponent
+   */
   changeInputType(inputType) {
-    let newType = this.sharedService.changeInputType(inputType)
+    const newType = this.sharedService.changeInputType(inputType);
     this.passwordMain = newType;
   }
 
@@ -119,7 +139,7 @@ export class PartialComponent implements OnInit {
    * @memberof PartialComponent
    */
   find(transaction: TransactionsInterface) {
-    // console.log(transaction);
+    console.log('\n transaction', transaction, '\n');
     this.msg = '';
     this.nis1hash = null;
     this.showSwap = false;
@@ -185,14 +205,14 @@ export class PartialComponent implements OnInit {
     const innerTransactions = transaction.data['innerTransactions'];
     if (innerTransactions.length === 1) {
       if (innerTransactions[0].type === this.typeTransactions.transfer.id) {
-        if (innerTransactions[0]["message"] && innerTransactions[0]["message"].payload !== "") {
+        if (innerTransactions[0]['message'] && innerTransactions[0]['message'].payload !== '') {
           try {
-            const msg = JSON.parse(innerTransactions[0]["message"].payload);
+            const msg = JSON.parse(innerTransactions[0]['message'].payload);
             const addressAccountMultisig = environment.swapAccount.addressAccountMultisig;
             const addressAccountSimple = environment.swapAccount.addressAccountSimple;
             const addressSender = innerTransactions[0].signer.address.plain();
             if ((addressSender === addressAccountMultisig) || (addressSender === addressAccountSimple)) {
-              if (msg && msg["type"] && msg["type"] === "Swap") {
+              if (msg && msg['type'] && msg['type'] === 'Swap') {
                 // console.log('IS SWAP');
                 this.nis1hash = msg['nis1Hash'];
                 this.msg = msg['message'];
@@ -265,17 +285,14 @@ export class PartialComponent implements OnInit {
       this.password.length >= this.configurationForm.passwordWallet.minLength &&
       this.password.length <= this.configurationForm.passwordWallet.maxLength
     ) {
-      let common: any = { password: this.password };
+      const common: any = { password: this.password };
       // console.log(this.account);
       if (this.walletService.decrypt(common, this.account)) {
         const transaction: any = this.dataSelected.data;
         const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
         this.password = '';
         this.modalPartial.hide();
-        this.proximaxProvider.cosignAggregateBondedTransaction(transaction, account).subscribe(
-          next => {
-          }
-        );
+        this.proximaxProvider.cosignAggregateBondedTransaction(transaction, account).subscribe(next => {});
       }
     }
   }

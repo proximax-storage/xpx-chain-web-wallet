@@ -1,5 +1,5 @@
-import { Injectable } from "@angular/core";
-import { Observable, BehaviorSubject, Subscription } from "rxjs";
+import { Injectable } from '@angular/core';
+import { Observable, BehaviorSubject, Subscription } from 'rxjs';
 import {
   UInt64,
   TransferTransaction,
@@ -17,18 +17,21 @@ import {
   Address,
   AggregateTransaction,
   SignedTransaction,
-  HashLockTransaction
-} from "tsjs-xpx-chain-sdk";
-import { ProximaxProvider } from "../../shared/services/proximax.provider";
-import { NodeService } from "../../servicesModule/services/node.service";
-import { environment } from "../../../environments/environment";
-import { MosaicService } from "../../servicesModule/services/mosaic.service";
-import { NamespacesService } from "../../servicesModule/services/namespaces.service";
+  HashLockTransaction,
+  LockFundsTransaction,
+  InnerTransaction,
+  TransactionStatus
+} from 'tsjs-xpx-chain-sdk';
+import { ProximaxProvider } from '../../shared/services/proximax.provider';
+import { NodeService } from '../../servicesModule/services/node.service';
+import { environment } from '../../../environments/environment';
+import { MosaicService } from '../../servicesModule/services/mosaic.service';
+import { NamespacesService } from '../../servicesModule/services/namespaces.service';
 import {
   WalletService,
   AccountsInfoInterface,
   AccountsInterface
-} from "../../wallet/services/wallet.service";
+} from '../../wallet/services/wallet.service';
 
 export interface TransferInterface {
   common: { password?: any; privateKey?: any };
@@ -39,19 +42,19 @@ export interface TransferInterface {
 }
 
 @Injectable({
-  providedIn: "root"
+  providedIn: 'root'
 })
 export class TransactionsService {
-  private balance: BehaviorSubject<any> = new BehaviorSubject<any>("0.000000");
+  private balance: BehaviorSubject<any> = new BehaviorSubject<any>('0.000000');
   private balance$: Observable<any> = this.balance.asObservable();
 
-  //Confirmed
+  // Confirmed
   private _confirmedTransactionsSubject = new BehaviorSubject<TransactionsInterface[]>([]);
   private _confirmedTransactions$: Observable<TransactionsInterface[]> = this._confirmedTransactionsSubject.asObservable();
-  //Unconfirmed
+  // Unconfirmed
   private unconfirmedTransactionsSubject = new BehaviorSubject<TransactionsInterface[]>([]);
   private unconfirmedTransactions$: Observable<TransactionsInterface[]> = this.unconfirmedTransactionsSubject.asObservable();
-  //Aggregate Transactions
+  // Aggregate Transactions
   private _aggregateTransactionsSubject: BehaviorSubject<TransactionsInterface[]> = new BehaviorSubject<TransactionsInterface[]>([]);
   private _aggregateTransactions$: Observable<TransactionsInterface[]> = this._aggregateTransactionsSubject.asObservable();
   // Notifications
@@ -61,43 +64,43 @@ export class TransactionsService {
   arraTypeTransaction = {
     transfer: {
       id: TransactionType.TRANSFER,
-      name: "Transfer"
+      name: 'Transfer'
     },
     registerNameSpace: {
       id: TransactionType.REGISTER_NAMESPACE,
-      name: "Register Namespace"
+      name: 'Register Namespace'
     },
     mosaicDefinition: {
       id: TransactionType.MOSAIC_DEFINITION,
-      name: "Mosaic Definition"
+      name: 'Mosaic Definition'
     },
     mosaicSupplyChange: {
       id: TransactionType.MOSAIC_SUPPLY_CHANGE,
-      name: "Mosaic Supply Change"
+      name: 'Mosaic Supply Change'
     },
     modifyMultisigAccount: {
       id: TransactionType.MODIFY_MULTISIG_ACCOUNT,
-      name: "Modify Multisig Account"
+      name: 'Modify Multisig Account'
     },
     aggregateComplete: {
       id: TransactionType.AGGREGATE_COMPLETE,
-      name: "Aggregate Complete"
+      name: 'Aggregate Complete'
     },
     aggregateBonded: {
       id: TransactionType.AGGREGATE_BONDED,
-      name: "Aggregate Bonded"
+      name: 'Aggregate Bonded'
     },
     mosaicAlias: {
       id: TransactionType.MOSAIC_ALIAS,
-      name: "Mosaic Alias"
+      name: 'Mosaic Alias'
     },
     addressAlias: {
       id: TransactionType.ADDRESS_ALIAS,
-      name: "Address Alias"
+      name: 'Address Alias'
     },
     lock: {
       id: TransactionType.LOCK,
-      name: "LockFund"
+      name: 'LockFund'
     }
     /*secretLock: {
        id: TransactionType.SECRET_LOCK,
@@ -111,7 +114,7 @@ export class TransactionsService {
 
   namespaceRentalFeeSink = environment.namespaceRentalFeeSink;
   mosaicRentalFeeSink = environment.mosaicRentalFeeSink;
-  generationHash: string = "";
+  generationHash = '';
   transactionsReady = [];
   viewParcial: boolean;
   lengthParcial: any;
@@ -139,11 +142,11 @@ export class TransactionsService {
       decimal = this.addDecimals(cant);
       realAmount = `0${decimal}`;
     } else {
-      const arrAmount = amount.toString().replace(/,/g, "").split(".");
+      const arrAmount = amount.toString().replace(/,/g, '').split('.');
       if (arrAmount.length < 2) {
         decimal = this.addDecimals(cant);
       } else {
-        const arrDecimals = arrAmount[1].split("");
+        const arrDecimals = arrAmount[1].split('');
         decimal = this.addDecimals(cant - arrDecimals.length, arrAmount[1]);
       }
       realAmount = `${arrAmount[0]}${decimal}`;
@@ -157,9 +160,9 @@ export class TransactionsService {
    * @param cant Quantity of zeros to add
    * @param amount Amount to add zeros
    */
-  addDecimals(cant: any, amount = "0") {
-    const x = "0";
-    if (amount === "0") {
+  addDecimals(cant: any, amount = '0') {
+    const x = '0';
+    if (amount === '0') {
       for (let index = 0; index < cant - 1; index++) {
         amount += x;
       }
@@ -202,7 +205,7 @@ export class TransactionsService {
     try {
       const accountInfo = await this.proximaxProvider.getAccountInfo(address).toPromise();
       if (accountInfo !== null && accountInfo !== undefined) {
-        //Search mosaics
+        // Search mosaics
         this.mosaicServices.searchInfoMosaics(
           accountInfo.mosaics.map(next => next.id)
         );
@@ -220,7 +223,7 @@ export class TransactionsService {
   async searchAggregateBonded(publicsAccounts: PublicAccount[]) {
     // console.log('\n=== SEARCH AGGREGATE BONDED ===', publicsAccounts, '\n');
     const aggregateTransactions = [];
-    for (let publicAccount of publicsAccounts) {
+    for (const publicAccount of publicsAccounts) {
       const aggregateTransaction = await this.proximaxProvider.getAggregateBondedTransactions(publicAccount).toPromise();
       aggregateTransaction.forEach((a: AggregateTransaction) => {
         const existTransction = aggregateTransactions.find(
@@ -246,13 +249,13 @@ export class TransactionsService {
    * @returns
    * @memberof TransactionsService
    */
-  amountFormatter(amountParam: UInt64 | number, mosaic: MosaicInfo, manualDivisibility = "") {
-    let amountFormatter = "";
+  amountFormatter(amountParam: UInt64 | number, mosaic: MosaicInfo, manualDivisibility = '') {
+    let amountFormatter = '';
     if (mosaic !== null && mosaic !== undefined) {
-      const divisibility = manualDivisibility === "" ? mosaic["properties"].divisibility : manualDivisibility;
-      const amount = typeof amountParam === "number" ? amountParam : amountParam.compact();
+      const divisibility = manualDivisibility === '' ? mosaic['properties'].divisibility : manualDivisibility;
+      const amount = typeof amountParam === 'number' ? amountParam : amountParam.compact();
       const amountDivisibility = Number(amount / Math.pow(10, divisibility));
-      amountFormatter = amountDivisibility.toLocaleString("en-us", {
+      amountFormatter = amountDivisibility.toLocaleString('en-us', {
         minimumFractionDigits: divisibility
       });
     }
@@ -270,7 +273,7 @@ export class TransactionsService {
    */
   amountFormatterSimple(amount: Number) {
     const amountDivisibility = Number(amount) / Math.pow(10, 6);
-    return amountDivisibility.toLocaleString("en-us", {
+    return amountDivisibility.toLocaleString('en-us', {
       minimumFractionDigits: 6
     });
   }
@@ -311,9 +314,9 @@ export class TransactionsService {
     );
     const transactionHttp = this.buildTransactionHttp();
     return {
-      signedTransaction: signedTransaction,
-      transactionHttp: transactionHttp,
-      transferTransaction: transferTransaction
+      signedTransaction,
+      transactionHttp,
+      transferTransaction
     };
   }
 
@@ -338,7 +341,12 @@ export class TransactionsService {
    * @param signer
    * @param transaction
    */
-  buildAggregateTransaction(cosignatoryAccount: Account, arrayTx: {tx: Transaction, signer: PublicAccount}[], generationHash: string): SignedTransaction {
+  buildAggregateTransaction(
+    cosignatoryAccount: Account,
+    arrayTx: { tx: Transaction, signer: PublicAccount }[],
+    generationHash: string,
+    otherCosigners: Account[] = [],
+  ): SignedTransaction {
     const innerTxn = [];
     arrayTx.forEach(element => {
       innerTxn.push(element.tx.toAggregate(element.signer));
@@ -350,6 +358,10 @@ export class TransactionsService {
       this.walletService.currentAccount.network
     );
 
+    if (otherCosigners.length > 0) {
+      return cosignatoryAccount.signTransactionWithCosignatories(bondedCreated, otherCosigners, generationHash);
+    }
+
     return cosignatoryAccount.sign(bondedCreated, generationHash);
   }
 
@@ -357,7 +369,7 @@ export class TransactionsService {
    *
    */
   buildTransactionHttp(protocol = environment.protocol, node = this.nodeService.getNodeSelected()) {
-    return new TransactionHttp(protocol + "://" + `${node}`);
+    return new TransactionHttp(protocol + '://' + `${node}`);
   }
 
   /**
@@ -370,13 +382,13 @@ export class TransactionsService {
   calculateDuration(duration: UInt64) {
     const durationCompact = duration.compact();
     let seconds = durationCompact * 15;
-    let days = Math.floor(seconds / (3600 * 24));
+    const days = Math.floor(seconds / (3600 * 24));
     seconds -= days * 3600 * 24;
-    let hrs = Math.floor(seconds / 3600);
+    const hrs = Math.floor(seconds / 3600);
     seconds -= hrs * 3600;
-    let mnts = Math.floor(seconds / 60);
+    const mnts = Math.floor(seconds / 60);
     seconds -= mnts * 60;
-    const response = days + " days, " + hrs + " Hrs, " + mnts + " Minutes, " + seconds + " Seconds";
+    const response = days + ' days, ' + hrs + ' Hrs, ' + mnts + ' Minutes, ' + seconds + ' Seconds';
     return response;
   }
 
@@ -446,7 +458,7 @@ export class TransactionsService {
    * @memberof TransactionsService
    */
   formatNumberMilesThousands(n: number) {
-    return n.toString().replace(/((?!^)|(?:^|.*?[^\d.,])\d{1,3})(\d{3})(?=(?:\d{3})*(?!\d))/gy, "$1,$2");
+    return n.toString().replace(/((?!^)|(?:^|.*?[^\d.,])\d{1,3})(\d{3})(?=(?:\d{3})*(?!\d))/gy, '$1,$2');
   }
 
   /**
@@ -510,12 +522,12 @@ export class TransactionsService {
   getTypeTransactions() {
     return this.arraTypeTransaction;
   }
-    /**
-   *
-   *
-   * @returns {Observable<any>}
-   * @memberof TransactionsService
-   */
+  /**
+ *
+ *
+ * @returns {Observable<any>}
+ * @memberof TransactionsService
+ */
   getViewNotifications$(): Observable<any> {
     return this.notifications$;
   }
@@ -558,7 +570,7 @@ export class TransactionsService {
         recipient: responseIsRecipient.recipient,
         recipientAddress: responseIsRecipient.recipientPretty,
         receive: responseIsRecipient.isReceive,
-        senderAddress: dataTransaction.transaction["signer"].address.pretty()
+        senderAddress: dataTransaction.transaction['signer'].address.pretty()
       };
     }
     return null;
@@ -579,8 +591,8 @@ export class TransactionsService {
     let recipient = null;
     let recipientPretty = null;
     let isReceive = false;
-    if (transaction["recipient"] !== undefined) {
-      recipient = transaction["recipient"];
+    if (transaction['recipient'] !== undefined) {
+      recipient = transaction['recipient'];
       recipientPretty = recipient.pretty();
       const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
       if (currentWallet.accounts) {
@@ -591,10 +603,10 @@ export class TransactionsService {
     }
 
     return {
-      recipient: recipient,
-      recipientPretty: recipientPretty,
-      isReceive: isReceive
-    }
+      recipient,
+      recipientPretty,
+      isReceive
+    };
   }
 
   /**
@@ -611,16 +623,16 @@ export class TransactionsService {
     if (group && (group === 'confirmed' || group === 'unconfirmed')) {
       if (transaction.type === this.arraTypeTransaction.aggregateBonded.id) {
         if (transaction['innerTransactions'].length === 1) {
-          if (transaction['innerTransactions'][0]["message"] && transaction['innerTransactions'][0]["message"].payload !== "") {
+          if (transaction['innerTransactions'][0]['message'] && transaction['innerTransactions'][0]['message'].payload !== '') {
             let newTransaction: any = null;
             try {
-              const msg = JSON.parse(transaction['innerTransactions'][0]["message"].payload);
+              const msg = JSON.parse(transaction['innerTransactions'][0]['message'].payload);
               const addressAccountMultisig = environment.swapAccount.addressAccountMultisig;
               const addressAccountSimple = environment.swapAccount.addressAccountSimple;
               const addressSender = transaction['innerTransactions'][0].signer.address.plain();
               if ((addressSender === addressAccountMultisig) || (addressSender === addressAccountSimple)) {
-                if (msg && msg["type"] && msg["type"] === "Swap") {
-                  nameType = "ProximaX Swap";
+                if (msg && msg['type'] && msg['type'] === 'Swap') {
+                  nameType = 'ProximaX Swap';
                   newTransaction = Object.assign({}, transaction['innerTransactions'][0]);
                   newTransaction['transactionInfo'] = transaction.transactionInfo;
                   newTransaction['nis1Hash'] = msg['nis1Hash'];
@@ -628,9 +640,9 @@ export class TransactionsService {
                   newTransaction.size = transaction.size;
                   newTransaction.cosignatures = transaction['cosignatures'];
                   if (group && group === 'confirmed') {
-                    let walletTransactionsNis = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.getCurrentWallet().name);
+                    const walletTransactionsNis = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.getCurrentWallet().name);
                     if (walletTransactionsNis !== undefined && walletTransactionsNis !== null) {
-                      const transactions = walletTransactionsNis.transactions.filter(el => el.nis1TransactionHash !== msg["nis1Hash"]);
+                      const transactions = walletTransactionsNis.transactions.filter(el => el.nis1TransactionHash !== msg['nis1Hash']);
                       walletTransactionsNis.transactions = transactions;
                       this.walletService.setSwapTransactions$(walletTransactionsNis.transactions);
                       this.walletService.saveAccountWalletTransNisStorage(walletTransactionsNis);
@@ -644,26 +656,26 @@ export class TransactionsService {
               isVerified = true;
               transaction = newTransaction;
             }
-          };
+          }
         }
       }
     }
 
     if (!isVerified) {
       try {
-        if (transaction["message"] && transaction["message"].payload !== "") {
-          const msg = JSON.parse(transaction["message"].payload);
+        if (transaction['message'] && transaction['message'].payload !== '') {
+          const msg = JSON.parse(transaction['message'].payload);
           const addressAccountMultisig = environment.swapAccount.addressAccountMultisig;
           const addressAccountSimple = environment.swapAccount.addressAccountSimple;
           const addressSender = transaction.signer.address.plain();
           if (addressSender === addressAccountMultisig || addressSender === addressAccountSimple) {
-            if (msg && msg["type"] && msg["type"] === "Swap") {
-              nameType = "ProximaX Swap";
+            if (msg && msg['type'] && msg['type'] === 'Swap') {
+              nameType = 'ProximaX Swap';
               transaction['nis1Hash'] = msg['nis1Hash'];
               if (group && group === 'confirmed') {
-                let walletTransactionsNis = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.getCurrentWallet().name);
+                const walletTransactionsNis = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.getCurrentWallet().name);
                 if (walletTransactionsNis !== undefined && walletTransactionsNis !== null) {
-                  const transactions = walletTransactionsNis.transactions.filter(el => el.nis1TransactionHash !== msg["nis1Hash"]);
+                  const transactions = walletTransactionsNis.transactions.filter(el => el.nis1TransactionHash !== msg['nis1Hash']);
                   walletTransactionsNis.transactions = transactions;
                   this.walletService.setSwapTransactions$(walletTransactionsNis.transactions);
                   this.walletService.saveAccountWalletTransNisStorage(walletTransactionsNis);
@@ -676,9 +688,64 @@ export class TransactionsService {
     }
 
     return {
-      transaction: transaction,
-      nameType: nameType
+      transaction,
+      nameType
     };
+  }
+
+  /**
+   *
+   *
+   * @param {TransactionStatus} statusTransaction
+   * @param {SignedTransaction[]} transactionSigned
+   * @param {SignedTransaction[]} transactionReady
+   * @returns
+   * @memberof TransactionsService
+   */
+  validateStatusTx(statusTransaction: TransactionStatus, transactionSigned: SignedTransaction[], transactionReady: SignedTransaction[]) {
+    if (statusTransaction !== null && statusTransaction !== undefined && transactionSigned !== null) {
+      let dataReturn = null;
+      for (const element of transactionSigned) {
+        const match = statusTransaction['hash'] === element.hash;
+        if (match) {
+          transactionReady.push(element);
+        }
+
+        if (statusTransaction['type'] === 'confirmed' && match) {
+          dataReturn = {
+            statusBtn: false,
+            transactionSigned: transactionSigned.filter(el => el.hash !== statusTransaction['hash']),
+            transactionReady
+          };
+        } else if (statusTransaction['type'] === 'unconfirmed' && match) {
+          dataReturn = {
+            statusBtn: false,
+            transactionSigned,
+            transactionReady
+          };
+        } else if (statusTransaction['type'] === 'aggregateBondedAdded' && match) {
+          dataReturn = {
+            statusBtn: false,
+            transactionSigned,
+            transactionReady
+          };
+        } else if (statusTransaction['type'] === 'cosignatureSignedTransaction' && match) {
+          dataReturn = {
+            statusBtn: false,
+            transactionSigned,
+            transactionReady
+          };
+        } else if (statusTransaction['type'] === 'status' && match) {
+          dataReturn = {
+            statusBtn: false,
+            transactionSigned: transactionSigned.filter(el => el.hash !== statusTransaction['hash']),
+            transactionReady
+          };
+        }
+      }
+
+      return dataReturn;
+    }
   }
 
   /**
@@ -689,7 +756,7 @@ export class TransactionsService {
    * @memberof TransactionsService
    */
   getRentalFeeSink(transaction: Transaction) {
-    if (transaction["mosaics"] === undefined) {
+    if (transaction['mosaics'] === undefined) {
       if (transaction.type === this.arraTypeTransaction.registerNameSpace.id) {
         return this.namespaceRentalFeeSink.address_public_test;
       } else if (
@@ -698,7 +765,7 @@ export class TransactionsService {
       ) {
         return this.mosaicRentalFeeSink.address_public_test;
       } else {
-        return "-";
+        return '-';
       }
     }
   }
@@ -788,6 +855,7 @@ export class TransactionsService {
    * @memberof TransactionsService
    */
   setTransactionsAggregateBonded$(transactions: TransactionsInterface[]) {
+    console.log('-------transactions-------', transactions);
     this._aggregateTransactionsSubject.next(transactions);
   }
 
@@ -835,18 +903,18 @@ export class TransactionsService {
    * @memberof TransactionsService
    */
   subtractAmount(quantityOne: number, quantityTwo: number, limitDecimal = 6): string {
-    //console.log('quantityOne', quantityOne);
-    //console.log('quantityTwo', quantityTwo);
-    let residue: string[] = (quantityOne - quantityTwo).toString().replace(/,/g, "").split(".");
-    //console.log('residue', residue);
-    //console.log('residue.length', residue.length);
-    let missing = (residue.length > 1) ? limitDecimal - residue[1].length : 6;
+    // console.log('quantityOne', quantityOne);
+    // console.log('quantityTwo', quantityTwo);
+    const residue: string[] = (quantityOne - quantityTwo).toString().replace(/,/g, '').split('.');
+    // console.log('residue', residue);
+    // console.log('residue.length', residue.length);
+    const missing = (residue.length > 1) ? limitDecimal - residue[1].length : 6;
     residue[1] = (residue.length > 1) ? residue[1].slice(0, 6) : '';
     for (let index = 0; index < missing; index++) {
       residue[1] += 0;
     }
 
-    return residue.join().replace(/,/g, ".");
+    return residue.join().replace(/,/g, '.');
   }
 
   /**
@@ -854,8 +922,8 @@ export class TransactionsService {
    * @param str
    */
   toHex(str: any) {
-    var result = "";
-    for (var i = 0; i < str.length; i++) {
+    let result = '';
+    for (let i = 0; i < str.length; i++) {
       result += str.charCodeAt(i).toString(16);
     }
     return result;
@@ -951,33 +1019,36 @@ export class TransactionsService {
    * @memberof DashboardService
    */
   validateBalanceCosignatorie(accountInfo: AccountsInfoInterface, feeTotal: number): BalanceCosignatorieValidate {
-    let value: BalanceCosignatorieValidate = {
-      infValidate: [{ disabled: false, info: "" }]
+    const value: BalanceCosignatorieValidate = {
+      infValidate: [{ disabled: false, info: '' }]
     };
     const disabled: boolean =
       accountInfo !== null &&
       accountInfo !== undefined &&
       accountInfo.accountInfo !== null;
     // Validate account info
-    if (!disabled)
+    if (!disabled) {
       return { infValidate: [{ disabled: true, info: "Not Valid" }] };
+    }
     // Validate mosaics
     if (
       !accountInfo.accountInfo.mosaics.find(
         next => next.id.toHex() === environment.mosaicXpxInfo.id
       )
-    )
+    ) {
       return {
         infValidate: [{ disabled: true, info: "Insufficient Balance" }]
       };
+    }
     // Validate balance account
     const balanceAccount = accountInfo.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id).amount.compact();
-    if (!(balanceAccount >= feeTotal))
+    if (!(balanceAccount >= feeTotal)) {
       return {
         infValidate: [{ disabled: true, info: "Insufficient Balance" }]
       };
+    }
 
-    return { infValidate: [{ disabled: false, info: "" }] };
+    return { infValidate: [{ disabled: false, info: '' }] };
   }
 }
 

@@ -96,6 +96,9 @@
             <b>{{item.label}}</b>
             <b class="color-error-message" *ngIf="item.info !== ''"> - {{item.info}}</b>
           </ng-template>
+          <ng-template ng-footer-tmp>
+            <span class="fs-08rem color-error-message fw-600" [innerHtml]="msgLockfungCosignatorie"></span>
+          </ng-template>
         </ng-select>
       </div>
     </ng-container>

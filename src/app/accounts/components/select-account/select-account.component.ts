@@ -1,28 +1,30 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
 import { AccountsInterface, WalletService, AccountsInfoInterface } from '../../../wallet/services/wallet.service';
 import { environment } from '../../../../environments/environment';
 import { SharedService } from '../../../shared/services/shared.service';
 import { TransactionsService } from '../../../transactions/services/transactions.service';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-select-account',
   templateUrl: './select-account.component.html',
   styleUrls: ['./select-account.component.css']
 })
-export class SelectAccountComponent implements OnInit {
+export class SelectAccountComponent implements OnInit, OnDestroy {
 
   @Output() accountDebitFunds = new EventEmitter();
   @Output() cosignatoryEvent = new EventEmitter();
+  @Output() isMultisgEvent = new EventEmitter();
   accounts: any = [];
-  balanceXpx: string = '0.000000';
+  balanceXpx = '0.000000';
   cosignatory: AccountsInterface = null;
   feeCosignatory: any = 10044500;
   listCosignatorie: any = [];
   mosaicXpx = null;
-  msgLockfungCosignatorie: string;
+  msgLockfungCosignatorie = '';
   sender: AccountsInterface = null;
-
+  subscription: Subscription[] = [];
 
   constructor(
     private proximaxProvider: ProximaxProvider,
@@ -39,6 +41,33 @@ export class SelectAccountComponent implements OnInit {
       divisibility: environment.mosaicXpxInfo.divisibility
     };
 
+
+    this.accountInfo();
+    this.subscription.push(this.walletService.getAccountsInfo$().subscribe(
+      next => this.accountInfo()
+    ));
+
+    const amount = this.transactionService.getDataPart(this.transactionService.amountFormatterSimple(this.feeCosignatory), 6);
+    const formatterAmount = `<span class="fs-085rem">${amount.part1}</span><span class="fs-07rem">${amount.part2}</span>`;
+    this.msgLockfungCosignatorie = `Cosignatory has sufficient balance (${formatterAmount} XPX) to cover LockFund Fee`;
+
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.forEach(subscription => {
+      subscription.unsubscribe();
+    });
+  }
+
+  /**
+   *
+   *
+   * @memberof SelectAccountComponent
+   */
+  accountInfo() {
+    this.accounts = [];
+    this.cosignatory = null;
+    this.listCosignatorie = [];
     this.walletService.currentWallet.accounts.forEach((element: AccountsInterface) => {
       this.accounts.push({
         label: element.name,
@@ -54,7 +83,6 @@ export class SelectAccountComponent implements OnInit {
       }
     });
   }
-
 
   /**
    *
@@ -86,11 +114,11 @@ export class SelectAccountComponent implements OnInit {
     this.cosignatory = null;
     this.listCosignatorie = [];
     if (this.sender.isMultisign && this.sender.isMultisign.cosignatories && this.sender.isMultisign.cosignatories.length > 0) {
+      this.isMultisgEvent.emit(true);
       if (this.sender.isMultisign.cosignatories.length === 1) {
         const addressCosignatory = this.proximaxProvider.createFromRawAddress(this.sender.isMultisign.cosignatories[0].address['address']);
         const cosignatorieAccount: AccountsInterface = this.walletService.filterAccountWallet('', null, addressCosignatory.pretty());
         if (cosignatorieAccount) {
-          console.log('EXISTE COSIGNATORY ACCOUNT ', cosignatorieAccount);
           const accountFiltered: AccountsInfoInterface = this.walletService.filterAccountInfo(cosignatorieAccount.name);
           const infValidate = this.transactionService.validateBalanceCosignatorie(accountFiltered, Number(this.feeCosignatory)).infValidate;
           this.cosignatory = cosignatorieAccount;
@@ -135,7 +163,6 @@ export class SelectAccountComponent implements OnInit {
         if (listCosignatorie && listCosignatorie.length > 0) {
           this.listCosignatorie = listCosignatorie;
           if (listCosignatorie.length === 1) {
-            console.log(listCosignatorie[0].value);
             this.cosignatory = listCosignatorie[0].value;
             this.cosignatoryEvent.emit({
               disabledForm: listCosignatorie[0].disabled,
@@ -143,15 +170,14 @@ export class SelectAccountComponent implements OnInit {
             });
           }
         } else {
-          // this.disabledAllField = true;
-          // this.formTransfer.disable();
           this.cosignatoryEvent.emit({
             disabledForm: true,
             cosignatory: null
           });
         }
       }
-    }else {
+    } else {
+      this.isMultisgEvent.emit(false);
       this.cosignatoryEvent.emit(null);
     }
   }

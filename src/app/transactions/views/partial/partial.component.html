@@ -54,6 +54,10 @@
               *ngFor="let transaction of aggregateTransactions | stringFilter: filter | paginate: configAdvance">
               <tr class="white-space-pre cursor-p text-center" mdbTableCol
                 [ngClass]="!transaction ? 'background-pending': ''" (click)="find(transaction)">
+                <td class="fs-07rem" title="Signatures of my accounts">
+                  <i [ngClass]="[transaction['isSigned'] ? 'color-dark-green' : 'color-red']" class="fa fa-circle"
+                    aria-hidden="true"></i> - ({{transaction['totalSigned']}})
+                </td>
                 <td class="fs-07rem">{{transaction['deadline']}}</td>
                 <td class="fs-07rem">{{transaction.senderAddress}}</td>
                 <td class="fs-07rem">{{transaction.data.transactionInfo.hash}}</td>
@@ -116,11 +120,13 @@
                           <span class="fw-600 fs-095rem color-black"> XPX </span>
                         </div>
                       </ng-container>
+
                       <!-- Deadline -->
                       <div class="col-12 mt-05rem line-h-09em">
                         <span class="fw-600 fs-08rem">Deadline:&nbsp;&nbsp;</span>
                         <span class="fs-065rem"> {{deadline}}</span>
                       </div>
+
                       <!-- Type -->
                       <div class="col-12 mt-05rem line-h-09em">
                         <span class="fw-600 fs-08rem">Type:&nbsp;&nbsp;</span>
@@ -152,7 +158,8 @@
                       <div class="col-12 mt-05rem line-h-09em" *ngIf="nis1hash">
                         <span class="fw-600 fs-08rem">NIS1 Hash:</span> <br>
                         <span class="fs-065rem w-w-b-w">
-                          <a [href]="routeNis1Hash+nis1hash" class="color-gray-dark cursor-p" target="_blank">{{nis1hash | uppercase}}</a>
+                          <a [href]="routeNis1Hash+nis1hash" class="color-gray-dark cursor-p"
+                            target="_blank">{{nis1hash | uppercase}}</a>
                         </span>
                       </div>
 
@@ -182,13 +189,17 @@
                               <app-transfer-type-bonded *ngIf="innerTransaction.type === typeTransactions.transfer.id"
                                 [transferTransactionBonded]="innerTransaction" [msg]="msg" [signer]="dataSelected">
                               </app-transfer-type-bonded>
+
+                              <app-register-namespace-type-bonded
+                                *ngIf="innerTransaction.type === typeTransactions.registerNameSpace.id"
+                                [registerNamespaceTransaction]="innerTransaction" [msg]="msg" [signer]="dataSelected">
+                              </app-register-namespace-type-bonded>
                             </mdb-accordion-item-body>
                           </mdb-accordion-item>
                         </mdb-accordion>
                       </div>
                     </div>
                   </div>
-
 
                   <!-- Action Required -->
                   <div class="col-12 col-md-6">
