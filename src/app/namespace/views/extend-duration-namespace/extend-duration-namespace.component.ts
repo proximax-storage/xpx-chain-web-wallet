@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
-import { SignedTransaction, MosaicId, NamespaceInfo } from 'tsjs-xpx-chain-sdk';
+import { SignedTransaction, MosaicId, NamespaceInfo, Account, TransactionHttp } from 'tsjs-xpx-chain-sdk';
 import { NamespacesService, NamespaceStorageInterface } from '../../../servicesModule/services/namespaces.service';
 import { AppConfig } from '../../../config/app.config';
 import { DataBridgeService } from '../../../shared/services/data-bridge.service';
@@ -13,6 +13,7 @@ import { TransactionsService } from '../../../transactions/services/transactions
 import { Subscription } from 'rxjs';
 import { HeaderServicesInterface } from '../../../servicesModule/services/services-module.service';
 import { environment } from '../../../../environments/environment';
+import { NodeService } from 'src/app/servicesModule/services/node.service';
 
 @Component({
   selector: 'app-extend-duration-namespace',
@@ -57,6 +58,7 @@ export class ExtendDurationNamespaceComponent implements OnInit, OnDestroy {
   showSelectAccount = true;
   statusTransaction = false;
   subscription: Subscription[] = [];
+  transactionHttp: TransactionHttp = null;
   transactionSigned: SignedTransaction[] = [];
   transactionReady: SignedTransaction[] = [];
   transactionStatus = false;
@@ -74,6 +76,7 @@ export class ExtendDurationNamespaceComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private sharedService: SharedService,
     private namespaceService: NamespacesService,
+    private nodeService: NodeService,
     private dataBridgeService: DataBridgeService,
     private walletService: WalletService,
     private proximaxProvider: ProximaxProvider,
@@ -84,6 +87,7 @@ export class ExtendDurationNamespaceComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
+    this.transactionHttp = new TransactionHttp(environment.protocol + '://' + `${this.nodeService.getNodeSelected()}`);
     this.fee = '0.000000';
     this.createForm();
     // this.getNamespaces();
@@ -150,6 +154,25 @@ export class ExtendDurationNamespaceComponent implements OnInit, OnDestroy {
         this.insufficientBalance = true;
       }
     }
+  }
+
+
+  /**
+   *
+   *
+   * @param {SignedTransaction} signedTransaction
+   * @memberof ExtendDurationNamespaceComponent
+   */
+  announceAggregateBonded(signedTransaction: SignedTransaction) { // change
+    this.transactionHttp.announceAggregateBonded(signedTransaction).subscribe(
+      async () => {
+        this.blockBtnSend = false;
+        this.fee = '0.000000';
+        this.transactionSigned.push(signedTransaction);
+      },
+      err => {
+        this.sharedService.showError('', err);
+      });
   }
 
   /**
@@ -262,32 +285,16 @@ export class ExtendDurationNamespaceComponent implements OnInit, OnDestroy {
       );
 
       if (validateAmount) {
-        this.blockBtnSend = true;
-        const common = {
-          password: this.extendDurationNamespaceForm.get('password').value,
-          privateKey: ''
-        };
-        if (this.walletService.decrypt(common)) {
-          const signedTransaction = this.signedTransaction(common);
-          this.transactionSigned.push(signedTransaction);
-          this.proximaxProvider.announce(signedTransaction).subscribe(
-            () => {
-              this.startHeight = 0;
-              this.endHeight = 0;
-              if (this.statusTransaction === false) {
-                this.statusTransaction = true;
-                this.getTransactionStatus();
-              }
-
-              this.setTimeOutValidate(signedTransaction.hash);
-            }, () => {
-              this.blockBtnSend = false;
-              this.clearForm();
-            }
-          );
+        if (this.typeTx === 1) {
+          this.sendTxSimple();
+        } else if (this.typeTx === 2 && this.cosignatory) {
+          this.sendAggregateBonded();
         } else {
-          this.blockBtnSend = false;
+          this.sharedService.showWarning('', 'Select a cosignatory');
         }
+
+
+
       } else {
         this.sharedService.showError('', 'Insufficient balance');
       }
@@ -476,6 +483,89 @@ export class ExtendDurationNamespaceComponent implements OnInit, OnDestroy {
       // tslint:disable-next-line: no-unused-expression
       (exist) ? '' : this.sharedService.showWarning('', 'An error has occurred');
     }, 5000);
+  }
+
+  /**
+   *
+   *
+   * @memberof ExtendDurationNamespaceComponent
+   */
+  sendTxSimple() {
+    this.blockBtnSend = true;
+    const common = {
+      password: this.extendDurationNamespaceForm.get('password').value,
+      privateKey: ''
+    };
+
+    if (this.walletService.decrypt(common)) {
+      const signedTransaction = this.signedTransaction(common);
+      this.transactionSigned.push(signedTransaction);
+      this.proximaxProvider.announce(signedTransaction).subscribe(
+        () => {
+          this.startHeight = 0;
+          this.endHeight = 0;
+          if (this.statusTransaction === false) {
+            this.statusTransaction = true;
+            this.getTransactionStatus();
+          }
+
+          this.setTimeOutValidate(signedTransaction.hash);
+        }, () => {
+          this.blockBtnSend = false;
+          this.clearForm();
+        }
+      );
+    } else {
+      this.blockBtnSend = false;
+    }
+  }
+
+  /**
+   *
+   *
+   * @memberof ExtendDurationNamespaceComponent
+   */
+  sendAggregateBonded() {
+    this.blockBtnSend = true;
+    const common = {
+      password: this.extendDurationNamespaceForm.get('password').value,
+      privateKey: ''
+    };
+
+    if (this.walletService.decrypt(common, this.cosignatory)) {
+      const innerTransaction = [{
+        signer: this.sender.publicAccount,
+        tx: this.extendNamespaceRootTransaction
+      }];
+
+      const generationHash = this.dataBridgeService.blockInfo.generationHash;
+      const accountCosignatory = Account.createFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
+      const aggregateSigned = this.transactionService.buildAggregateTransaction(accountCosignatory, innerTransaction, generationHash);
+      let hashLockSigned = this.transactionService.buildHashLockTransaction(aggregateSigned, accountCosignatory, generationHash);
+      this.transactionService.buildTransactionHttp().announce(hashLockSigned).subscribe(async () => {
+        this.clearForm();
+        this.subscription['getTransactionStatushashLock'] = this.dataBridgeService.getTransactionStatus().subscribe(
+          statusTransaction => {
+            this.clearForm();
+            if (statusTransaction !== null && statusTransaction !== undefined && hashLockSigned !== null) {
+              const match = statusTransaction['hash'] === hashLockSigned.hash;
+              if (statusTransaction['type'] === 'confirmed' && match) {
+                this.blockBtnSend = false;
+                setTimeout(() => {
+                  this.announceAggregateBonded(aggregateSigned);
+                  this.blockBtnSend = false;
+                  hashLockSigned = null;
+                }, environment.delayBetweenLockFundABT);
+              } else if (statusTransaction['type'] === 'status' && match) {
+                this.blockBtnSend = false;
+                this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
+                hashLockSigned = null;
+              }
+            }
+          }
+        );
+      }, err => { });
+    }
   }
 
   /**

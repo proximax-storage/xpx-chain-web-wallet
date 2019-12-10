@@ -379,8 +379,10 @@ export class CreateNamespaceComponent implements OnInit, OnDestroy {
       e.target.value = '';
       this.namespaceForm.get('duration').setValue('');
     } else {
+      // tslint:disable-next-line: radix
       if (parseInt(e.target.value) > 365) {
         e.target.value = '365';
+      // tslint:disable-next-line: radix
       } else if (parseInt(e.target.value) < 1) {
         e.target.value = '';
         this.namespaceForm.get('duration').setValue('');
