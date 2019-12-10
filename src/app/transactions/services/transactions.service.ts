@@ -855,7 +855,6 @@ export class TransactionsService {
    * @memberof TransactionsService
    */
   setTransactionsAggregateBonded$(transactions: TransactionsInterface[]) {
-    console.log('-------transactions-------', transactions);
     this._aggregateTransactionsSubject.next(transactions);
   }
 
@@ -989,9 +988,6 @@ export class TransactionsService {
    */
   validateBuildSelectAccountBalance(balanceAccount: number, feeTransaction: number, rental: number): boolean {
     const totalFee = feeTransaction + rental;
-    console.log('totalFee', totalFee);
-    console.log('balanceAccount', balanceAccount);
-    console.log('balanceAccount >= totalFee', balanceAccount >= totalFee);
     return balanceAccount >= totalFee;
   }
 

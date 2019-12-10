@@ -25,7 +25,6 @@ export class RegisterNamespaceTypeBondedComponent implements OnInit, OnChanges {
   }
 
   async ngOnChanges(changes: SimpleChanges) {
-    console.log(this.registerNamespaceTransaction);
     this.transactionBuilder = this.transactionService.getStructureDashboard(this.registerNamespaceTransaction);
     this.typeTransactionHex = `${this.transactionBuilder.data['type'].toString(16).toUpperCase()}`;
     this.nameNamespace = this.transactionBuilder.data.namespaceName;

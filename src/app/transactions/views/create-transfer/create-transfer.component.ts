@@ -202,7 +202,6 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
    * @memberof CreateTransferComponent
    */
   async buildCurrentAccountInfo(accountInfo: AccountInfo) {
-    console.log('accountInfo.mosaics', accountInfo.mosaics);
     const mosaicsSelect: any = [];
     if (accountInfo !== undefined && accountInfo !== null) {
       if (accountInfo.mosaics.length > 0) {
