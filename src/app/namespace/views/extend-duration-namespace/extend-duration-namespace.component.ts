@@ -104,26 +104,35 @@ export class ExtendDurationNamespaceComponent implements OnInit, OnDestroy {
    * @memberof ExtendDurationNamespaceComponent
    */
   async validateRentalFee(amount: number) {
-    const accountInfo = this.walletService.filterAccountInfo();
-    if (
-      accountInfo && accountInfo.accountInfo &&
-      accountInfo.accountInfo.mosaics && accountInfo.accountInfo.mosaics.length > 0
-    ) {
-      if (accountInfo.accountInfo.mosaics.length > 0) {
-        const filtered = accountInfo.accountInfo.mosaics.find(element => {
-          return element.id.toHex() === new MosaicId(environment.mosaicXpxInfo.id).toHex();
-        });
+    console.log('account debit funds --->', this.sender);
+    if (this.sender) {
+      const accountInfo = this.walletService.filterAccountInfo(this.sender.name);
+      if (
+        accountInfo && accountInfo.accountInfo &&
+        accountInfo.accountInfo.mosaics && accountInfo.accountInfo.mosaics.length > 0
+      ) {
+        if (accountInfo.accountInfo.mosaics.length > 0) {
+          const filtered = accountInfo.accountInfo.mosaics.find(element => {
+            return element.id.toHex() === new MosaicId(environment.mosaicXpxInfo.id).toHex();
+          });
 
-        if (filtered) {
-          const invalidBalance = filtered.amount.compact() < amount;
-          const mosaic = await this.mosaicServices.filterMosaics([filtered.id]);
-          this.calculateRentalFee = this.transactionService.amountFormatter(amount, mosaic[0].mosaicInfo);
-          if (invalidBalance) {
-            this.insufficientBalance = false;
-            this.insufficientBalanceDuration = true;
+          if (filtered) {
+            const invalidBalance = filtered.amount.compact() < amount;
+            const mosaic = await this.mosaicServices.filterMosaics([filtered.id]);
+            this.calculateRentalFee = this.transactionService.amountFormatter(amount, mosaic[0].mosaicInfo);
+            if (invalidBalance) {
+              this.insufficientBalance = false;
+              this.insufficientBalanceDuration = true;
+            } else {
+              this.insufficientBalance = false;
+              this.insufficientBalanceDuration = false;
+            }
           } else {
-            this.insufficientBalance = false;
+            if (this.extendDurationNamespaceForm.enabled) {
+              this.extendDurationNamespaceForm.disable();
+            }
             this.insufficientBalanceDuration = false;
+            this.insufficientBalance = true;
           }
         } else {
           if (this.extendDurationNamespaceForm.enabled) {
@@ -131,6 +140,7 @@ export class ExtendDurationNamespaceComponent implements OnInit, OnDestroy {
           }
           this.insufficientBalanceDuration = false;
           this.insufficientBalance = true;
+          this.extendDurationNamespaceForm.controls['password'].disable();
         }
       } else {
         if (this.extendDurationNamespaceForm.enabled) {
@@ -138,14 +148,7 @@ export class ExtendDurationNamespaceComponent implements OnInit, OnDestroy {
         }
         this.insufficientBalanceDuration = false;
         this.insufficientBalance = true;
-        this.extendDurationNamespaceForm.controls['password'].disable();
       }
-    } else {
-      if (this.extendDurationNamespaceForm.enabled) {
-        this.extendDurationNamespaceForm.disable();
-      }
-      this.insufficientBalanceDuration = false;
-      this.insufficientBalance = true;
     }
   }
 
@@ -395,7 +398,8 @@ export class ExtendDurationNamespaceComponent implements OnInit, OnDestroy {
     } else {
       // tslint:disable-next-line: radix
       if (parseInt(e.target.value) > 365) {
-        this.exceededDuration = true;
+        // this.exceededDuration = true;
+        e.target.value = '365';
         // tslint:disable-next-line: radix
       } else if (parseInt(e.target.value) < 1) {
         e.target.value = '';
@@ -503,6 +507,7 @@ export class ExtendDurationNamespaceComponent implements OnInit, OnDestroy {
       console.log('type tx ---->', this.typeTx);
       this.getNamespaces(account);
       this.validateRentalFee(this.rentalFee * this.extendDurationNamespaceForm.get('duration').value);
+      // this.validateFee();
     });
   }
 
