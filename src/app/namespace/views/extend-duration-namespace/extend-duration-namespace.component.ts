@@ -32,12 +32,14 @@ export class ExtendDurationNamespaceComponent implements OnInit, OnDestroy {
   block = 0;
   blockBtnSend = false;
   calculateRentalFee = '0.000000';
+  cosignatory: AccountsInterface = null;
   configurationForm: ConfigurationForm = {};
   durationByBlock = '5760';
   endHeight = 0;
   extendNamespaceRootTransaction: any;
   extendDurationNamespaceForm: FormGroup;
   fee = '';
+  insufficientBalanceCosignatory = false;
   insufficientBalance = false;
   insufficientBalanceDuration = false;
   namespaceChangeInfo: NamespaceStorageInterface = null;
@@ -51,12 +53,14 @@ export class ExtendDurationNamespaceComponent implements OnInit, OnDestroy {
   rentalFee = 4576;
   status = true;
   startHeight = 0;
+  sender: AccountsInterface = null;
   showSelectAccount = true;
   statusTransaction = false;
   subscription: Subscription[] = [];
   transactionSigned: SignedTransaction[] = [];
   transactionReady: SignedTransaction[] = [];
   transactionStatus = false;
+  typeTx = 1; // 1 simple, 2 multisig
   subtractionHeight: any;
   totalBlock: any;
   exceededDuration = false;
@@ -76,6 +80,7 @@ export class ExtendDurationNamespaceComponent implements OnInit, OnDestroy {
     private transactionService: TransactionsService,
     private mosaicServices: MosaicService
   ) { }
+
 
   ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
@@ -161,6 +166,12 @@ export class ExtendDurationNamespaceComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   *
+   *
+   * @param {*} inputType
+   * @memberof ExtendDurationNamespaceComponent
+   */
   changeInputType(inputType) {
     const newType = this.sharedService.changeInputType(inputType);
     this.passwordMain = newType;
@@ -195,8 +206,7 @@ export class ExtendDurationNamespaceComponent implements OnInit, OnDestroy {
       namespaceRoot: '',
       duration: '',
       password: ''
-    }, { emitEvent: false }
-    );
+    }, { emitEvent: false });
 
 
     // if (this.extendDurationNamespaceForm.disabled) {
@@ -212,11 +222,17 @@ export class ExtendDurationNamespaceComponent implements OnInit, OnDestroy {
     this.insufficientBalanceDuration = false;
   }
 
+
+  /**
+   *
+   *
+   * @memberof ExtendDurationNamespaceComponent
+   */
   calculateSubtractionHeight() {
     this.subtractionHeight = this.endHeight - this.block;
     this.totalBlock = this.subtractionHeight + Number(this.durationByBlock);
-
   }
+
   /**
    *
    *
@@ -453,6 +469,7 @@ export class ExtendDurationNamespaceComponent implements OnInit, OnDestroy {
         }
       }
 
+      // tslint:disable-next-line: no-unused-expression
       (exist) ? '' : this.sharedService.showWarning('', 'An error has occurred');
     }, 5000);
   }
@@ -479,14 +496,13 @@ export class ExtendDurationNamespaceComponent implements OnInit, OnDestroy {
    */
   selectAccountDebitFunds(account: AccountsInterface) {
     setTimeout(() => {
-      console.log(account);
       const amountAccount = this.walletService.getAmountAccount(account.address);
       this.amountAccount = Number(this.transactionService.amountFormatterSimple(amountAccount).replace(/,/g, ''));
-      //  this.sender = account;
-      //  this.typeTx = (this.transactionService.validateIsMultisigAccount(this.sender)) ? 2 : 1;
+      this.sender = account;
+      this.typeTx = (this.transactionService.validateIsMultisigAccount(this.sender)) ? 2 : 1;
+      console.log('type tx ---->', this.typeTx);
       this.getNamespaces(account);
-      //  this.validateRentalFee();
-      //  this.validateFee();
+      this.validateRentalFee(this.rentalFee * this.extendDurationNamespaceForm.get('duration').value);
     });
   }
 
@@ -497,11 +513,10 @@ export class ExtendDurationNamespaceComponent implements OnInit, OnDestroy {
    * @memberof ExtendDurationNamespaceComponent
    */
   selectCosignatory(event: { disabledForm: boolean, cosignatory: AccountsInterface }) {
-    console.log(event);
-    /*if (event) {
+    if (event) {
       if (event.disabledForm) {
         this.insufficientBalanceCosignatory = true;
-        this.disableForm();
+        this.extendDurationNamespaceForm.disable();
       } else {
         this.insufficientBalanceCosignatory = false;
         this.cosignatory = event.cosignatory;
@@ -509,7 +524,7 @@ export class ExtendDurationNamespaceComponent implements OnInit, OnDestroy {
     } else {
       this.insufficientBalanceCosignatory = false;
       this.cosignatory = null;
-    }*/
+    }
   }
 
   /**
@@ -562,7 +577,4 @@ export class ExtendDurationNamespaceComponent implements OnInit, OnDestroy {
       }
     });
   }
-
-
-
 }
