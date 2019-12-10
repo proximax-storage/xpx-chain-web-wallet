@@ -108,7 +108,6 @@ export class ExtendDurationNamespaceComponent implements OnInit, OnDestroy {
    * @memberof ExtendDurationNamespaceComponent
    */
   async validateRentalFee(amount: number) {
-    console.log('account debit funds --->', this.sender);
     if (this.sender) {
       const accountInfo = this.walletService.filterAccountInfo(this.sender.name);
       if (
@@ -340,10 +339,7 @@ export class ExtendDurationNamespaceComponent implements OnInit, OnDestroy {
     this.extendDurationNamespaceForm.get('namespaceRoot').setValue('');
     this.subscription.push(this.namespaceService.getNamespaceChanged().subscribe(
       async namespaceInfoData => {
-        console.log('namespaceInfoData --->', namespaceInfoData);
-        console.log('account --->', account);
         const namespaceInfo = this.namespaceService.filterNamespacesFromAccount(account.publicAccount.publicKey);
-        console.log('namespaceInfo --->', namespaceInfo);
         this.namespaceInfo = namespaceInfo;
         if (namespaceInfo !== undefined && namespaceInfo !== null && namespaceInfo.length > 0) {
           const arrayselect = [];
@@ -594,7 +590,6 @@ export class ExtendDurationNamespaceComponent implements OnInit, OnDestroy {
       this.amountAccount = Number(this.transactionService.amountFormatterSimple(amountAccount).replace(/,/g, ''));
       this.sender = account;
       this.typeTx = (this.transactionService.validateIsMultisigAccount(this.sender)) ? 2 : 1;
-      console.log('type tx ---->', this.typeTx);
       this.getNamespaces(account);
       this.validateRentalFee(this.rentalFee * this.extendDurationNamespaceForm.get('duration').value);
       // this.validateFee();

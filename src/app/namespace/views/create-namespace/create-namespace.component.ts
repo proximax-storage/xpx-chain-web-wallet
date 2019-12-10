@@ -316,8 +316,6 @@ export class CreateNamespaceComponent implements OnInit, OnDestroy {
   getNamespaces(account: AccountsInterface) {
     this.subscription.push(this.namespaceService.getNamespaceChanged().subscribe(
       async namespaceInfoData => {
-        console.log(namespaceInfoData);
-
         const namespaceInfo = this.namespaceService.filterNamespacesFromAccount(account.publicAccount.publicKey);
         this.namespace = [];
         this.namespaceInfo = [];
@@ -348,7 +346,6 @@ export class CreateNamespaceComponent implements OnInit, OnDestroy {
           this.arrayselect = this.arrayselect.concat(arrayNamespaces);
         }
       }, error => {
-        // console.log(error);
         this.blockUI.stop();
         this.router.navigate([AppConfig.routes.home]);
         this.sharedService.showError('', 'Check your connection and try again');
@@ -572,7 +569,6 @@ export class CreateNamespaceComponent implements OnInit, OnDestroy {
       this.insufficientBalance = true;
       this.insufficientBalanceDuration = false;
     } else {
-      // console.log('call 5');
       this.validateRentalFee();
     }
   }
@@ -583,7 +579,6 @@ export class CreateNamespaceComponent implements OnInit, OnDestroy {
    * @memberof CreateNamespaceComponent
    */
   validateRentalFee() {
-    // console.log('entra.....');
     const amount = this.rentalFee * parseFloat(this.durationByBlock);
     this.calculateRentalFee = this.transactionService.amountFormatterSimple(amount);
     if (this.namespaceForm.get('namespaceRoot').value === '' || this.namespaceForm.get('namespaceRoot').value === '1') {
@@ -598,7 +593,6 @@ export class CreateNamespaceComponent implements OnInit, OnDestroy {
           this.insufficientBalance = false;
           this.insufficientBalanceDuration = true;
         } else {
-          // console.log('JABILITALO...');
           if (!this.insufficientBalanceCosignatory) {
             this.insufficientBalance = false;
             this.insufficientBalanceDuration = false;
@@ -654,11 +648,7 @@ export class CreateNamespaceComponent implements OnInit, OnDestroy {
     if (!this.subscription['transactionStatus']) {
       this.subscription['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
         statusTransaction => {
-          /*console.log('statusTransaction', statusTransaction);
-          console.log('this.transactionSigned', this.transactionSigned);
-          console.log('this.transactionReady', this.transactionReady);*/
           const response = this.transactionService.validateStatusTx(statusTransaction, this.transactionSigned, this.transactionReady);
-          // console.log('response', response);
           if (response) {
             this.transactionReady = response.transactionReady;
             this.blockBtnSend = response.statusBtn;
