@@ -71,7 +71,6 @@ export class PartialComponent implements OnInit, OnDestroy {
     this.typeTransactions = this.transactionService.getTypeTransactions();
     this.subscription.push(this.transactionService.getAggregateBondedTransactions$().subscribe(
       next => {
-        console.log('xxxxxxxxxxxxxxxxxxxxxxxxxx');
         this.aggregateTransactions = next.sort((a, b) => (
           this.transactionService.dateFormat(a.data.deadline) < this.transactionService.dateFormat(b.data.deadline)
         ) ? 1 : -1);
@@ -139,7 +138,6 @@ export class PartialComponent implements OnInit, OnDestroy {
    * @memberof PartialComponent
    */
   find(transaction: TransactionsInterface) {
-    console.log('\n transaction', transaction, '\n');
     this.msg = '';
     this.nis1hash = null;
     this.showSwap = false;

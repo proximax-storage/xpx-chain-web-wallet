@@ -24,7 +24,7 @@ export class Nis1TransferAssetsComponent implements OnInit {
 
   accountToSwap: AccountsInfoNis1Interface = null;
   accountSelected: AccountsInfoNis1Interface = null;
-  amountZero: boolean = false;
+  amountZero = false;
   blockButton: boolean;
   configurationForm: ConfigurationForm;
   errorAmount: string;
@@ -32,7 +32,7 @@ export class Nis1TransferAssetsComponent implements OnInit {
   goToBackRoute = `/${AppConfig.routes.swapListCosignerNis1}`;
   isMultisig = null;
   insufficientBalance = false;
-  maxAmount: number = 0;
+  maxAmount = 0;
   mainAccount = false;
   nameBtnBack = '';
   listContacts: any = [];
@@ -43,11 +43,11 @@ export class Nis1TransferAssetsComponent implements OnInit {
     precision: '6'
   };
 
-  //ownedAccountSwap: AccountsInfoNis1Interface = null;
+  // ownedAccountSwap: AccountsInfoNis1Interface = null;
   ownedAccountSwap: AccountsInterface;
-  passwordMain: string = 'password';
-  processing: boolean = false;
-  quantity: string = '0.000000';
+  passwordMain = 'password';
+  processing = false;
+  quantity = '0.000000';
   routeGoHome = `/${AppConfig.routes.home}`;
   routeContinue: string;
   spinnerVisibility = false;
@@ -55,7 +55,7 @@ export class Nis1TransferAssetsComponent implements OnInit {
   showCertifiedSwap = false;
   subscription: Subscription[] = [];
   transactionNis1: TransactionsNis1Interface;
-  isLogged: boolean = false;
+  isLogged = false;
 
   constructor(
     private activateRoute: ActivatedRoute,
@@ -98,11 +98,11 @@ export class Nis1TransferAssetsComponent implements OnInit {
   async createTransaction() {
     if (!this.processing) {
       this.processing = true;
-      let common = { password: this.formTransfer.get("password").value };
+      const common = { password: this.formTransfer.get('password').value };
       if (this.ownedAccountSwap) {
         if (this.walletService.decrypt(common, this.ownedAccountSwap)) {
           const account = this.nemProvider.createAccountPrivateKey(common['privateKey']);
-          const quantity = this.formTransfer.get("amountXpx").value;
+          const quantity = this.formTransfer.get('amountXpx').value;
           if (this.isMultisig) {
             const assetId = this.accountToSwap.mosaic.assetId;
             const recipient = this.formTransfer.get('accountRecipient').value;
@@ -111,12 +111,12 @@ export class Nis1TransferAssetsComponent implements OnInit {
               const dataAccount = this.walletService.currentWallet.accounts.find(el => el.publicAccount.address['address'] === recipient.split('-').join(''));
               msg = PlainMessage.create(dataAccount.publicAccount.publicKey);
               // console.log(dataAccount);
-            }else{
+            } else {
               msg = PlainMessage.create(this.accountToSwap.accountCosignatory.publicKey);
             }
 
             const transaction = await this.nemProvider.createTransaction(msg, assetId, quantity);
-            //console.log('\nTRANSACTION CREATED -->', transaction)
+            // console.log('\nTRANSACTION CREATED -->', transaction)
             const publicAccountMultisig = this.nemProvider.createPublicAccount(this.accountToSwap.publicKey);
             this.nemProvider.createTransactionMultisign(transaction, publicAccountMultisig).then(next => {
               const publicAccount = this.proximaxProvider.createPublicAccount(this.ownedAccountSwap.publicAccount.publicKey);
@@ -128,7 +128,7 @@ export class Nis1TransferAssetsComponent implements OnInit {
               this.router.navigate([`/${AppConfig.routes.home}`]);
             });
           } else if (!this.isMultisig) {
-            //const assetId = this.ownedAccountSwap.mosaic.assetId;
+            // const assetId = this.ownedAccountSwap.mosaic.assetId;
             const assetId = this.accountToSwap.mosaic.assetId;
             // console.log(assetId);
             const msg = PlainMessage.create(this.ownedAccountSwap.publicAccount.publicKey);
@@ -191,12 +191,12 @@ export class Nis1TransferAssetsComponent implements OnInit {
       } else {
         this.showCertifiedSwap = false;
         this.nemProvider.validateCodeMsgError(next['code'], next['message']);
-        this.spinnerVisibility = false
+        this.spinnerVisibility = false;
         this.processing = false;
       }
     }, error => {
       this.nemProvider.validateCodeMsgError(error.error.code, error.error.message);
-      this.spinnerVisibility = false
+      this.spinnerVisibility = false;
       this.processing = false;
     });
   }
@@ -213,7 +213,7 @@ export class Nis1TransferAssetsComponent implements OnInit {
     // console.log('bookAddress', bookAddress);
     this.listContacts = [];
     if (bookAddress !== undefined && bookAddress !== null) {
-      for (let x of bookAddress) {
+      for (const x of bookAddress) {
         data.push(x);
       }
       this.listContacts = data;
@@ -256,7 +256,7 @@ export class Nis1TransferAssetsComponent implements OnInit {
    * @memberof Nis1TransferAssetsComponent
    */
   changeInputType(inputType: string) {
-    this.passwordMain = this.sharedService.changeInputType(inputType)
+    this.passwordMain = this.sharedService.changeInputType(inputType);
   }
 
 
@@ -285,7 +285,6 @@ export class Nis1TransferAssetsComponent implements OnInit {
       this.isLogged = true;
       this.showBtnBack = true;
       this.ownedAccountSwap = this.walletService.filterAccountWallet(this.accountSelected.nameAccount);
-      console.log('this.ownedAccountSwapthis.ownedAccountSwapthis.ownedAccountSwap', this.ownedAccountSwap);
       if (moreAccounts !== '0') {
         this.nameBtnBack = 'Back to Select Account';
         this.goToBackRoute = `/${AppConfig.routes.swapListCosigners}`;
@@ -325,7 +324,7 @@ export class Nis1TransferAssetsComponent implements OnInit {
           this.subscribeAmount();
         } else if (this.isMultisig && this.accountSelected.multisigAccountsInfo.length > 0) {
           // MULTISIG ACCOUNT
-          //console.log('------isMultisig------');
+          // console.log('------isMultisig------');
           const multisigAccounts = this.accountSelected.multisigAccountsInfo.slice(0);
           /*console.log('------multisigAccounts------', multisigAccounts);
           console.log('------ ACCOUNT PARAMS -----', account);*/

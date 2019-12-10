@@ -187,7 +187,7 @@ export class SidebarMainComponent implements OnInit {
           this.transactionService.setViewNotifications$(viewNotifications)
           this.transactionService.getViewNotifications$().subscribe(next => this.viewNotifications = next)
           // console.log('this.viewNotifications', this.viewNotifications);
-          
+
           this.namespaces.namespaceExpired(this.namespaceToExpire, viewNotifications)
         }
       }));
@@ -278,7 +278,7 @@ export class SidebarMainComponent implements OnInit {
    *
    */
   validate() {
-    //emit 0 after 1 second then complete, since no second argument is supplied
+    // emit 0 after 1 second then complete, since no second argument is supplied
     const source = timer(30000, 50000);
     this.subscription.push(source.subscribe(val => {
       // console.log('CURRENT_BLOCK =>', this.currentBlock);
