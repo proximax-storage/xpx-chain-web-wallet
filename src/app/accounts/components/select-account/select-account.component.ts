@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, OnChanges, SimpleChanges, OnDestroy, Input } from '@angular/core';
 import { AccountsInterface, WalletService, AccountsInfoInterface } from '../../../wallet/services/wallet.service';
 import { environment } from '../../../../environments/environment';
 import { SharedService } from '../../../shared/services/shared.service';
@@ -13,6 +13,7 @@ import { Subscription } from 'rxjs';
 })
 export class SelectAccountComponent implements OnInit, OnDestroy {
 
+  @Input() publicKeyToSelect: string = null;
   @Output() accountDebitFunds = new EventEmitter();
   @Output() cosignatoryEvent = new EventEmitter();
   @Output() isMultisgEvent = new EventEmitter();
@@ -34,6 +35,8 @@ export class SelectAccountComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+
+    // console.log('publicKeyToSelect', this.publicKeyToSelect);
     // Mosaic by default
     this.mosaicXpx = {
       id: environment.mosaicXpxInfo.id,
@@ -68,14 +71,33 @@ export class SelectAccountComponent implements OnInit, OnDestroy {
     this.accounts = [];
     this.cosignatory = null;
     this.listCosignatorie = [];
-    this.walletService.currentWallet.accounts.forEach((element: AccountsInterface) => {
-      this.accounts.push({
-        label: element.name,
-        active: element.default,
-        value: element
-      });
 
-      if (element.default) {
+    this.walletService.currentWallet.accounts.forEach((element: AccountsInterface) => {
+      const status = (element.default && !this.publicKeyToSelect) ? true : false;
+      if (this.publicKeyToSelect && element.publicAccount.publicKey === this.publicKeyToSelect) {
+        this.accounts.push({
+          label: element.name,
+          active: true,
+          value: element
+        });
+
+        this.sender = element;
+        const xpxBalance = this.walletService.getAmountAccount(this.sender.address);
+        this.balanceXpx = this.transactionService.amountFormatterSimple(xpxBalance);
+        this.accountDebitFunds.emit(this.sender);
+        setTimeout(() => {
+          this.findCosignatories();
+        });
+      } else {
+        this.accounts.push({
+          label: element.name,
+          active: status,
+          value: element
+        });
+      }
+
+
+      if (status) {
         this.sender = element;
         const xpxBalance = this.walletService.getAmountAccount(this.sender.address);
         this.balanceXpx = this.transactionService.amountFormatterSimple(xpxBalance);

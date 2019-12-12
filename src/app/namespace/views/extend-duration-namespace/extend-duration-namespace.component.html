@@ -31,12 +31,13 @@
 
         <!-- SELECT ACCOUNT -->
         <ng-container *ngIf="showSelectAccount">
-          <app-select-account (accountDebitFunds)="selectAccountDebitFunds($event)"
-            (cosignatoryEvent)="selectCosignatory($event)" (isMultisgEvent)="isMultisig = $event"></app-select-account>
+          <app-select-account class="mb-2rem" [publicKeyToSelect]="accountToSelect"
+            (accountDebitFunds)="selectAccountDebitFunds($event)" (cosignatoryEvent)="selectCosignatory($event)"
+            (isMultisgEvent)="isMultisig = $event"></app-select-account>
         </ng-container>
 
         <!-- SELECT  NAMESPACE-->
-        <div class="row mt-2rem">
+        <div class="row">
           <div class="col-11 mx-auto">
             <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [searchable]="false"
               [validateError]="true" class="selectWrapper" [items]="arrayselect" formControlName="namespaceRoot"
@@ -155,7 +156,7 @@
           </div>
 
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-            <button mdbBtn type="submit" rounded="true" [disabled]="noNamespace || extendDurationNamespaceForm.invalid || insufficientBalance ||
+            <button mdbBtn type="submit" rounded="true" [disabled]="insufficientBalanceCosignatory || noNamespace || extendDurationNamespaceForm.invalid || insufficientBalance ||
             insufficientBalanceDuration || exceededDuration || invalidDuration" mdbWavesEffect class="btn-proximax"
               size="md">
               <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
