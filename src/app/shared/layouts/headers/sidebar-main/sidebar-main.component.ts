@@ -28,7 +28,7 @@ export class SidebarMainComponent implements OnInit {
   keyObject = Object.keys;
   prorroga = false;
   reconnecting = false;
-  routeNotification = `/${AppConfig.routes.notification}`
+  routeNotification = `/${AppConfig.routes.notification}`;
   routesExcludedInServices = [
     AppConfig.routes.viewAllAccount,
     AppConfig.routes.auth,
@@ -49,9 +49,9 @@ export class SidebarMainComponent implements OnInit {
   reset = 0;
   netType;
   nodeSelected: string;
-  alertNamespaceShowed: boolean = false;
+  alertNamespaceShowed = false;
   namespaceToExpire: any[] = [];
-  viewNotifications: any;
+  viewNotifications = false;
 
 
   constructor(
@@ -65,7 +65,7 @@ export class SidebarMainComponent implements OnInit {
     private nodeService: NodeService,
     private namespaces: NamespacesService,
   ) {
-    this.version = environment.version
+    this.version = environment.version;
     this.netType = environment.typeNetwork.value;
   }
 
@@ -81,8 +81,8 @@ export class SidebarMainComponent implements OnInit {
     this.subscription.push(this.transactionService.getAggregateBondedTransactions$().subscribe(
       next => this.viewParcial = (next && next.length > 0) ? true : false
       // {
-        // this.transactionService.viewPartial(next);
-        // this.viewParcial = (next && next.length > 0) ? true : false
+      // this.transactionService.viewPartial(next);
+      // this.viewParcial = (next && next.length > 0) ? true : false
       // }
     ));
   }
@@ -109,7 +109,7 @@ export class SidebarMainComponent implements OnInit {
       view: true,
       subMenu: {},
       selected: true
-    }
+    };
 
     const paramsTransfer: MenuInterface = {
       type: 'default',
@@ -121,7 +121,7 @@ export class SidebarMainComponent implements OnInit {
       view: true,
       subMenu: {},
       selected: false
-    }
+    };
 
     const paramsAccount: MenuInterface = {
       type: 'default',
@@ -133,7 +133,7 @@ export class SidebarMainComponent implements OnInit {
       view: true,
       subMenu: {},
       selected: false
-    }
+    };
 
     const paramsServices: MenuInterface = {
       type: 'default',
@@ -145,14 +145,14 @@ export class SidebarMainComponent implements OnInit {
       view: true,
       subMenu: {},
       selected: false
-    }
+    };
 
     this.itemsHeader = {
       dashboard: this.sharedService.buildHeader(paramsDashboard),
       transfer: this.sharedService.buildHeader(paramsTransfer),
       account: this.sharedService.buildHeader(paramsAccount),
       services: this.sharedService.buildHeader(paramsServices)
-    }
+    };
   }
 
 
@@ -162,33 +162,43 @@ export class SidebarMainComponent implements OnInit {
    * @param {number} block
    * @memberof SidebarMainComponent
    */
- expiredNamespace(block: number) {
+  expiredNamespace(block: number) {
     this.subscription.push(this.namespaces.getNamespaceChanged().subscribe(
-      async namespaceInfo => {
-        if (namespaceInfo && block) {
-          this.alertNamespaceShowed = true;
-          this.namespaceToExpire = [];
-          for (let index = 0; index < namespaceInfo.length; index++) {
-            const element = namespaceInfo[index];
-            let endHeight = element.namespaceInfo.endHeight.lower
-            let result = endHeight - block;
-            if (result > 0) {
-              if (result < environment.blockHeightMax.heightMax) {
-                const namespaceToExpire = {
-                  namespace: element,
-                  expired: result
+      namespaceChanged => {
+        if (this.walletService.getCurrentWallet()) {
+          const allNamespaceInfo = this.namespaces.getNamespacesStorage();
+          const namespaceInfo = [];
+          allNamespaceInfo.forEach(element => {
+            const isOwner = this.walletService.getCurrentWallet().accounts.find(x => x.publicAccount.publicKey === element.namespaceInfo.owner.publicKey);
+            if (isOwner) {
+              namespaceInfo.push(element);
+            }
+          });
+
+          if (namespaceInfo && block) {
+            this.alertNamespaceShowed = true;
+            this.namespaceToExpire = [];
+            // tslint:disable-next-line: prefer-for-of
+            for (let index = 0; index < namespaceInfo.length; index++) {
+              const element = namespaceInfo[index];
+              const endHeight = element.namespaceInfo.endHeight.lower;
+              const result = endHeight - block;
+              if (result > 0) {
+                if (result < environment.blockHeightMax.heightMax) {
+                  const namespaceToExpire = {
+                    namespace: element,
+                    expired: result
+                  };
+                  this.namespaceToExpire.push(namespaceToExpire);
                 }
-                this.namespaceToExpire.push(namespaceToExpire)
-                // this.sharedService.showWarning('', `This namespace is about to expire (${element.namespaceName.name})`)
               }
             }
-          }
-          const viewNotifications = (this.namespaceToExpire && this.namespaceToExpire.length > 0) ? true : false
-          this.transactionService.setViewNotifications$(viewNotifications)
-          this.transactionService.getViewNotifications$().subscribe(next => this.viewNotifications = next)
-          // console.log('this.viewNotifications', this.viewNotifications);
 
-          this.namespaces.namespaceExpired(this.namespaceToExpire, viewNotifications)
+            const viewNotifications = (this.namespaceToExpire && this.namespaceToExpire.length > 0) ? true : false;
+            this.transactionService.setViewNotifications$(viewNotifications);
+            this.transactionService.getViewNotifications$().subscribe(next => this.viewNotifications = next);
+            this.namespaces.namespaceExpired(this.namespaceToExpire, viewNotifications);
+          }
         }
       }));
   }
@@ -204,7 +214,7 @@ export class SidebarMainComponent implements OnInit {
       // NAME ACCOUNT
       if (next && next.length > 0) {
         let amountTotal = 0.000000;
-        for (let element of next) {
+        for (const element of next) {
           if (element && element.accountInfo) {
             if (element.accountInfo.mosaics && element.accountInfo.mosaics.length > 0) {
               const mosaicXpx = element.accountInfo.mosaics.find(mosaic => mosaic.id.toHex() === environment.mosaicXpxInfo.id);
@@ -213,7 +223,7 @@ export class SidebarMainComponent implements OnInit {
               }
             }
           }
-        };
+        }
 
 
         const amountFormatter = this.transactionService.amountFormatterSimple(amountTotal);
@@ -269,7 +279,7 @@ export class SidebarMainComponent implements OnInit {
   getNodeSeletcd() {
     this.subscription.push(this.nodeService.nodeObsSelected.subscribe(node => {
       this.nodeSelected = `${environment.protocol}://${node}`;
-    }))
+    }));
   }
 
 
@@ -313,7 +323,7 @@ export class SidebarMainComponent implements OnInit {
    * @memberof SidebarMainComponent
    */
   myFunction() {
-    let menuNav = document.getElementById("myTopnav");
+    const menuNav = document.getElementById('myTopnav');
     if (menuNav.classList.contains('responsive')) {
       menuNav.classList.remove('responsive');
     } else {
@@ -351,7 +361,7 @@ export class SidebarMainComponent implements OnInit {
     this.route.events
       .subscribe((event) => {
         if (event instanceof NavigationEnd) {
-          var objRoute = event.url.split('/')[event.url.split('/').length - 1];
+          let objRoute = event.url.split('/')[event.url.split('/').length - 1];
           Object.keys(this.itemsHeader).forEach(element => {
             if (this.itemsHeader[element].link === `/${objRoute}`) {
               this.itemsHeader[element].selected = true;

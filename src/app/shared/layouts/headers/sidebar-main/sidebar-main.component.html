@@ -1,83 +1,103 @@
 <div class="container-fluid">
-    <div class="row">
-      <div class="col-6 col-sm-4 col-md-4 col-lg-6">
-        <mdb-navbar SideClass="navbar navbar-expand-sm navbar-dark background-header-inverse z-depth-0"
-          [containerInside]="false">
-          <mdb-navbar-brand class="d-flex align-items-end">
-            <a class="navbar-brand mr-05rem" href="#/dashboard">
-              <img src="assets/images/img/logo-proximax-sirius-wallet-beta.svg" height="33" class="d-inline-block align-top">
-            </a>
-            <span class="fs-08rem" style="color: #616161;">v{{version}}</span> <br>
-          </mdb-navbar-brand>
-        </mdb-navbar>
-      </div>
-      <div class="col-6 col-sm-8 col-md-8 col-lg-6 d-flex align-items-center justify-content-end ">
-        <div class="row">
-          <div class="col-12 d-flex justify-content-end mt-05rem">
+  <div class="row">
+    <div class="col-6 col-sm-4 col-md-4 col-lg-6">
+      <mdb-navbar SideClass="navbar navbar-expand-sm navbar-dark background-header-inverse z-depth-0"
+        [containerInside]="false">
+        <mdb-navbar-brand class="d-flex align-items-end">
+          <a class="navbar-brand mr-05rem" href="#/dashboard">
+            <img src="assets/images/img/logo-proximax-sirius-wallet-beta.svg" height="33"
+              class="d-inline-block align-top">
+          </a>
+          <span class="fs-08rem" style="color: #616161;">v{{version}}</span> <br>
+        </mdb-navbar-brand>
+      </mdb-navbar>
+    </div>
+    <div class="col-6 col-sm-8 col-md-8 col-lg-6 d-flex align-items-center justify-content-end ">
+      <div class="row">
+        <div class="col-12 d-flex justify-content-end mt-05rem">
 
-            <!-- PARTIAL ICON -->
-            <div class="lh-1em d-flex align-items-center justify-content-end mr-08rem pr-04rem line-separator-right-01px">
-              <img class="mr-1rem" *ngIf="viewNotifications === false" src="assets/images/img/icon-copy-notification-off-gray.svg" width="20px">
-              <img class="mr-1rem cursor-p" [routerLink]="routeNotification" *ngIf="viewNotifications === true" src="assets/images/img/icon-copy-notification-on-gray.svg" width="20px">
-              <!-- viewParcial === false &&  -->
-              <!-- viewParcial === true || -->
-              <!-- <a [routerLink]="routePartial"><i class="fa fa-bell" aria-hidden="true"></i></a> -->
-            </div>
-
-            <ng-container>
-              <div class="lh-1em d-flex align-items-center justify-content-end mr-08rem pr-05rem line-separator-right-01px" title="{{nodeSelected}}">
-                <img *ngIf="colorStatus === 'green-color'" src="assets/images/img/icon-nodes-green-30h.svg" alt="" width="25px">
-                <img *ngIf="colorStatus === 'color-light-orange'" src="assets/images/img/icon-nodes-yellow-30h.svg" alt="" width="25px">
-                <img *ngIf="colorStatus === 'color-red'" src="assets/images/img/icon-nodes-red-30h.svg" alt="" width="25px">
-                <h1 class="d-none d-sm-none d-md-block d-lg-block d-xl-block pl-05rem fs-08rem fw-700 m-0" *ngIf="netType === 184">Mainnet</h1>
-                <h1 class="d-none d-sm-none d-md-block d-lg-block d-xl-block pl-05rem fs-08rem fw-700 m-0" *ngIf="netType === 168">Testnet</h1>
-                <h1 class="d-none d-sm-none d-md-block d-lg-block d-xl-block pl-05rem fs-08rem fw-700 m-0" *ngIf="netType === 200">Private</h1>
-              </div>
+          <!-- PARTIAL ICON -->
+          <div class="lh-1em d-flex align-items-center justify-content-end mr-08rem pr-04rem line-separator-right-01px">
+            <ng-container *ngIf="namespaceToExpire && namespaceToExpire.length > 0; else viewNotNotifications">
+              <a class="cursor-p" [routerLink]="routeNotification">
+                <img class="mr-1rem cursor-p" *ngIf="viewNotifications === false"
+                  src="assets/images/img/icon-copy-notification-off-gray.svg" width="20px">
+                <img class="mr-1rem cursor-p" *ngIf="viewNotifications === true"
+                  src="assets/images/img/icon-copy-notification-on-gray.svg" width="20px">
+              </a>
             </ng-container>
 
-            <!-- NAME WALLET & VESTED BALANCE -->
-            <div class="d-none d-sm-block d-md-block d-lg-block d-xl-block lh-1em pr-05rem line-separator-right-01px">
-              <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
-                *ngIf="searchBalance"></span>
-              <span class="fw-600 fs-08rem">
-                <span>{{ walletName }}</span>
-                <!-- <i class="fa fa-circle ml-05rem cursor-p {{colorStatus}}" aria-hidden="true"
+            <ng-template #viewNotNotifications>
+              <img class="mr-1rem" *ngIf="viewNotifications === false" src="assets/images/img/icon-copy-notification-off-gray.svg" width="20px">
+            </ng-template>
+          </div>
+
+          <ng-container>
+            <div
+              class="lh-1em d-flex align-items-center justify-content-end mr-08rem pr-05rem line-separator-right-01px"
+              title="{{nodeSelected}}">
+              <img *ngIf="colorStatus === 'green-color'" src="assets/images/img/icon-nodes-green-30h.svg" alt=""
+                width="25px">
+              <img *ngIf="colorStatus === 'color-light-orange'" src="assets/images/img/icon-nodes-yellow-30h.svg" alt=""
+                width="25px">
+              <img *ngIf="colorStatus === 'color-red'" src="assets/images/img/icon-nodes-red-30h.svg" alt=""
+                width="25px">
+              <h1 class="d-none d-sm-none d-md-block d-lg-block d-xl-block pl-05rem fs-08rem fw-700 m-0"
+                *ngIf="netType === 184">Mainnet</h1>
+              <h1 class="d-none d-sm-none d-md-block d-lg-block d-xl-block pl-05rem fs-08rem fw-700 m-0"
+                *ngIf="netType === 168">Testnet</h1>
+              <h1 class="d-none d-sm-none d-md-block d-lg-block d-xl-block pl-05rem fs-08rem fw-700 m-0"
+                *ngIf="netType === 200">Private</h1>
+            </div>
+          </ng-container>
+
+          <!-- NAME WALLET & VESTED BALANCE -->
+          <div class="d-none d-sm-block d-md-block d-lg-block d-xl-block lh-1em pr-05rem line-separator-right-01px">
+            <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+              *ngIf="searchBalance"></span>
+            <span class="fw-600 fs-08rem">
+              <span>{{ walletName }}</span>
+              <!-- <i class="fa fa-circle ml-05rem cursor-p {{colorStatus}}" aria-hidden="true"
                   title="{{statusNodeName}} node"></i> -->
-              </span><br>
-              <span class="fs-08rem"><span class="fw-500 d-sm-none d-md-inline-block d-flex">Total Balance:</span> {{ vestedBalance['part1'] }}<span class="fs-07rem">{{ vestedBalance['part2'] }}</span> XPX</span>
-            </div>
+            </span><br>
+            <span class="fs-08rem"><span class="fw-500 d-sm-none d-md-inline-block d-flex">Total Balance:</span>
+              {{ vestedBalance['part1'] }}<span class="fs-07rem">{{ vestedBalance['part2'] }}</span> XPX</span>
+          </div>
 
-            <!-- LOGOUT -->
-            <div class="d-flex align-items-center justify-content-end">
-              <div class="nav-link waves-light p-0 cursor-p" mdbWavesEffect (click)="logOut()">
-                <i class="fa fa-sign-out color-main-wallet fs-1-2rem d-block d-sm-none" aria-hidden="true" title="Sign Out"></i>
-                <span class="ml-1rem fs-08rem cursor-p font-header mr-02rem color-main-wallet d-none d-sm-block d-md-block d-lg-block d-xl-block" title="Sign out">Sign Out</span>
-              </div>
+          <!-- LOGOUT -->
+          <div class="d-flex align-items-center justify-content-end">
+            <div class="nav-link waves-light p-0 cursor-p" mdbWavesEffect (click)="logOut()">
+              <i class="fa fa-sign-out color-main-wallet fs-1-2rem d-block d-sm-none" aria-hidden="true"
+                title="Sign Out"></i>
+              <span
+                class="ml-1rem fs-08rem cursor-p font-header mr-02rem color-main-wallet d-none d-sm-block d-md-block d-lg-block d-xl-block"
+                title="Sign out">Sign Out</span>
             </div>
+          </div>
 
-            <!-- STATUS NODE -->
-            <!-- <div
+          <!-- STATUS NODE -->
+          <!-- <div
               class="d-flex align-items-center justify-content-end d-block d-sm-none d-md-none d-lg-none d-xl-none ml-05rem">
               <div class="nav-link waves-light p-0" mdbWavesEffect>
                 <i class="fa fa-circle ml-05rem cursor-p {{colorStatus}}" aria-hidden="true"
                   title="{{statusNodeName}} node"></i>
               </div>
             </div> -->
-          </div>
         </div>
       </div>
     </div>
   </div>
+</div>
 
-  <div class="topnav" id="myTopnav">
-    <div class="d-flex flex-column flex-sm-column flex-md-row align-items-center justify-content-center">
-      <ng-container *ngFor="let key of keyObject(itemsHeader)">
-        <ng-container *ngIf="itemsHeader[key].show">
-          <a class="fw-bold" [ngClass]="{'active':itemsHeader[key].selected}"
-            [routerLink]="[itemsHeader[key].link]">{{ itemsHeader[key].name }}</a>
-        </ng-container>
+<div class="topnav" id="myTopnav">
+  <div class="d-flex flex-column flex-sm-column flex-md-row align-items-center justify-content-center">
+    <ng-container *ngFor="let key of keyObject(itemsHeader)">
+      <ng-container *ngIf="itemsHeader[key].show">
+        <a class="fw-bold" [ngClass]="{'active':itemsHeader[key].selected}"
+          [routerLink]="[itemsHeader[key].link]">{{ itemsHeader[key].name }}</a>
       </ng-container>
-    </div>
-    <input type="checkbox" class="menu-btn" id="menu-btn" (click)="myFunction()">
-    <label for="menu-btn" class="icon"><i class="fa fa-bars"></i></label>
+    </ng-container>
   </div>
+  <input type="checkbox" class="menu-btn" id="menu-btn" (click)="myFunction()">
+  <label for="menu-btn" class="icon"><i class="fa fa-bars"></i></label>
+</div>

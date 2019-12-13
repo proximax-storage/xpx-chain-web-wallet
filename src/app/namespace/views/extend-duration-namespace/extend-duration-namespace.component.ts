@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
-import { SignedTransaction, MosaicId, NamespaceInfo, Account, TransactionHttp } from 'tsjs-xpx-chain-sdk';
+import { SignedTransaction, MosaicId, NamespaceInfo, Account, TransactionHttp, UInt64 } from 'tsjs-xpx-chain-sdk';
 import { NamespacesService, NamespaceStorageInterface } from '../../../servicesModule/services/namespaces.service';
 import { AppConfig } from '../../../config/app.config';
 import { DataBridgeService } from '../../../shared/services/data-bridge.service';
@@ -30,6 +30,7 @@ export class ExtendDurationNamespaceComponent implements OnInit, OnDestroy {
   }];
 
   amountAccount: number;
+  accountToSelect = null;
   block = 0;
   blockBtnSend = false;
   calculateRentalFee = '0.000000';
@@ -55,7 +56,7 @@ export class ExtendDurationNamespaceComponent implements OnInit, OnDestroy {
   status = true;
   startHeight = 0;
   sender: AccountsInterface = null;
-  showSelectAccount = true;
+  showSelectAccount = false;
   statusTransaction = false;
   subscription: Subscription[] = [];
   transactionHttp: TransactionHttp = null;
@@ -69,9 +70,10 @@ export class ExtendDurationNamespaceComponent implements OnInit, OnDestroy {
   invalidDuration = true;
   isMultisig = false;
   noNamespace = false;
-
+  namespaceParam: NamespaceStorageInterface = null;
 
   constructor(
+    private activateRoute: ActivatedRoute,
     private router: Router,
     private fb: FormBuilder,
     private sharedService: SharedService,
@@ -86,6 +88,19 @@ export class ExtendDurationNamespaceComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
+    if (this.activateRoute.snapshot.paramMap.get('id')) {
+      const idUint64 = UInt64.fromHex(this.activateRoute.snapshot.paramMap.get('id'));
+      const id = this.proximaxProvider.getNamespaceId([idUint64.lower, idUint64.higher]);
+      this.namespaceParam = this.namespaceService.filterNamespaceFromId(id);
+      if (this.namespaceParam) {
+        this.accountToSelect = this.namespaceParam.namespaceInfo.owner.publicKey;
+        this.showSelectAccount = true;
+      }
+    } else {
+      this.showSelectAccount = true;
+    }
+
+
     this.configurationForm = this.sharedService.configurationForm;
     this.transactionHttp = new TransactionHttp(environment.protocol + '://' + `${this.nodeService.getNodeSelected()}`);
     this.fee = '0.000000';
@@ -197,7 +212,7 @@ export class ExtendDurationNamespaceComponent implements OnInit, OnDestroy {
    * @param {*} inputType
    * @memberof ExtendDurationNamespaceComponent
    */
-  changeInputType(inputType) {
+  changeInputType(inputType: string) {
     const newType = this.sharedService.changeInputType(inputType);
     this.passwordMain = newType;
   }
@@ -345,14 +360,15 @@ export class ExtendDurationNamespaceComponent implements OnInit, OnDestroy {
           const arrayselect = [];
           for (const namespaceRoot of namespaceInfo) {
             if (namespaceRoot.namespaceInfo.depth === 1) {
-              arrayselect.push({
+              const buildedArray = {
                 id: `${this.proximaxProvider.getNamespaceId(namespaceRoot.id).toHex()}`,
                 value: `${namespaceRoot.namespaceName.name}`,
                 label: `${namespaceRoot.namespaceName.name}`,
                 selected: false,
                 disabled: false
-              });
+              };
 
+              arrayselect.push(buildedArray);
               this.arrayselect.push({
                 name: `${namespaceRoot.namespaceName.name}`,
                 dataNamespace: namespaceRoot
@@ -360,6 +376,20 @@ export class ExtendDurationNamespaceComponent implements OnInit, OnDestroy {
 
               this.noNamespace = false;
               this.extendDurationNamespaceForm.enable();
+            }
+          }
+
+          if (arrayselect) {
+            if (this.accountToSelect && namespaceInfo.find(x => x.namespaceInfo.owner.publicKey === this.accountToSelect)) {
+              this.extendDurationNamespaceForm.get('namespaceRoot').setValue(this.namespaceParam.namespaceName.name);
+              this.durationByBlock = this.transactionService.calculateDurationforDay(this.extendDurationNamespaceForm.get('duration').value).toString();
+              this.validateRentalFee(this.rentalFee * parseFloat(this.durationByBlock));
+              this.optionSelected({
+                id: this.namespaceParam.idToHex,
+                value: this.namespaceParam.namespaceName.name
+              });
+            } else {
+              this.extendDurationNamespaceForm.get('namespaceRoot').setValue('');
             }
           }
 
@@ -420,10 +450,11 @@ export class ExtendDurationNamespaceComponent implements OnInit, OnDestroy {
   optionSelected($event: any) {
     if ($event && $event.value !== '1') {
       this.extendDurationNamespaceForm.get('duration').enable();
-      this.namespaceChangeInfo = this.namespaceInfo.find(book =>
-        this.proximaxProvider.getNamespaceId(book.id).toHex() ===
-        $event.id
+      this.namespaceChangeInfo = this.namespaceInfo.find(namespace =>
+        this.proximaxProvider.getNamespaceId(namespace.id).toHex() === $event.id
       );
+
+      // console.log('this.namespaceChangeInfo ---> ', this.namespaceChangeInfo);
       if (this.namespaceChangeInfo) {
         this.startHeight = this.namespaceChangeInfo.namespaceInfo.startHeight.lower;
         this.endHeight = this.namespaceChangeInfo.namespaceInfo.endHeight.lower;

@@ -281,7 +281,9 @@ export class NamespacesService {
    */
   filterNamespaceFromId(namespaceId: NamespaceId): NamespaceStorageInterface {
     const namespacesStorage: NamespaceStorageInterface[] = this.getNamespacesStorage();
+    // console.log(namespacesStorage);
     if (namespacesStorage.length > 0) {
+      // console.log(namespaceId.toHex());
       return namespacesStorage.find(x => x.idToHex === namespaceId.toHex());
     }
 

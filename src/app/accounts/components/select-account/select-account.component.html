@@ -16,18 +16,26 @@
     <div class="col-11 mx-auto">
       <div class="row">
         <div class="col-11 color-black cursor-p" (click)="test.toggle()">
-          <span class="fw-600 fs-08rem">{{sender.name}}</span>
-          <span *ngIf="sender.default" class="ml-05rem title-tab-blue pt-03rem">
-            <i>- Current Default</i>
-          </span>
-          <span *ngIf="sender.isMultisign &&
-                      sender.isMultisign.cosignatories &&
-                      sender.isMultisign.cosignatories.length > 0" class="ml-05rem title-tab-blue pt-03rem">
-            <i>- Multisig </i>
-          </span> <br>
-          <span class="fw-300 fs-08rem color-grey">
-            {{sender.address}}
-          </span>
+          <ng-container *ngIf="sender; else selectSender">
+            <span class="fw-600 fs-08rem">{{sender.name}}</span>
+            <span *ngIf="sender.default" class="ml-05rem title-tab-blue pt-03rem">
+              <i>- Current Default</i>
+            </span>
+            <span *ngIf="sender.isMultisign &&
+                          sender.isMultisign.cosignatories &&
+                          sender.isMultisign.cosignatories.length > 0" class="ml-05rem title-tab-blue pt-03rem">
+              <i>- Multisig </i>
+            </span> <br>
+            <span class="fw-300 fs-08rem color-grey">
+              {{sender.address}}
+            </span>
+          </ng-container>
+
+          <ng-template #selectSender>
+            <span class="fw-300 fs-08rem color-grey">
+              Select account to sign
+            </span>
+          </ng-template>
         </div>
       </div>
 
