@@ -26,7 +26,7 @@ import { DataBridgeService } from '../../../shared/services/data-bridge.service'
 import { ServicesModuleService } from '../../../servicesModule/services/services-module.service';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { TransactionsService } from '../../../transactions/services/transactions.service';
-import { MultiSignService } from '../../../servicesModule/services/multi-sign.service';
+import { MultiSignService } from '../../service/multi-sign.service'
 import { environment } from '../../../../environments/environment';
 
 @Component({

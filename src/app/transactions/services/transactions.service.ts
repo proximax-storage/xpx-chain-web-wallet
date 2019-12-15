@@ -342,7 +342,7 @@ export class TransactionsService {
    * @param transaction
    */
   buildAggregateTransaction(
-    cosignatoryAccount: Account,
+    accountSign: Account,
     arrayTx: { tx: Transaction, signer: PublicAccount }[],
     generationHash: string,
     otherCosigners: Account[] = [],
@@ -359,10 +359,10 @@ export class TransactionsService {
     );
 
     if (otherCosigners.length > 0) {
-      return cosignatoryAccount.signTransactionWithCosignatories(bondedCreated, otherCosigners, generationHash);
+      return accountSign.signTransactionWithCosignatories(bondedCreated, otherCosigners, generationHash);
     }
 
-    return cosignatoryAccount.sign(bondedCreated, generationHash);
+    return accountSign.sign(bondedCreated, generationHash);
   }
 
   /**
