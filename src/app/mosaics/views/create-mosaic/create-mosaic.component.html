@@ -2,11 +2,11 @@
   <app-header [params]="paramsHeader"></app-header>
 
   <div class="row">
-    <div class="col-11 col-lg-9 mx-auto">
+    <div class="col-12 col-lg-10 mx-auto">
       <div class="row">
 
-        <div class="col-12 col-md-8 justify-content-center">
-          <form [formGroup]="mosaicForm" (ngSubmit)="send()">
+        <div class="col-11 col-md-8 justify-content-center">
+          <form [formGroup]="mosaicForm" (ngSubmit)="sendForm()">
 
             <!-- <div class="row mt-1rem">
               <ng-container *ngIf="insufficientBalance">
@@ -26,8 +26,14 @@
               </div>
             </div>
 
+            <ng-container *ngIf="showSelectAccount">
+              <app-select-account (accountDebitFunds)="selectAccountDebitFunds($event)"
+                (cosignatoryEvent)="selectCosignatory($event)" (isMultisgEvent)="isMultisig = $event">
+              </app-select-account>
+            </ng-container>
+
             <div class="row">
-              <div class="col-12 mx-auto">
+              <div class="col-11 mx-auto">
                 <div class="md-form form-sm mt-1rem mb-0rem">
                   <img class="form-control-feedback"
                     src="assets/images/img/icon-namespaces-green-16h-proximax-sirius-wallet.svg" alt="">
@@ -44,7 +50,7 @@
                   </mdb-error>
                 </div>
               </div>
-              <div class="col-12 mx-auto">
+              <div class="col-11 mx-auto">
                 <div class="md-form form-sm mt-1rem mb-0rem">
                   <img class="form-control-feedback"
                     src="assets/images/img/icon-amount-green-16h-proximax-sirius-wallet.svg" alt="">
@@ -69,7 +75,7 @@
 
             <!-- FEE -->
             <div class="row">
-              <div class="col-12 mx-auto">
+              <div class="col-11 mx-auto">
                 <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
                   <div class="row">
                     <div class="col-12">
@@ -86,7 +92,7 @@
 
             <!-- RENTAL FEE -->
             <div class="row">
-              <div class="col-12 mx-auto">
+              <div class="col-11 mx-auto">
                 <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
                   <div class="row">
                     <div class="col-12">
@@ -101,8 +107,29 @@
               </div>
             </div>
 
+            <div class="row" *ngIf="isMultisig">
+              <div class="col-11 mx-auto">
+                <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
+                  <div class="row">
+                    <div class="col-12 d-flex align-items-center">
+                      <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
+                        width="20" alt="">&nbsp;
+
+                      <span class="fs-08rem">
+                        &nbsp;LockFund:&nbsp;
+                        <a [innerHTML]="getQuantity('10.000000')"></a> XPX <br>
+
+                        &nbsp;Unconfirmed/Recommended Fee:&nbsp;
+                        <a [innerHTML]="getQuantity('0.044500')"></a> XPX
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div class="row">
-              <div class="col-12 mx-auto">
+              <div class="col-11 mx-auto">
                 <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
                   <div class="row">
                     <div class="col-12">
@@ -120,7 +147,7 @@
             </div>
 
             <div class="row">
-              <div class="col-12 mx-auto">
+              <div class="col-11 mx-auto">
                 <div class="md-form form-sm mt-1rem mb-0rem">
                   <img class="form-control-feedback"
                     src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
@@ -144,14 +171,14 @@
 
             <!-- BUTTONS -->
             <div class="row pt-1rem">
-              <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+              <div class="col-11 col-sm-6 d-flex justify-content-center justify-content-sm-end">
                 <button [disabled]="insufficientBalance" mdbBtn type="button" rounded="true" mdbWavesEffect
                   class="btn-proximax" size="md" (click)="clearForm()">
                   <span class="fs-1-2em color-white">Clear</span>
                 </button>
               </div>
 
-              <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+              <div class="col-11 col-sm-6 d-flex justify-content-center justify-content-sm-start">
                 <button mdbBtn type="submit" rounded="true"
                   [disabled]="!mosaicForm.valid || blockButton || invalidSupply" mdbWavesEffect class="btn-proximax"
                   size="md">
