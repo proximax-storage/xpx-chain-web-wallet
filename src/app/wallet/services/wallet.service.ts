@@ -370,7 +370,7 @@ export class WalletService {
     const acct = (account) ? account : this.currentAccount;
     const net = (account) ? account.network : this.currentAccount.network;
     const alg = (account) ? account.algo : this.currentAccount.algo;
-    // console.log(acct, net, alg);
+    // console.log(acct, common);
     try {
       if (acct && common && acct.encrypted !== '') {
         if (!crypto.passwordToPrivatekey(common, acct, alg)) {

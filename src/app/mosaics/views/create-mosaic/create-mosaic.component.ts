@@ -2,7 +2,19 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { Subscription } from 'rxjs';
-import { UInt64, Deadline, AggregateTransaction, MosaicSupplyType, SignedTransaction, MosaicId, TransactionHttp, Account, Transaction, MosaicDefinitionTransaction, MosaicSupplyChangeTransaction } from 'tsjs-xpx-chain-sdk';
+import {
+  UInt64,
+  Deadline,
+  AggregateTransaction,
+  MosaicSupplyType,
+  SignedTransaction,
+  MosaicId,
+  TransactionHttp,
+  Account,
+  MosaicDefinitionTransaction,
+  MosaicSupplyChangeTransaction,
+  PublicAccount
+} from 'tsjs-xpx-chain-sdk';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { SharedService, ConfigurationForm } from '../../../shared/services/shared.service';
 import { DataBridgeService } from '../../../shared/services/data-bridge.service';
@@ -199,7 +211,7 @@ export class CreateMosaicComponent implements OnInit, OnDestroy {
    * @param {*} params
    * @memberof CreateMosaicComponent
    */
-  buildMosaicDefinition(account: any, params: any) {
+  buildMosaicDefinition(publicAccount: PublicAccount, params: any) {
     const mosaicDefinitionTransaction = this.proximaxProvider.buildMosaicDefinition(params);
     const mosaicSupplyChangeTransaction = this.proximaxProvider.buildMosaicSupplyChange(
       mosaicDefinitionTransaction.mosaicId,
@@ -211,8 +223,8 @@ export class CreateMosaicComponent implements OnInit, OnDestroy {
     this.aggregateTransaction = AggregateTransaction.createComplete(
       Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
       [
-        mosaicDefinitionTransaction.toAggregate(account.publicAccount),
-        mosaicSupplyChangeTransaction.toAggregate(account.publicAccount)
+        mosaicDefinitionTransaction.toAggregate(publicAccount),
+        mosaicSupplyChangeTransaction.toAggregate(publicAccount)
       ],
       this.walletService.currentAccount.network,
       []
@@ -299,58 +311,80 @@ export class CreateMosaicComponent implements OnInit, OnDestroy {
   /**
    *
    *
+   * @returns
    * @memberof CreateMosaicComponent
    */
-  subscribeValue() {
-    const account = this.walletService.currentAccount;
+  getParams() {
+    const account = this.proximaxProvider.getPublicAccountFromPrivateKey(
+      this.sender.publicAccount.publicKey,
+      this.walletService.currentAccount.network
+    );
+
     // tslint:disable-next-line: radix
     const duration = (this.mosaicForm.get('duration').enabled) ? parseInt(this.durationByBlock) : undefined;
-    const params = {
+    return {
       nonce: null,
-      account,
+      owner: account,
       supplyMutable: '',
       transferable: '',
       divisibility: '',
       duration,
       network: this.walletService.currentAccount.network
     };
+  }
 
+  /**
+   *
+   *
+   * @memberof CreateMosaicComponent
+   */
+  subscribeValue() {
     this.mosaicForm.get('supplyMutable').valueChanges.subscribe(supplyMutable => {
-      this.supplyMutable = supplyMutable;
-      params.supplyMutable = this.supplyMutable;
-      this.buildMosaicDefinition(account, params);
-    });
-
-    this.mosaicForm.get('transferable').valueChanges.subscribe(transferable => {
-      this.transferable = transferable;
-      params.transferable = this.transferable;
-      this.buildMosaicDefinition(account, params);
+      if (this.sender) {
+        const params = this.getParams();
+        this.supplyMutable = supplyMutable;
+        params.supplyMutable = this.supplyMutable;
+        params.nonce = this.proximaxProvider.createNonceRandom();
+        this.buildMosaicDefinition(params.owner, params);
+      }
     });
 
     this.mosaicForm.get('divisibility').valueChanges.subscribe(divisibility => {
-      this.divisibility = divisibility;
-      params.divisibility = this.divisibility;
-      params.nonce = this.proximaxProvider.createNonceRandom();
-      this.buildMosaicDefinition(account, params);
+      if (this.sender) {
+        const params = this.getParams();
+        this.divisibility = divisibility;
+        params.divisibility = this.divisibility;
+        params.nonce = this.proximaxProvider.createNonceRandom();
+        this.buildMosaicDefinition(params.owner, params);
 
-      if (divisibility > 6) {
-        this.maxLengthSupply = 13;
-        this.errorDivisibility = '-invalid';
-        this.invalidDivisibility = true;
-        this.blockButton = true;
-      } else {
-        this.optionsSuply = {
-          prefix: '',
-          thousands: ',',
-          decimal: '.',
-          precision: divisibility
-        };
-        this.invalidSupply = false;
-        this.maxLengthSupply = 13 + parseFloat(divisibility);
-        this.errorDivisibility = '';
-        this.blockButton = false;
-        this.invalidDivisibility = false;
-        // this.mosaicForm.get('deltaSupply').setValue('');
+        if (divisibility > 6) {
+          this.maxLengthSupply = 13;
+          this.errorDivisibility = '-invalid';
+          this.invalidDivisibility = true;
+          this.blockButton = true;
+        } else {
+          this.optionsSuply = {
+            prefix: '',
+            thousands: ',',
+            decimal: '.',
+            precision: divisibility
+          };
+          this.invalidSupply = false;
+          this.maxLengthSupply = 13 + parseFloat(divisibility);
+          this.errorDivisibility = '';
+          this.blockButton = false;
+          this.invalidDivisibility = false;
+        }
+      }
+    });
+
+    this.mosaicForm.get('transferable').valueChanges.subscribe(transferable => {
+      if (this.sender) {
+        const params = this.getParams();
+        this.transferable = transferable;
+        params.transferable = this.transferable;
+        params.nonce = this.proximaxProvider.createNonceRandom();
+        this.buildMosaicDefinition(params.owner, params);
       }
     });
 
@@ -367,8 +401,10 @@ export class CreateMosaicComponent implements OnInit, OnDestroy {
         this.errorSupply = '';
 
         if (!this.mosaicForm.get('divisibility').value) {
+          // tslint:disable-next-line: radix
           this.deltaSupply = parseInt(next);
         } else {
+          // tslint:disable-next-line: radix
           this.deltaSupply = parseInt(this.transactionService.addZeros(this.mosaicForm.get('divisibility').value, next));
         }
       } else {
@@ -403,7 +439,7 @@ export class CreateMosaicComponent implements OnInit, OnDestroy {
 
         let account = null;
         if (this.typeTx === 1) {
-          if (this.walletService.decrypt(common)) {
+          if (this.walletService.decrypt(common, this.sender)) {
             account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
           } else {
             this.blockSend = false;
@@ -422,11 +458,12 @@ export class CreateMosaicComponent implements OnInit, OnDestroy {
         }
 
         if (account) {
-          const nonce = this.proximaxProvider.createNonceRandom();
           const duration = undefined;
           const params = {
-            nonce,
-            account,
+            owner: this.proximaxProvider.createPublicAccount(
+              this.sender.publicAccount.publicKey,
+              this.walletService.currentAccount.network
+            ),
             supplyMutable: this.mosaicForm.get('supplyMutable').value,
             transferable: this.mosaicForm.get('transferable').value,
             divisibility: this.mosaicForm.get('divisibility').value,
@@ -447,10 +484,11 @@ export class CreateMosaicComponent implements OnInit, OnDestroy {
             supplyChange: mosaicSupplyChangeTransaction
           };
 
+
           if (this.typeTx === 1) {
             this.sendTxSimple(account, transactions);
-          } else if (this.typeTx === 2 && this.cosignatory) {
-            this.sendAggregateBonded(account, transactions);
+          } else if (this.typeTx === 2) {
+            this.sendAggregateBonded(common.privateKey, transactions);
           } else {
             this.sharedService.showWarning('', 'Select a cosignatory');
           }
@@ -502,7 +540,42 @@ export class CreateMosaicComponent implements OnInit, OnDestroy {
    *
    * @memberof CreateMosaicComponent
    */
-  sendAggregateBonded(account: Account, params: any) {
+  sendAggregateBonded(pvk: any, transactions: { definition: MosaicDefinitionTransaction, supplyChange: MosaicSupplyChangeTransaction }) {
+    const innerTransaction = [{
+      signer: this.sender.publicAccount,
+      tx: transactions.definition
+    }, {
+      signer: this.sender.publicAccount,
+      tx: transactions.supplyChange
+    }];
+
+    const generationHash = this.dataBridge.blockInfo.generationHash;
+    const accountCosignatory = Account.createFromPrivateKey(pvk, this.walletService.currentAccount.network);
+    const aggregateSigned = this.transactionService.buildAggregateTransaction(accountCosignatory, innerTransaction, generationHash);
+    let hashLockSigned = this.transactionService.buildHashLockTransaction(aggregateSigned, accountCosignatory, generationHash);
+    this.transactionService.buildTransactionHttp().announce(hashLockSigned).subscribe(async () => {
+      this.clearForm();
+      this.subscription['getTransactionStatushashLock'] = this.dataBridge.getTransactionStatus().subscribe(
+        statusTransaction => {
+          this.clearForm();
+          if (statusTransaction !== null && statusTransaction !== undefined && hashLockSigned !== null) {
+            const match = statusTransaction['hash'] === hashLockSigned.hash;
+            if (statusTransaction['type'] === 'confirmed' && match) {
+              this.blockSend = false;
+              setTimeout(() => {
+                this.announceAggregateBonded(aggregateSigned);
+                this.blockSend = false;
+                hashLockSigned = null;
+              }, environment.delayBetweenLockFundABT);
+            } else if (statusTransaction['type'] === 'status' && match) {
+              this.blockSend = false;
+              this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
+              hashLockSigned = null;
+            }
+          }
+        }
+      );
+    }, err => { });
   }
 
   /**
