@@ -249,10 +249,17 @@ export class TransactionsService {
    * @returns
    * @memberof TransactionsService
    */
-  amountFormatter(amountParam: UInt64 | number, mosaic: MosaicInfo, manualDivisibility = '') {
+  amountFormatter(amountParam: UInt64 | number, mosaic: MosaicInfo, manualDivisibility = null) {
     let amountFormatter = '';
     if (mosaic !== null && mosaic !== undefined) {
-      const divisibility = manualDivisibility === '' ? mosaic['properties'].divisibility : manualDivisibility;
+      const divisibility = (manualDivisibility === '' || manualDivisibility === null) ? mosaic['properties'].divisibility : manualDivisibility;
+      const amount = typeof amountParam === 'number' ? amountParam : amountParam.compact();
+      const amountDivisibility = Number(amount / Math.pow(10, divisibility));
+      amountFormatter = amountDivisibility.toLocaleString('en-us', {
+        minimumFractionDigits: divisibility
+      });
+    } else if (manualDivisibility !== null) {
+      const divisibility = manualDivisibility;
       const amount = typeof amountParam === 'number' ? amountParam : amountParam.compact();
       const amountDivisibility = Number(amount / Math.pow(10, divisibility));
       amountFormatter = amountDivisibility.toLocaleString('en-us', {

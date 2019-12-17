@@ -203,7 +203,7 @@
                               </app-mosaic-definition-type>
 
                               <!-- TYPE MOSAIC SUPPLY CHANGE TRANSACTION -->
-                              <app-mosaic-supply-change-type [mosaicSupplyChange]="innerTransaction" [viewBox]=false
+                              <app-mosaic-supply-change-type [innerTxn]="dataSelected?.data.innerTransactions" [mosaicSupplyChange]="innerTransaction" [viewBox]=false
                                 *ngIf="innerTransaction.type === typeTransactions.mosaicSupplyChange.id">
                               </app-mosaic-supply-change-type>
                             </mdb-accordion-item-body>
