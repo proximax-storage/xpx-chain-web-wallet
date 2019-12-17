@@ -1,5 +1,11 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { PublicAccount, AggregateTransaction, Account, MultisigAccountInfo, Address, Transaction, MultisigCosignatoryModification, ModifyMultisigAccountTransaction, UInt64 } from 'tsjs-xpx-chain-sdk';
+import {
+  PublicAccount,
+  AggregateTransaction,
+  Account,
+  MultisigAccountInfo,
+  ModifyMultisigAccountTransaction
+} from 'tsjs-xpx-chain-sdk';
 import { PaginationInstance } from 'ngx-pagination';
 import { ModalDirective } from 'ng-uikit-pro-standard';
 import { Subscription } from 'rxjs';
@@ -8,7 +14,6 @@ import { WalletService, AccountsInfoInterface, AccountsInterface } from '../../.
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { TransactionsInterface, TransactionsService } from '../../services/transactions.service';
 import { SharedService, ConfigurationForm } from '../../../shared/services/shared.service';
-import { DataBridgeService } from '../../../shared/services/data-bridge.service';
 import { environment } from '../../../../environments/environment';
 
 @Component({
@@ -290,7 +295,7 @@ export class PartialComponent implements OnInit, OnDestroy {
         const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
         this.password = '';
         this.modalPartial.hide();
-        this.proximaxProvider.cosignAggregateBondedTransaction(transaction, account).subscribe(next => {});
+        this.proximaxProvider.cosignAggregateBondedTransaction(transaction, account).subscribe(next => { });
       }
     }
   }

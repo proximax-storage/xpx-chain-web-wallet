@@ -68,6 +68,16 @@
               <app-register-namespace-type-bonded [registerNamespaceTransaction]="innerTransaction"
                 *ngIf="innerTransaction.type === typeTransactions.registerNameSpace.id">
               </app-register-namespace-type-bonded>
+
+              <!-- TYPE MOSAIC DEFINITION TRANSACTION -->
+              <app-mosaic-definition-type [mosaicDefinition]="innerTransaction" [viewBox]=false
+                *ngIf="innerTransaction.type === typeTransactions.mosaicDefinition.id">
+              </app-mosaic-definition-type>
+
+              <!-- TYPE MOSAIC SUPPLY CHANGE TRANSACTION -->
+              <app-mosaic-supply-change-type [mosaicSupplyChange]="innerTransaction" [viewBox]=false
+                *ngIf="innerTransaction.type === typeTransactions.mosaicSupplyChange.id">
+              </app-mosaic-supply-change-type>
             </mdb-accordion-item-body>
           </mdb-accordion-item>
         </mdb-accordion>
