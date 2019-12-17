@@ -65,11 +65,13 @@ export class WalletService {
   }
 
   /**
-  *
-  * @param accounts
-  * @param pushed
-  */
-  async searchAccountsInfo(accounts: AccountsInterface[]) {//: Promise<AccountsInfoInterface[]> {
+   *
+   *
+   * @param {AccountsInterface[]} accounts
+   * @returns
+   * @memberof WalletService
+   */
+  async searchAccountsInfo(accounts: AccountsInterface[]) {// : Promise<AccountsInfoInterface[]> {
     let counter = 0;
     const mosaicsIds: (NamespaceId | MosaicId)[] = [];
     const accountsInfo: AccountsInfoInterface[] = [];
@@ -91,12 +93,12 @@ export class WalletService {
             try {
               isMultisig = await this.proximaxProvider.getMultisigAccountInfo(this.proximaxProvider.createFromRawAddress(element.address)).toPromise();
             } catch (error) {
-              isMultisig = null
+              isMultisig = null;
             }
 
             const accountInfoBuilded = {
               name: element.name,
-              accountInfo: accountInfo,
+              accountInfo,
               multisigInfo: isMultisig
             };
 
@@ -114,7 +116,7 @@ export class WalletService {
             if (accounts.length === counter) {
               resolve({
                 mosaicsId: mosaicsIds,
-                accountsInfo: accountsInfo
+                accountsInfo
               });
             }
           }, error => {
@@ -130,7 +132,7 @@ export class WalletService {
             if (accounts.length === counter) {
               resolve({
                 mosaicsId: mosaicsIds,
-                accountsInfo: accountsInfo
+                accountsInfo
               });
             }
           }
@@ -166,7 +168,7 @@ export class WalletService {
       isMultisign: null,
       nis1Account: data.nis1Account,
       prefixKeyNis1: data.prefixKeyNis1
-    }
+    };
   }
 
   /**
@@ -176,7 +178,7 @@ export class WalletService {
    */
   countTimeVote() {
     this.canVote = false;
-    let t = timer(1, 1000);
+    const t = timer(1, 1000);
     this.subscribeLogged = t.subscribe(t => {
       if (t >= 20) {
         this.canVote = true;
@@ -261,12 +263,13 @@ export class WalletService {
   }
 
   /**
-  *
-  *
-  * @param {string} name
-  * @param {string} isMultisig
-  * @memberof WalletService
-  */
+   *
+   *
+   * @param {string} name
+   * @param {MultisigAccountInfo} isMultisig
+   * @returns
+   * @memberof WalletService
+   */
   changeIsMultiSign(name: string, isMultisig: MultisigAccountInfo) {
     const newAccount = [];
     if (isMultisig) {
@@ -274,7 +277,7 @@ export class WalletService {
       if (isMultisig.multisigAccounts.length > 0) {
         const myAccounts = this.currentWallet.accounts;
         isMultisig.multisigAccounts.forEach(multisigAccount => {
-          const exist = myAccounts.find(x => x.address === multisigAccount.address.plain());
+          const exist = this.currentWallet.accounts.find(x => x.address === multisigAccount.address.plain());
           if (!exist) {
             const accountBuilded: AccountsInterface = this.buildAccount({
               address: multisigAccount.address.plain(),
@@ -296,7 +299,7 @@ export class WalletService {
               nameItem: '',
               update: false,
               dataComparate: null
-            }
+            };
             const saved = this.saveContacts(paramsStorage);
 
             this.saveAccountWalletStorage(accountBuilded);
@@ -314,7 +317,7 @@ export class WalletService {
 
     myAccounts.forEach((element: AccountsInterface) => {
       if (element.name === name) {
-        element.isMultisign = isMultisig
+        element.isMultisign = isMultisig;
       }
     });
 
@@ -335,12 +338,12 @@ export class WalletService {
    * @memberof WalletService
    */
   deleteContact(address: any = null) {
-    let currentWallet = `${environment.itemBooksAddress}-${this.getCurrentWallet().name}`;
-    let currentAddressBook = JSON.parse(localStorage.getItem(currentWallet));
+    const currentWallet = `${environment.itemBooksAddress}-${this.getCurrentWallet().name}`;
+    const currentAddressBook = JSON.parse(localStorage.getItem(currentWallet));
     if (currentAddressBook !== null) {
-      let newAddressBook = currentAddressBook.filter(el => el.value !== address)
-      let updatedAddressBook = JSON.stringify(newAddressBook)
-      localStorage.setItem(currentWallet, updatedAddressBook)
+      const newAddressBook = currentAddressBook.filter(el => el.value !== address);
+      const updatedAddressBook = JSON.stringify(newAddressBook);
+      localStorage.setItem(currentWallet, updatedAddressBook);
     }
   }
 
@@ -367,7 +370,7 @@ export class WalletService {
     const acct = (account) ? account : this.currentAccount;
     const net = (account) ? account.network : this.currentAccount.network;
     const alg = (account) ? account.algo : this.currentAccount.algo;
-    // console.log(acct, net, alg);
+    // console.log(acct, common);
     try {
       if (acct && common && acct.encrypted !== '') {
         if (!crypto.passwordToPrivatekey(common, acct, alg)) {
@@ -470,8 +473,8 @@ export class WalletService {
     const address = (addressParam) ? addressParam : this.currentAccount.address;
     const account = this.filterAccountInfo(this.proximaxProvider.createFromRawAddress(address).pretty(), true);
     if (account && account.accountInfo) {
-      let mosaics = account.accountInfo.mosaics.slice(0);
-      let amountMosaic = mosaics.find(mosaic => mosaic.id.toHex() == environment.mosaicXpxInfo.id);
+      const mosaics = account.accountInfo.mosaics.slice(0);
+      const amountMosaic = mosaics.find(mosaic => mosaic.id.toHex() == environment.mosaicXpxInfo.id);
       return (amountMosaic) ? amountMosaic.amount.compact() : 0;
     }
 
@@ -612,7 +615,7 @@ export class WalletService {
     return walletsStorage.filter(
       (element: any) => {
         return element.name === name;
-      })
+      });
   }
 
   /**
@@ -686,33 +689,33 @@ export class WalletService {
       accountToDelete.isMultisign.multisigAccounts.length > 0
     ) {
 
-      let filteredMultisigAccounts = this.currentWallet.accounts.filter(el => el.isMultisign !== null && el.isMultisign.cosignatories.length > 0)
+      const filteredMultisigAccounts = this.currentWallet.accounts.filter(el => el.isMultisign !== null && el.isMultisign.cosignatories.length > 0);
 
       filteredMultisigAccounts.forEach(account => {
         account.isMultisign.cosignatories.forEach(el => {
           if (el.address.pretty().split('-').join('') === accountToDelete.address) {
-            let deleteAccount = []
+            const deleteAccount = [];
             account.isMultisign.cosignatories.forEach((cosig, index) => {
               if (cosig.address.pretty().split('-').join('') !== accountToDelete.address) {
                 if ([undefined, null].includes(this.filterAccountWallet('', null, cosig.address.pretty()))) {
-                  deleteAccount.push(true)
+                  deleteAccount.push(true);
                 } else {
-                  deleteAccount.push(false)
+                  deleteAccount.push(false);
                 }
               } else {
-                deleteAccount.push(true)
+                deleteAccount.push(true);
               }
 
               if (index + 1 === account.isMultisign.cosignatories.length) {
-                let deleteResult = deleteAccount.find(el => el === false)
+                const deleteResult = deleteAccount.find(el => el === false);
                 if ([undefined, null].includes(deleteResult)) {
-                  this.deleteContact(account.address)
+                  this.deleteContact(account.address);
                 }
               }
-            })
+            });
           }
-        })
-      })
+        });
+      });
     }
   }
 
@@ -745,22 +748,22 @@ export class WalletService {
  * @memberof WalletService
  */
   removeWallet(name: string): boolean {
-    let value: boolean = false;
+    let value = false;
     let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
     if (walletsStorage === undefined || walletsStorage === null) {
       localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify([]));
       walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
     } else {
-      value = walletsStorage.find(x => x.name === name)
+      value = walletsStorage.find(x => x.name === name);
       if (value) {
         const walletsStorageNew = walletsStorage.filter(
           (element: any) => {
             return element.name !== name;
-          })
+          });
         localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorageNew));
       }
     }
-    return value
+    return value;
   }
 
   /**
@@ -777,7 +780,7 @@ export class WalletService {
 
     if (accountsParams) {
       const myAccounts = Object.assign(this.currentWallet.accounts);
-      myAccounts.push(accountsParams)
+      myAccounts.push(accountsParams);
       this.currentWallet.accounts = myAccounts;
       othersWallet.push({
         name: this.currentWallet.name,
@@ -798,23 +801,23 @@ export class WalletService {
    * @memberof ServicesModuleService
    */
   saveContacts(params) {
-    let currentWallet = `${environment.itemBooksAddress}-${this.getCurrentWallet().name}`;
-    let currentAddressBook = JSON.parse(localStorage.getItem(currentWallet));
+    const currentWallet = `${environment.itemBooksAddress}-${this.getCurrentWallet().name}`;
+    const currentAddressBook = JSON.parse(localStorage.getItem(currentWallet));
     if (currentAddressBook !== null) {
-      let { name, address, walletContact } = params
-      address = address.split('-').join('')
-      let nameExist = (currentAddressBook.find(el => el.label === name))
-      let addressExist = (currentAddressBook.find(el => el.value === address))
+      let { name, address, walletContact } = params;
+      address = address.split('-').join('');
+      const nameExist = (currentAddressBook.find(el => el.label === name));
+      const addressExist = (currentAddressBook.find(el => el.value === address));
       if (nameExist === undefined && addressExist === undefined) {
-        let newContact = {
+        const newContact = {
           label: name,
           value: address,
-          walletContact: walletContact
-        }
+          walletContact
+        };
 
-        currentAddressBook.push(newContact)
-        let updatedAddressBook = JSON.stringify(currentAddressBook)
-        localStorage.setItem(currentWallet, updatedAddressBook)
+        currentAddressBook.push(newContact);
+        const updatedAddressBook = JSON.stringify(currentAddressBook);
+        localStorage.setItem(currentWallet, updatedAddressBook);
       }
     }
   }
@@ -829,10 +832,10 @@ export class WalletService {
    */
   saveDataWalletCreated(data: any, dataAccount: AccountsInterface, wallet: SimpleWallet) {
     this.accountWalletCreated = {
-      data: data,
-      dataAccount: dataAccount,
-      wallet: wallet
-    }
+      data,
+      dataAccount,
+      wallet
+    };
   }
 
   /**
@@ -843,7 +846,7 @@ export class WalletService {
    * @memberof WalletService
    */
   saveWalletStorage(nameWallet: string, accountsParams: any, contacts?: any) {
-    let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
+    const walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
     walletsStorage.push({
       name: nameWallet,
       accounts: [accountsParams],
@@ -893,7 +896,7 @@ export class WalletService {
   setAccountsInfo(accountsInfo: AccountsInfoInterface[], pushed = false) {
     let accounts = (this.accountsInfo && this.accountsInfo.length > 0) ? this.accountsInfo.slice(0) : [];
     if (pushed) {
-      for (let element of accountsInfo) {
+      for (const element of accountsInfo) {
         accounts = accounts.filter(x => x.name !== element.name);
         accounts.push(element);
       }
@@ -1069,7 +1072,7 @@ export class WalletService {
    */
   saveAccountWalletTransNisStorage(account) {
     const othersWallet = this.getWalletTransNisStorage().filter((element: CurrentWalletTransNis) => {
-      const walletName = (this.getCurrentWallet()) ? this.currentWallet.name : this.accountWalletCreated.wallet.name
+      const walletName = (this.getCurrentWallet()) ? this.currentWallet.name : this.accountWalletCreated.wallet.name;
       return element.name !== walletName;
     });
 
@@ -1090,12 +1093,12 @@ export class WalletService {
 
 export interface CurrentWalletInterface {
   name: string;
-  accounts: AccountsInterface[],
+  accounts: AccountsInterface[];
 }
 
 export interface CurrentWalletTransNis {
   name: string;
-  transactions: TransactionsNis1Interface[],
+  transactions: TransactionsNis1Interface[];
 }
 
 export interface TransactionsNis1Interface {
@@ -1128,12 +1131,12 @@ export interface AccountsInfoInterface {
 }
 
 export interface WalletAccountInterface {
-  name: string,
+  name: string;
   accounts: AccountsInterface[];
 }
 
 export interface AccountCreatedInterface { // FOR DELETE RJ
   data: any;
   dataAccount: AccountsInterface;
-  wallet: SimpleWallet
+  wallet: SimpleWallet;
 }

@@ -151,10 +151,11 @@ export class ProximaxProvider {
    * @memberof ProximaxProvider
    */
   buildMosaicDefinition(params: any): MosaicDefinitionTransaction {
+    const nonce = this.createNonceRandom();
     const mosaicDefinitionTransaction = MosaicDefinitionTransaction.create(
       Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
-      params.nonce,
-      MosaicId.createFromNonce(params.nonce, params.account.publicAccount),
+      nonce,
+      MosaicId.createFromNonce(nonce, params.owner),
       MosaicProperties.create({
         supplyMutable: params.supplyMutable,
         transferable: params.transferable,

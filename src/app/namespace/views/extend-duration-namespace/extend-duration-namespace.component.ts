@@ -524,7 +524,7 @@ export class ExtendDurationNamespaceComponent implements OnInit, OnDestroy {
       privateKey: ''
     };
 
-    if (this.walletService.decrypt(common)) {
+    if (this.walletService.decrypt(common, this.sender)) {
       const signedTransaction = this.signedTransaction(common);
       this.transactionSigned.push(signedTransaction);
       this.proximaxProvider.announce(signedTransaction).subscribe(
