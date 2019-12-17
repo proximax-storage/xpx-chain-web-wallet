@@ -538,7 +538,7 @@ export class CreateNamespaceComponent implements OnInit, OnDestroy {
    */
   validateFee() {
     if (this.namespaceName !== undefined && this.namespaceName !== '') {
-      if (this.typeNamespace == 1) {
+      if (this.typeNamespace === 1) {
         this.registerRootNamespaceTransaction = this.proximaxProvider.registerRootNamespaceTransaction(
           this.namespaceName,
           this.walletService.currentAccount.network,
@@ -546,7 +546,7 @@ export class CreateNamespaceComponent implements OnInit, OnDestroy {
         );
 
         this.fee = this.transactionService.amountFormatterSimple(this.registerRootNamespaceTransaction.maxFee.compact());
-      } else if (this.typeNamespace == 2) {
+      } else if (this.typeNamespace === 2) {
         const rootNamespaceName = this.namespaceForm.get('namespaceRoot').value;
         this.registersubamespaceTransaction = this.proximaxProvider.registersubNamespaceTransaction(
           rootNamespaceName,
