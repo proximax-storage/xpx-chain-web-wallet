@@ -191,7 +191,7 @@ export class CreateMosaicComponent implements OnInit, OnDestroy {
    *
    * @memberof CreateMosaicComponent
    */
-  balance() {
+  /*balance() {
     this.subscription.push(this.transactionService.getBalance$().subscribe(
       next => this.vestedBalance = this.transactionService.getDataPart(next, 6),
       error => this.vestedBalance = {
@@ -202,7 +202,7 @@ export class CreateMosaicComponent implements OnInit, OnDestroy {
 
     const vestedBalance = this.vestedBalance.part1.concat(this.vestedBalance.part2).replace(/,/g, '');
     this.amountAccount = Number(vestedBalance);
-  }
+  }*/
 
   /**
    *

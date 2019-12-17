@@ -204,7 +204,7 @@ export class MosaicService {
    *
    * @memberof MosaicService
    */
-  async filterMosaics(mosaicsId: MosaicId[] = null): Promise<MosaicsStorage[]> {
+  async filterMosaics(mosaicsId: MosaicId[] = null, byAccount = ''): Promise<MosaicsStorage[]> {
     if (mosaicsId) {
       const mosaicsFromStorage: MosaicsStorage[] = this.getMosaicsFromStorage();
       if (mosaicsFromStorage.length > 0) {
@@ -213,8 +213,9 @@ export class MosaicService {
         mosaicsId.forEach(element => {
           const existMosaic = mosaicsFromStorage.find(x => this.proximaxProvider.getMosaicId(x.idMosaic).toHex() === element.toHex());
           if (existMosaic) {
-            dataReturn.push(existMosaic)
+            dataReturn.push(existMosaic);
           } else {
+            // tslint:disable-next-line: no-shadowed-variable
             const existMosaic = mosaicsFromStorage.find(x => (x.isNamespace) ? this.proximaxProvider.getMosaicId(x.isNamespace).toHex() === element.toHex() : undefined);
             if (existMosaic) {
               dataReturn.push(existMosaic);
@@ -243,11 +244,10 @@ export class MosaicService {
         return this.filterMosaicToReturn(infoMosaics);
       }
     } else {
-      const accountInfo = this.walletService.filterAccountInfo(this.walletService.currentAccount.name);
+      const name = (byAccount !== '') ? byAccount : this.walletService.currentAccount.name;
+      const accountInfo = this.walletService.filterAccountInfo(name);
       if (accountInfo && accountInfo.accountInfo && accountInfo.accountInfo.mosaics && accountInfo.accountInfo.mosaics.length > 0) {
-        const mosaicsId = accountInfo.accountInfo.mosaics.map(x => x.id);
-        // console.log('aqui 2222......');
-        return this.filterMosaics(mosaicsId);
+        return this.filterMosaics(accountInfo.accountInfo.mosaics.map(x => x.id));
       } else {
         return [];
       }

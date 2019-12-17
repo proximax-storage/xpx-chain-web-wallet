@@ -15,6 +15,14 @@
 
           </div>
         </div>
+
+        <ng-container *ngIf="showSelectAccount">
+          <app-select-account (accountDebitFunds)="selectAccountDebitFunds($event)"
+            (cosignatoryEvent)="selectCosignatory($event)" (isMultisgEvent)="isMultisig = $event">
+          </app-select-account>
+        </ng-container>
+
+
         <!-- Parent Mosaic -->
         <div class="row">
           <div class="col-11 mx-auto">
@@ -22,7 +30,7 @@
               [searchable]="false" class="selectWrapper" [items]="parentMosaic" formControlName="parentMosaic"
               bindLabel="label" bindValue="value" placeholder="Select Mosaic" (change)="optionSelected($event)">
             </ng-select>
-            <mdb-error class="ml-1rem"
+            <mdb-error class="mt-05rem ml-1rem"
               *ngIf="validateInput('parentMosaic').invalid && (validateInput('parentMosaic').dirty || validateInput('parentMosaic').touched)">
               <span>Select Mosaic</span>
             </mdb-error>
@@ -141,7 +149,7 @@
 
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
             <button mdbBtn type="submit" rounded="true"
-              [disabled]="!formMosaicSupplyChange.valid || blockBtn || deltaSupply === 0 || errSupply || errSupplyMin"
+              [disabled]="!formMosaicSupplyChange.valid || blockBtn || deltaSupply === 0 || errSupply || errSupplyMin || insufficientBalanceCosignatory"
               mdbWavesEffect class="btn-proximax" size="md">
               <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
                 *ngIf="blockButton"></span>
