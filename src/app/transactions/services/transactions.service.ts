@@ -333,7 +333,7 @@ export class TransactionsService {
       this.walletService.currentAccount.network
     );
 
-    console.log('\n hashLockTransaction --> ', hashLockTransaction);
+    // console.log('\n hashLockTransaction --> ', hashLockTransaction);
     return signer.sign(hashLockTransaction, generationHash);
   }
 
@@ -363,7 +363,7 @@ export class TransactionsService {
       return cosignatoryAccount.signTransactionWithCosignatories(bondedCreated, otherCosigners, generationHash);
     }
 
-    console.log('\n bondedCreated --> ', bondedCreated);
+    // console.log('\n bondedCreated --> ', bondedCreated);
     return cosignatoryAccount.sign(bondedCreated, generationHash);
   }
 
