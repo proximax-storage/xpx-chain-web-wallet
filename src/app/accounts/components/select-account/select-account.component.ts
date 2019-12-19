@@ -71,39 +71,40 @@ export class SelectAccountComponent implements OnInit, OnDestroy {
     this.accounts = [];
     this.cosignatory = null;
     this.listCosignatorie = [];
+    if (this.walletService.currentWallet) {
+      this.walletService.currentWallet.accounts.forEach((element: AccountsInterface) => {
+        const status = (element.default && !this.publicKeyToSelect) ? true : false;
+        if (this.publicKeyToSelect && element.publicAccount.publicKey === this.publicKeyToSelect) {
+          this.accounts.push({
+            label: element.name,
+            active: true,
+            value: element
+          });
 
-    this.walletService.currentWallet.accounts.forEach((element: AccountsInterface) => {
-      const status = (element.default && !this.publicKeyToSelect) ? true : false;
-      if (this.publicKeyToSelect && element.publicAccount.publicKey === this.publicKeyToSelect) {
-        this.accounts.push({
-          label: element.name,
-          active: true,
-          value: element
-        });
-
-        this.sender = element;
-        const xpxBalance = this.walletService.getAmountAccount(this.sender.address);
-        this.balanceXpx = this.transactionService.amountFormatterSimple(xpxBalance);
-        this.accountDebitFunds.emit(this.sender);
-        setTimeout(() => {
-          this.findCosignatories();
-        });
-      } else {
-        this.accounts.push({
-          label: element.name,
-          active: status,
-          value: element
-        });
-      }
+          this.sender = element;
+          const xpxBalance = this.walletService.getAmountAccount(this.sender.address);
+          this.balanceXpx = this.transactionService.amountFormatterSimple(xpxBalance);
+          this.accountDebitFunds.emit(this.sender);
+          setTimeout(() => {
+            this.findCosignatories();
+          });
+        } else {
+          this.accounts.push({
+            label: element.name,
+            active: status,
+            value: element
+          });
+        }
 
 
-      if (status) {
-        this.sender = element;
-        const xpxBalance = this.walletService.getAmountAccount(this.sender.address);
-        this.balanceXpx = this.transactionService.amountFormatterSimple(xpxBalance);
-        this.accountDebitFunds.emit(this.sender);
-      }
-    });
+        if (status) {
+          this.sender = element;
+          const xpxBalance = this.walletService.getAmountAccount(this.sender.address);
+          this.balanceXpx = this.transactionService.amountFormatterSimple(xpxBalance);
+          this.accountDebitFunds.emit(this.sender);
+        }
+      });
+    }
   }
 
   /**

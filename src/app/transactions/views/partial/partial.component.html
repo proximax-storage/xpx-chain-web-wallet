@@ -203,9 +203,18 @@
                               </app-mosaic-definition-type>
 
                               <!-- TYPE MOSAIC SUPPLY CHANGE TRANSACTION -->
-                              <app-mosaic-supply-change-type [innerTxn]="dataSelected?.data.innerTransactions" [mosaicSupplyChange]="innerTransaction" [viewBox]=false
+                              <app-mosaic-supply-change-type [innerTxn]="dataSelected?.data.innerTransactions"
+                                [mosaicSupplyChange]="innerTransaction" [viewBox]=false
                                 *ngIf="innerTransaction.type === typeTransactions.mosaicSupplyChange.id">
                               </app-mosaic-supply-change-type>
+
+                              <!-- Address Alias -->
+                              <app-address-alias-type *ngIf="innerTransaction.type === typeTransactions.addressAlias.id"
+                                [transaction]="innerTransaction" [simple]="false"></app-address-alias-type>
+
+                                <!-- Mosaic Alias -->
+                              <app-mosaic-alias *ngIf="innerTransaction.type === typeTransactions.mosaicAlias.id"
+                                [transaction]="innerTransaction" [simple]="false"></app-mosaic-alias>
                             </mdb-accordion-item-body>
                           </mdb-accordion-item>
                         </mdb-accordion>

@@ -115,6 +115,27 @@
           </div>
         </div>
 
+        <div class="row" *ngIf="isMultisig">
+          <div class="col-11 mx-auto">
+            <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
+              <div class="row">
+                <div class="col-12 d-flex align-items-center">
+                  <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
+                    width="20" alt="">&nbsp;
+
+                  <span class="fs-08rem">
+                    &nbsp;LockFund:&nbsp;
+                    <a [innerHTML]="getQuantity('10.000000')"></a> XPX <br>
+
+                    &nbsp;Unconfirmed/Recommended Fee:&nbsp;
+                    <a [innerHTML]="getQuantity('0.044500')"></a> XPX
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- Password -->
         <div class="row">
           <div class="col-11 mx-auto">

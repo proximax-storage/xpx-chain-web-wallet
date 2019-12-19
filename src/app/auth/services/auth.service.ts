@@ -59,13 +59,13 @@ export class AuthService {
   }
 
   /**
-  * Method to login
-  *
-  * @param {*} common
-  * @param {*} wallet
-  * @returns
-  * @memberof LoginService
-  */
+   *
+   *
+   * @param {*} common
+   * @param {CurrentWalletInterface} currentWallet
+   * @returns
+   * @memberof AuthService
+   */
   async login(common: any, currentWallet: CurrentWalletInterface) {
     this.walletService.destroyDataWalletAccount();
     // console.log('This current Wallet------------------------->', currentWallet);
@@ -103,13 +103,15 @@ export class AuthService {
       return false;
     }
 
+   /* this.namespaces.destroyDataNamespace();
+    this.mosaicService.resetMosaicsStorage();*/
     this.nemProvider.validaTransactionsSwap();
     this.setLogged(true);
     this.dataBridgeService.closeConection();
     this.dataBridgeService.connectnWs();
     this.serviceModuleService.changeBooksItem();
     const address: Address[] = [];
-    for (let account of currentWallet.accounts) {
+    for (const account of currentWallet.accounts) {
       address.push(this.proximaxProvider.createFromRawAddress(account.address));
     }
 
