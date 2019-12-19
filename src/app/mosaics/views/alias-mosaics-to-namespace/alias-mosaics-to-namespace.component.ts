@@ -1,17 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Validators, FormGroup, FormBuilder, AbstractControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
-import { NamespaceId, MosaicId, UInt64, AliasActionType } from 'tsjs-xpx-chain-sdk';
+import { NamespaceId, MosaicId, UInt64, AliasActionType, TransactionHttp, SignedTransaction, Account, MosaicAliasTransaction } from 'tsjs-xpx-chain-sdk';
 import { AppConfig } from '../../../config/app.config';
 import { MosaicService } from '../../../servicesModule/services/mosaic.service';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { NamespacesService, NamespaceStorageInterface } from '../../../servicesModule/services/namespaces.service';
 import { DataBridgeService } from '../../../shared/services/data-bridge.service';
 import { SharedService, ConfigurationForm } from '../../../shared/services/shared.service';
-import { WalletService } from '../../../wallet/services/wallet.service';
+import { WalletService, AccountsInterface } from '../../../wallet/services/wallet.service';
 import { HeaderServicesInterface } from '../../../servicesModule/services/services-module.service';
 import { TransactionsService } from '../../../transactions/services/transactions.service';
+import { NodeService } from 'src/app/servicesModule/services/node.service';
+import { environment } from 'src/environments/environment';
 
 
 @Component({
@@ -19,17 +21,17 @@ import { TransactionsService } from '../../../transactions/services/transactions
   templateUrl: './alias-mosaics-to-namespace.component.html',
   styleUrls: ['./alias-mosaics-to-namespace.component.css']
 })
-export class AliasMosaicsToNamespaceComponent implements OnInit {
+export class AliasMosaicsToNamespaceComponent implements OnInit, OnDestroy {
 
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Mosaics',
     componentName: 'Link to Namespace',
   };
   arrayNamespaceStorage: NamespaceStorageInterface[] = [];
-  currentBlock: number = 0;
+  currentBlock = 0;
   configurationForm: ConfigurationForm = {};
   linkingNamespaceToMosaic: FormGroup;
-  blockSend: boolean = false;
+  blockSend = false;
   loading = false;
   linked = null;
   mosaicSelect: Array<object> = [{
@@ -47,7 +49,7 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
     }
   ];
 
-  passwordMain: string = 'password';
+  passwordMain = 'password';
 
   typeAction: any = [{
     value: AliasActionType.Link,
@@ -62,18 +64,29 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
   }];
 
 
-  transactionSigned: any;
+  transactionSigned = [];
+  transactionReady: SignedTransaction[] = [];
   subscription: Subscription[] = [];
   mosaicId: any;
   namespaceId: any;
   action: any;
-  mosaicSupplyChangeTransaction: any;
+  linkMosaicToNamespaceTx: MosaicAliasTransaction;
   fee: any;
   amountAccount: number;
   mosaicstoHex: MosaicId;
   viewLinked = false;
-  nameSelect: boolean = true;
-  noNamespace: boolean = false;
+  nameSelect = true;
+  noNamespace = false;
+
+
+  signer: AccountsInterface = null;
+  typeTx = 1; // 1 simple, 2 multisig
+  insufficientBalanceCosignatory = false;
+  cosignatory: AccountsInterface = null;
+  showSelectAccount = true;
+  isMultisig = false;
+  transactionHttp: TransactionHttp = null;
+
 
   constructor(
     private fb: FormBuilder,
@@ -84,23 +97,26 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
     private proximaxProvider: ProximaxProvider,
     private walletService: WalletService,
     private dataBridge: DataBridgeService,
-    private transactionService: TransactionsService
+    private transactionService: TransactionsService,
+    private nodeService: NodeService
   ) { }
 
   ngOnInit() {
+    this.transactionHttp = new TransactionHttp(environment.protocol + '://' + `${this.nodeService.getNodeSelected()}`);
     this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
-    this.getNamespaces();
+    // this.getNamespaces();
     this.linkingNamespaceToMosaic.get('mosaic').disable();
 
     this.subscription.push(this.dataBridge.getBlock().subscribe(next => {
       this.currentBlock = next;
     }));
+
     this.subscription.push(this.mosaicService.getMosaicChanged().subscribe(
       async next => {
         this.getMosaic();
-        this.amountAccount = this.walletService.getAmountAccount();
       }));
+
     this.builder();
   }
 
@@ -110,6 +126,23 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
     });
   }
 
+  announceAggregateBonded(signedTransaction: SignedTransaction) { // change
+    this.transactionHttp.announceAggregateBonded(signedTransaction).subscribe(
+      async () => {
+        // this.blockBtnSend = false;
+        this.fee = '0.000000';
+        this.transactionSigned.push(signedTransaction);
+      },
+      err => {
+        this.sharedService.showError('', err);
+      });
+  }
+
+  /**
+   *
+   *
+   * @memberof AliasMosaicsToNamespaceComponent
+   */
   captureAction() {
     this.viewLinked = (this.linkingNamespaceToMosaic.get('typeAction').value === AliasActionType.Unlink) ? true : false;
     const action = this.linkingNamespaceToMosaic.get('typeAction').value;
@@ -118,15 +151,20 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
     this.builder();
   }
 
+  /**
+   *
+   *
+   * @param {*} event
+   * @memberof AliasMosaicsToNamespaceComponent
+   */
   captureNamespace(event) {
     this.nameSelect = false;
-
     if (this.linkingNamespaceToMosaic.get('typeAction').value === AliasActionType.Unlink) {
-      this.linked = this.mosaicSelect.find((x: any) => event.value === x.label);
-
-      this.mosaicId = new MosaicId(this.linked.value);
-
-      this.linkingNamespaceToMosaic.get('mosaic').disable();
+      this.linked = this.mosaicSelect.find((x: any) => x.label === event.value);
+      if (this.linked) {
+        this.mosaicId = new MosaicId(this.linked.value);
+        this.linkingNamespaceToMosaic.get('mosaic').disable();
+      }
     } else {
       this.linked = null;
       this.linkingNamespaceToMosaic.get('mosaic').enable();
@@ -137,27 +175,49 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
     this.builder();
   }
 
+  /**
+   *
+   *
+   * @memberof AliasMosaicsToNamespaceComponent
+   */
   captureMmosaic() {
     const mosaicId = new MosaicId(this.linkingNamespaceToMosaic.get('mosaic').value);
     this.mosaicId = mosaicId;
-    this.builder()
+    this.builder();
   }
 
+  /**
+   *
+   *
+   * @param {*} inputType
+   * @memberof AliasMosaicsToNamespaceComponent
+   */
   changeInputType(inputType) {
-    let newType = this.sharedService.changeInputType(inputType)
+    const newType = this.sharedService.changeInputType(inputType);
     this.passwordMain = newType;
   }
 
+  /**
+   *
+   *
+   * @memberof AliasMosaicsToNamespaceComponent
+   */
   builder() {
-    this.mosaicSupplyChangeTransaction = this.proximaxProvider.linkingNamespaceToMosaic(
+    this.linkMosaicToNamespaceTx = this.proximaxProvider.linkingNamespaceToMosaic(
       this.action = this.linkingNamespaceToMosaic.get('typeAction').value,
       this.namespaceId,
       this.mosaicId,
       this.walletService.currentAccount.network
     );
-    this.fee = this.transactionService.amountFormatterSimple(this.mosaicSupplyChangeTransaction.maxFee.compact());
+    this.fee = this.transactionService.amountFormatterSimple(this.linkMosaicToNamespaceTx.maxFee.compact());
   }
 
+  /**
+   *
+   *
+   * @param {*} [$event=null]
+   * @memberof AliasMosaicsToNamespaceComponent
+   */
   async buildSelectNamespace($event = null) {
     this.linkingNamespaceToMosaic.get('mosaic').disable();
     this.linkingNamespaceToMosaic.get('mosaic').setValue('');
@@ -167,12 +227,12 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
       const namespaceSelect = [];
       this.loading = true;
       if (this.arrayNamespaceStorage && this.arrayNamespaceStorage.length > 0) {
-        for (let namespaceStorage of this.arrayNamespaceStorage) {
+        for (const namespaceStorage of this.arrayNamespaceStorage) {
           if (namespaceStorage.namespaceInfo) {
             let isLinked = false;
             let disabled = false;
             // let label = await this.namespaceService.getNameParentNamespace(namespaceStorage);
-            let label = namespaceStorage.namespaceName.name
+            let label = namespaceStorage.namespaceName.name;
             if (namespaceStorage.namespaceInfo.alias.type === 1) {
               this.mosaicstoHex = new MosaicId([namespaceStorage.namespaceInfo.alias.mosaicId[0], namespaceStorage.namespaceInfo.alias.mosaicId[1]]);
 
@@ -195,10 +255,10 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
               label: `${label}`,
               value: `${name}`,
               selected: false,
-              disabled: disabled
+              disabled
             });
           }
-        };
+        }
       }
 
       this.namespaceSelect = namespaceSelect.sort(function (a: any, b: any) {
@@ -232,7 +292,11 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
   }
 
 
-
+  /**
+   *
+   *
+   * @memberof AliasMosaicsToNamespaceComponent
+   */
   clearForm() {
     this.linked = null;
     this.viewLinked = false;
@@ -253,18 +317,20 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
    *
    * @memberof AliasMosaicsToNamespaceComponent
    */
-  getNamespaces() {
+  getNamespaces(account: AccountsInterface) {
     this.subscription.push(this.namespaceService.getNamespaceChanged().subscribe(
       async (arrayNamespaceStorage: NamespaceStorageInterface[]) => {
-        this.arrayNamespaceStorage = arrayNamespaceStorage;
-        if(arrayNamespaceStorage === null || arrayNamespaceStorage.length === 0){
+        const namespaceInfo = this.namespaceService.filterNamespacesFromAccount(account.publicAccount.publicKey);
+        this.arrayNamespaceStorage = namespaceInfo;
+        if (arrayNamespaceStorage === null || arrayNamespaceStorage.length === 0) {
           this.noNamespace = true;
-          this.linkingNamespaceToMosaic.disable()
+          this.linkingNamespaceToMosaic.disable();
         }
         this.buildSelectNamespace(this.linkingNamespaceToMosaic.get('typeAction').value);
       }
     ));
   }
+
 
   /**
    *
@@ -277,7 +343,7 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
         const namespaceSelect = this.namespaceSelect.slice(0);
         if (namespaceInfo !== undefined && namespaceInfo.length > 0) {
           // console.log(namespaceInfo);
-          for (let data of namespaceInfo) {
+          for (const data of namespaceInfo) {
             namespaceSelect.push({
               value: `${data.namespaceName.name}`,
               label: `${data.namespaceName.name}`,
@@ -345,63 +411,63 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
    * @memberof LinkingNamespaceToMosaicComponent
    */
   async getMosaic() {
-    const data = await this.mosaicService.filterMosaics();
-    // console.log('data', data);
-    const mosaicSelect: any = [{
-      value: '1',
-      label: 'Select',
-      selected: true,
-      disabled: true
-    }];
+    if (this.signer) {
+      const data = await this.mosaicService.filterMosaics(null, this.signer.name);
+      const mosaicSelect: any = [{
+        value: '1',
+        label: 'Select',
+        selected: true,
+        disabled: true
+      }];
 
-    if (data) {
-      data.forEach(element => {
-        const nameMosaic = (element.mosaicNames.names.length > 0) ? element.mosaicNames.names[0].name : this.proximaxProvider.getMosaicId(element.idMosaic).toHex();
-        const addressOwner = this.proximaxProvider.createAddressFromPublicKey(
-          element.mosaicInfo.owner.publicKey,
-          element.mosaicInfo.owner.address['networkType']
-        );
+      if (data) {
+        data.forEach(element => {
+          const nameMosaic = (element.mosaicNames.names.length > 0) ?
+            element.mosaicNames.names[0].name : this.proximaxProvider.getMosaicId(element.idMosaic).toHex();
+          const addressOwner = this.proximaxProvider.createAddressFromPublicKey(
+            element.mosaicInfo.owner.publicKey,
+            element.mosaicInfo.owner.address['networkType']
+          );
 
-        let expired = false;
-        let nameExpired = '';
+          let expired = false;
+          let nameExpired = '';
 
-        const durationMosaic = new UInt64([
-          element.mosaicInfo['properties']['duration']['lower'],
-          element.mosaicInfo['properties']['duration']['higher']
-        ]);
+          const durationMosaic = new UInt64([
+            element.mosaicInfo['properties']['duration']['lower'],
+            element.mosaicInfo['properties']['duration']['higher']
+          ]);
 
-        const createdBlock = new UInt64([
-          element.mosaicInfo.height.lower,
-          element.mosaicInfo.height.higher
-        ]);
+          const createdBlock = new UInt64([
+            element.mosaicInfo.height.lower,
+            element.mosaicInfo.height.higher
+          ]);
 
 
-        if (durationMosaic.compact() > 0) {
-          if (this.currentBlock >= durationMosaic.compact() + createdBlock.compact()) {
-            expired = true;
-            nameExpired = ' - Expired';
+          if (durationMosaic.compact() > 0) {
+            if (this.currentBlock >= durationMosaic.compact() + createdBlock.compact()) {
+              expired = true;
+              nameExpired = ' - Expired';
+            }
           }
-        }
 
-        const currentAccount = Object.assign({}, this.walletService.getCurrentAccount());
-        const isOwner = (
-          addressOwner.pretty() ===
-          this.proximaxProvider.createFromRawAddress(currentAccount.address).pretty()
-        ) ? true : false;
+          const isOwner = (
+            addressOwner.pretty() ===
+            this.proximaxProvider.createFromRawAddress(this.signer.address).pretty()
+          ) ? true : false;
 
-        if (isOwner) {
-          mosaicSelect.push({
-            value: element.idMosaic,
-            label: `${nameMosaic}${nameExpired}`,
-            selected: false,
-            disabled: expired
-          });
-        }
-      });
+          if (isOwner) {
+            mosaicSelect.push({
+              value: element.idMosaic,
+              label: `${nameMosaic}${nameExpired}`,
+              selected: false,
+              disabled: expired
+            });
+          }
+        });
+      }
+
+      this.mosaicSelect = mosaicSelect;
     }
-
-    this.mosaicSelect = mosaicSelect;
-    // console.log('-------------------', this.mosaicSelect)
   }
 
   /**
@@ -413,19 +479,19 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
     this.subscription['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
         if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
-          const match = statusTransaction['hash'] === this.transactionSigned.hash;
-          if (match) {
-            this.blockSend = false;
-            this.clearForm();
-          }
-          if (statusTransaction['type'] === 'confirmed' && match) {
-            this.transactionSigned = null;
-            this.mosaicService.resetMosaicsStorage();
-            this.namespaceService.resetNamespaceStorage();
-          } else if (statusTransaction['type'] === 'unconfirmed' && match) {
-            this.transactionSigned = null;
-          } else if (match) {
-            this.transactionSigned = null;
+          for (const element of this.transactionSigned) {
+            const match = statusTransaction['hash'] === element.hash;
+            if (match) {
+              this.blockSend = false;
+              this.clearForm();
+              this.transactionReady.push(element);
+            }
+            if (statusTransaction['type'] === 'confirmed' && match) {
+              this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
+            } else if (statusTransaction['type'] === 'unconfirmed' && match) {
+            } else if (match) {
+              this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
+            }
           }
         }
       }
@@ -472,42 +538,22 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
    */
   sendTransaction() {
     if (this.linkingNamespaceToMosaic.valid && !this.blockSend) {
-      const validateAmount = this.transactionService.validateBuildSelectAccountBalance(this.amountAccount, Number(this.fee), 0)
+      const validateAmount = this.transactionService.validateBuildSelectAccountBalance(this.amountAccount, Number(this.fee), 0);
       if (validateAmount) {
         this.blockSend = true;
         const common = {
           password: this.linkingNamespaceToMosaic.get('password').value,
           privateKey: ''
-        }
+        };
 
-        if (this.walletService.decrypt(common)) {
-          // const action = this.linkingNamespaceToMosaic.get('typeAction').value;
-          const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
-          // const namespaceId = new NamespaceId(this.linkingNamespaceToMosaic.get('namespace').value);
-          // const mosaicId = new MosaicId(this.linkingNamespaceToMosaic.get('mosaic').value);
-          // const mosaicSupplyChangeTransaction = this.proximaxProvider.linkingNamespaceToMosaic(
-          //   action,
-          //   namespaceId,
-          //   mosaicId,
-          //   this.walletService.currentAccount.network
-          // );
-          const generationHash = this.dataBridge.blockInfo.generationHash;
-          const signedTransaction = account.sign(this.mosaicSupplyChangeTransaction, generationHash); //Update-sdk-dragon
-          this.transactionSigned = signedTransaction;
-          this.proximaxProvider.announce(signedTransaction).subscribe(
-            x => {
-
-              // this.sharedService.showSuccess('success', 'Transaction sent');
-              if (this.subscription['transactionStatus'] === undefined || this.subscription['transactionStatus'] === null) {
-                this.getTransactionStatus();
-              }
-            },
-            err => {
-              this.blockSend = false;
-              this.clearForm();
-
-              this.sharedService.showError('', 'An unexpected error has occurred');
-            });
+        const accountToDecrypt = (this.typeTx === 1) ? this.signer : this.cosignatory;
+        if (this.walletService.decrypt(common, accountToDecrypt)) {
+          if (this.typeTx === 1) {
+            const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
+            this.sendTxSimple(account);
+          } else {
+            this.sendAggregateBonded(common.privateKey);
+          }
         } else {
           this.blockSend = false;
         }
@@ -515,7 +561,108 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
         this.sharedService.showError('', 'insufficient balance');
       }
     }
-
   }
 
+  /**
+   *
+   *
+   * @param {Account} account
+   * @memberof AliasMosaicsToNamespaceComponent
+   */
+  sendTxSimple(account: Account) {
+    const generationHash = this.dataBridge.blockInfo.generationHash;
+    const signedTransaction = account.sign(this.linkMosaicToNamespaceTx, generationHash); // Update-sdk-dragon
+    this.transactionSigned.push(signedTransaction);
+    this.proximaxProvider.announce(signedTransaction).subscribe(
+      x => {
+        if (this.subscription['transactionStatus'] === undefined || this.subscription['transactionStatus'] === null) {
+          this.getTransactionStatus();
+        }
+      },
+      err => {
+        this.blockSend = false;
+        this.clearForm();
+        this.sharedService.showError('', 'An unexpected error has occurred');
+      });
+  }
+
+  /**
+   *
+   *
+   * @param {string} pvk
+   * @memberof AliasMosaicsToNamespaceComponent
+   */
+  sendAggregateBonded(pvk: string) {
+    const innerTransaction = [{
+      signer: this.signer.publicAccount,
+      tx: this.linkMosaicToNamespaceTx
+    }];
+
+    const generationHash = this.dataBridge.blockInfo.generationHash;
+    const accountCosignatory = Account.createFromPrivateKey(pvk, this.walletService.currentAccount.network);
+    const aggregateSigned = this.transactionService.buildAggregateTransaction(accountCosignatory, innerTransaction, generationHash);
+    let hashLockSigned = this.transactionService.buildHashLockTransaction(aggregateSigned, accountCosignatory, generationHash);
+    this.transactionService.buildTransactionHttp().announce(hashLockSigned).subscribe(async () => {
+      this.clearForm();
+      this.subscription['getTransactionStatushashLock'] = this.dataBridge.getTransactionStatus().subscribe(
+        statusTransaction => {
+          this.clearForm();
+          if (statusTransaction !== null && statusTransaction !== undefined && hashLockSigned !== null) {
+            const match = statusTransaction['hash'] === hashLockSigned.hash;
+            if (statusTransaction['type'] === 'confirmed' && match) {
+              this.blockSend = false;
+              setTimeout(() => {
+                this.announceAggregateBonded(aggregateSigned);
+                this.blockSend = false;
+                hashLockSigned = null;
+              }, environment.delayBetweenLockFundABT);
+            } else if (statusTransaction['type'] === 'status' && match) {
+              this.blockSend = false;
+              this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
+              hashLockSigned = null;
+            }
+          }
+        }
+      );
+    }, err => { });
+  }
+
+
+  /**
+   *
+   *
+   * @param {AccountsInterface} account
+   * @memberof AliasMosaicsToNamespaceComponent
+   */
+  selectAccountDebitFunds(account: AccountsInterface) {
+    setTimeout(() => {
+      const amountAccount = this.walletService.getAmountAccount(account.address);
+      this.amountAccount = Number(this.transactionService.amountFormatterSimple(amountAccount).replace(/,/g, ''));
+      this.signer = account;
+      this.typeTx = (this.transactionService.validateIsMultisigAccount(this.signer)) ? 2 : 1;
+      this.getNamespaces(this.signer);
+      this.getMosaic();
+    });
+  }
+
+  /**
+   *
+   *
+   * @param {{ disabledForm: boolean, cosignatory: AccountsInterface }} event
+   * @memberof AliasMosaicsToNamespaceComponent
+   */
+  selectCosignatory(event: { disabledForm: boolean, cosignatory: AccountsInterface }) {
+    if (event) {
+      if (event.disabledForm) {
+        this.insufficientBalanceCosignatory = true;
+        // this.disableForm();
+      } else {
+        this.insufficientBalanceCosignatory = false;
+        this.cosignatory = event.cosignatory;
+      }
+    } else {
+      this.insufficientBalanceCosignatory = false;
+      this.cosignatory = null;
+    }
+  }
 }

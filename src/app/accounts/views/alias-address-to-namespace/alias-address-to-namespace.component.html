@@ -2,156 +2,190 @@
   <app-header [params]="paramsHeader"></app-header>
 
   <form [formGroup]="LinkToNamespaceForm" (ngSubmit)="sendTransaction()">
-    <div [class.disabled]="namespaceSelect.length === 0">
-      <div class="row mt-1-5rem">
-        <ng-container *ngIf="namespaceSelect.length === 0">
-          <div class="col-11 col-sm-10 col-lg-8 mx-auto d-flex justify-content-end mb-1rem">
-            <span class="fs-08rem fw-600 color-error-message">You have not created a namespace</span>
+    <div class="row mt-1-5rem">
+      <ng-container *ngIf="namespaceSelect.length === 0">
+        <div class="col-11 col-sm-10 col-lg-8 mx-auto d-flex justify-content-end mb-1rem">
+          <span class="fs-08rem fw-600 color-error-message">You have not created a namespace</span>
+        </div>
+      </ng-container>
+    </div>
+
+    <ng-container *ngIf="showSelectAccount">
+      <div class="row">
+        <div class="col-sm-11 col-lg-9 mx-auto">
+          <app-select-account (accountDebitFunds)="selectAccountDebitFunds($event)"
+            (cosignatoryEvent)="selectCosignatory($event)" (isMultisgEvent)="isMultisig = $event">
+          </app-select-account>
+        </div>
+      </div>
+    </ng-container>
+
+    <div class="row" [class.disabled]="namespaceSelect.length === 0">
+      <div class="col-11 col-sm-10 col-lg-9 mx-auto">
+        <div class="row">
+          <div class="col-11 mx-auto">
+            <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
+              [searchable]="false" class="selectWrapper" [items]="typeAction" formControlName="typeAction"
+              bindLabel="label" bindValue="value" placeholder="Select Action" (change)="buildSelectNamespace($event);">
+            </ng-select>
+            <mdb-error class="mt-05rem ml-1rem"
+              *ngIf="validateInput('typeAction').invalid && (validateInput('typeAction').dirty || validateInput('typeAction').touched)">
+              <span class="fs-08rem fw-600 color-error-message">Action is Required</span>
+            </mdb-error>
+          </div>
+        </div>
+
+        <div class="row mt-1-5rem">
+          <div class="col-11 mx-auto">
+            <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
+              [searchable]="false" class="selectWrapper" [items]="namespaceSelect" formControlName="namespace"
+              bindLabel="label" bindValue="value" placeholder="Select Namespace"></ng-select>
+            <mdb-error class="mt-05rem ml-1rem"
+              *ngIf="validateInput('namespace').invalid && (validateInput('namespace').dirty || validateInput('namespace').touched)">
+              <span class="fs-08rem fw-600 color-error-message">Namespace is Required</span>
+            </mdb-error>
+          </div>
+        </div>
+
+        <!-- Contacts -->
+        <ng-container *ngIf="showContacts && listContacts.length > 0">
+          <div class="row">
+            <div class="col-11 mx-auto">
+              <ng-select mdbInputDirective mdbValidate class="selectWrapper" [searchable]="false" [items]="listContacts"
+                bindLabel="label" bindValue="value" placeholder="Contact" formControlName="contact"
+                (change)="selectContact($event)">
+              </ng-select>
+            </div>
           </div>
         </ng-container>
 
-        <div class="col-11 col-sm-10 col-lg-8 mx-auto">
-          <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" [searchable]="false"
-            class="selectWrapper" [items]="typeAction" formControlName="typeAction" bindLabel="label" bindValue="value"
-            placeholder="Select Action" (change)="buildSelectNamespace($event);"></ng-select>
-          <mdb-error class="ml-1rem"
-            *ngIf="validateInput('typeAction').invalid && (validateInput('typeAction').dirty || validateInput('typeAction').touched)">
-            <span class="fs-08rem fw-600 color-error-message">Action is Required</span>
-          </mdb-error>
-        </div>
-      </div>
+        <!-- Input y button address -->
+        <div class="row mb-05rem">
+          <div class="col-11 mx-auto">
+            <div class="row">
 
-      <div class="row mt-1-5rem">
-        <div class="col-11 col-sm-10 col-lg-8 mx-auto">
-          <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" [searchable]="false"
-            class="selectWrapper" [items]="namespaceSelect" formControlName="namespace" bindLabel="label"
-            bindValue="value" placeholder="Select Namespace"></ng-select>
-          <mdb-error class="ml-1rem"
-            *ngIf="validateInput('namespace').invalid && (validateInput('namespace').dirty || validateInput('namespace').touched)">
-            <span class="fs-08rem fw-600 color-error-message">Namespace is Required</span>
-          </mdb-error>
-        </div>
-      </div>
+              <!-- Input address -->
+              <div class="col-8 col-sm-9 col-md-10">
+                <div class="md-form form-sm mt-1rem mb-0rem">
+                  <img class="form-control-feedback"
+                    src="assets/images/img/icon-address-green-book-16h-proximax-sirius-wallet.svg" alt="" width="43"
+                    height="43">
+                  <input formControlName="address" required mdbInputDirective mdbValidate [validateSuccess]="true"
+                    [validateError]="true" [readonly]="disabledAddressBook" type="text" id="address"
+                    class="form-control form-control-sm input-border" placeholder="Address"
+                    [maxlength]="configurationForm.address.maxLength" [minlength]="configurationForm.address.minLength">
 
-      <!-- Contacts -->
-      <ng-container *ngIf="showContacts && listContacts.length > 0">
-        <div class="row">
-          <div class="col-11 col-md-10 col-lg-8 mx-auto">
-            <ng-select mdbInputDirective mdbValidate class="selectWrapper" [searchable]="false" [items]="listContacts"
-              bindLabel="label" bindValue="value" placeholder="Contact" formControlName="contact"
-              (change)="selectContact($event)">
-            </ng-select>
-          </div>
-        </div>
-      </ng-container>
+                  <!-- Required field -->
+                  <mdb-error
+                    *ngIf="validateInput('address', '').invalid && (validateInput('address', '').dirty || validateInput('address', '').touched)">
+                    <span class="fs-08rem fw-600 color-error-message mb-05rem mt-05rem">Address Required</span>
+                  </mdb-error>
 
-      <!-- Input y button address -->
-      <div class="row mb-05rem">
-        <div class="col-11 col-sm-10 col-lg-8 mx-auto">
-          <div class="row">
+                  <!-- VALIDATION -->
+                  <mdb-error *ngIf="validateInput('address', '').valid && !isValidBlockchain && validFormat">
+                    <span class="fs-08rem fw-600 color-error-message mt-05rem">Address not valid in blockchain</span>
+                  </mdb-error>
 
-            <!-- Input address -->
-            <div class="col-8 col-sm-9 col-md-10">
-              <div class="md-form form-sm mt-1rem mb-0rem">
-                <img class="form-control-feedback"
-                  src="assets/images/img/icon-address-green-book-16h-proximax-sirius-wallet.svg" alt="" width="43"
-                  height="43">
-                <input formControlName="address" required mdbInputDirective mdbValidate [validateSuccess]="true"
-                  [validateError]="true" [readonly]="disabledAddressBook" type="text" id="address"
-                  class="form-control form-control-sm input-border" placeholder="Address"
-                  [maxlength]="configurationForm.address.maxLength" [minlength]="configurationForm.address.minLength">
-
-                <!-- Required field -->
-                <mdb-error
-                  *ngIf="validateInput('address', '').invalid && (validateInput('address', '').dirty || validateInput('address', '').touched)">
-                  <span class="fs-08rem fw-600 color-error-message mb-05rem">Address Required</span>
-                </mdb-error>
-
-                <!-- VALIDATION -->
-                <mdb-error *ngIf="validateInput('address', '').valid && !isValidBlockchain && validFormat">
-                  <span class="fs-08rem fw-600 color-error-message">Address not valid in blockchain</span>
-                </mdb-error>
-
-                <!-- VALIDATION 2-->
-                <mdb-error *ngIf="validateInput('address', '').valid && !validFormat && !isValidBlockchain">
-                  <span class="fs-08rem fw-600 color-error-message">Address not valid</span>
-                </mdb-error>
+                  <!-- VALIDATION 2-->
+                  <mdb-error *ngIf="validateInput('address', '').valid && !validFormat && !isValidBlockchain">
+                    <span class="fs-08rem fw-600 color-error-message mt-05rem">Address not valid</span>
+                  </mdb-error>
+                </div>
               </div>
-            </div>
 
-            <!-- Button show contacts -->
-            <ng-container>
+              <!-- Button show contacts -->
               <div class="col-4 col-sm-3 col-md-2 d-flex justify-content-center align-items-center pt-10px">
                 <div [class.disabled]="listContacts.length === 0"
                   class="background-gray-icons p-12px bord-rad-25px cursor-p"
                   (click)="showContacts = (!disabledAddressBook) ? !showContacts : showContacts;"
                   [title]="(!showContacts) ? 'Show contacts': 'Hide contacts'">
                   <img class="w-30px" [src]="(disabledAddressBook) ?
-                  'assets/images/img/icon-address-book-gray-28h-proximax-sirius-wallet.svg' :
-                  'assets/images/img/icon-address-green-book-16h-proximax-sirius-wallet.svg'
-                  ">
+                    'assets/images/img/icon-address-book-gray-28h-proximax-sirius-wallet.svg' :
+                    'assets/images/img/icon-address-green-book-16h-proximax-sirius-wallet.svg'
+                    ">
                 </div>
               </div>
-            </ng-container>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Fee -->
-      <div class="row">
-        <div class="col-11 col-sm-10 col-lg-8 mx-auto">
-          <div class="box-grey txt-a-center">
-            <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20"
-              alt="">&nbsp;
-            <span class="fs-08rem">
-              Unconfirmed/Recommended Fee:&nbsp;
-              <a [innerHTML]="getQuantity(fee)"></a> XPX
-            </span>
+        <!-- Fee -->
+        <div class="row">
+          <div class="col-11 mx-auto">
+            <div class="box-grey txt-a-center">
+              <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20"
+                alt="">&nbsp;
+              <span class="fs-08rem">
+                Unconfirmed/Recommended Fee:&nbsp;
+                <a [innerHTML]="getQuantity(fee)"></a> XPX
+              </span>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Enter Wallet password -->
-      <div class="row">
-        <div class="col-11 col-sm-10 col-lg-8 mx-auto">
-          <div class="md-form form-sm">
-            <img class="form-control-feedback"
-              src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
-            <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
-              src="assets/images/img/icon-show-hide-password.svg" *ngIf="passwordMain === 'password'">
-            <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
-              src="assets/images/img/icon-show-hide-password-grey.svg" *ngIf="passwordMain === 'text'">
-            <input [maxlength]="configurationForm.passwordWallet.maxLength"
-              [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
-              mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" [type]="passwordMain"
-              id="password" class="form-control form-control-sm input-border" placeholder="Enter Wallet Password">
+        <div class="row" *ngIf="isMultisig">
+          <div class="col-11 mx-auto">
+            <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
+              <div class="row">
+                <div class="col-12 d-flex align-items-center">
+                  <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
+                    width="20" alt="">&nbsp;
 
-            <!-- VALIDATION -->
-            <mdb-error
-              *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
-              <span class="fs-08rem fw-600 color-error-message">Password Required</span>
-            </mdb-error>
+                  <span class="fs-08rem">
+                    &nbsp;LockFund:&nbsp;
+                    <a [innerHTML]="getQuantity('10.000000')"></a> XPX <br>
+
+                    &nbsp;Unconfirmed/Recommended Fee:&nbsp;
+                    <a [innerHTML]="getQuantity('0.044500')"></a> XPX
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- BUTTONS -->
-      <div class="row mt-2rem">
-        <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-          <button [disabled]="namespaceSelect.length === 0" mdbBtn type="button" rounded="true" mdbWavesEffect
-            class="btn-proximax" size="md" (click)="clearForm()">
-            <span class="color-white">Clear</span>
-          </button>
+        <!-- Enter Wallet password -->
+        <div class="row">
+          <div class="col-11 mx-auto">
+            <div class="md-form form-sm">
+              <img class="form-control-feedback"
+                src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
+              <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
+                src="assets/images/img/icon-show-hide-password.svg" *ngIf="passwordMain === 'password'">
+              <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
+                src="assets/images/img/icon-show-hide-password-grey.svg" *ngIf="passwordMain === 'text'">
+              <input [maxlength]="configurationForm.passwordWallet.maxLength"
+                [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
+                mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" [type]="passwordMain"
+                id="password" class="form-control form-control-sm input-border" placeholder="Enter Wallet Password">
+
+              <!-- VALIDATION -->
+              <mdb-error
+                *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
+                <span class="fs-08rem fw-600 color-error-message">Password Required</span>
+              </mdb-error>
+            </div>
+          </div>
         </div>
 
-        <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-          <button mdbBtn type="submit" rounded="true"
-            [disabled]="!LinkToNamespaceForm.valid || namespaceSelect.length === 0 || !isValidBlockchain || !validFormat"
-            mdbWavesEffect class="btn-proximax" size="md">
-            <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
-              *ngIf="blockSend"></span>
-            <span class="color-white">Create</span>
-          </button>
+        <!-- BUTTONS -->
+        <div class="row mt-2rem">
+          <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+            <button [disabled]="namespaceSelect.length === 0" mdbBtn type="button" rounded="true" mdbWavesEffect
+              class="btn-proximax" size="md" (click)="clearForm()">
+              <span class="color-white">Clear</span>
+            </button>
+          </div>
+
+          <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+            <button mdbBtn type="submit" rounded="true"
+              [disabled]="!LinkToNamespaceForm.valid || namespaceSelect.length === 0 || !isValidBlockchain || !validFormat"
+              mdbWavesEffect class="btn-proximax" size="md">
+              <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+                *ngIf="blockSend"></span>
+              <span class="color-white">Create</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>

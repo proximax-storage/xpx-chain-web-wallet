@@ -26,24 +26,33 @@ import { NemProviderService } from '../../../swap/services/nem-provider.service'
 
 export class DashboardComponent implements OnInit, OnDestroy {
 
+  constructor(
+    private cdRef: ChangeDetectorRef,
+    private dataBridge: DataBridgeService,
+    private dashboardService: DashboardService,
+    private nemProvider: NemProviderService,
+    private namespacesService: NamespacesService,
+    private transactionService: TransactionsService,
+    private sharedService: SharedService,
+    private proximaxProvider: ProximaxProvider,
+    private walletService: WalletService
+  ) { }
+
+  @ViewChild(MdbTableDirective, { static: true }) mdbTable: MdbTableDirective;
+  @ViewChild('modalDashboard', { static: true }) modalDashboard: ModalDirective;
 
   currentAccount: AccountsInterface = null;
   nameAccount = '';
   typeTransactions: any;
   vestedBalance = null;
 
-  // --------------------------------------------------------------------------
-  @ViewChild(MdbTableDirective, { static: true }) mdbTable: MdbTableDirective;
-  @ViewChild('modalDashboard', { static: true }) modalDashboard: ModalDirective;
+
   currentWallet: CurrentWalletInterface;
   coinUsd: any = '0.00';
   xpxUsd: any;
-  @HostListener('input') oninput() {
-    this.searchItems();
-  }
   previous: any = [];
   // myAddress: Address = null;
-  accountChanged: boolean = false;
+  accountChanged = false;
   cantConfirmed = 0;
   cantUnconfirmed = 0;
   confirmedSelected = true;
@@ -69,10 +78,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
   viewDetailsAccount = `/${AppConfig.routes.account}/`;
   viewDetailsPartial = `/${AppConfig.routes.partial}`;
   viewSwapTransactions = `/${AppConfig.routes.swapTransactions}`;
-  swapTransactions: number = 0;
+  swapTransactions = 0;
   windowScrolled: boolean;
   nameWallet = '';
-  p: number = 1;
+  p = 1;
   qr = '';
   routes = {
     backToService: `/${AppConfig.routes.service}`,
@@ -81,17 +90,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
     deleteAccount: `/${AppConfig.routes.deleteAccount}/`,
   };
 
-  constructor(
-    private cdRef: ChangeDetectorRef,
-    private dataBridge: DataBridgeService,
-    private dashboardService: DashboardService,
-    private nemProvider: NemProviderService,
-    private namespacesService: NamespacesService,
-    private transactionService: TransactionsService,
-    private sharedService: SharedService,
-    private proximaxProvider: ProximaxProvider,
-    private walletService: WalletService
-  ) { }
+  @HostListener('input') oninput() {
+    this.searchItems();
+  }
 
 
   ngOnInit() {
@@ -109,7 +110,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.vestedBalance = {
       part1: '0',
       part2: '000000'
-    }
+    };
 
     this.coingecko();
     this.subscribeTransactionsConfirmedUnconfirmed();
@@ -143,12 +144,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
 
-  /**
-  * Get the recent transactions of an account
+ /**
   *
+  *
+  * @param {boolean} [reload=false]
   * @memberof DashboardComponent
   */
-  async getRecentTransactions(reload = false) {
+ async getRecentTransactions(reload = false) {
     this.iconReloadDashboard = true;
     // Validate if it is the first time the dashboard is loaded or if you click on the reload button
     if (this.dashboardService.getCantViewDashboard() === 1 || reload) {
@@ -176,7 +178,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.proximaxProvider.getUnconfirmedTransactions(account.publicAccount, id).pipe(first()).subscribe(
         transactionsUnconfirmed => {
           if (transactionsUnconfirmed && transactionsUnconfirmed.length > 0) {
-            //Sets the data structure of the dashboard
+            // Sets the data structure of the dashboard
             transactionsUnconfirmed.forEach(element => {
               const builderTransactions = this.transactionService.getStructureDashboard(element, this.transactionsUnconfirmed, 'unconfirmed');
               if (builderTransactions !== null) {
@@ -209,22 +211,22 @@ export class DashboardComponent implements OnInit, OnDestroy {
    * @memberof DashboardComponent
    */
   coingecko() {
-    this.proximaxProvider.coingecko("proximax").toPromise()
-    .then(details => {
-      this.xpxUsd = details['market_data']['current_price'].usd
-      this.balance(this.xpxUsd)
-    }).catch(err => {
-      this.xpxUsd = 0;
-      this.balance(this.xpxUsd)
-    });
+    this.proximaxProvider.coingecko('proximax').toPromise()
+      .then(details => {
+        this.xpxUsd = details['market_data']['current_price'].usd;
+        this.balance(this.xpxUsd);
+      }).catch(err => {
+        this.xpxUsd = 0;
+        this.balance(this.xpxUsd);
+      });
 
   }
 
-  balance(xpxUsd){
+  balance(xpxUsd) {
     this.subscription.push(this.transactionService.getBalance$().subscribe(
       next => {
-        this.vestedBalance = this.transactionService.getDataPart(next, 6)
-        if(this.xpxUsd != undefined){
+        this.vestedBalance = this.transactionService.getDataPart(next, 6);
+        if (this.xpxUsd != undefined) {
           this.coinUsd = Number(next.replace(/,/g, '')) * xpxUsd;
         }
       },
@@ -243,7 +245,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     // console.log('build',this.walletService.currentWallet)
     const currentWallet = Object.assign({}, this.walletService.currentWallet);
     if (currentWallet && Object.keys(currentWallet).length > 0) {
-      for (let element of currentWallet.accounts) {
+      for (const element of currentWallet.accounts) {
         const accountFiltered = this.walletService.filterAccountInfo(element.name);
         if (accountFiltered && accountFiltered.accountInfo) {
           const mosaicXPX = accountFiltered.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id);
@@ -314,7 +316,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.proximaxProvider.getTransactionsFromAccountId(account.publicAccount, id).pipe(first()).subscribe(
       transactions => {
         if (transactions && transactions.length > 0) {
-          //Sets the data structure of the dashboard
+          // Sets the data structure of the dashboard
           transactions.forEach(element => {
             const builderTransactions = this.transactionService.getStructureDashboard(element, this.transactions, 'confirmed');
             (builderTransactions !== null) ? this.transactions.push(builderTransactions) : '';
@@ -346,7 +348,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
    */
   scrollToTop() {
     (function smoothscroll() {
-      var currentScroll = document.documentElement.scrollTop || document.body.scrollTop;
+      let currentScroll = document.documentElement.scrollTop || document.body.scrollTop;
       if (currentScroll > 0) {
         window.requestAnimationFrame(smoothscroll);
         window.scrollTo(0, currentScroll - (currentScroll / 8));
@@ -439,17 +441,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
    * @memberof DashboardComponent
    */
   openModal(transaction: TransactionsInterface) {
-    if(transaction.data['transactionInfo'] && transaction.data['transactionInfo'].height){
+    if (transaction.data['transactionInfo'] && transaction.data['transactionInfo'].height) {
       const height = transaction.data['transactionInfo'].height.compact();
       if (typeof (height) === 'number') {
         const existBlock = this.dataBridge.filterBlockStorage(height);
         if (existBlock) {
           // console.log('In cache', existBlock);
           transaction.timestamp = `${this.transactionService.dateFormatUTC(new UInt64([existBlock.timestamp.lower, existBlock.timestamp.higher]))} - UTC`;
-          const calculateEffectiveFee = this.transactionService.amountFormatterSimple(existBlock.feeMultiplier * transaction.data.size)
+          const calculateEffectiveFee = this.transactionService.amountFormatterSimple(existBlock.feeMultiplier * transaction.data.size);
           transaction.effectiveFee = this.transactionService.getDataPart(calculateEffectiveFee, 6);
           // console.log('Effective fee ---> ', transaction.effectiveFee);
-        }else {
+        } else {
           this.proximaxProvider.getBlockInfo(height).subscribe(
             next => {
               // console.log('Http', next);
@@ -464,7 +466,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       } else {
         transaction.effectiveFee = this.transactionService.getDataPart('0.00000', 6);
       }
-    }else {
+    } else {
       transaction.effectiveFee = this.transactionService.getDataPart('0.00000', 6);
     }
 

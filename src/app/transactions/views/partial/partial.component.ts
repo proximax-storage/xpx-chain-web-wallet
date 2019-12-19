@@ -173,12 +173,12 @@ export class PartialComponent implements OnInit, OnDestroy {
     }
 
     transaction.data['innerTransactions'].forEach((element: any) => {
-      // console.log('INNER TRANSACTIONS --->', element);
       const nameType = Object.keys(this.typeTransactions).find(x => this.typeTransactions[x].id === element.type);
       element['nameType'] = (nameType) ? this.typeTransactions[nameType].name : element.type.toString(16).toUpperCase();
       if (element.type === this.typeTransactions.modifyMultisigAccount.id) {
         const data: ModifyMultisigAccountTransaction = element;
         // aqui debo verificar si mi cuenta esta dentro de inner transaction para poder firmarla
+        // tslint:disable-next-line: no-shadowed-variable
         data.modifications.forEach(element => {
           const exist = arraySelect.find((b: any) => b.value.address === element.cosignatoryPublicAccount.address.plain());
           if (!exist) {

@@ -1,35 +1,44 @@
+<ng-container *ngIf="simple">
+  <div class="row">
+    <div class="col-12">
+      <div class="row">
+
+        <!-- Mosaic alias name -->
+        <div class="col-12">
+          <span class="fw-600 fs-1-2rem">{{mosaicAlias.nameType}}</span>
+        </div>
+
+        <!-- Timestamp -->
+        <div class="col-12" *ngIf="mosaicAlias?.timestamp">
+          <span class="color-black fs-07rem fw-500 w-w-b-w">{{mosaicAlias?.timestamp}}</span>
+        </div>
+
+        <!-- Fee -->
+        <ng-container *ngIf="mosaicAlias?.effectiveFee">
+          <div class="col-12 mt-03rem">
+            <span class="fw-600 fs-095rem color-black">Effective Fee:&nbsp;&nbsp;</span>
+            <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
+            <span class="fs-095rem color-black">{{mosaicAlias?.effectiveFee.part1}}</span>
+            <span class="fs-075rem color-black">{{mosaicAlias?.effectiveFee.part2}}</span>
+            <span class="fs-095rem color-black"> XPX </span>
+          </div>
+        </ng-container>
+
+        <!-- Height -->
+        <ng-container *ngIf="mosaicAlias?.data.transactionInfo.height">
+          <div class="col-12 lh-1em mt-1rem">
+            <span class="fw-600 fs-08rem">Height:&nbsp;&nbsp;</span>
+            <span class="fs-07rem">{{mosaicAlias?.data.transactionInfo.height.compact()}}</span>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
 <div class="row">
   <div class="col-12">
     <div class="row">
-
-      <!-- Mosaic alias name -->
-      <div class="col-12">
-        <span class="fw-600 fs-1-2rem">{{mosaicAlias.nameType}}</span>
-      </div>
-
-      <!-- Timestamp -->
-      <div class="col-12" *ngIf="mosaicAlias?.timestamp">
-        <span class="color-black fs-07rem fw-500 w-w-b-w">{{mosaicAlias?.timestamp}}</span>
-      </div>
-
-      <!-- Fee -->
-      <ng-container *ngIf="mosaicAlias?.effectiveFee">
-        <div class="col-12 mt-03rem">
-          <span class="fw-600 fs-095rem color-black">Effective Fee:&nbsp;&nbsp;</span>
-          <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
-          <span class="fs-095rem color-black">{{mosaicAlias?.effectiveFee.part1}}</span>
-          <span class="fs-075rem color-black">{{mosaicAlias?.effectiveFee.part2}}</span>
-          <span class="fs-095rem color-black"> XPX </span>
-        </div>
-      </ng-container>
-
-      <!-- Height -->
-      <ng-container *ngIf="mosaicAlias?.data.transactionInfo.height">
-        <div class="col-12 lh-1em mt-1rem">
-          <span class="fw-600 fs-08rem">Height:&nbsp;&nbsp;</span>
-          <span class="fs-07rem">{{mosaicAlias?.data.transactionInfo.height.compact()}}</span>
-        </div>
-      </ng-container>
 
       <!-- Type -->
       <div class="col-12 lh-1em">

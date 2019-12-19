@@ -79,9 +79,12 @@ export class SharedService {
    * @memberof SharedService
    */
   amountFormat(amount: string): string {
-    const res = amount.split(".");
-    const htmlStr: string = `<span class="fs-085rem color-black" > ${res[0]}.</span><span class="fs-07rem">${res[1]}</span>`;
-    return htmlStr
+    const res = amount.split('.');
+    if (res.length > 1) {
+      return `<span class="fs-085rem color-black" > ${res[0]}.</span><span class="fs-07rem">${res[1]}</span>`;
+    } else {
+      return `<span class="fs-085rem color-black" > ${res[0]}</span>`;
+    }
   }
 
   /**
@@ -102,7 +105,7 @@ export class SharedService {
       show: params.view,
       submenu: params.subMenu,
       selected: params.selected
-    }
+    };
   }
 
   /**
@@ -113,14 +116,14 @@ export class SharedService {
    * @memberof SharedService
    */
   changeInputType(inputType: string): string {
-    let result: string
+    let result: string;
     if (inputType === 'password') {
       result = 'text';
     } else if (inputType === 'text') {
       result = 'password';
     }
 
-    return result
+    return result;
   }
 
   /**
@@ -157,7 +160,14 @@ export class SharedService {
    * @memberof SharedService
    */
   showSuccess(title: string, bodyMessage: string) {
-    const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastSuccess', timeOut: 2500, messageClass: 'messageClass', positionClass: 'md-toast-top-center' };
+    const options = {
+      closeButton: true,
+      tapToDismiss: false,
+      toastClass: 'toastSuccess',
+      timeOut: 2500,
+      messageClass: 'messageClass',
+      positionClass: 'md-toast-top-center'
+    };
     this.toastrService.success(bodyMessage, '', options);
   }
 
@@ -170,7 +180,14 @@ export class SharedService {
    * @memberof SharedService
    */
   showSuccessTimeout(title: string, bodyMessage: string, timeout: number) {
-    const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastSuccess', timeOut: 2500, messageClass: 'messageClass', positionClass: 'md-toast-top-center' };
+    const options = {
+      closeButton: true,
+      tapToDismiss: false,
+      toastClass: 'toastSuccess',
+      timeOut: 2500,
+      messageClass: 'messageClass',
+      positionClass: 'md-toast-top-center'
+    };
     this.toastrService.success(bodyMessage, '', options);
   }
 
@@ -182,7 +199,14 @@ export class SharedService {
    * @memberof SharedService
    */
   showError(title: string, bodyMessage: string) {
-    const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastError', timeOut: 2500, messageClass: 'messageClass', positionClass: 'md-toast-top-center' };
+    const options = {
+      closeButton: true,
+      tapToDismiss: false,
+      toastClass: 'toastError',
+      timeOut: 2500,
+      messageClass: 'messageClass',
+      positionClass: 'md-toast-top-center'
+    };
     this.toastrService.error(bodyMessage, '', options);
   }
 
@@ -194,7 +218,14 @@ export class SharedService {
    * @memberof SharedService
    */
   showWarning(title: string, bodyMessage: string) {
-    const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastWarning', timeOut: 2500, messageClass: 'messageClass', positionClass: 'md-toast-top-center' };
+    const options = {
+      closeButton: true,
+      tapToDismiss: false,
+      toastClass: 'toastWarning',
+      timeOut: 2500,
+      messageClass: 'messageClass',
+      positionClass: 'md-toast-top-center'
+    };
     this.toastrService.warning(bodyMessage, '', options);
   }
 
@@ -206,7 +237,14 @@ export class SharedService {
    * @memberof SharedService
    */
   showInfo(title: string, bodyMessage: string) {
-    const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastInfo', timeOut: 2500, messageClass: 'messageClass', positionClass: 'md-toast-top-center' };
+    const options = {
+      closeButton: true,
+      tapToDismiss: false,
+      toastClass: 'toastInfo',
+      timeOut: 2500,
+      messageClass: 'messageClass',
+      positionClass: 'md-toast-top-center'
+    };
     this.toastrService.info(bodyMessage, '', options);
   }
 
@@ -232,15 +270,15 @@ export class SharedService {
 }
 
 export interface MenuInterface {
-  type: 'default' | 'dropdown',
-  name: string,
-  class: string,
-  icon: string,
-  rol: boolean,
-  link: string,
-  view: boolean,
-  subMenu: object,
-  selected: boolean
+  type: 'default' | 'dropdown';
+  name: string;
+  class: string;
+  icon: string;
+  rol: boolean;
+  link: string;
+  view: boolean;
+  subMenu: object;
+  selected: boolean;
 }
 
 export interface ConfigurationForm {
