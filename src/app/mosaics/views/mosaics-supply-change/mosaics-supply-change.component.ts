@@ -1,16 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
-import { MosaicSupplyType, UInt64, SignedTransaction, MosaicId } from 'tsjs-xpx-chain-sdk';
+import { MosaicSupplyType, UInt64, SignedTransaction, TransactionHttp, Account } from 'tsjs-xpx-chain-sdk';
+import { Subscription } from 'rxjs';
+import { environment } from './../../../../environments/environment';
+import { NodeService } from '../../../servicesModule/services/node.service';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { SharedService, ConfigurationForm } from '../../../shared/services/shared.service';
 import { MosaicService, MosaicsStorage } from '../../../servicesModule/services/mosaic.service';
 import { DataBridgeService } from '../../../shared/services/data-bridge.service';
-import { WalletService } from '../../../wallet/services/wallet.service';
+import { WalletService, AccountsInterface } from '../../../wallet/services/wallet.service';
 import { TransactionsService } from '../../../transactions/services/transactions.service';
-import { AppConfig } from '../../../config/app.config';
 import { HeaderServicesInterface } from '../../../servicesModule/services/services-module.service';
-import { Subscription } from 'rxjs';
+
 
 
 @Component({
@@ -24,12 +26,13 @@ export class MosaicsSupplyChangeComponent implements OnInit {
     moduleName: 'Mosaics',
     componentName: 'Modify Supply',
   };
+
   @BlockUI() blockUI: NgBlockUI;
-  currentBlock: number = 0;
+  currentBlock = 0;
   formMosaicSupplyChange: FormGroup;
   parentMosaic: any = [{
     value: '1',
-    label: 'Select or enter here',
+    label: 'Select Mosaic',
     selected: false,
     disabled: true
   }];
@@ -45,14 +48,15 @@ export class MosaicsSupplyChangeComponent implements OnInit {
     selected: false,
     disabled: false
   }];
+
   mosaicsInfo: any[];
-  divisibility: number = 0;
-  duration: string = '0 days';
-  supply: string = '0';
-  blockButton: boolean = false;
-  supplyMutable: boolean = false;
-  passwordMain: string = 'password';
-  transferable: boolean = false;
+  divisibility = 0;
+  duration = '0 days';
+  transferable = false;
+  supply = '0';
+  supplyMutable = false;
+  blockButton = false;
+  passwordMain = 'password';
   transactionSigned: SignedTransaction[] = [];
   transactionReady: SignedTransaction[] = [];
   subscriptions = ['transactionStatus'];
@@ -64,23 +68,31 @@ export class MosaicsSupplyChangeComponent implements OnInit {
     decimal: '.',
     precision: '0'
   };
-  deltaSupply: number = 0;
-  totalSupply: string = '0';
+  deltaSupply = 0;
+  totalSupply = '0';
   invalidSupply: boolean;
   errorSupply: string;
-  blockBtn: boolean = false;
-  maxLengthSupply: number = 13;
+  blockBtn = false;
+  maxLengthSupply = 13;
   mosaicSupplyChangeTransaction: any;
-  fee: string = ' 0.000000';
+  fee = ' 0.000000';
   amountAccount: number;
-  showTotal: boolean = false;
-  errSupply: boolean = false;
+  showTotal = false;
+  errSupply = false;
   mosaicsInfoSelected: MosaicsStorage[];
-  increase: boolean = true;
-  errSupplyMin: boolean = false;
+  increase = true;
+  errSupplyMin = false;
   subscription: Subscription[] = [];
   vestedBalance: { part1: string; part2: string; };
-  noMosaics: boolean = false;
+  noMosaics = false;
+
+  signer: AccountsInterface = null;
+  typeTx = 1; // 1 simple, 2 multisig
+  insufficientBalanceCosignatory = false;
+  cosignatory: AccountsInterface = null;
+  showSelectAccount = true;
+  isMultisig = false;
+  transactionHttp: TransactionHttp = null;
 
   /**
    * Initialize dependencies and properties
@@ -94,19 +106,36 @@ export class MosaicsSupplyChangeComponent implements OnInit {
     private walletService: WalletService,
     private mosaicService: MosaicService,
     private transactionService: TransactionsService,
-    private dataBridge: DataBridgeService
+    private dataBridge: DataBridgeService,
+    private nodeService: NodeService
   ) { }
 
 
   async ngOnInit() {
+    this.transactionHttp = new TransactionHttp(environment.protocol + '://' + `${this.nodeService.getNodeSelected()}`);
     this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
     this.formMosaicSupplyChange.get('deltaSupply').disable();
     this.formMosaicSupplyChange.get('mosaicSupplyType').disable();
-    this.balance();
+    // this.balance();
+    this.subscribeData();
+  }
 
-    this.subscribe['block'] = this.dataBridge.getBlock().subscribe(next => this.currentBlock = next);
-    const data = await this.mosaicService.filterMosaics();
+  /**
+   *
+   *
+   * @memberof MosaicsSupplyChangeComponent
+   */
+  async filterMosaicByAccount() {
+    this.clearForm();
+    this.parentMosaic = [{
+      value: '1',
+      label: 'Select Mosaic',
+      selected: false,
+      disabled: true
+    }];
+
+    const data = await this.mosaicService.filterMosaics(null, this.signer.name);
     const mosaicsSelect = this.parentMosaic.slice(0);
     data.forEach(element => {
       let expired = false;
@@ -118,8 +147,8 @@ export class MosaicsSupplyChangeComponent implements OnInit {
           element.mosaicInfo.owner.address['networkType']
         );
 
-        const currentAccount = Object.assign({}, this.walletService.getCurrentAccount());
-        const isOwner = (addressOwner.pretty() === this.proximaxProvider.createFromRawAddress(currentAccount.address).pretty()) ? true : false;
+        // const currentAccount = Object.assign({}, this.walletService.getCurrentAccount());
+        const isOwner = (addressOwner.pretty() === this.proximaxProvider.createFromRawAddress(this.signer.address).pretty()) ? true : false;
         const durationMosaic = new UInt64([
           element.mosaicInfo['properties']['duration']['lower'],
           element.mosaicInfo['properties']['duration']['higher']
@@ -147,158 +176,18 @@ export class MosaicsSupplyChangeComponent implements OnInit {
         }
       }
     });
-    this.formMosaicSupplyChange.get('deltaSupply').valueChanges.subscribe(next => {
-
-      if (parseFloat(next) <= this.configurationForm.mosaicWallet.maxSupply) {
-        this.invalidSupply = false;
-        this.blockBtn = false;
-        this.errorSupply = '';
-
-        if (!this.divisibility) {
-          this.deltaSupply = parseInt(next);
-        } else {
-          this.deltaSupply = parseInt(this.transactionService.addZeros(this.divisibility, next));
-          this.calculate(next);
-        }
-      } else {
-        this.errorSupply = '-invalid';
-        this.blockBtn = true;
-        this.invalidSupply = true;
-      }
-      this.builder();
-    });
 
     this.parentMosaic = mosaicsSelect;
     if (this.parentMosaic.length === 1) {
       this.noMosaics = true;
       this.formMosaicSupplyChange.get('parentMosaic').disable();
       this.formMosaicSupplyChange.get('password').disable();
-    }
-  }
-
-  /**
-   *
-   *
-   * @memberof MosaicsSupplyChangeComponent
-   */
-  balance() {
-    this.subscription.push(this.transactionService.getBalance$().subscribe(
-      next => this.vestedBalance = this.transactionService.getDataPart(next, 6),
-      error => this.vestedBalance = {
-        part1: '0',
-        part2: '000000'
-      }
-    ));
-    let vestedBalance = this.vestedBalance.part1.concat(this.vestedBalance.part2).replace(/,/g,'');
-    this.amountAccount = Number(vestedBalance)
-  }
-
-  /**
-   * Create form namespace
-   *
-   * @memberof CreateMosaicComponent
-   */
-  builder() {
-    const x = this.formMosaicSupplyChange.get('parentMosaic').value;
-    if (x !== '') {
-      this.mosaicSupplyChangeTransaction = this.proximaxProvider.mosaicSupplyChangeTransaction(
-        this.formMosaicSupplyChange.get('parentMosaic').value,
-        this.deltaSupply,
-        this.formMosaicSupplyChange.get('mosaicSupplyType').value,
-        this.walletService.currentAccount.network
-      );
-      this.fee = this.transactionService.amountFormatterSimple(this.mosaicSupplyChangeTransaction.maxFee.compact());
-    }
-  }
-
-  /**
-   *
-   *
-   * @param {*} [val]
-   * @memberof MosaicsSupplyChangeComponent
-   */
-  calculate(val?) {
-    if (this.increase) {
-      let value = Number(this.supply.replace(/,/g,'')) + val;
-      this.totalSupply = this.transactionService.amountFormatter(
-        parseFloat(this.transactionService.addZeros(this.divisibility, value)),
-        this.mosaicsInfoSelected[0].mosaicInfo
-      );
-      if (Number(this.supply) + val > 9000000000) {
-        this.errSupply = true;
-      } else {
-        this.errSupply = false;
-      }
     } else {
-
-      let value = Number(this.supply.replace(/,/g,'')) - val;
-      let restante = Number(value.toFixed(6));
-
-      if (val > Number(this.supply.replace(/,/g,''))) {
-
-        this.errSupplyMin = true;
-        this.totalSupply = '0.000000'
-      } else {
-        this.totalSupply = this.transactionService.amountFormatter(
-          parseFloat(this.transactionService.addZeros(this.divisibility, restante)),
-          this.mosaicsInfoSelected[0].mosaicInfo
-        );
-        this.errSupply = false;
-        this.errSupplyMin = false;
-      }
-
-
+      this.noMosaics = false;
+      this.formMosaicSupplyChange.get('parentMosaic').enable();
+      this.formMosaicSupplyChange.get('password').enable();
     }
-
   }
-
-  /**
-   *
-   *
-   * @param {*} inputType
-   * @memberof MosaicsSupplyChangeComponent
-   */
-  changeInputType(inputType) {
-    let newType = this.sharedService.changeInputType(inputType)
-    this.passwordMain = newType;
-  }
-
-  /**
-   * Create form namespace
-   *
-   * @memberof CreateMosaicComponent
-   */
-  createForm() {
-    this.formMosaicSupplyChange = this.fb.group({
-      parentMosaic: ['', Validators.required],
-      mosaicSupplyType: [MosaicSupplyType.Increase, Validators.required],
-      deltaSupply: ['', [Validators.required]],
-      password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
-    });
-  }
-
-  /**
-   *
-   *
-   * @memberof MosaicSupplyChange
-   */
-  clearForm() {
-    this.fee = '0.000000';
-    this.formMosaicSupplyChange.get('mosaicSupplyType').disable();
-    this.showTotal = false;
-    this.errSupply = false;
-    this.errSupplyMin = false;
-    this.formMosaicSupplyChange.reset({
-      parentMosaic: '',
-      mosaicSupplyType: MosaicSupplyType.Increase,
-      deltaSupply: '',
-      password: ''
-    },
-      {
-        emitEvent: false
-      });
-  }
-
 
   /**
    *
@@ -315,8 +204,8 @@ export class MosaicsSupplyChangeComponent implements OnInit {
       this.formMosaicSupplyChange.get('deltaSupply').enable();
       this.formMosaicSupplyChange.get('mosaicSupplyType').enable();
       const mosaicsInfoSelected: MosaicsStorage[] = await this.mosaicService.filterMosaics([this.proximaxProvider.getMosaicId(mosaic['value'])]);
-      this.mosaicsInfoSelected = mosaicsInfoSelected
-      this.builder()
+      this.mosaicsInfoSelected = mosaicsInfoSelected;
+      this.builder();
       if (mosaicsInfoSelected !== null || mosaicsInfoSelected !== undefined) {
         this.divisibility = mosaicsInfoSelected[0].mosaicInfo['properties'].divisibility;
         this.supplyMutable = mosaicsInfoSelected[0].mosaicInfo['properties'].supplyMutable;
@@ -357,6 +246,158 @@ export class MosaicsSupplyChangeComponent implements OnInit {
     return;
   }
 
+  /**
+   *
+   *
+   * @param {SignedTransaction} signedTransaction
+   * @memberof MosaicsSupplyChangeComponent
+   */
+  announceAggregateBonded(signedTransaction: SignedTransaction) { // change
+    this.transactionHttp.announceAggregateBonded(signedTransaction).subscribe(
+      async () => {
+        // this.blockBtnSend = false;
+        this.fee = '0.000000';
+        this.transactionSigned.push(signedTransaction);
+      },
+      err => {
+        this.sharedService.showError('', err);
+      });
+  }
+
+  /**
+   *
+   *
+   * @memberof MosaicsSupplyChangeComponent
+   */
+  balance() {
+    this.subscription.push(this.transactionService.getBalance$().subscribe(
+      next => this.vestedBalance = this.transactionService.getDataPart(next, 6),
+      error => this.vestedBalance = {
+        part1: '0',
+        part2: '000000'
+      }
+    ));
+    const vestedBalance = this.vestedBalance.part1.concat(this.vestedBalance.part2).replace(/,/g, '');
+    this.amountAccount = Number(vestedBalance);
+  }
+
+  /**
+   * Create form namespace
+   *
+   * @memberof CreateMosaicComponent
+   */
+  builder() {
+    const x = this.formMosaicSupplyChange.get('parentMosaic').value;
+    if (x !== '') {
+      this.mosaicSupplyChangeTransaction = this.proximaxProvider.mosaicSupplyChangeTransaction(
+        this.formMosaicSupplyChange.get('parentMosaic').value,
+        this.deltaSupply,
+        this.formMosaicSupplyChange.get('mosaicSupplyType').value,
+        this.walletService.currentAccount.network
+      );
+      this.fee = this.transactionService.amountFormatterSimple(this.mosaicSupplyChangeTransaction.maxFee.compact());
+    }
+  }
+
+  /**
+   *
+   *
+   * @param {*} [val]
+   * @memberof MosaicsSupplyChangeComponent
+   */
+  calculate(val?: any) {
+    if (this.increase) {
+      const value = Number(this.supply.replace(/,/g, '')) + val;
+      this.totalSupply = this.transactionService.amountFormatter(
+        parseFloat(this.transactionService.addZeros(this.divisibility, value)),
+        this.mosaicsInfoSelected[0].mosaicInfo
+      );
+      if (Number(this.supply) + val > 9000000000) {
+        this.errSupply = true;
+      } else {
+        this.errSupply = false;
+      }
+    } else {
+
+      const value = Number(this.supply.replace(/,/g, '')) - val;
+      const restante = Number(value.toFixed(6));
+
+      if (val > Number(this.supply.replace(/,/g, ''))) {
+
+        this.errSupplyMin = true;
+        this.totalSupply = '0.000000';
+      } else {
+        this.totalSupply = this.transactionService.amountFormatter(
+          parseFloat(this.transactionService.addZeros(this.divisibility, restante)),
+          this.mosaicsInfoSelected[0].mosaicInfo
+        );
+        this.errSupply = false;
+        this.errSupplyMin = false;
+      }
+
+
+    }
+
+  }
+
+  /**
+   *
+   *
+   * @param {*} inputType
+   * @memberof MosaicsSupplyChangeComponent
+   */
+  changeInputType(inputType: any) {
+    const newType = this.sharedService.changeInputType(inputType);
+    this.passwordMain = newType;
+  }
+
+  /**
+   * Create form namespace
+   *
+   * @memberof CreateMosaicComponent
+   */
+  createForm() {
+    this.formMosaicSupplyChange = this.fb.group({
+      parentMosaic: ['', Validators.required],
+      mosaicSupplyType: [MosaicSupplyType.Increase, Validators.required],
+      deltaSupply: ['', [Validators.required]],
+      password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
+    });
+  }
+
+  /**
+   *
+   *
+   * @memberof MosaicSupplyChange
+   */
+  clearForm() {
+    this.fee = '0.000000';
+    this.formMosaicSupplyChange.get('mosaicSupplyType').disable();
+    this.showTotal = false;
+    this.errSupply = false;
+    this.errSupplyMin = false;
+    this.divisibility = 0;
+    this.duration = '0 days';
+    this.transferable = false;
+    this.supply = '0';
+    this.supplyMutable = false;
+    this.formMosaicSupplyChange.reset({
+      parentMosaic: '',
+      mosaicSupplyType: MosaicSupplyType.Increase,
+      deltaSupply: '',
+      password: ''
+    },
+      {
+        emitEvent: false
+      });
+  }
+
+  /**
+   *
+   *
+   * @param {*} event
+   * @memberof MosaicsSupplyChangeComponent
+   */
   type(event) {
     this.formMosaicSupplyChange.get('deltaSupply').setValue(0);
     this.optionsSupply = {
@@ -371,6 +412,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
       this.increase = false;
     }
   }
+
 
   /**
    *
@@ -405,11 +447,11 @@ export class MosaicsSupplyChangeComponent implements OnInit {
     this.subscriptions['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
         if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
-          for (let element of this.transactionSigned) {
+          for (const element of this.transactionSigned) {
             const match = statusTransaction['hash'] === element.hash;
             if (match) {
               this.blockButton = false;
-              this.clearForm()
+              this.clearForm();
               this.transactionReady.push(element);
             }
             if (statusTransaction['type'] === 'confirmed' && match) {
@@ -442,47 +484,145 @@ export class MosaicsSupplyChangeComponent implements OnInit {
    */
   send() {
     if (this.formMosaicSupplyChange.valid) {
-      const validateAmount = this.transactionService.validateBuildSelectAccountBalance(this.amountAccount, Number(this.fee), 0)
+      const validateAmount = this.transactionService.validateBuildSelectAccountBalance(this.amountAccount, Number(this.fee), 0);
       if (validateAmount) {
         this.blockButton = true;
         const common = {
           password: this.formMosaicSupplyChange.get('password').value,
           privateKey: ''
-        }
-        if (this.walletService.decrypt(common)) {
-          const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
+        };
 
-          // const mosaicSupplyChangeTransaction = this.proximaxProvider.mosaicSupplyChangeTransaction(
-          //   this.formMosaicSupplyChange.get('parentMosaic').value,
-          //   this.deltaSupply,
-          //   this.formMosaicSupplyChange.get('mosaicSupplyType').value,
-          //   this.walletService.currentAccount.network
-          // )
-          const generationHash = this.dataBridge.blockInfo.generationHash;
-          const signedTransaction = account.sign(this.mosaicSupplyChangeTransaction, generationHash); //Update-sdk-dragon
-          this.transactionSigned.push(signedTransaction);
-          this.proximaxProvider.announce(signedTransaction).subscribe(
-            x => {
-
-              this.blockUI.stop();
-              if (this.subscriptions['transactionStatus'] === undefined || this.subscriptions['transactionStatus'] === null) {
-                this.getTransactionStatus();
-              }
-
-              this.setTimeOutValidate(signedTransaction.hash);
-            },
-            err => {
-              this.blockButton = false;
-              this.clearForm()
-              this.blockUI.stop(); // Stop blocking
-              // this.sharedService.showError('', 'An unexpected error has occurred');
-            });
+        if (this.typeTx === 1) {
+          if (this.walletService.decrypt(common, this.signer)) {
+            const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
+            this.sendTxSimple(account);
+          } else {
+            this.blockButton = false;
+            return;
+          }
+        } else if (this.typeTx === 2 && this.cosignatory) {
+          if (this.walletService.decrypt(common, this.cosignatory)) {
+            this.sendAggregateBonded(common.privateKey);
+          } else {
+            this.blockButton = false;
+            return;
+          }
         } else {
-          this.blockButton = false;
+          this.sharedService.showWarning('', 'Select a cosignatory');
+          return;
         }
+
+
+
       } else {
         this.sharedService.showError('', 'insufficient Balance');
       }
+    }
+  }
+
+  /**
+   *
+   *
+   * @param {Account} account
+   * @memberof MosaicsSupplyChangeComponent
+   */
+  sendTxSimple(account: Account) {
+    const generationHash = this.dataBridge.blockInfo.generationHash;
+    const signedTransaction = account.sign(this.mosaicSupplyChangeTransaction, generationHash);
+    this.transactionSigned.push(signedTransaction);
+    this.proximaxProvider.announce(signedTransaction).subscribe(
+      x => {
+
+        this.blockUI.stop();
+        if (this.subscriptions['transactionStatus'] === undefined || this.subscriptions['transactionStatus'] === null) {
+          this.getTransactionStatus();
+        }
+
+        this.setTimeOutValidate(signedTransaction.hash);
+      },
+      err => {
+        this.blockButton = false;
+        this.clearForm();
+        this.blockUI.stop(); // Stop blocking
+      });
+  }
+
+  /**
+   *
+   *
+   * @param {string} pvk
+   * @memberof MosaicsSupplyChangeComponent
+   */
+  sendAggregateBonded(pvk: string) {
+    const innerTransaction = [{
+      signer: this.signer.publicAccount,
+      tx: this.mosaicSupplyChangeTransaction
+    }];
+
+    const generationHash = this.dataBridge.blockInfo.generationHash;
+    const accountCosignatory = Account.createFromPrivateKey(pvk, this.walletService.currentAccount.network);
+    const aggregateSigned = this.transactionService.buildAggregateTransaction(accountCosignatory, innerTransaction, generationHash);
+    let hashLockSigned = this.transactionService.buildHashLockTransaction(aggregateSigned, accountCosignatory, generationHash);
+    this.transactionService.buildTransactionHttp().announce(hashLockSigned).subscribe(async () => {
+      this.clearForm();
+      this.subscription['getTransactionStatushashLock'] = this.dataBridge.getTransactionStatus().subscribe(
+        statusTransaction => {
+          this.clearForm();
+          if (statusTransaction !== null && statusTransaction !== undefined && hashLockSigned !== null) {
+            const match = statusTransaction['hash'] === hashLockSigned.hash;
+            if (statusTransaction['type'] === 'confirmed' && match) {
+              this.blockButton = false;
+              setTimeout(() => {
+                this.announceAggregateBonded(aggregateSigned);
+                this.blockButton = false;
+                hashLockSigned = null;
+              }, environment.delayBetweenLockFundABT);
+            } else if (statusTransaction['type'] === 'status' && match) {
+              this.blockButton = false;
+              this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
+              hashLockSigned = null;
+            }
+          }
+        }
+      );
+    }, err => { });
+  }
+
+  /**
+   *
+   *
+   * @param {AccountsInterface} account
+   * @memberof MosaicsSupplyChangeComponent
+   */
+  selectAccountDebitFunds(account: AccountsInterface) {
+    setTimeout(() => {
+      const amountAccount = this.walletService.getAmountAccount(account.address);
+      this.amountAccount = Number(this.transactionService.amountFormatterSimple(amountAccount).replace(/,/g, ''));
+      this.signer = account;
+      this.typeTx = (this.transactionService.validateIsMultisigAccount(this.signer)) ? 2 : 1;
+      this.filterMosaicByAccount();
+      // this.validateBalance();
+    });
+  }
+
+  /**
+   *
+   *
+   * @param {{ disabledForm: boolean, cosignatory: AccountsInterface }} event
+   * @memberof MosaicsSupplyChangeComponent
+   */
+  selectCosignatory(event: { disabledForm: boolean, cosignatory: AccountsInterface }) {
+    if (event) {
+      if (event.disabledForm) {
+        this.insufficientBalanceCosignatory = true;
+        // this.disableForm();
+      } else {
+        this.insufficientBalanceCosignatory = false;
+        this.cosignatory = event.cosignatory;
+      }
+    } else {
+      this.insufficientBalanceCosignatory = false;
+      this.cosignatory = null;
     }
   }
 
@@ -495,14 +635,46 @@ export class MosaicsSupplyChangeComponent implements OnInit {
   setTimeOutValidate(hash: string) {
     setTimeout(() => {
       let exist = false;
-      for (let element of this.transactionReady) {
+      for (const element of this.transactionReady) {
         if (hash === element.hash) {
           exist = true;
         }
       }
 
-      (exist) ? '' : this.sharedService.showWarning('', 'An error has occurred');
+      if (!exist) {
+        this.sharedService.showWarning('', 'An error has occurred')
+      }
     }, 5000);
+  }
+
+  /**
+   *
+   *
+   * @memberof MosaicsSupplyChangeComponent
+   */
+  subscribeData() {
+    this.subscribe['block'] = this.dataBridge.getBlock().subscribe(next => this.currentBlock = next);
+    this.formMosaicSupplyChange.get('deltaSupply').valueChanges.subscribe(next => {
+      if (parseFloat(next) <= this.configurationForm.mosaicWallet.maxSupply) {
+        this.invalidSupply = false;
+        this.blockBtn = false;
+        this.errorSupply = '';
+
+        if (!this.divisibility) {
+          // tslint:disable-next-line: radix
+          this.deltaSupply = parseInt(next);
+        } else {
+          // tslint:disable-next-line: radix
+          this.deltaSupply = parseInt(this.transactionService.addZeros(this.divisibility, next));
+          this.calculate(next);
+        }
+      } else {
+        this.errorSupply = '-invalid';
+        this.blockBtn = true;
+        this.invalidSupply = true;
+      }
+      this.builder();
+    });
   }
 
 
