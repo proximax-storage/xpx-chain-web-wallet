@@ -43,15 +43,13 @@ import {
   BlockInfo,
   MosaicAliasTransaction,
   Convert,
-  RawAddress,
-  EncryptedMessage,
+  RawAddress
 } from 'tsjs-xpx-chain-sdk';
 import { BlockchainNetworkType } from 'tsjs-chain-xipfs-sdk';
 import { Observable } from 'rxjs/internal/Observable';
 import { mergeMap } from 'rxjs/operators';
 import { MosaicDefinitionTransaction } from 'tsjs-xpx-chain-sdk/dist/src/model/transaction/MosaicDefinitionTransaction';
 import { environment } from '../../../environments/environment';
-import { Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({
@@ -59,7 +57,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class ProximaxProvider {
 
-  blockchainHttp: ChainHttp; //Update-sdk-dragon
+  blockchainHttp: ChainHttp; // Update-sdk-dragon
   url: any;
   infoMosaic: MosaicInfo;
   transactionHttp: TransactionHttp;
@@ -72,7 +70,7 @@ export class ProximaxProvider {
   namespaceService: NamespaceService;
   transactionStatusError: TransactionStatusError;
 
-  constructor(public http: HttpClient,) {
+  constructor(public http: HttpClient, ) {
   }
 
   /**
@@ -87,21 +85,21 @@ export class ProximaxProvider {
   }
 
   /**
-  *
-  *
-  * @param {NetworkType} network
-  * @param {string} address
-  * @param {string} [message]
-  * @param {number} [amount=0]
-  * @returns {TransferTransaction}
-  * @memberof ProximaxProvider
-  */
+   *
+   *
+   * @param {NetworkType} network
+   * @param {Address} address
+   * @param {*} [message]
+   * @param {number} [amount=0]
+   * @returns {TransferTransaction}
+   * @memberof ProximaxProvider
+   */
   buildTransferTransaction(network: NetworkType, address: Address, message?: any, amount: number = 0): TransferTransaction {
     let mosaics: any = [];
     if (amount > 0) {
-      mosaics = new Mosaic(new MosaicId(environment.mosaicXpxInfo.id), UInt64.fromUint(Number(amount)))
+      mosaics = new Mosaic(new MosaicId(environment.mosaicXpxInfo.id), UInt64.fromUint(Number(amount)));
     } else {
-      mosaics = []
+      mosaics = [];
     }
 
     return TransferTransaction.create(
@@ -153,10 +151,11 @@ export class ProximaxProvider {
    * @memberof ProximaxProvider
    */
   buildMosaicDefinition(params: any): MosaicDefinitionTransaction {
+    const nonce = this.createNonceRandom();
     const mosaicDefinitionTransaction = MosaicDefinitionTransaction.create(
       Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
-      params.nonce,
-      MosaicId.createFromNonce(params.nonce, params.account.publicAccount),
+      nonce,
+      MosaicId.createFromNonce(nonce, params.owner),
       MosaicProperties.create({
         supplyMutable: params.supplyMutable,
         transferable: params.transferable,
@@ -168,9 +167,15 @@ export class ProximaxProvider {
     return mosaicDefinitionTransaction;
   }
 
-
-  coingecko(coin_id){
-    return this.http.get(`${environment.coingecko.url}${coin_id}`);
+  /**
+   *
+   *
+   * @param {string} coinId
+   * @returns
+   * @memberof ProximaxProvider
+   */
+  coingecko(coinId: string) {
+    return this.http.get(`${environment.coingecko.url}${coinId}`);
   }
 
   /**
@@ -186,25 +191,25 @@ export class ProximaxProvider {
 
 
   /**
-     * Create account simple
-     *
-     * @param {string} walletName
-     * @param {Password} password
-     * @param {number} network
-     * @returns {SimpleWallet}
-     * @memberof ProximaxProvider
-     */
+   *
+   *
+   * @param {string} walletName
+   * @param {Password} password
+   * @param {number} network
+   * @returns {SimpleWallet}
+   * @memberof ProximaxProvider
+   */
   createAccountSimple(walletName: string, password: Password, network: number): SimpleWallet {
     return SimpleWallet.create(walletName, password, network);
   }
 
   /**
-    * Create a password
-    *
-    * @param {string} value
-    * @returns {Password}
-    * @memberof ProximaxProvider
-    */
+   *
+   *
+   * @param {string} value
+   * @returns {Password}
+   * @memberof ProximaxProvider
+   */
   createPassword(value: string): Password {
     return new Password(value);
   }
@@ -224,11 +229,14 @@ export class ProximaxProvider {
   }
 
   /**
-  * Decrypt and return private key
-  * @param password
-  * @param encryptedKey
-  * @param iv
-  */
+   *
+   *
+   * @param {Password} password
+   * @param {string} encryptedKey
+   * @param {string} iv
+   * @returns {string}
+   * @memberof ProximaxProvider
+   */
   decryptPrivateKey(password: Password, encryptedKey: string, iv: string): string {
     const common: commonInterface = {
       password: password.value,
@@ -237,7 +245,7 @@ export class ProximaxProvider {
 
     const wallet: { encrypted: string; iv: string; } = {
       encrypted: encryptedKey,
-      iv: iv,
+      iv,
     };
 
     crypto.passwordToPrivatekey(common, wallet, 'pass:bip32');
@@ -258,11 +266,13 @@ export class ProximaxProvider {
 
 
   /**
- * createPublicAccount
- * @param publicKey
- * @param network
- * @returns {PublicAccount}
- */
+   *
+   *
+   * @param {string} publicKey
+   * @param {NetworkType} [network=environment.typeNetwork.value]
+   * @returns {PublicAccount}
+   * @memberof ProximaxProvider
+   */
   createPublicAccount(publicKey: string, network: NetworkType = environment.typeNetwork.value): PublicAccount {
     return PublicAccount.createFromPublicKey(publicKey, network);
   }
@@ -276,7 +286,7 @@ export class ProximaxProvider {
    * @memberof ProximaxProvider
    */
   createAddressFromPublicKey(publicKey: string, networkType: NetworkType): Address {
-    return Address.createFromPublicKey(publicKey, networkType)
+    return Address.createFromPublicKey(publicKey, networkType);
   }
 
   /**
@@ -349,11 +359,11 @@ export class ProximaxProvider {
     return this.accountHttp.aggregateBondedTransactions(publicAccount, new QueryParams(100));
   }
 
-   /**
-   * get
+  /**
+   *
    *
    * @param {string} privateKey
-   * @param {*} net
+   * @param {NetworkType} net
    * @returns {Account}
    * @memberof ProximaxProvider
    */
@@ -361,25 +371,26 @@ export class ProximaxProvider {
     return Account.createFromPrivateKey(privateKey, net);
   }
 
-   /**
+  /**
    *
    *
    * @returns {Observable<UInt64>}
    * @memberof ProximaxProvider
    */
   getBlockchainHeight(): Observable<UInt64> {
-    return this.blockchainHttp.getBlockchainHeight();//Update-sdk-dragon
+    return this.blockchainHttp.getBlockchainHeight(); // Update-sdk-dragon
   }
 
 
   /**
-     * Gets a BlockInfo for a given block height
-     *  @param height - Block height
-     * @returns {Observable<BlockInfo>}
-     * @memberof ProximaxProvider
-     */
+   *
+   *
+   * @param {number} [height=1]
+   * @returns {Observable<BlockInfo>}
+   * @memberof ProximaxProvider
+   */
   getBlockInfo(height: number = 1): Observable<BlockInfo> {
-    return this.blockHttp.getBlockByHeight(height) //Update-sdk-dragon
+    return this.blockHttp.getBlockByHeight(height); // Update-sdk-dragon
   }
 
   /**
@@ -393,24 +404,23 @@ export class ProximaxProvider {
   getBlockchainNetworkType(network: NetworkType): BlockchainNetworkType {
     switch (network) {
       case NetworkType.MAIN_NET:
-        return BlockchainNetworkType.MAIN_NET
-      case NetworkType.MIJIN:
-        return BlockchainNetworkType.MIJIN
+        return BlockchainNetworkType.MAIN_NET;
+        return BlockchainNetworkType.MIJIN;
       case NetworkType.MIJIN_TEST:
-        return BlockchainNetworkType.MIJIN_TEST
+        return BlockchainNetworkType.MIJIN_TEST;
       case NetworkType.TEST_NET:
-        return BlockchainNetworkType.TEST_NET
+        return BlockchainNetworkType.TEST_NET;
     }
   }
 
 
   /**
-     * Get account info from address
-     *
-     * @param {Address} address
-     * @returns {Observable<AccountInfo>}
-     * @memberof ProximaxProvider
-     */
+   *
+   *
+   * @param {Address} address
+   * @returns {Observable<AccountInfo>}
+   * @memberof ProximaxProvider
+   */
   getAccountInfo(address: Address): Observable<AccountInfo> {
     return this.accountHttp.getAccountInfo(address);
   }
@@ -462,7 +472,6 @@ export class ProximaxProvider {
   }
 
   /**
-   *Gets an array of confirmed transactions for which an account is signer or receiver.
    *
    * @param {*} publicKey
    * @param {NetworkType} network
@@ -508,7 +517,7 @@ export class ProximaxProvider {
    * Return getTransaction from id or hash
    * @param param
    */
-  getTransactionInformation(hash: string, node = ''): any {//Observable<Transaction> {
+  getTransactionInformation(hash: string, node = ''): any { // Observable<Transaction> {
     const transaction: TransactionHttp = (node === '') ? this.transactionHttp : new TransactionHttp(environment.protocol + '://' + `${node}`);
     return transaction.getTransaction(hash);
   }
@@ -520,7 +529,7 @@ export class ProximaxProvider {
    * @returns {*}
    * @memberof ProximaxProvider
    */
-  getTransaction(transactionId: string): any { //Observable<Transaction> {
+  getTransaction(transactionId: string): any { // Observable<Transaction> {
     return this.transactionHttp.getTransaction(transactionId);
   }
 
@@ -531,12 +540,12 @@ export class ProximaxProvider {
    * @returns {*}
    * @memberof ProximaxProvider
    */
-  getTransactions(transactionsId: Array<string>): any { //Observable<Transaction> {
+  getTransactions(transactionsId: Array<string>): any { // Observable<Transaction> {
     return this.transactionHttp.getTransactions(transactionsId);
   }
 
   /**
-   *Gets a transaction status for a transaction hash
+   *
    *
    * @param {string} hash
    * @returns {Observable<TransactionStatus>}
@@ -629,7 +638,7 @@ export class ProximaxProvider {
   initInstances(url: string) {
     this.url = `${environment.protocol}://${url}`;
     this.blockHttp = new BlockHttp(this.url);
-    this.blockchainHttp = new ChainHttp(this.url);//Update-sdk-dragon
+    this.blockchainHttp = new ChainHttp(this.url); // Update-sdk-dragon
     this.accountHttp = new AccountHttp(this.url);
     this.mosaicHttp = new MosaicHttp(this.url);
     this.namespaceHttp = new NamespaceHttp(this.url);
@@ -743,20 +752,15 @@ export class ProximaxProvider {
       if (addressTrimAndUpperCase.length === 40) {
         if (address.charAt(0) === 'S') {
           return true;
-        }
-        else if (address.charAt(0) === 'M') {
+        } else if (address.charAt(0) === 'M') {
           return true;
-        }
-        else if (address.charAt(0) === 'V') {
+        } else if (address.charAt(0) === 'V') {
           return true;
-        }
-        else if (address.charAt(0) === 'X') {
+        } else if (address.charAt(0) === 'X') {
           return true;
-        }
-        else if (address.charAt(0) === 'W') {
+        } else if (address.charAt(0) === 'W') {
           return true;
-        }
-        else if (address.charAt(0) === 'Z') {
+        } else if (address.charAt(0) === 'Z') {
           return true;
         }
       }
@@ -801,6 +805,7 @@ export class ProximaxProvider {
   }
 }
 
+// tslint:disable-next-line: class-name
 export interface commonInterface {
   password: string;
   privateKey: string;

@@ -18,7 +18,6 @@ export class SidebarAuthComponent implements OnInit {
   version = '';
 
   constructor(
-    private authService: AuthService,
     private sharedService: SharedService
   ) {
     this.version = environment.version;
@@ -35,7 +34,7 @@ export class SidebarAuthComponent implements OnInit {
       view: true,
       subMenu: {},
       selected: false
-    }
+    };
 
     const createWallet: MenuInterface = {
       type: 'default',
@@ -47,7 +46,7 @@ export class SidebarAuthComponent implements OnInit {
       view: false,
       subMenu: {},
       selected: false
-    }
+    };
 
     const importWallet: MenuInterface = {
       type: 'default',
@@ -59,7 +58,7 @@ export class SidebarAuthComponent implements OnInit {
       view: false,
       subMenu: {},
       selected: false
-    }
+    };
 
     const deleteWallet: MenuInterface = {
       type: 'default',
@@ -71,12 +70,12 @@ export class SidebarAuthComponent implements OnInit {
       view: true,
       subMenu: {},
       selected: false
-    }
+    };
 
     this.itemsHeader = {
       home: this.sharedService.buildHeader(paramsHome),
       wallet: this.sharedService.buildHeader(deleteWallet)
-    }
+    };
 
   }
 }

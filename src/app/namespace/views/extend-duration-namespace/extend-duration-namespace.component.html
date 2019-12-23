@@ -4,26 +4,37 @@
   <form [formGroup]="extendDurationNamespaceForm" (ngSubmit)="extendDuration()">
     <div class="row ">
       <div class="col-11 col-lg-8 mb-2rem mt-1rem">
-        <!-- MSG ERROR INSUFFICIENT BALANCE -->
-        <div class="col-11 mb-1rem mx-auto box-transparent-border-red" *ngIf="insufficientBalance">
-          <div class="txt-a-center">
-            <img src="assets/images/img/icon-restriction-white.svg" style="filter: invert(50%)" alt="" width="30">
+        <div class="row">
+          <!-- MSG ERROR INSUFFICIENT BALANCE -->
+          <div class="col-11 mb-1rem mx-auto box-transparent-border-red" *ngIf="insufficientBalance">
+            <div class="txt-a-center">
+              <img src="assets/images/img/icon-restriction-white.svg" style="filter: invert(50%)" alt="" width="30">
+            </div>
+            <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
+              Insufficient balance.
+            </p>
           </div>
-          <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
-            Insufficient balance.
-          </p>
         </div>
 
         <!-- MSG ERROR NOT HAVE NAMESPACE -->
-        <div class="col-11 mb-1rem mx-auto box-transparent-border-red mb-1rem"
-          *ngIf="noNamespace && !insufficientBalance">
-          <div class="txt-a-center">
-            <img src="assets/images/img/icon-restriction-white.svg" style="filter: invert(50%)" alt="" width="30">
+        <div class="row">
+          <div class="col-11 mb-1rem mx-auto box-transparent-border-red mb-1rem"
+            *ngIf="noNamespace && !insufficientBalance">
+            <div class="txt-a-center">
+              <img src="assets/images/img/icon-restriction-white.svg" style="filter: invert(50%)" alt="" width="30">
+            </div>
+            <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
+              This account has not created any namespaces.
+            </p>
           </div>
-          <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
-            This account has not created any namespaces.
-          </p>
         </div>
+
+        <!-- SELECT ACCOUNT -->
+        <ng-container *ngIf="showSelectAccount">
+          <app-select-account class="mb-2rem" [publicKeyToSelect]="accountToSelect"
+            (accountDebitFunds)="selectAccountDebitFunds($event)" (cosignatoryEvent)="selectCosignatory($event)"
+            (isMultisgEvent)="isMultisig = $event"></app-select-account>
+        </ng-container>
 
         <!-- SELECT  NAMESPACE-->
         <div class="row">
@@ -32,7 +43,7 @@
               [validateError]="true" class="selectWrapper" [items]="arrayselect" formControlName="namespaceRoot"
               bindLabel="label" bindValue="value" placeholder="Select Namespace" (change)="optionSelected($event)">
             </ng-select>
-            <mdb-error class="ml-1rem"
+            <mdb-error class="ml-1rem mt-05rem"
               *ngIf="validateInput('namespaceRoot').invalid && (validateInput('namespaceRoot').dirty || validateInput('namespaceRoot').touched)">
               <span>Select Namespace</span>
             </mdb-error>
@@ -53,13 +64,14 @@
               <!-- VALIDATION -->
               <mdb-error
                 *ngIf="validateInput('duration', '').invalid && (validateInput('duration', '').dirty || validateInput('duration', '').touched)">
-                <span>Required Field</span>
+                <span class="fs-08rem fw-600 color-error-message">Required Field</span>
               </mdb-error>
               <mdb-error *ngIf="exceededDuration">
-                <span>Duration Exceeded</span>
+                <span class="fs-08rem fw-600 color-error-message">Duration Exceeded</span>
               </mdb-error>
 
-              <mdb-error *ngIf="validateInput('duration', '').valid && insufficientBalanceDuration">
+              <mdb-error
+                *ngIf="!exceededDuration && validateInput('duration', '').valid && insufficientBalanceDuration">
                 <span class="fs-08rem fw-600 color-error-message">Insufficient balance</span>
               </mdb-error>
             </div>
@@ -87,6 +99,25 @@
                 Rental Fee:&nbsp;
                 <a [innerHTML]="getQuantity(calculateRentalFee)"></a> XPX
               </span>
+            </div>
+          </div>
+
+          <div class="col-11 mx-auto" *ngIf="isMultisig">
+            <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
+              <div class="row">
+                <div class="col-12 d-flex align-items-center">
+                  <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
+                    width="20" alt="">&nbsp;
+
+                  <span class="fs-08rem">
+                    LockFund:&nbsp;
+                    <a [innerHTML]="getQuantity('10.000000')"></a> XPX <br>
+
+                    Unconfirmed/Recommended Fee:&nbsp;
+                    <a [innerHTML]="getQuantity('0.044500')"></a> XPX
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -125,7 +156,7 @@
           </div>
 
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-            <button mdbBtn type="submit" rounded="true" [disabled]="extendDurationNamespaceForm.invalid || insufficientBalance ||
+            <button mdbBtn type="submit" rounded="true" [disabled]="insufficientBalanceCosignatory || noNamespace || extendDurationNamespaceForm.invalid || insufficientBalance ||
             insufficientBalanceDuration || exceededDuration || invalidDuration" mdbWavesEffect class="btn-proximax"
               size="md">
               <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
@@ -136,6 +167,7 @@
         </div>
       </div>
 
+      <!-- Start block, Current block, End block -->
       <div class="col-11 col-lg-4 description-p-module mt-1-5rem mb-2rem">
         <div class="row">
           <!-- Start block  -->

@@ -249,10 +249,17 @@ export class TransactionsService {
    * @returns
    * @memberof TransactionsService
    */
-  amountFormatter(amountParam: UInt64 | number, mosaic: MosaicInfo, manualDivisibility = '') {
+  amountFormatter(amountParam: UInt64 | number, mosaic: MosaicInfo, manualDivisibility = null) {
     let amountFormatter = '';
     if (mosaic !== null && mosaic !== undefined) {
-      const divisibility = manualDivisibility === '' ? mosaic['properties'].divisibility : manualDivisibility;
+      const divisibility = (manualDivisibility === '' || manualDivisibility === null) ? mosaic['properties'].divisibility : manualDivisibility;
+      const amount = typeof amountParam === 'number' ? amountParam : amountParam.compact();
+      const amountDivisibility = Number(amount / Math.pow(10, divisibility));
+      amountFormatter = amountDivisibility.toLocaleString('en-us', {
+        minimumFractionDigits: divisibility
+      });
+    } else if (manualDivisibility !== null) {
+      const divisibility = manualDivisibility;
       const amount = typeof amountParam === 'number' ? amountParam : amountParam.compact();
       const amountDivisibility = Number(amount / Math.pow(10, divisibility));
       amountFormatter = amountDivisibility.toLocaleString('en-us', {
@@ -333,6 +340,7 @@ export class TransactionsService {
       this.walletService.currentAccount.network
     );
 
+    // console.log('\n hashLockTransaction --> ', hashLockTransaction);
     return signer.sign(hashLockTransaction, generationHash);
   }
 
@@ -362,6 +370,7 @@ export class TransactionsService {
       return cosignatoryAccount.signTransactionWithCosignatories(bondedCreated, otherCosigners, generationHash);
     }
 
+    // console.log('\n bondedCreated --> ', bondedCreated);
     return cosignatoryAccount.sign(bondedCreated, generationHash);
   }
 
@@ -855,7 +864,6 @@ export class TransactionsService {
    * @memberof TransactionsService
    */
   setTransactionsAggregateBonded$(transactions: TransactionsInterface[]) {
-    console.log('-------transactions-------', transactions);
     this._aggregateTransactionsSubject.next(transactions);
   }
 
@@ -989,9 +997,6 @@ export class TransactionsService {
    */
   validateBuildSelectAccountBalance(balanceAccount: number, feeTransaction: number, rental: number): boolean {
     const totalFee = feeTransaction + rental;
-    console.log('totalFee', totalFee);
-    console.log('balanceAccount', balanceAccount);
-    console.log('balanceAccount >= totalFee', balanceAccount >= totalFee);
     return balanceAccount >= totalFee;
   }
 

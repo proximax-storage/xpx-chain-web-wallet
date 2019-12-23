@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
-import { AliasActionType, Address, NamespaceId, MosaicId } from 'tsjs-xpx-chain-sdk';
+import { AliasActionType, Address, NamespaceId, MosaicId, SignedTransaction, TransactionHttp, Account } from 'tsjs-xpx-chain-sdk';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AppConfig } from '../../../config/app.config';
@@ -8,16 +8,18 @@ import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { NamespacesService, NamespaceStorageInterface, AddressAliasTransactionInterface } from '../../../servicesModule/services/namespaces.service';
 import { DataBridgeService } from '../../../shared/services/data-bridge.service';
 import { SharedService, ConfigurationForm } from '../../../shared/services/shared.service';
-import { WalletService } from '../../../wallet/services/wallet.service';
+import { WalletService, AccountsInterface } from '../../../wallet/services/wallet.service';
 import { HeaderServicesInterface, ServicesModuleService } from '../../../servicesModule/services/services-module.service';
 import { TransactionsService } from '../../../transactions/services/transactions.service';
+import { environment } from '../../../../environments/environment';
+import { NodeService } from '../../../servicesModule/services/node.service';
 
 @Component({
   selector: 'app-alias-address-to-namespace',
   templateUrl: './alias-address-to-namespace.component.html',
   styleUrls: ['./alias-address-to-namespace.component.css']
 })
-export class AliasAddressToNamespaceComponent implements OnInit {
+export class AliasAddressToNamespaceComponent implements OnInit, OnDestroy {
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Accounts',
     componentName: 'Link to Namespace'
@@ -32,7 +34,8 @@ export class AliasAddressToNamespaceComponent implements OnInit {
   namespaceSelect: Array<object> = [];
   isValidBlockchain = false;
   validFormat = false;
-  transactionSigned: any;
+  transactionSigned = [];
+  transactionReady: SignedTransaction[] = [];
   typeAction: any = [{
     value: AliasActionType.Link,
     label: 'Link',
@@ -55,6 +58,14 @@ export class AliasAddressToNamespaceComponent implements OnInit {
   mosaicstoHex: any;
   passwordMain = 'password';
 
+  signer: AccountsInterface = null;
+  typeTx = 1; // 1 simple, 2 multisig
+  insufficientBalanceCosignatory = false;
+  cosignatory: AccountsInterface = null;
+  showSelectAccount = true;
+  isMultisig = false;
+  transactionHttp: TransactionHttp = null;
+
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -64,67 +75,16 @@ export class AliasAddressToNamespaceComponent implements OnInit {
     private proximaxProvider: ProximaxProvider,
     private dataBridge: DataBridgeService,
     private serviceModuleService: ServicesModuleService,
-    private transactionService: TransactionsService
+    private transactionService: TransactionsService,
+    private nodeService: NodeService
   ) { }
 
   ngOnInit() {
+    this.transactionHttp = new TransactionHttp(environment.protocol + '://' + `${this.nodeService.getNodeSelected()}`);
     this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
-    this.getNamespaces();
     this.booksAddress();
-    this.amountAccount = this.walletService.getAmountAccount();
-
-    // SUBSCRIBE ADDRESS
-    this.LinkToNamespaceForm.get('address').valueChanges.subscribe(address => {
-      if (address) {
-        if (this.proximaxProvider.validateAddress(address)) {
-          const filtered = this.walletService.filterAccountInfo(this.proximaxProvider.createFromRawAddress(address).pretty(), true);
-          this.validFormat = true;
-          if (filtered) {
-            if (filtered.accountInfo.publicKey === '0000000000000000000000000000000000000000000000000000000000000000') {
-              this.isValidBlockchain = false;
-              return;
-            } else {
-              // if (!this.validateLinkeadAccount(address)) {
-              this.address = Address.createFromRawAddress(address);
-              this.isValidBlockchain = true;
-              this.builder();
-              // }
-            }
-          } else {
-            // if (!this.validateLinkeadAccount(address)) {
-            this.address = Address.createFromRawAddress(address);
-            this.isValidBlockchain = true;
-            this.builder();
-            // }
-          }
-        } else {
-          this.isValidBlockchain = false;
-          this.validFormat = false;
-        }
-      }
-
-      return;
-    });
-
-
-    // SUBSCRIBE TYPE ACTION
-    this.LinkToNamespaceForm.get('typeAction').valueChanges.subscribe(action => {
-      this.disabledAddressBook = (action === 1);
-      this.showContacts = (action === 1) ? false : this.showContacts;
-      this.LinkToNamespaceForm.reset({ address: '', namespace: '', password: '', typeAction: action }, { emitEvent: false });
-      this.builder();
-    });
-
-    // SUBSCRIBE NAMESPACE
-    this.LinkToNamespaceForm.get('namespace').valueChanges.subscribe(next => {
-      if (next && next !== '') {
-        this.LinkToNamespaceForm.get('contact').patchValue('');
-        this.LinkToNamespaceForm.get('address').setValue(this.namespaceSelect.find(el => el['value'] === next)['address']);
-        this.namespaceId = new NamespaceId(next);
-        this.builder();
-      }
-    });
+    this.subscribe();
   }
 
   /**
@@ -147,15 +107,16 @@ export class AliasAddressToNamespaceComponent implements OnInit {
   async buildSelectNamespace($event = null) {
     if ($event !== null) {
       const namespaceSelect = [];
+      this.namespaceSelect = [];
       this.loading = true;
       if (this.arrayNamespaceStorage && this.arrayNamespaceStorage.length > 0) {
-        for (let namespaceStorage of this.arrayNamespaceStorage) {
+        for (const namespaceStorage of this.arrayNamespaceStorage) {
           if (namespaceStorage.namespaceInfo) {
             // console.log('INFO ---> ', namespaceStorage, '\n\n');
             let address = '';
             let isLinked = false;
             let disabled = false;
-            let label = namespaceStorage.namespaceName.name;//await this.namespaceService.getNameParentNamespace(namespaceStorage);
+            let label = namespaceStorage.namespaceName.name; // await this.namespaceService.getNameParentNamespace(namespaceStorage);
             const name = label;
             if (namespaceStorage.namespaceInfo.alias.type === 1) {
               this.mosaicstoHex = new MosaicId([namespaceStorage.namespaceInfo.alias.mosaicId[0], namespaceStorage.namespaceInfo.alias.mosaicId[1]]);
@@ -179,14 +140,18 @@ export class AliasAddressToNamespaceComponent implements OnInit {
               label: `${label}`,
               value: `${name}`,
               selected: false,
-              disabled: disabled,
-              address: address
+              disabled,
+              address
             });
           }
-        };
+        }
       }
 
       if (namespaceSelect.length > 0) {
+        this.LinkToNamespaceForm.get('address').enable();
+        this.LinkToNamespaceForm.get('namespace').enable();
+        this.LinkToNamespaceForm.get('password').enable();
+        // tslint:disable-next-line: only-arrow-functions
         this.namespaceSelect = namespaceSelect.sort(function (a: any, b: any) {
           return a.label === b.label ? 0 : +(a.label > b.label) || -1;
         });
@@ -202,6 +167,24 @@ export class AliasAddressToNamespaceComponent implements OnInit {
     }
   }
 
+  /**
+   *
+   *
+   * @param {SignedTransaction} signedTransaction
+   * @memberof AliasAddressToNamespaceComponent
+   */
+  announceAggregateBonded(signedTransaction: SignedTransaction) { // change
+    this.transactionHttp.announceAggregateBonded(signedTransaction).subscribe(
+      async () => {
+        // this.blockBtnSend = false;
+        this.fee = '0.000000';
+        this.transactionSigned.push(signedTransaction);
+      },
+      err => {
+        this.sharedService.showError('', err);
+      });
+  }
+
 
 
   /**
@@ -214,7 +197,7 @@ export class AliasAddressToNamespaceComponent implements OnInit {
     const bookAddress = this.serviceModuleService.getBooksAddress();
     this.listContacts = [];
     if (bookAddress !== undefined && bookAddress !== null) {
-      for (let x of bookAddress) {
+      for (const x of bookAddress) {
         data.push(x);
       }
       this.listContacts = data;
@@ -238,8 +221,14 @@ export class AliasAddressToNamespaceComponent implements OnInit {
     this.fee = this.transactionService.amountFormatterSimple(this.addressAliasTransaction.maxFee.compact());
   }
 
-  changeInputType(inputType) {
-    let newType = this.sharedService.changeInputType(inputType)
+  /**
+   *
+   *
+   * @param {string} inputType
+   * @memberof AliasAddressToNamespaceComponent
+   */
+  changeInputType(inputType: string) {
+    const newType = this.sharedService.changeInputType(inputType);
     this.passwordMain = newType;
   }
 
@@ -295,10 +284,11 @@ export class AliasAddressToNamespaceComponent implements OnInit {
    *
    * @memberof AliasAddressToNamespaceComponent
    */
-  getNamespaces() {
+  getNamespaces(account: AccountsInterface) {
     this.subscription.push(this.namespaceService.getNamespaceChanged().subscribe(
       async (arrayNamespaceStorage: NamespaceStorageInterface[]) => {
-        this.arrayNamespaceStorage = arrayNamespaceStorage;
+        const namespaceInfo = this.namespaceService.filterNamespacesFromAccount(account.publicAccount.publicKey);
+        this.arrayNamespaceStorage = namespaceInfo;
         this.buildSelectNamespace(this.LinkToNamespaceForm.get('typeAction').value);
       }
     ));
@@ -315,7 +305,7 @@ export class AliasAddressToNamespaceComponent implements OnInit {
       async namespaceInfo => {
         const namespaceSelect = this.namespaceSelect.slice(0);
         if (namespaceInfo !== undefined && namespaceInfo.length > 0) {
-          for (let data of namespaceInfo) {
+          for (const data of namespaceInfo) {
             if (data.namespaceInfo.depth === 1) {
               namespaceSelect.push({
                 value: `${data.namespaceName.name}`,
@@ -326,9 +316,9 @@ export class AliasAddressToNamespaceComponent implements OnInit {
             } else {
               let name = '';
               if (data.namespaceInfo.depth === 2) {
-                //Assign level 2
+                // Assign level 2
                 const level2 = data.namespaceName.name;
-                //Search level 1
+                // Search level 1
                 const level1: NamespaceStorageInterface[] = await this.namespaceService.getNamespaceFromId(
                   [this.proximaxProvider.getNamespaceId([data.namespaceName.parentId.id.lower, data.namespaceName.parentId.id.higher])]
                 );
@@ -341,14 +331,14 @@ export class AliasAddressToNamespaceComponent implements OnInit {
                   disabled: false
                 });
               } else if (data.namespaceInfo.depth === 3) {
-                //Assign el level3
+                // Assign el level3
                 const level3 = data.namespaceName.name;
-                //search level 2
+                // search level 2
                 const level2: NamespaceStorageInterface[] = await this.namespaceService.getNamespaceFromId(
                   [this.proximaxProvider.getNamespaceId([data.namespaceName.parentId.id.lower, data.namespaceName.parentId.id.higher])]
                 );
 
-                //search level 1
+                // search level 1
                 const level1: NamespaceStorageInterface[] = await this.namespaceService.getNamespaceFromId(
                   [this.proximaxProvider.getNamespaceId([level2[0].namespaceName.parentId.id.lower, level2[0].namespaceName.parentId.id.higher])]
                 );
@@ -364,6 +354,7 @@ export class AliasAddressToNamespaceComponent implements OnInit {
           }
         }
 
+        // tslint:disable-next-line: only-arrow-functions
         this.namespaceSelect = namespaceSelect.sort(function (a: any, b: any) {
           return a.label === b.label ? 0 : +(a.label > b.label) || -1;
         });
@@ -375,22 +366,36 @@ export class AliasAddressToNamespaceComponent implements OnInit {
   }
 
   /**
-  *
-  *
-  * @memberof AliasAddressToNamespaceComponent
-  */
+   *
+   *
+   * @memberof AliasAddressToNamespaceComponent
+   */
   getTransactionStatus() {
     this.subscription['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
         if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
-          const match = statusTransaction['hash'] === this.transactionSigned.hash;
+          for (const element of this.transactionSigned) {
+            const match = statusTransaction['hash'] === element.hash;
+            if (match) {
+              this.blockSend = false;
+              this.clearForm();
+              this.transactionReady.push(element);
+            }
+            if (statusTransaction['type'] === 'confirmed' && match) {
+              this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
+            } else if (statusTransaction['type'] === 'unconfirmed' && match) {
+            } else if (match) {
+              this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
+            }
+          }
+          /*const match = statusTransaction['hash'] === this.transactionSigned.hash;
           if (statusTransaction['type'] === 'confirmed' && match) {
             this.transactionSigned = null;
           } else if (statusTransaction['type'] === 'unconfirmed' && match) {
             this.transactionSigned = null;
           } else if (match) {
             this.transactionSigned = null;
-          }
+          }*/
         }
       }
     );
@@ -408,10 +413,55 @@ export class AliasAddressToNamespaceComponent implements OnInit {
     return this.sharedService.amountFormat(quantity);
   }
 
+  /**
+   *
+   *
+   * @param {{ label: string, value: string }} event
+   * @memberof AliasAddressToNamespaceComponent
+   */
   selectContact(event: { label: string, value: string }) {
     if (event !== undefined && event.value !== '') {
       this.LinkToNamespaceForm.get('address').patchValue(event.value);
       this.address = Address.createFromRawAddress(event.value);
+    }
+  }
+
+  /**
+   *
+   *
+   * @param {AccountsInterface} account
+   * @memberof AliasAddressToNamespaceComponent
+   */
+  selectAccountDebitFunds(account: AccountsInterface) {
+    setTimeout(() => {
+      const amountAccount = this.walletService.getAmountAccount(account.address);
+      this.amountAccount = Number(this.transactionService.amountFormatterSimple(amountAccount).replace(/,/g, ''));
+      this.signer = account;
+      this.typeTx = (this.transactionService.validateIsMultisigAccount(this.signer)) ? 2 : 1;
+      this.getNamespaces(this.signer);
+      // this.filterMosaicByAccount();
+      // this.validateBalance();
+    });
+  }
+
+  /**
+   *
+   *
+   * @param {{ disabledForm: boolean, cosignatory: AccountsInterface }} event
+   * @memberof AliasAddressToNamespaceComponent
+   */
+  selectCosignatory(event: { disabledForm: boolean, cosignatory: AccountsInterface }) {
+    if (event) {
+      if (event.disabledForm) {
+        this.insufficientBalanceCosignatory = true;
+        // this.disableForm();
+      } else {
+        this.insufficientBalanceCosignatory = false;
+        this.cosignatory = event.cosignatory;
+      }
+    } else {
+      this.insufficientBalanceCosignatory = false;
+      this.cosignatory = null;
     }
   }
 
@@ -428,19 +478,16 @@ export class AliasAddressToNamespaceComponent implements OnInit {
         const common = {
           password: this.LinkToNamespaceForm.get('password').value,
           privateKey: ''
-        }
+        };
 
-        if (this.walletService.decrypt(common)) {
-          const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
-          const generationHash = this.dataBridge.blockInfo.generationHash;
-          this.transactionSigned = account.sign(this.addressAliasTransaction, generationHash); //Update-sdk-dragon
-          this.proximaxProvider.announce(this.transactionSigned).subscribe(
-            next => {
-              this.blockSend = false;
-              this.clearForm();
-            }
-          );
-
+        const accountToDecrypt = (this.typeTx === 1) ? this.signer : this.cosignatory;
+        if (this.walletService.decrypt(common, accountToDecrypt)) {
+          if (this.typeTx === 1) {
+            const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
+            this.sendTxSimple(account);
+          } else {
+            this.sendAggregateBonded(common.privateKey);
+          }
         } else {
           this.LinkToNamespaceForm.get('password').patchValue('');
           this.blockSend = false;
@@ -449,6 +496,129 @@ export class AliasAddressToNamespaceComponent implements OnInit {
         this.sharedService.showError('', 'Insufficient balance');
       }
     }
+  }
+
+  /**
+   *
+   *
+   * @param {Account} account
+   * @memberof AliasAddressToNamespaceComponent
+   */
+  sendTxSimple(account: Account) {
+    const generationHash = this.dataBridge.blockInfo.generationHash;
+    const transactionSigned = account.sign(this.addressAliasTransaction, generationHash); // Update-sdk-dragon
+    this.transactionSigned.push(transactionSigned);
+    this.proximaxProvider.announce(transactionSigned).subscribe(
+      next => {
+        this.blockSend = false;
+        this.clearForm();
+      }
+    );
+  }
+
+  /**
+   *
+   *
+   * @param {string} pvk
+   * @memberof AliasAddressToNamespaceComponent
+   */
+  sendAggregateBonded(pvk: string) {
+    const innerTransaction = [{
+      signer: this.signer.publicAccount,
+      tx: this.addressAliasTransaction
+    }];
+
+    const generationHash = this.dataBridge.blockInfo.generationHash;
+    const accountCosignatory = Account.createFromPrivateKey(pvk, this.walletService.currentAccount.network);
+    const aggregateSigned = this.transactionService.buildAggregateTransaction(accountCosignatory, innerTransaction, generationHash);
+    let hashLockSigned = this.transactionService.buildHashLockTransaction(aggregateSigned, accountCosignatory, generationHash);
+    this.transactionService.buildTransactionHttp().announce(hashLockSigned).subscribe(async () => {
+      this.clearForm();
+      this.subscription['getTransactionStatushashLock'] = this.dataBridge.getTransactionStatus().subscribe(
+        statusTransaction => {
+          this.clearForm();
+          if (statusTransaction !== null && statusTransaction !== undefined && hashLockSigned !== null) {
+            const match = statusTransaction['hash'] === hashLockSigned.hash;
+            if (statusTransaction['type'] === 'confirmed' && match) {
+              this.blockSend = false;
+              setTimeout(() => {
+                this.announceAggregateBonded(aggregateSigned);
+                this.blockSend = false;
+                hashLockSigned = null;
+              }, environment.delayBetweenLockFundABT);
+            } else if (statusTransaction['type'] === 'status' && match) {
+              this.blockSend = false;
+              this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
+              hashLockSigned = null;
+            }
+          }
+        }
+      );
+    }, err => { });
+  }
+
+  /**
+   *
+   *
+   * @memberof AliasAddressToNamespaceComponent
+   */
+  subscribe() {
+    // SUBSCRIBE ADDRESS
+    this.LinkToNamespaceForm.get('address').valueChanges.subscribe(address => {
+      if (address) {
+        if (this.proximaxProvider.validateAddress(address)) {
+          const filtered = this.walletService.filterAccountInfo(this.proximaxProvider.createFromRawAddress(address).pretty(), true);
+          this.validFormat = true;
+          if (filtered) {
+            if (filtered.accountInfo.publicKey === '0000000000000000000000000000000000000000000000000000000000000000') {
+              this.isValidBlockchain = false;
+              return;
+            } else {
+              // if (!this.validateLinkeadAccount(address)) {
+              this.address = Address.createFromRawAddress(address);
+              this.isValidBlockchain = true;
+              this.builder();
+              // }
+            }
+          } else {
+            // if (!this.validateLinkeadAccount(address)) {
+            this.address = Address.createFromRawAddress(address);
+            this.isValidBlockchain = true;
+            this.builder();
+            // }
+          }
+        } else {
+          this.isValidBlockchain = false;
+          this.validFormat = false;
+        }
+      }
+
+      return;
+    });
+
+
+    // SUBSCRIBE TYPE ACTION
+    this.LinkToNamespaceForm.get('typeAction').valueChanges.subscribe(action => {
+      this.LinkToNamespaceForm.get('namespace').patchValue('');
+      // tslint:disable-next-line: only-arrow-functions
+      this.namespaceSelect = this.namespaceSelect.sort(function (a: any, b: any) {
+        return a.label === b.label ? 0 : +(a.label > b.label) || -1;
+      });
+      this.disabledAddressBook = (action === 1);
+      this.showContacts = (action === 1) ? false : this.showContacts;
+      this.LinkToNamespaceForm.reset({ address: '', namespace: '', password: '', typeAction: action }, { emitEvent: false });
+      this.builder();
+    });
+
+    // SUBSCRIBE NAMESPACE
+    this.LinkToNamespaceForm.get('namespace').valueChanges.subscribe(next => {
+      if (next && next !== '') {
+        this.LinkToNamespaceForm.get('contact').patchValue('');
+        this.LinkToNamespaceForm.get('address').setValue(this.namespaceSelect.find(el => el['value'] === next)['address']);
+        this.namespaceId = new NamespaceId(next);
+        this.builder();
+      }
+    });
   }
 
   /**

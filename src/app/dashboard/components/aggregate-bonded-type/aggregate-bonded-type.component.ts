@@ -32,8 +32,5 @@ export class AggregateBondedTypeComponent implements OnInit, OnChanges {
       const nameType = Object.keys(this.typeTransactions).find(x => this.typeTransactions[x].id === element.type);
       element['nameType'] = (nameType) ? this.typeTransactions[nameType].name : element.type.toString(16).toUpperCase();
     });
-
-    console.log(this.aggregateBonded);
-
   }
 }
