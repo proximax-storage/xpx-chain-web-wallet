@@ -6,7 +6,7 @@ import { ChronoUnit } from 'js-joda';
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: true,
+  production: false,
   itemBooksAddress: 'sw-books-mainnet',
   version: '0.4.13',
   cacheVersion: '01-MAINNET',
