@@ -9,5 +9,5 @@
     The ProximaX Sirius Wallet is one of the official applications of ProximaX, offering total security for the storage, sending and receiving of your assets. With ProximaX Sirius Wallet you can make use of mosaics, namespace, notarization of documents, voting, transaction explorer, contact directory as well as create and import your encrypted account. <br><br> It is available for Windows operating systems, Mac OS, Linux and a generic version.
 </p>
 <p align="center">
-    <a href="https://github.com/Ismaestro/angular8-example-app/issues/new">Report bug</a>
+    <a href="https://t.me/proximaxhelpdesk">Report bug</a>
   </p>
