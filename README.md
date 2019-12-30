@@ -10,6 +10,4 @@
 </p>
 <p align="center">
     <a href="https://github.com/Ismaestro/angular8-example-app/issues/new">Report bug</a>
-    ·
-    <a href="https://github.com/Ismaestro/angular8-example-app/issues/new">Request feature</a>
   </p>
