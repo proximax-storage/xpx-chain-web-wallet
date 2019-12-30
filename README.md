@@ -11,3 +11,29 @@
 <p align="center">
     <a href="https://t.me/proximaxhelpdesk">Report bug</a>
   </p>
+
+
+
+## Table of contents
+
+- [Requirements](#requirements)
+- [Quick start](#quick-start)
+
+
+## Requirements
+
+
+
+## Quick start
+
+ ```bash
+git clone https://github.com/proximax-storage/xpx-chain-web-wallet.git
+cd xpx-chain-web-wallet
+ npm i
+ npm start
+ ```
+**WARNING**
+
+> To execute the `ng serve` command, you must make other settings. Navigate to the following directories:
+`node_modules> @ angular-devkit> build-angular> src> angular-cli-files> models> webpack-configs> browser.js`
+You must change `node: false` to` node: {crypto: true, stream: true, fs: 'empty', net: 'empty', tls: 'empty'} `.
