@@ -34,6 +34,4 @@ cd xpx-chain-web-wallet
  ```
 **WARNING**
 
-> To execute the `ng serve` command, you must make other settings. Navigate to the following directories:
-`node_modules> @ angular-devkit> build-angular> src> angular-cli-files> models> webpack-configs> browser.js`
-You must change `node: false` to` node: {crypto: true, stream: true, fs: 'empty', net: 'empty', tls: 'empty'} `.
+> To execute the `ng serve` command, you must make other settings. Navigate to the following directories: <br> `node_modules> @ angular-devkit> build-angular> src> angular-cli-files> models> webpack-configs> browser.js` <br>  You must change `node: false` to` node: {crypto: true, stream: true, fs: 'empty', net: 'empty', tls: 'empty'} `.
