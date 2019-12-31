@@ -17,7 +17,7 @@
 ## Table of contents
 
 - [Requirements](#requirements)
-- [Quick start](#quick-start)
+- [Quick start development](#quick-start-development)
 - [Build to production](#Build-to-production)
 
 
@@ -30,7 +30,7 @@ Npm: 6.13.4
  ```
 
 
-## Quick start
+## Quick start development
 
  ```bash
 git clone https://github.com/proximax-storage/xpx-chain-web-wallet.git
