@@ -51,7 +51,7 @@ npm start or ng serve
 ```	
 
 
-> <br>You must change `node: false` to`node: {crypto: true, stream: true, fs: 'empty', net: 'empty', tls: 'empty'}`.
+>You must change `node: false` to`node: {crypto: true, stream: true, fs: 'empty', net: 'empty', tls: 'empty'}`.
 
 ## Build to production
 
