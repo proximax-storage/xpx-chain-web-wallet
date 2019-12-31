@@ -18,7 +18,7 @@
 
 - [Requirements](#requirements)
 - [Quick start development](#quick-start-development)
-- [Build to production](#Build-to-production)
+- [Build to production](#build-to-production)
 
 
 ## Requirements
@@ -45,7 +45,26 @@ cd xpx-chain-web-wallet
 <br> <br>  You must change `node: false` to` node: {crypto: true, stream: true, fs: 'empty', net: 'empty', tls: 'empty'} `.
 
 ## Build to production
-For build to production (Minified and optimized)
+
+For build to production (Minified and optimized).
+
+<b>Generic version</b>
+ ```bash
+ng build --aot --prod --build-optimizer=true --vendor-chunk=true
+ ```
+ <br>
+ 
+<b>Windows version</b>
+ ```bash
+ng build --aot --prod --build-optimizer=true --vendor-chunk=true
+ ```
+  <br>
+ <b>Linux version</b>
+ ```bash
+ng build --aot --prod --build-optimizer=true --vendor-chunk=true
+ ```
+  <br>
+  <b>Mac OS version</b>
  ```bash
 ng build --aot --prod --build-optimizer=true --vendor-chunk=true
  ```
