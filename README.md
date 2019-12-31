@@ -1,4 +1,3 @@
-
 <p align="center">
   <a href="https://www.proximax.io/">
     <img src="https://www.proximax.io/user/themes/proximaxvrs1/images/logo.png" alt="Logo" width=280 height=60>
@@ -12,61 +11,67 @@
     <a href="https://t.me/proximaxhelpdesk">Report bug</a>
   </p>
 
-
-
 ## Table of contents
 
 - [Requirements](#requirements)
 - [Quick start development](#quick-start-development)
 - [Build to production](#build-to-production)
 
-
 ## Requirements
- ```bash
+
+```bash
 Angular CLI: 8.0.6
 Angular: 8.0.3
 Node: 10.16.3
 Npm: 6.13.4
- ```
-
+```
 
 ## Quick start development
 
- ```bash
+```bash
 git clone https://github.com/proximax-storage/xpx-chain-web-wallet.git
 cd xpx-chain-web-wallet
- npm i
- npm start or ng serve
- ```
+npm i
+npm start or ng serve
+```
+
 **WARNING**
 
-> To execute the `ng serve` command, you must make other settings. Navigate to the following directories: 
-<br> <br> `node_modules> @angular-devkit> build-angular> src> angular-cli-files> models> webpack-configs> browser.js` 
-<br> <br>  You must change `node: false` to` node: {crypto: true, stream: true, fs: 'empty', net: 'empty', tls: 'empty'} `.
+> To execute the `ng serve` command, you must make other settings. Navigate to the following directories:
+> <br> <br> `node_modules> @angular-devkit> build-angular> src> angular-cli-files> models> webpack-configs> browser.js`
+> <br> <br> You must change `node: false` to`node: {crypto: true, stream: true, fs: 'empty', net: 'empty', tls: 'empty'}`.
 
 ## Build to production
 
 For build to production (Minified and optimized).
 
 <b>Generic version</b>
+
+```bash
+npm run build-optimizer
+```
+
+   <br>
+  
+  <b>Electron Version</b>
  ```bash
-ng build --aot --prod --build-optimizer=true --vendor-chunk=true
+npm run electron-build
  ```
  <br>
  
 <b>Windows version</b>
  ```bash
-ng build --aot --prod --build-optimizer=true --vendor-chunk=true
+npm run package-win
  ```
   <br>
   
  <b>Linux version</b>
  ```bash
-ng build --aot --prod --build-optimizer=true --vendor-chunk=true
+npm run package-linux
  ```
   <br>
   
   <b>Mac OS version</b>
  ```bash
-ng build --aot --prod --build-optimizer=true --vendor-chunk=true
+npm run package-mac
  ```
