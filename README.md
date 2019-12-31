@@ -18,10 +18,16 @@
 
 - [Requirements](#requirements)
 - [Quick start](#quick-start)
+- [Build to production](#Build-to-production)
 
 
 ## Requirements
-
+ ```bash
+Angular CLI: 8.0.6
+Angular: 8.0.3
+Node: 10.16.3
+Npm: 6.13.4
+ ```
 
 
 ## Quick start
@@ -30,10 +36,16 @@
 git clone https://github.com/proximax-storage/xpx-chain-web-wallet.git
 cd xpx-chain-web-wallet
  npm i
- npm start
+ npm start or ng serve
  ```
 **WARNING**
 
 > To execute the `ng serve` command, you must make other settings. Navigate to the following directories: 
-<br> <br> `node_modules> @ angular-devkit> build-angular> src> angular-cli-files> models> webpack-configs> browser.js` 
+<br> <br> `node_modules> @angular-devkit> build-angular> src> angular-cli-files> models> webpack-configs> browser.js` 
 <br> <br>  You must change `node: false` to` node: {crypto: true, stream: true, fs: 'empty', net: 'empty', tls: 'empty'} `.
+
+## Build to production
+For build to production (Minified and optimized)
+ ```bash
+ng build --aot --prod --build-optimizer=true --vendor-chunk=true
+ ```
