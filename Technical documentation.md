@@ -27,11 +27,20 @@ Before you start, take a moment to see how the project structure looks like:
 ├── /node_modules/                   # 3rd-party libraries and utilities
 ├── /src/                            # The source code of the application
 │   ├── /app/                        # The core source code
-│   │   ├── /accounts/               # Account Module (Components, Views)
-│   │   ├── /apostille/              # Apostille Module (Views, Services)
-│   │   ├── /auth/                   # Auth Module (Views, Services)
+│   │   ├── /accounts/               # Account Module 
+│   │   ├── /apostille/              # Apostille Module
+│   │   ├── /auth/                   # Auth Module
 │   │   ├── /config/                 # Configuration file for route variables
 │   │   ├── /core/                   # Container for storing components and other essential services
+│   │   ├── /dashboard/              # Dashboard Module
+│   │   ├── /home/                   # Home Module
+│   │   ├── /mosaics/                # Mosaics Module
+│   │   ├── /multi-sign/             # Multi-sign Module
+│   │   ├── /namespace/              # Namespace Module
+│   │   ├── /servicesModule/         # Contains address-book, explorer, nodes, notifications, service-box, wallet (export and delete) modules
+│   │   ├── /shared/                 # The folder contains layouts, guards and generic services
+│   │   ├── /storage/                # Storage Module
+│   │   ├── /swap/                   # Swap Module
  ```
 
 
