@@ -38,7 +38,16 @@ npm start or ng serve
 **WARNING**
 
 > To execute the `ng serve` command, you must make other settings. Navigate to the following directories:
-> <br> <br> `node_modules> @angular-devkit> build-angular> src> angular-cli-files> models> webpack-configs> browser.js`
+> <br> <br> 
+`├── /node_modules/                  
+│   ├── /@angular-devkit/  
+│   │   ├── /build-angular/
+│   │   │   ├── /src/
+│   │   │   │   ├── /angular-cli-files/
+│   │   │   │   │   ├── /models/
+│   │   │   │   │   │   ├── /webpack-configs/
+│   │   │   │   │   │   │   ├── /browser.js`
+
 > <br> <br> You must change `node: false` to`node: {crypto: true, stream: true, fs: 'empty', net: 'empty', tls: 'empty'}`.
 
 ## Build to production
