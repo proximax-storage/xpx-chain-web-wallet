@@ -59,11 +59,13 @@ ng build --aot --prod --build-optimizer=true --vendor-chunk=true
 ng build --aot --prod --build-optimizer=true --vendor-chunk=true
  ```
   <br>
+  
  <b>Linux version</b>
  ```bash
 ng build --aot --prod --build-optimizer=true --vendor-chunk=true
  ```
   <br>
+  
   <b>Mac OS version</b>
  ```bash
 ng build --aot --prod --build-optimizer=true --vendor-chunk=true
