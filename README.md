@@ -50,6 +50,9 @@ For build to production (Minified and optimized).
 ```bash
 npm run build-optimizer
 ```
+  <br>
+**WARNING**
+> Before compiling for other platforms, you must compile the global version.
 
    <br>
   
