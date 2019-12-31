@@ -14,15 +14,24 @@
 ## Table of contents
 
 - [Installation](https://github.com/proximax-storage/xpx-chain-web-wallet/blob/master/README.md)
-- [Wallet Structure](#wallet-structure)
+- [Directory Layout](#directory-layout)
 
 
-## Wallet Structure
- ```bash
-Angular CLI: 8.0.6
-Angular: 8.0.3
-Node: 10.16.3
-Npm: 6.13.4
+## Directory Layout
+
+Before you start, take a moment to see how the project structure looks like:
+
+```
+.
+├── /dist/                           # The folder for compiled output
+├── /node_modules/                   # 3rd-party libraries and utilities
+├── /src/                            # The source code of the application
+│   ├── /app/                        # The core source code
+│   │   ├── /accounts/               # Account Module (Components, Views)
+│   │   ├── /apostille/              # Apostille Module (Views, Services)
+│   │   ├── /auth/                   # Auth Module (Views, Services)
+│   │   ├── /config/                 # Configuration file for route variables
+│   │   ├── /core/                   # Container for storing components and other essential services
  ```
 
 
