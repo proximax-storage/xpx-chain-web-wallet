@@ -75,7 +75,7 @@ npm run package-linux
  ```
   <br>
   
-  <b>Mac OS version</b>
+  <b>Mac OS version</b> (It can only be compiled from Mac Os)
  ```bash
 npm run package-mac
  ```
