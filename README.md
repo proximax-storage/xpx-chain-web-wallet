@@ -53,7 +53,7 @@ npm run build-optimizer
 <br>
 
 **WARNING**
-> Before compiling for other platforms, you must compile the global version.
+> Before compiling for other platforms, you must compile the generic version.
 
    <br>
   
