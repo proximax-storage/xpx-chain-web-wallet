@@ -1,3 +1,4 @@
+
 <p align="center">
   <a href="https://www.proximax.io/">
     <img src="https://www.proximax.io/user/themes/proximaxvrs1/images/logo.png" alt="Logo" width=280 height=60>
@@ -38,15 +39,17 @@ npm start or ng serve
 **WARNING**
 
 > To execute the `ng serve` command, you must make other settings. Navigate to the following directories:
-> <br> <br> 
-`├── /node_modules/                  
+```
+├── /node_modules/                  
 │   ├── /@angular-devkit/  
 │   │   ├── /build-angular/
 │   │   │   ├── /src/
 │   │   │   │   ├── /angular-cli-files/
 │   │   │   │   │   ├── /models/
 │   │   │   │   │   │   ├── /webpack-configs/
-│   │   │   │   │   │   │   ├── /browser.js`
+└── ──  ──  ──  ──  ──  ── ── /browser.js
+```	
+
 
 > <br> <br> You must change `node: false` to`node: {crypto: true, stream: true, fs: 'empty', net: 'empty', tls: 'empty'}`.
 
