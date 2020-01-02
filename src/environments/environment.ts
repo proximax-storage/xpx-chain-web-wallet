@@ -8,8 +8,8 @@ import { ChronoUnit } from 'js-joda';
 export const environment = {
   production: false,
   itemBooksAddress: 'sw-books-testnet',
-  version: '0.4.11',
-  cacheVersion: '08',
+  version: '0.4.13',
+  cacheVersion: '07',
   nameKeyBlockStorage: `sw-blocks`,
   nameKeyNodeSelected: `sw-selected-node-testnet`,
   nameKeyWalletStorage: `sw-testnet`,
@@ -69,7 +69,7 @@ export const environment = {
     networkType: NetworkTypes.TEST_NET,
     burnAddress: 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN',
     nodes: [
-      { protocol: "https", domain: "bctestnetswap.xpxsirius.io", port: 7890 } as ServerConfig
+      { protocol: 'https', domain: 'bctestnetswap.xpxsirius.io', port: 7890 } as ServerConfig
     ],
   },
   swapAccount: {

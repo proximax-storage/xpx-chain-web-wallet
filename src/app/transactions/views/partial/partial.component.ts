@@ -1,5 +1,11 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { PublicAccount, AggregateTransaction, Account, MultisigAccountInfo, Address, Transaction, MultisigCosignatoryModification, ModifyMultisigAccountTransaction, UInt64 } from 'tsjs-xpx-chain-sdk';
+import {
+  PublicAccount,
+  AggregateTransaction,
+  Account,
+  MultisigAccountInfo,
+  ModifyMultisigAccountTransaction
+} from 'tsjs-xpx-chain-sdk';
 import { PaginationInstance } from 'ngx-pagination';
 import { ModalDirective } from 'ng-uikit-pro-standard';
 import { Subscription } from 'rxjs';
@@ -8,7 +14,6 @@ import { WalletService, AccountsInfoInterface, AccountsInterface } from '../../.
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { TransactionsInterface, TransactionsService } from '../../services/transactions.service';
 import { SharedService, ConfigurationForm } from '../../../shared/services/shared.service';
-import { DataBridgeService } from '../../../shared/services/data-bridge.service';
 import { environment } from '../../../../environments/environment';
 
 @Component({
@@ -71,7 +76,6 @@ export class PartialComponent implements OnInit, OnDestroy {
     this.typeTransactions = this.transactionService.getTypeTransactions();
     this.subscription.push(this.transactionService.getAggregateBondedTransactions$().subscribe(
       next => {
-        console.log('xxxxxxxxxxxxxxxxxxxxxxxxxx');
         this.aggregateTransactions = next.sort((a, b) => (
           this.transactionService.dateFormat(a.data.deadline) < this.transactionService.dateFormat(b.data.deadline)
         ) ? 1 : -1);
@@ -139,7 +143,6 @@ export class PartialComponent implements OnInit, OnDestroy {
    * @memberof PartialComponent
    */
   find(transaction: TransactionsInterface) {
-    console.log('\n transaction', transaction, '\n');
     this.msg = '';
     this.nis1hash = null;
     this.showSwap = false;
@@ -170,12 +173,12 @@ export class PartialComponent implements OnInit, OnDestroy {
     }
 
     transaction.data['innerTransactions'].forEach((element: any) => {
-      // console.log('INNER TRANSACTIONS --->', element);
       const nameType = Object.keys(this.typeTransactions).find(x => this.typeTransactions[x].id === element.type);
       element['nameType'] = (nameType) ? this.typeTransactions[nameType].name : element.type.toString(16).toUpperCase();
       if (element.type === this.typeTransactions.modifyMultisigAccount.id) {
         const data: ModifyMultisigAccountTransaction = element;
         // aqui debo verificar si mi cuenta esta dentro de inner transaction para poder firmarla
+        // tslint:disable-next-line: no-shadowed-variable
         data.modifications.forEach(element => {
           const exist = arraySelect.find((b: any) => b.value.address === element.cosignatoryPublicAccount.address.plain());
           if (!exist) {
@@ -292,7 +295,7 @@ export class PartialComponent implements OnInit, OnDestroy {
         const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
         this.password = '';
         this.modalPartial.hide();
-        this.proximaxProvider.cosignAggregateBondedTransaction(transaction, account).subscribe(next => {});
+        this.proximaxProvider.cosignAggregateBondedTransaction(transaction, account).subscribe(next => { });
       }
     }
   }

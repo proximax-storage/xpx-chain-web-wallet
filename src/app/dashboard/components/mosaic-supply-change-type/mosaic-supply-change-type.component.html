@@ -138,7 +138,7 @@
     </ng-container>
 
     <!-- Increase -->
-    <ng-container *ngIf="mosaicSupplyChange['direction'] === 1 && mosaicSupplyChange['mosaicsStorage']">
+    <ng-container *ngIf="mosaicSupplyChange['direction'] === 1 && (mosaicSupplyChange['mosaicsStorage'] || divisibility)">
       <div class="col-12">
         <div class="row">
           <div class="col-12 col-sm-4 col-md-3 overflow-ellipsis-nowrap">
@@ -146,14 +146,14 @@
           </div>
           <div class="col-12 col-sm-8 col-md-9 overflow-ellipsis-nowrap">
             <span class="color-black fw-400 fs-08rem green-c">+
-              {{transactionService.amountFormatter(mosaicSupplyChange.delta.compact(), mosaicSupplyChange['mosaicsStorage']['mosaicInfo'])}}</span>
+              {{transactionService.amountFormatter(mosaicSupplyChange.delta.compact(), mosaicSupplyChange['mosaicsStorage']?.mosaicInfo, divisibility)}}</span>
           </div>
         </div>
       </div>
     </ng-container>
 
     <!-- Decrease -->
-    <ng-container *ngIf="mosaicSupplyChange['direction'] !== 1 && mosaicSupplyChange['mosaicsStorage']">
+    <ng-container *ngIf="mosaicSupplyChange['direction'] !== 1 && (mosaicSupplyChange['mosaicsStorage'] || divisibility)">
       <div class="col-12">
         <div class="row">
           <div class="col-12 col-sm-4 col-md-3 overflow-ellipsis-nowrap">
@@ -161,7 +161,7 @@
           </div>
           <div class="col-12 col-sm-8 col-md-9 overflow-ellipsis-nowrap">
             <span class="color-black fw-400 fs-08rem color-red">-
-              {{transactionService.amountFormatter(mosaicSupplyChange.delta.compact(), mosaicSupplyChange['mosaicsStorage']['mosaicInfo'])}}</span>
+              {{transactionService.amountFormatter(mosaicSupplyChange.delta.compact(), mosaicSupplyChange['mosaicsStorage']?.mosaicInfo, divisibility)}}</span>
           </div>
         </div>
       </div>
