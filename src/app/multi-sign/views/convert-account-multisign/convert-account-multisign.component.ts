@@ -31,7 +31,7 @@ import { NodeService } from '../../../servicesModule/services/node.service';
 import { DataBridgeService } from '../../../shared/services/data-bridge.service';
 import { TransactionsService, TransactionsInterface } from '../../../transactions/services/transactions.service';
 import { ActivatedRoute } from '@angular/router';
-import { MultiSignService } from '../../service/multi-sign.service';
+import { MultiSignService, TypeTx } from '../../service/multi-sign.service';
 
 @Component({
   selector: 'app-convert-account-multisign',
@@ -86,8 +86,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
     info: '',
     subInfo: ''
   };
-
-
+  typeTx: TypeTx
   constructor(
     private fb: FormBuilder,
     private sharedService: SharedService,
@@ -477,7 +476,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
 * @memberof CreateMultiSignatureComponent
 */
   builder() {
-    const typeTx = this.multiSignService.typeSignTx(this.getCosignatoryList(), this.walletService.currentWallet.accounts)
+    this.typeTx = this.multiSignService.typeSignTx(this.getCosignatoryList(), this.walletService.currentWallet.accounts)
     let convertIntoMultisigTransaction: ModifyMultisigAccountTransaction;
     if (this.currentAccountToConvert !== undefined && this.currentAccountToConvert !== null) {
       convertIntoMultisigTransaction = ModifyMultisigAccountTransaction.create(
@@ -485,16 +484,13 @@ export class ConvertAccountMultisignComponent implements OnInit {
         this.convertAccountMultsignForm.get('minApprovalDelta').value,
         this.convertAccountMultsignForm.get('minRemovalDelta').value,
         this.multisigCosignatoryModification(this.getCosignatoryList()),
-        this.currentAccountToConvert.network);
-
-      const l = 1
-      const innerTransaction = (l === 1) ? [{
+        this.currentAccountToConvert.network)
+      const innerTransaction =  [{
         signer: this.currentAccountToConvert.publicAccount, tx: convertIntoMultisigTransaction
-      }] : [{
-        signer: this.currentAccountToConvert.publicAccount, tx: convertIntoMultisigTransaction
-      }];
-      const type = TransactionType.AGGREGATE_BONDED
-      this.aggregateTransaction = this.multiSignService.aggregateTransactionType(innerTransaction, type, this.currentAccountToConvert)
+      }] 
+      console.log('this.typeTx ', this.typeTx )
+      this.aggregateTransaction = this.multiSignService.aggregateTransactionType(innerTransaction, this.typeTx, this.currentAccountToConvert)
+      console.log('this.aggregateTransaction ', this.aggregateTransaction)
       let feeAgregate = Number(this.transactionService.amountFormatterSimple(this.aggregateTransaction.maxFee.compact()));
       this.fee = feeAgregate.toFixed(6);
     }
@@ -514,6 +510,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
       if (this.walletService.decrypt(common, accountDecrypt)) {
         this.accountToConvertSign = Account.createFromPrivateKey(common.privateKey, accountDecrypt.network)
         const generationHash = this.dataBridge.blockInfo.generationHash;
+        console.log('otherCosigners', this.multiSignService.otherCosigners(this.getCosignatoryList(), this.walletService.currentWallet.accounts))
         const signedTransaction = this.accountToConvertSign.sign(this.aggregateTransaction, generationHash)
         // /**
         // * Create Hash lock transaction

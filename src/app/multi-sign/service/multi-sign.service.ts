@@ -12,14 +12,37 @@ export class MultiSignService {
   minApprovaMinCalc: number;
   constructor() { }
 
-  aggregateTransactionType(arrayTx: arrayTx[], transactionType: TransactionType, currentAccountToConvert: AccountsInterface): AggregateTransaction {
+  otherCosigners(cosignatoryList: CosignatoryList[], accounts: AccountsInterface[]): CosignersSignLis {
+    let myAccountsFilter: AccountsInterface[] = []
+    let otherAccountsFilter: CosignatoryList[] = []
+    for (const list of cosignatoryList) {
+      const myAccount = accounts.find(items => list.publicAccount.publicKey === items.publicAccount.publicKey)
+      if (myAccount)
+        myAccountsFilter.push(myAccount)
+    }
+    for (const list of cosignatoryList) {
+      let found = false;
+      for (const mylist of myAccountsFilter) {
+        if (mylist.publicAccount.publicKey === list.publicAccount.publicKey) {
+          found = true;
+          break;
+        }
+      }
+      if (found == false)
+        otherAccountsFilter.push(list)
+    }
+    return { myCosignatory: myAccountsFilter, otherCosigners: otherAccountsFilter }
+  }
+  aggregateTransactionType(arrayTx: arrayTx[], transactionType: TypeTx, currentAccountToConvert: AccountsInterface): AggregateTransaction {
     const innerTxn = [];
     arrayTx.forEach(element => {
       innerTxn.push(element.tx.toAggregate(element.signer));
     });
     let aggregateTransaction: AggregateTransaction = null
-    switch (transactionType) {
+    console.log('type:', transactionType.transactionType)
+    switch (transactionType.transactionType) {
       case TransactionType.AGGREGATE_BONDED:
+        console.log('AGGREGATE_BONDED')
         aggregateTransaction = AggregateTransaction.createBonded(
           Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
           innerTxn,
@@ -37,36 +60,37 @@ export class MultiSignService {
 
   }
 
-  typeSignTx(cosignatoryList: CosignatoryList[], accounts: AccountsInterface[]) {
-
-    const lengthListCosig = cosignatoryList.length
-    const lengthAccounts = accounts.length
-
-    console.log('cosignatoryList', cosignatoryList.length)
-    console.log('accountsInterface', accounts)
-
-    for (const list of cosignatoryList) {
-      console.log('list')
-
-      accounts.filter(items => list.publicAccount.publicKey === items.publicAccount.publicKey)
-
-
-    }
-
-    return null
-  }
-
-
-
-
-
   calcMinDelta(minApprovalDeltaE: number, minRemovalDeltaE: number, minApprovalDeltaM: number, minRemovalDeltaM: number) {
     return new Object({
       minApprovalDelta: minApprovalDeltaM - minApprovalDeltaE,
       minRemovalDelta: minRemovalDeltaM - minRemovalDeltaE
-
     })
   }
+
+  signedTransaction(accountSign: Account, otherCosigners) {
+
+  }
+
+  typeSignTx(cosignatoryList: CosignatoryList[], accounts: AccountsInterface[]): TypeTx {
+    let accountsFilter: AccountsInterface[] = []
+    let typeTx: TypeTx = { type: null, transactionType: null }
+    for (const list of cosignatoryList) {
+      const account = accounts.find(items => list.publicAccount.publicKey === items.publicAccount.publicKey)
+      if (account)
+        accountsFilter.push(accounts.find(items => list.publicAccount.publicKey === items.publicAccount.publicKey))
+    }
+    console.log('accountsFilter', accountsFilter)
+    if (accountsFilter === null || accountsFilter === undefined || accountsFilter.length === 0) {
+      typeTx = { type: 0, transactionType: TransactionType.AGGREGATE_BONDED }
+    } else if (accountsFilter.length === cosignatoryList.length) {
+      typeTx = { type: 2, transactionType: TransactionType.AGGREGATE_COMPLETE }
+    } else {
+      typeTx = { type: 1, transactionType: TransactionType.AGGREGATE_BONDED }
+    }
+    return typeTx
+  }
+
+
 }
 interface arrayTx { tx: Transaction, signer: PublicAccount }[]
 /**
@@ -83,4 +107,16 @@ export interface CosignatoryList {
   type: number,
   disableItem: boolean;
   id: Address;
+}
+/**
+ * @param type - 0 = AGGREGATE_BONDED , 1 = AGGREGATE_BONDED (COSIGNER) , 2 = AGGREGATE_COMPLETE (COSIGNER)
+ * @param transactionType - Transaction type 
+ **/
+export interface TypeTx {
+  type: number,
+  transactionType: number,
+}
+export interface CosignersSignLis {
+  myCosignatory: any
+  otherCosigners: any,
 }
