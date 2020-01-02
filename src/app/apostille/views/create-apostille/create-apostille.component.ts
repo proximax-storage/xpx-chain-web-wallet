@@ -433,7 +433,7 @@ export class CreateApostilleComponent implements OnInit {
     const transferTransaction: TransferTransaction = this.proximaxProvider.buildTransferTransaction(
       this.walletService.currentAccount.network,
       this.proximaxProvider.createFromRawAddress(dedicatedAccount.address.plain()),
-      JSON.stringify(apostilleHash)
+      PlainMessage.create(JSON.stringify(apostilleHash))
     );
     // Zero fee is added
     transferTransaction['fee'] = UInt64.fromUint(0);
@@ -542,7 +542,7 @@ export class CreateApostilleComponent implements OnInit {
     const transferTransaction: any = this.proximaxProvider.buildTransferTransaction(
       this.walletService.currentAccount.network,
       sinkAddress,
-      JSON.stringify(apostilleHash)
+      PlainMessage.create(JSON.stringify(apostilleHash))
     );
     // Zero fee is added
     transferTransaction['fee'] = UInt64.fromUint(0);
