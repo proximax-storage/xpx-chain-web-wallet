@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { MultiSignService } from './multi-sign.service';
+import { MultiSignService } from '../../multi-sign/service/multi-sign.service';
 
 describe('MultiSignService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
