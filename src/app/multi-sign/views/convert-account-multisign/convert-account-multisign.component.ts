@@ -485,12 +485,10 @@ export class ConvertAccountMultisignComponent implements OnInit {
         this.convertAccountMultsignForm.get('minRemovalDelta').value,
         this.multisigCosignatoryModification(this.getCosignatoryList()),
         this.currentAccountToConvert.network)
-      const innerTransaction =  [{
+      const innerTransaction = [{
         signer: this.currentAccountToConvert.publicAccount, tx: convertIntoMultisigTransaction
-      }] 
-      console.log('this.typeTx ', this.typeTx )
+      }]
       this.aggregateTransaction = this.multiSignService.aggregateTransactionType(innerTransaction, this.typeTx, this.currentAccountToConvert)
-      console.log('this.aggregateTransaction ', this.aggregateTransaction)
       let feeAgregate = Number(this.transactionService.amountFormatterSimple(this.aggregateTransaction.maxFee.compact()));
       this.fee = feeAgregate.toFixed(6);
     }
@@ -509,20 +507,26 @@ export class ConvertAccountMultisignComponent implements OnInit {
       let common: any = { password: this.convertAccountMultsignForm.get("password").value };
       if (this.walletService.decrypt(common, accountDecrypt)) {
         this.accountToConvertSign = Account.createFromPrivateKey(common.privateKey, accountDecrypt.network)
-        const generationHash = this.dataBridge.blockInfo.generationHash;
-        console.log('otherCosigners', this.multiSignService.otherCosigners(this.getCosignatoryList(), this.walletService.currentWallet.accounts))
-        const signedTransaction = this.accountToConvertSign.sign(this.aggregateTransaction, generationHash)
-        // /**
-        // * Create Hash lock transaction
-        // */
-        // const hashLockTransaction = HashLockTransaction.create(
-        //   Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
-        //   new Mosaic(new MosaicId(environment.mosaicXpxInfo.id), UInt64.fromUint(Number(10000000))),
-        //   UInt64.fromUint(environment.lockFundDuration),
-        //   signedTransaction,
-        //   this.currentAccountToConvert.network
-        // );
-        // this.hashLock(this.accountToConvertSign.sign(hashLockTransaction, generationHash), signedTransaction)
+        const myCosigners = this.multiSignService.myCosigners(this.getCosignatoryList(), this.walletService.currentWallet.accounts)
+        const AccountMyCosigners: Account[] = []
+        if (myCosigners.length > 0) {
+          for (let item of myCosigners) {
+            if (this.walletService.decrypt(common, item)) {
+              AccountMyCosigners.push(Account.createFromPrivateKey(common.privateKey, item.network))
+            }
+          }
+        }
+        const signedTransaction = this.multiSignService.signedTransaction(
+          this.accountToConvertSign,
+          this.aggregateTransaction,
+          this.dataBridge.blockInfo.generationHash,
+          AccountMyCosigners)
+        if (this.typeTx.transactionType === TransactionType.AGGREGATE_BONDED) {
+          const hashLockSigned = this.transactionService.buildHashLockTransaction(signedTransaction, this.accountToConvertSign, this.dataBridge.blockInfo.generationHash)
+          this.hashLock(hashLockSigned, signedTransaction)
+        } else {
+          this.announceAggregateComplete(signedTransaction)
+        }
       } else {
         this.blockSend = false;
       }
@@ -596,6 +600,24 @@ export class ConvertAccountMultisignComponent implements OnInit {
       });
 
   }
+  /**
+  * @memberof CreateMultiSignatureComponent
+  *  @param {SignedTransaction} signedTransaction  - Signed transaction.
+  */
+  announceAggregateComplete(signedTransaction: SignedTransaction) {
+    this.convertAccountMultsignForm.get('selectAccount').patchValue('', { emitEvent: false, onlySelf: true });
+    this.transactionHttp.announce(signedTransaction).subscribe(
+      async () => {
+        this.getTransactionStatus(signedTransaction)
+      },
+      err => {
+        this.sharedService.showError('', err);
+        this.clearForm();
+        this.blockSend = false;
+      });
+
+  }
+
   /**
   *
   *
