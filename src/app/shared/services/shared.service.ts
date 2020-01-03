@@ -28,11 +28,11 @@ export class SharedService {
       maxLength: 30
     },
     namespaceName: {
-      minLength: 3,
+      minLength: 2,
       maxLength: 16
     },
     subNamespaceName: {
-      minLength: 3,
+      minLength: 2,
       maxLength: 64
     },
     privateKey: {
