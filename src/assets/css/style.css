@@ -3,7 +3,7 @@
 /* Fonts */
 
 @font-face {
-    src: url('./assets/fonts/lato.css');
+    src: url('../fonts/lato.css');
     font-family: 'Lato', 'Arial', 'Helvetica', 'sans-serif' !important;
 }
 

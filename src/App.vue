@@ -23,7 +23,3 @@ export default {
   }
 }
 </script>
-
-<style lang="sass">
-@import url('./style.css')
-</style>
