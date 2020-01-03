@@ -62,7 +62,7 @@ For build to production (Minified and optimized).
 <b>Generic version</b>
 
 ```bash
-npm run build-optimizer
+npm run build:optimizer
 ```
 <br>
 
