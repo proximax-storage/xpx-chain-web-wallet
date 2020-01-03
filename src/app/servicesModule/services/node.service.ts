@@ -3,7 +3,8 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { SharedService } from '../../shared/services/shared.service';
 import { ProximaxProvider } from '../../shared/services/proximax.provider';
-import * as data from '../../../assets/json/nodes.json';
+import * as testnet from '../../../assets/json/nodes.json';
+import * as mainnet from '../../../assets/json/nodes.json';
 
 @Injectable({
   providedIn: 'root'
@@ -13,12 +14,13 @@ export class NodeService {
   nodeObsSelected: BehaviorSubject<any>;
   nameItemsArrayStorage = environment.nameKeyNodeStorage;
   nameItemSelectedStorage = environment.nameKeyNodeSelected;
-  listNodes = data['nodes'];
+  listNodes = (environment.routeNodesJson === 'testnet') ? testnet['nodes'] : mainnet['nodes'];
 
   constructor(
     private sharedService: SharedService,
     private proximaxProvider: ProximaxProvider,
-  ) { }
+  ) {
+  }
 
 
   /**
@@ -35,7 +37,7 @@ export class NodeService {
     const data = { value: node, label: node };
     if (dataStorage === null) {
       this.setArrayNode([data]);
-      if (showMsg) this.sharedService.showSuccess('Congratulations!', msgNodeCreated);
+      if (showMsg) { this.sharedService.showSuccess('Congratulations!', msgNodeCreated); }
       return;
     }
 
@@ -43,11 +45,11 @@ export class NodeService {
     if (issetData === undefined) {
       dataStorage.push(data);
       this.setArrayNode(dataStorage);
-      if (showMsg) this.sharedService.showSuccess('Congratulations!', msgNodeCreated);
+      if (showMsg) { this.sharedService.showSuccess('Congratulations!', msgNodeCreated); }
       return;
     }
 
-    if (showMsg) this.sharedService.showError('Node repeated', `The '${node}' node already exists`);
+    if (showMsg) { this.sharedService.showError('Node repeated', `The '${node}' node already exists`); }
   }
 
   /**
@@ -69,10 +71,10 @@ export class NodeService {
   initNode() {
     if (this.getAllNodes() === null) {
       this.setArrayNode([]);
-    };
+    }
     // validates if a selected node exists in the storage
-     const constSelectedStorage = this.getNodeSelected();
-     const nodeSelected = (constSelectedStorage === null || constSelectedStorage === '') ? this.listNodes[Math.floor(Math.random() * this.listNodes.length)] : constSelectedStorage;
+    const constSelectedStorage = this.getNodeSelected();
+    const nodeSelected = (constSelectedStorage === null || constSelectedStorage === '') ? this.listNodes[Math.floor(Math.random() * this.listNodes.length)] : constSelectedStorage;
     // creates a new observable
 
     this.nodeObsSelected = new BehaviorSubject<any>(nodeSelected);

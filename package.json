@@ -4,6 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "node patch.js && ng serve",
+    "start:mainnet": "node patch.js && ng serve --configuration=main",
     "build": "ng build",
     "main": "proximax-sirius-wallet/dist/proximax-sirius-wallet/main.js",
     "test": "ng test",
@@ -17,7 +18,9 @@
     "compile:server": "webpack --config webpack.server.config.js --progress --colors",
     "serve:ssr": "node dist/server",
     "build:ssr": "npm run build:client-and-server-bundles && npm run compile:server",
-    "build:client-and-server-bundles": "ng build --prod && ng run proximax-sirius-wallet:server:production --bundleDependencies all"
+    "build:client-and-server-bundles": "ng build --prod && ng run proximax-sirius-wallet:server:production --bundleDependencies all",
+    "build:optimizer-testnet": "ng build --aot --prod --build-optimizer=true --vendor-chunk=true",
+    "build:optimizer-mainnet": "ng build --aot --prod --build-optimizer=true --vendor-chunk=true --configuration=main"
   },
   "private": true,
   "dependencies": {
