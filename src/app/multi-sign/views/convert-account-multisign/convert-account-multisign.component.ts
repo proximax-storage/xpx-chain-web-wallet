@@ -16,7 +16,8 @@ import {
   AccountInfo,
   Mosaic,
   MosaicId,
-  MultisigAccountInfo
+  MultisigAccountInfo,
+  TransactionType
 } from 'tsjs-xpx-chain-sdk';
 import { Subscription } from 'rxjs';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
@@ -30,7 +31,7 @@ import { NodeService } from '../../../servicesModule/services/node.service';
 import { DataBridgeService } from '../../../shared/services/data-bridge.service';
 import { TransactionsService, TransactionsInterface } from '../../../transactions/services/transactions.service';
 import { ActivatedRoute } from '@angular/router';
-
+import { MultiSignService } from '../../service/multi-sign.service';
 
 @Component({
   selector: 'app-convert-account-multisign',
@@ -97,6 +98,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
     private transactionService: TransactionsService,
     private dataBridge: DataBridgeService,
     private activateRoute: ActivatedRoute,
+    private multiSignService: MultiSignService
   ) {
     this.totalFee = this.feeTransaction + this.feeLockfund;
     this.currentAccounts = [];
@@ -221,24 +223,19 @@ export class ConvertAccountMultisignComponent implements OnInit {
       this.subscribe.push(this.transactionService.getAggregateBondedTransactions$().subscribe((transactions: TransactionsInterface[]) => {
         this.currentAccounts = [];
         this.disable = false;
-
         if (transactionsParam) {
           transactions.push(transactionsParam)
         }
         if (transactions.length > 0) {
           for (let element of currentWallet.accounts) {
             for (let index = 0; index < transactions.length; index++) {
-              // if (transactions[index].data.type === 16961) {
               for (let i = 0; i < transactions[index].data['innerTransactions'].length; i++) {
                 this.disable = (transactions[index].data['innerTransactions'][i].signer.publicKey === element.publicAccount.publicKey);
                 if (this.disable)
                   break
               }
-
-              // this.disable = (transactions[index].data['innerTransactions'][i].signer.publicKey  === element.publicAccount.publicKey);
               if (this.disable)
                 break
-              // }
             }
             this.buildSelectAccount(element, this.disable)
           }
@@ -253,7 +250,6 @@ export class ConvertAccountMultisignComponent implements OnInit {
           if (this.currentAccounts.length > 0) {
             const valueSelect = this.currentAccounts.filter(x => x.label === this.activateRoute.snapshot.paramMap.get('name'));
             if (valueSelect) {
-              // this.convertAccountMultsignForm.controls['selectAccount'].patchValue(valueSelect[0]);
               this.selectAccount(null, this.activateRoute.snapshot.paramMap.get('name'))
             }
           }
@@ -481,6 +477,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
 * @memberof CreateMultiSignatureComponent
 */
   builder() {
+    const typeTx = this.multiSignService.typeSignTx(this.getCosignatoryList(), this.walletService.currentWallet.accounts)
     let convertIntoMultisigTransaction: ModifyMultisigAccountTransaction;
     if (this.currentAccountToConvert !== undefined && this.currentAccountToConvert !== null) {
       convertIntoMultisigTransaction = ModifyMultisigAccountTransaction.create(
@@ -490,14 +487,15 @@ export class ConvertAccountMultisignComponent implements OnInit {
         this.multisigCosignatoryModification(this.getCosignatoryList()),
         this.currentAccountToConvert.network);
 
-      this.aggregateTransaction = AggregateTransaction.createBonded(
-        Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
-        [convertIntoMultisigTransaction.toAggregate(this.currentAccountToConvert.publicAccount)],
-        this.currentAccountToConvert.network);
+      const l = 1
+      const innerTransaction = (l === 1) ? [{
+        signer: this.currentAccountToConvert.publicAccount, tx: convertIntoMultisigTransaction
+      }] : [{
+        signer: this.currentAccountToConvert.publicAccount, tx: convertIntoMultisigTransaction
+      }];
+      const type = TransactionType.AGGREGATE_BONDED
+      this.aggregateTransaction = this.multiSignService.aggregateTransactionType(innerTransaction, type, this.currentAccountToConvert)
       let feeAgregate = Number(this.transactionService.amountFormatterSimple(this.aggregateTransaction.maxFee.compact()));
-      // let feeLockfund = 0.044500;
-      // let totalFee = feeAgregate + feeLockfund;
-      // this.fee = totalFee.toFixed(6);
       this.fee = feeAgregate.toFixed(6);
     }
   }
@@ -508,12 +506,8 @@ export class ConvertAccountMultisignComponent implements OnInit {
 * @memberof CreateMultiSignatureComponent
 */
   convertIntoMultisigTransaction() {
-
-
     let accountDecrypt: AccountsInterface;
-
     if (this.convertAccountMultsignForm.valid && !this.blockSend) {
-
       this.blockSend = true;
       accountDecrypt = this.currentAccountToConvert
       let common: any = { password: this.convertAccountMultsignForm.get("password").value };
@@ -521,26 +515,22 @@ export class ConvertAccountMultisignComponent implements OnInit {
         this.accountToConvertSign = Account.createFromPrivateKey(common.privateKey, accountDecrypt.network)
         const generationHash = this.dataBridge.blockInfo.generationHash;
         const signedTransaction = this.accountToConvertSign.sign(this.aggregateTransaction, generationHash)
-
-        /**
-        * Create Hash lock transaction
-        */
-        const hashLockTransaction = HashLockTransaction.create(
-          Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
-          new Mosaic(new MosaicId(environment.mosaicXpxInfo.id), UInt64.fromUint(Number(10000000))),
-          UInt64.fromUint(environment.lockFundDuration),
-          signedTransaction,
-          this.currentAccountToConvert.network
-        );
-
-        this.hashLock(this.accountToConvertSign.sign(hashLockTransaction, generationHash), signedTransaction)
-
+        // /**
+        // * Create Hash lock transaction
+        // */
+        // const hashLockTransaction = HashLockTransaction.create(
+        //   Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
+        //   new Mosaic(new MosaicId(environment.mosaicXpxInfo.id), UInt64.fromUint(Number(10000000))),
+        //   UInt64.fromUint(environment.lockFundDuration),
+        //   signedTransaction,
+        //   this.currentAccountToConvert.network
+        // );
+        // this.hashLock(this.accountToConvertSign.sign(hashLockTransaction, generationHash), signedTransaction)
       } else {
         this.blockSend = false;
       }
     }
   }
-
   /**
    * Before sending an aggregate bonded transaction, the future
    * multisig account needs to lock at least 10 cat.currency.
@@ -776,8 +766,8 @@ export class ConvertAccountMultisignComponent implements OnInit {
       minRemovalDelta: 1,
       password: ''
     }, {
-      emitEvent: false
-    }
+        emitEvent: false
+      }
     );
   }
 

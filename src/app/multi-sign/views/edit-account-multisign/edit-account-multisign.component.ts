@@ -22,7 +22,7 @@ import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/fo
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AccountsInterface, AccountsInfoInterface, WalletService } from '../../../wallet/services/wallet.service';
-import { MultiSignService } from '../../../servicesModule/services/multi-sign.service';
+import { MultiSignService } from '../../service/multi-sign.service';
 import { ServicesModuleService, HeaderServicesInterface } from '../../../servicesModule/services/services-module.service';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { NodeService } from '../../../servicesModule/services/node.service';
