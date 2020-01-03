@@ -1,9 +1,9 @@
 {
-  "version": "TEST_NET",
+  "version": "PUBLIC_TEST",
   "nameApp": "ProximaX Sirius Wallet",
   "pseudonymApp": "ProximaX Sirius Wallet",
   "environment": {
-    "TESTNET": {
+    "PUBLICTEST": {
       "coin": "xpx",
       "mosaic": {
         "id": "13bfc518e40549d7",
@@ -14,7 +14,7 @@
         "name": "prx.xpx"
       },
       "connectionNodes": {
-        "networkType": "TEST_NET",
+        "networkType": "PUBLIC_TEST",
         "protocol": "https",
         "protocolWs": "wss",
         "nodes": [

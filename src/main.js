@@ -28,6 +28,7 @@ const configIntegration = async function () {
     const configInfo = await axios.get('../config/config.json')
     store.commit('ADD_CONFIG_INFO', configInfo.data)
     const environment = getEnvironment(configInfo.data)
+    console.log('environment', environment)
     Vue.prototype.$environment = environment
     Vue.prototype.$blockchainProvider = new BlockchainProvider(
       environment.connectionNodes.nodes[0],
@@ -42,8 +43,8 @@ const configIntegration = async function () {
 const getEnvironment = function (configInfo) {
   let environment = null
   switch (configInfo.version) {
-    case 'TEST_NET':
-      environment = configInfo.environment.TESTNET
+    case 'PUBLIC_TEST':
+      environment = configInfo.environment.PUBLICTEST
       break
     case 'MAIN_NET':
       environment = configInfo.environment.MAINNET

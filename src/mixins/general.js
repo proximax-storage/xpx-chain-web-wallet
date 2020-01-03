@@ -33,44 +33,22 @@ export default {
         generalRules: {
           notAllowSpaces: v => (v || '').indexOf(' ') < 0 || 'No spaces are allowed'
         },
-        username: {
-          label: 'User name',
-          min: 4,
-          max: 15,
-          rules: {
-            required: v => !!v || 'User name is required',
-            min: v =>
-              (v && v.length >= 4) || 'User name must be less than 4 characters',
-            max: v =>
-              (v && v.length <= 15) || 'User name must be a maximum of 15 characters'
-          }
-        },
-        name: {
-          label: 'Name',
+        walletName: {
+          label: 'Wallet Name',
+          icon: 'icon-wallet-name-green-16h-proximax-sirius-wallet.svg',
           min: 3,
-          max: 20,
+          max: 30,
           rules: {
-            required: v => !!v || 'Name is required',
-            min: v => (v && v.length >= 3) || 'Name must be less than 3 characters',
-            max: v => (v && v.length <= 20) || 'Name must be a maximum of 20 characters'
-          }
-        },
-        lastname: {
-          label: 'Last name',
-          min: 3,
-          max: 20,
-          rules: {
-            required: v => !!v || 'Last name is required',
-            min: v =>
-              (v && v.length >= 3) || 'Last name must be less than 3 characters',
-            max: v =>
-              (v && v.length <= 20) || 'Last name must be a maximum of 20 characters'
+            required: v => !!v || 'Wallet Name is required',
+            min: v => (v && v.length >= 3) || 'Wallet Name must be less than 3 characters',
+            max: v => (v && v.length <= 30) || 'Wallet Name must be a maximum of 30 characters'
           }
         },
         password: {
           label: 'Password',
+          icon: 'icon-wallet-name-green-16h-proximax-sirius-wallet.svg',
           min: 8,
-          max: 20,
+          max: 30,
           show: false,
           showConfirm: false,
           rules: {
@@ -78,19 +56,7 @@ export default {
             min: v =>
               (v && v.length >= 8) || 'Password must be less than 8 characters',
             max: v =>
-              (v && v.length <= 25) || 'Password must be a maximum of 25 characters'
-          }
-        },
-        email: {
-          label: 'Email',
-          min: 5,
-          max: 40,
-          rules: {
-            required: v => !!v || 'E-mail is required',
-            min: v => (v && v.length >= 5) || 'Email must be less than 5 characters',
-            max: v =>
-              (v && v.length <= 40) || 'Email must be a maximum of 40 characters',
-            isValid: v => /.+@.+/.test(v) || 'E-mail must be valid'
+              (v && v.length <= 30) || 'Password must be a maximum of 30 characters'
           }
         }
       }
