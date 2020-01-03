@@ -1,0 +1,26 @@
+/* ---------- GLOBAL ----------
+
+/* Fonts */
+
+@font-face {
+    src: url('./assets/fonts/lato.css');
+    font-family: 'Lato', 'Arial', 'Helvetica', 'sans-serif' !important;
+}
+
+html, body, .v-application {
+    font-family: 'Lato', 'Arial', 'Helvetica', 'sans-serif' !important;
+}
+
+.theme--light.v-application {
+    background: white !important;
+}
+
+hr {
+    margin-bottom: 1rem;
+    border: 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.text-transform-none {
+    text-transform: none !important;
+}

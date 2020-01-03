@@ -1,0 +1,82 @@
+{
+  "version": "TEST_NET",
+  "nameApp": "ProximaX Sirius Wallet",
+  "pseudonymApp": "ProximaX Sirius Wallet",
+  "environment": {
+    "TESTNET": {
+      "coin": "xpx",
+      "mosaic": {
+        "id": "13bfc518e40549d7",
+        "name": "xpx"
+      },
+      "namespace": {
+        "id": "bffb42a19116bdf6",
+        "name": "prx.xpx"
+      },
+      "connectionNodes": {
+        "networkType": "TEST_NET",
+        "protocol": "https",
+        "protocolWs": "wss",
+        "nodes": [
+          "bctestnet1.brimstone.xpxsirius.io",
+          "bctestnet2.brimstone.xpxsirius.io",
+          "bctestnet3.brimstone.xpxsirius.io"
+        ]
+      },
+      "rentalFeeSink": {
+        "namespaceRentalFeeSink": {
+          "name": "Namespace Rental Fee Sink",
+          "address": "VCMCJP-RMJ6IU-BOZ7HC-YBQOSE-OVGISX-6AMUJ4-ESTN",
+          "publicKey": "81298A6EBA208AAAE1BD3278B30BB047D33CEABA4E13FF144753825C499ADB98"
+        },
+        "mosaicRentalFeeSink": {
+          "name": "Mosaic Rental Fee Sink",
+          "address": "XBO3L3-K5AQTX-DXO6Z6-W6KAPO-RI4XHN-65J5VG-HOQU",
+          "publicKey": "94A9BB9660037E622C8F626E061DB1557CBBED0338402E82E796168E80EF9765"
+        }
+      },
+      "version": "0.4.13"
+    },
+    "MAINNET": {
+      "coin": "xpx",
+      "mosaic": {
+        "id": "13bfc518e40549d7",
+        "name": "xpx"
+      },
+      "namespace": {
+        "id": "bffb42a19116bdf6",
+        "name": "prx.xpx"
+      },
+      "connectionNodes": {
+        "networkType": "MAIN_NET",
+        "protocol": "https",
+        "protocolWs": "wss",
+        "nodes": [
+          "arcturus.xpxsirius.io",
+          "aldebaran.xpxsirius.io",
+          "betelgeuse.xpxsirius.io",
+          "bigcalvin.xpxsirius.io",
+          "westerlund.xpxsirius.io",
+          "canismajor.xpxsirius.io",
+          "coronaborealis.xpxsirius.io",
+          "delphinus.xpxsirius.io",
+          "eridanus.xpxsirius.io",
+          "lyrasithara.xpxsirius.io"
+        ]
+      },
+      "rentalFeeSink": {
+        "namespaceRentalFeeSink": {
+          "name": "Namespace Rental Fee Sink",
+          "address": "VCMCJP-RMJ6IU-BOZ7HC-YBQOSE-OVGISX-6AMUJ4-ESTN",
+          "publicKey": "81298A6EBA208AAAE1BD3278B30BB047D33CEABA4E13FF144753825C499ADB98"
+        },
+        "mosaicRentalFeeSink": {
+          "name": "Mosaic Rental Fee Sink",
+          "address": "XBO3L3-K5AQTX-DXO6Z6-W6KAPO-RI4XHN-65J5VG-HOQU",
+          "publicKey": "94A9BB9660037E622C8F626E061DB1557CBBED0338402E82E796168E80EF9765"
+        }
+      },
+      "version": "0.0.1"
+    }
+  }
+}
