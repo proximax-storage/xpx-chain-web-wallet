@@ -59,11 +59,18 @@ npm start or ng serve
 
 For build to production (Minified and optimized).
 
-<b>Generic version</b>
+<b>Generic version TestNet</b>
 
 ```bash
-npm run build:optimizer
+npm run build:optimizer-testnet
 ```
+
+<b>Generic version MainNet</b>
+
+```bash
+npm run build:optimizer-mainnet
+```
+
 <br>
 
 **WARNING**
