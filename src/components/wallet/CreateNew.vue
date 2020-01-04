@@ -7,6 +7,7 @@
         <v-row>
           <v-col cols="11" sm="8" md="7" lg="6" class="mx-auto">
             <v-row>
+              <!-- Type network -->
               <v-col cols="12">
                 <v-autocomplete
                   rounded
@@ -24,29 +25,34 @@
                 ></v-autocomplete>
               </v-col>
 
+              <!-- Wallet name -->
               <v-col cols="12">
                 <v-text-field
                   :label="configForm.walletName.label"
-                  v-model.trim="walletName"
-                  rounded
-                  outlined
-                  dense
+                  :loading="searchingWalletName"
+                  :disabled="searchingWalletName"
                   :minlength="configForm.walletName.min"
                   :maxlength="configForm.walletName.max"
                   :counter="configForm.walletName.max"
                   :rules="[
-                  configForm.walletName.rules.required,
-                  configForm.walletName.rules.min,
-                  configForm.walletName.rules.max
-                ]"
+                    configForm.walletName.rules.required,
+                    configForm.walletName.rules.min,
+                    configForm.walletName.rules.max,
+                    walletIsRepeat
+                  ]"
+                  rounded
+                  outlined
+                  dense
+                  v-model.trim="walletName"
                 >
                   <template v-slot:prepend-inner>
-                    <img
-                      class="pr-2 pt-1"
-                      :src="require(`@/assets/img/${configForm.walletName.icon}`)"
+                    <v-img
+                      class="pr-2 mt-1"
                       alt="logo"
-                      height="24"
-                    />
+                      height="20"
+                      width="20"
+                      :src="require(`@/assets/img/${configForm.walletName.icon}`)"
+                    ></v-img>
                   </template>
                 </v-text-field>
               </v-col>
@@ -74,12 +80,13 @@
                   @click:append="configForm.password.show = !configForm.password.show"
                 >
                   <template v-slot:prepend-inner>
-                    <img
-                      class="pr-2 pt-1"
-                      :src="require(`@/assets/img/${configForm.password.icon}`)"
+                     <v-img
+                      class="pr-2 mt-1"
                       alt="logo"
-                      height="24"
-                    />
+                      height="20"
+                      width="20"
+                      :src="require(`@/assets/img/${configForm.password.icon}`)"
+                    ></v-img>
                   </template>
                 </v-text-field>
               </v-col>
@@ -109,28 +116,20 @@
                   @click:append="configForm.password.showConfirm = !configForm.password.showConfirm"
                 >
                   <template v-slot:prepend-inner>
-                    <img
-                      class="pr-2 pt-1"
-                      :src="require(`@/assets/img/${configForm.password.icon}`)"
+                    <v-img
+                      class="pr-2 mt-1"
                       alt="logo"
-                      height="24"
-                    />
+                      height="20"
+                      width="20"
+                      :src="require(`@/assets/img/${configForm.password.icon}`)"
+                    ></v-img>
                   </template>
                 </v-text-field>
               </v-col>
             </v-row>
 
             <!-- Buttons -->
-            <custom-buttons
-              @click-one="clear"
-              @click-two="createWallet"
-              :title1="'Clear'"
-              :title2="'Create'"
-              :loading1="false"
-              :loading2="sendingForm"
-              :disabled1="sendingForm"
-              :disabled2="disableBtnCreate"
-            ></custom-buttons>
+            <custom-buttons @action="action" :arrayBtn="getArrayBtn"></custom-buttons>
           </v-col>
         </v-row>
       </v-container>
@@ -139,34 +138,41 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
 import generalMixins from '../../mixins/general'
+import walletMixins from '../../mixins/wallet'
 
 export default {
-  mixins: [generalMixins],
+  mixins: [generalMixins, walletMixins],
   data: () => {
     return {
       title: 'Create Wallet',
       valid: false,
       sendingForm: false,
       configForm: null,
-      networkSelected: {
-        text: 'Public Test',
-        value: 'PUBLIC_TEST'
-      },
-      networksType: [
-        {
-          text: 'Public Test',
-          value: 'PUBLIC_TEST'
-        },
-        {
-          text: 'Main Net',
-          value: 'MAIN_NET'
-        }
-      ],
+      networksType: [],
+      networkSelected: { text: '', value: '' },
       walletName: '',
-      passwords: {
-        password: '',
-        confirmPassword: ''
+      passwords: { password: '', confirmPassword: '' },
+      searchingWalletName: false,
+      walletIsRepeat: false,
+      arrayBtn: {
+        clear: {
+          key: 'clear',
+          action: 'clear',
+          disabled: false,
+          color: 'primary',
+          loading: false,
+          text: 'Clear'
+        },
+        create: {
+          key: 'create',
+          action: 'create',
+          disabled: false,
+          color: 'primary',
+          loading: false,
+          text: 'Create'
+        }
       }
     }
   },
@@ -175,25 +181,64 @@ export default {
     'custom-buttons': () => import('@/components/shared/Buttons')
   },
   methods: {
-    clear () {
-      console.log('clear')
+    ...mapMutations(['SHOW_SNACKBAR', 'SHOW_LOADING']),
+    action (action) {
+      if (action === 'create') {
+        this.sendForm()
+      } else {
+        this.clear()
+      }
     },
-    createWallet () {
-      console.log('Create wallet')
+    clear () {
+      this.walletIsRepeat = false
+      this.searchingWalletName = false
+      this.sendingForm = false
+      this.$refs.form.reset()
+      const network = this.networksType.find(x => x.value === 168)
+      this.networkSelected = { text: network.text, value: network.value }
+    },
+    sendForm () {
+      if (this.valid && !this.sendingForm) {
+        this.sendingForm = true
+        this.SHOW_LOADING(true)
+        this.createWallet({
+          default: true,
+          firstAccount: true,
+          isMultisign: null,
+          nis1Account: null,
+          walletName: this.walletName,
+          network: this.networkSelected.value,
+          password: this.passwords.password
+        })
+
+        setTimeout(() => {
+          this.clear()
+          this.sendingForm = false
+          this.SHOW_LOADING(false)
+        }, 500)
+      }
     },
     resetConfirmPassword () {
       this.passwords.confirmPassword = ''
+    },
+    validateWalletName () {
+      const usr = this.walletName
+      if (usr && usr !== '' && usr.length >= this.configForm.walletName.min) {
+        this.searchingWalletName = true
+        setTimeout(() => {
+          if (this.getWalletByName(usr, this.networkSelected.value)) {
+            this.searchingWalletName = false
+            this.walletIsRepeat = `${usr} already exists, try another wallet name.`
+            return
+          }
+
+          this.walletIsRepeat = false
+          this.searchingWalletName = false
+        }, 500)
+      }
     }
   },
   computed: {
-    getHint () {
-      return this.networkSelected && this.networkSelected.value !== ''
-        ? `${this.networkSelected.text}`
-        : ''
-    },
-    disableBtnCreate () {
-      return !this.valid || this.sendingForm
-    },
     disabledConfirmPassword () {
       const password = this.passwords.password
       if (password) {
@@ -205,10 +250,34 @@ export default {
       } else {
         return true
       }
+    },
+    getHint () {
+      return this.networkSelected && this.networkSelected.value !== ''
+        ? `${this.networkSelected.text}`
+        : ''
+    },
+    getArrayBtn () {
+      const arrayBtn = this.arrayBtn
+      arrayBtn['clear'].disabled = this.sendingForm
+      arrayBtn['create'].disabled = !this.valid || this.sendingForm || this.searchingWalletName
+      arrayBtn['create'].loading = this.sendingForm
+      return arrayBtn
+    }
+  },
+  watch: {
+    walletName (newVal) {
+      this.debouncedValidateWalletName()
     }
   },
   beforeMount () {
     this.configForm = this.getConfigForm()
+    this.debouncedValidateWalletName = this.lodash.debounce(
+      this.validateWalletName,
+      500
+    )
+
+    this.networksType = this.$blockchainProvider.getNetworkTypes()
+    this.networkSelected = this.networksType[0]
   }
 }
 </script>

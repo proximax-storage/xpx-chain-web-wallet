@@ -12,11 +12,11 @@ export default {
         className: cn
       }
     },
-    doCopy (text) {
+    doCopy (itemName, text) {
       this.$copyText(text).then((e) => {
         this.$store.dispatch('showMSG', {
           snackbar: true,
-          text: `Copied`,
+          text: `${itemName} copied`,
           color: 'success'
         })
       }, (e) => {
@@ -46,7 +46,7 @@ export default {
         },
         password: {
           label: 'Password',
-          icon: 'icon-wallet-name-green-16h-proximax-sirius-wallet.svg',
+          icon: 'icon-password-green-16h-proximax-sirius-wallet.svg',
           min: 8,
           max: 30,
           show: false,

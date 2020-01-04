@@ -34,13 +34,13 @@ export default {
       {
         title: 'Home',
         icon: 'mdi-view-dashboard',
-        route: '/home',
+        route: '/',
         viewLogged: false
       },
       {
         title: 'Wallets',
         icon: 'mdi-account',
-        route: '/',
+        route: '/wallets',
         viewLogged: false
       }
     ]

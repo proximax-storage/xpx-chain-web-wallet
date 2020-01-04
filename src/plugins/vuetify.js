@@ -16,8 +16,8 @@ export default new Vuetify({
         accent: '#82B1FF',
         error: colors.red.darken1,
         info: '#2196F3',
-        success: '#4CAF50',
-        warning: '#FFC107',
+        success: '#306EB5',
+        warning: '#f3ad27',
         'gray-light': '#616161',
         'gray-black': '#212529'
       }

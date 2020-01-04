@@ -1,12 +1,16 @@
 <template>
   <div>
     <v-container>
-      <!-- Title & Subtitle -->
-      <title-subtitle :title="title" :separed1="true"></title-subtitle>
+      <v-row>
+         <v-col cols="11" sm="10" class="mx-auto">
+          <!-- Title & Subtitle -->
+          <title-subtitle :title="title" :separed1="true"></title-subtitle>
+        </v-col>
+      </v-row>
 
       <!-- Items -->
       <v-row>
-        <v-col cols="12" sm="11" md="9" lg="8" class="mx-auto">
+        <v-col cols="12" sm="11" md="8" lg="7" class="mx-auto">
           <v-row>
             <template v-for="(item, key) of items">
               <v-col :key="key" cols="12" sm="4" class="d-flex justify-center justify-sm-end">

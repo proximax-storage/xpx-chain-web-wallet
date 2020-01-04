@@ -2,21 +2,14 @@
   <div>
     <v-container>
       <!-- Title & Subtitle -->
-      <title-subtitle :title="title" :subtitle="subtitle"></title-subtitle>
+      <title-subtitle :title="title" :subtitle="sub"></title-subtitle>
 
       <!-- LIST -->
       <v-row>
         <v-col cols="12" sm="9" md="10" lg="11" class="mx-auto">
           <v-row>
             <template v-for="(service, key) of servicesList">
-              <v-col
-                :key="key"
-                cols="12"
-                sm="6"
-                md="6"
-                lg="3"
-                class="pt-0"
-              >
+              <v-col :key="key" cols="12" sm="6" md="6" lg="3" class="pt-0">
                 <v-row>
                   <v-col cols="12" class="d-flex justify-center">
                     <v-img
@@ -43,17 +36,7 @@
       </v-row>
 
       <!-- Buttons -->
-      <custom-buttons
-        @click-one="signIn"
-        @click-two="createWallet"
-        :title1="'Sign In'"
-        :title2="'Create'"
-        :loading1="false"
-        :loading2="false"
-        :disabled1="false"
-        :disabled2="false"
-      >
-      </custom-buttons>
+      <custom-buttons @action="action" :arrayBtn="arrayBtn"></custom-buttons>
     </v-container>
   </div>
 </template>
@@ -66,9 +49,24 @@ export default {
   mixins: [generalMixins],
   data: () => ({
     title: 'ProximaX Sirius Wallet',
-    subtitle:
-      'The secure interface that connects to the Proximax Sirius platform.',
-    servicesList: []
+    sub: 'The secure interface that connects to the Proximax Sirius platform.',
+    servicesList: [],
+    arrayBtn: {
+      signIn: {
+        action: 'signIn',
+        disabled: false,
+        color: 'primary',
+        loading: false,
+        text: 'Sign In'
+      },
+      create: {
+        action: 'create',
+        disabled: false,
+        color: 'primary',
+        loading: false,
+        text: 'Create'
+      }
+    }
   }),
   components: {
     'title-subtitle': () => import('@/components/shared/Title'),
@@ -103,12 +101,19 @@ export default {
     ]
   },
   methods: {
-    signIn () {
-      console.log('Sign')
+    action (action) {
+      if (action === 'signIn') {
+        this.signIn()
+      } else {
+        this.createWallet()
+      }
     },
     createWallet () {
       console.log('Create wallet')
       this.$router.push('/create-wallet').catch(e => {})
+    },
+    signIn () {
+      console.log('signIn')
     }
   }
 }

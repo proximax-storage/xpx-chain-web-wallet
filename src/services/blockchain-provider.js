@@ -29,6 +29,10 @@ class BlockchainProvider {
     this.transactionHttp = new TransactionHttp(this.url)
   }
 
+  saluda () {
+    console.log('hola')
+  }
+
   /**
    *
    *
@@ -60,8 +64,8 @@ class BlockchainProvider {
    * @returns
    * @memberof BlockchainProvider
    */
-  createAccountSimple (walletName, password, network = this.typeNetwork) {
-    return SimpleWallet.create(walletName, this.createPassword(password), network)
+  createSimpleWallet (name, password, network = this.typeNetwork) {
+    return SimpleWallet.create(name, this.createPassword(password), network)
   }
 
   /**
@@ -108,7 +112,7 @@ class BlockchainProvider {
    * @returns
    * @memberof BlockchainProvider
    */
-  decrypt (common, account, network = this.typeNetwork) {
+  decrypt (common, account, network) {
     try {
       if (account && account.encrypted !== '' && common) {
         if (!crypto.passwordToPrivatekey(common, account, account.algo)) {
@@ -128,6 +132,7 @@ class BlockchainProvider {
         return { status: false, msg: 'You do not have a valid account selected' }
       }
     } catch (error) {
+      console.log(error)
       return { status: false, msg: 'You do not have a valid account selected.' }
     }
   }
@@ -160,6 +165,37 @@ class BlockchainProvider {
    */
   isHexadecimal (str) {
     return str.match('^(0x|0X)?[a-fA-F0-9]+$') !== null
+  }
+
+  /**
+   *
+   *
+   * @returns
+   * @memberof BlockchainProvider
+   */
+  getNetworkTypes () {
+    return [
+      {
+        text: 'Public Test',
+        value: NetworkType.TEST_NET
+      },
+      {
+        text: 'Main Net',
+        value: NetworkType.MAIN_NET
+      }
+    ]
+  }
+
+  /**
+   *
+   *
+   * @param {*} privateKey
+   * @param {*} network
+   * @returns
+   * @memberof BlockchainProvider
+   */
+  getPublicAccountFromPrivateKey (privateKey, network) {
+    return Account.createFromPrivateKey(privateKey, network)
   }
 }
 

@@ -1,6 +1,6 @@
 class StorageService {
     storage = null;
-    correlative = 'blstore'
+    correlative = 'sw'
 
     constructor (typeStorage) {
       this.storage = typeStorage

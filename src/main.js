@@ -28,13 +28,19 @@ const configIntegration = async function () {
     const configInfo = await axios.get('../config/config.json')
     store.commit('ADD_CONFIG_INFO', configInfo.data)
     const environment = getEnvironment(configInfo.data)
-    console.log('environment', environment)
     Vue.prototype.$environment = environment
     Vue.prototype.$blockchainProvider = new BlockchainProvider(
       environment.connectionNodes.nodes[0],
       environment.connectionNodes.protocol,
       environment.connectionNodes.networkType
     )
+
+    new Vue({
+      router,
+      store,
+      vuetify,
+      render: h => h(App)
+    }).$mount('#app')
   } catch (e) {
     console.error(e)
   }
@@ -53,12 +59,4 @@ const getEnvironment = function (configInfo) {
   return environment
 }
 
-new Vue({
-  beforeCreate () {
-    configIntegration()
-  },
-  router,
-  store,
-  vuetify,
-  render: h => h(App)
-}).$mount('#app')
+configIntegration()

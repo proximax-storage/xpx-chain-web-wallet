@@ -14,7 +14,7 @@
           <span class="subtitle-1 font-regular gray-black--text">{{subtitle}}</span>
         </v-col>
 
-        <v-col cols="11" md="10" class="mx-auto pt-0" v-if="separed2">
+        <v-col cols="11" md="10" class="mx-auto pt-0 pb-0" v-if="separed2">
           <hr />
         </v-col>
       </v-row>
