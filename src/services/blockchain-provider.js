@@ -159,11 +159,11 @@ class BlockchainProvider {
    * @memberof BlockchainProvider
    */
   isValidPrivateKey (privateKey) {
-    if (privateKey.length !== 64 && privateKey.length !== 66) {
-      // console.error('Private key length must be 64 or 66 characters !');
+    if (privateKey && (privateKey.length !== 64 && privateKey.length !== 66)) {
+      // console.error('Private key length must be 64 or 66 characters !')
       return false
-    } else if (!this.isHexadecimal(privateKey)) {
-      // console.error('Private key must be hexadecimal only !');
+    } else if (privateKey && !this.isHexadecimal(privateKey)) {
+      // console.error('Private key must be hexadecimal only !')
       return false
     } else {
       return true
@@ -178,8 +178,11 @@ class BlockchainProvider {
    * @memberof BlockchainProvider
    */
   isHexadecimal (str) {
-    console.log(str)
-    return str.match('^(0x|0X)?[a-fA-F0-9]+$') !== null
+    if (str) {
+      return str && str.match('^(0x|0X)?[a-fA-F0-9]+$') !== null
+    }
+
+    return false
   }
 
   /**

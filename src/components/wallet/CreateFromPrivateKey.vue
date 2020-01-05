@@ -67,7 +67,7 @@
                 </v-col>
 
                 <!-- Is Swap Checkbox -->
-                <v-col cols="12 d-flex justify-center">
+                <v-col cols="12" class="d-flex justify-center pt-0">
                   <v-checkbox v-model="isSwap" :label="`Check this box if you wish to swap with this private key.`"></v-checkbox>
                 </v-col>
 

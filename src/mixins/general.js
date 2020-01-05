@@ -69,7 +69,7 @@ export default {
             required: value => !!value || 'Private Key is required',
             min: v => (v && v.length >= 64) || 'Private Key must be less than 64 characters',
             max: v => (v && v.length <= 66) || 'Private Key must be a maximum of 66 characters',
-            isHex: v => (this.$blockchainProvider.isHexadecimal(v) || 'Private key must be Hexadecimal')
+            isHex: v => (this.$blockchainProvider.isValidPrivateKey(v) || 'Private key must be Hexadecimal')
           }
         }
       }
