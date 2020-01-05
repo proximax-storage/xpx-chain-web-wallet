@@ -1,139 +1,145 @@
 <template>
   <div>
-    <v-form v-model="valid" ref="form">
-      <v-container>
-        <!-- Title & Subtitle -->
-        <title-subtitle :title="title" :separed1="true"></title-subtitle>
-        <v-row>
-          <v-col cols="11" sm="8" md="7" lg="6" class="mx-auto">
-            <v-row>
-              <!-- Type network -->
-              <v-col cols="12">
-                <v-autocomplete
-                  rounded
-                  outlined
-                  dense
-                  v-model="networkSelected"
-                  :items="networksType"
-                  :hint="getHint"
-                  item-text="text"
-                  item-value="value"
-                  label="Network type"
-                  return-object
-                  cache-items
-                  auto-select-first
-                ></v-autocomplete>
-              </v-col>
+    <template v-if="!dataWalletCreated">
+      <v-form v-model="valid" ref="form">
+        <v-container>
+          <!-- Title & Subtitle -->
+          <title-subtitle :title="title" :separed1="true"></title-subtitle>
+          <v-row>
+            <v-col cols="11" sm="8" md="7" lg="6" class="mx-auto">
+              <v-row>
+                <!-- Type network -->
+                <v-col cols="12">
+                  <v-autocomplete
+                    rounded
+                    outlined
+                    dense
+                    v-model="networkSelected"
+                    :items="networksType"
+                    :hint="getHint"
+                    item-text="text"
+                    item-value="value"
+                    label="Network type"
+                    return-object
+                    cache-items
+                    auto-select-first
+                  ></v-autocomplete>
+                </v-col>
 
-              <!-- Wallet name -->
-              <v-col cols="12">
-                <v-text-field
-                  :label="configForm.walletName.label"
-                  :loading="searchingWalletName"
-                  :disabled="searchingWalletName"
-                  :minlength="configForm.walletName.min"
-                  :maxlength="configForm.walletName.max"
-                  :counter="configForm.walletName.max"
-                  :rules="[
-                    configForm.walletName.rules.required,
-                    configForm.walletName.rules.min,
-                    configForm.walletName.rules.max,
-                    walletIsRepeat
+                <!-- Wallet name -->
+                <v-col cols="12">
+                  <v-text-field
+                    :label="configForm.walletName.label"
+                    :loading="searchingWalletName"
+                    :disabled="searchingWalletName"
+                    :minlength="configForm.walletName.min"
+                    :maxlength="configForm.walletName.max"
+                    :counter="configForm.walletName.max"
+                    :rules="[
+                      configForm.walletName.rules.required,
+                      configForm.walletName.rules.min,
+                      configForm.walletName.rules.max,
+                      walletIsRepeat
+                    ]"
+                    rounded
+                    outlined
+                    dense
+                    v-model.trim="walletName"
+                  >
+                    <template v-slot:prepend-inner>
+                      <v-img
+                        class="pr-2 mt-1"
+                        alt="logo"
+                        height="20"
+                        width="20"
+                        :src="require(`@/assets/img/${configForm.walletName.icon}`)"
+                      ></v-img>
+                    </template>
+                  </v-text-field>
+                </v-col>
+
+                <!-- Password -->
+                <v-col cols="12" md="6">
+                  <v-text-field
+                    rounded
+                    outlined
+                    dense
+                    v-model="passwords.password"
+                    :append-icon="configForm.password.show ? 'mdi-eye' : 'mdi-eye-off'"
+                    :minlength="configForm.password.min"
+                    :maxlength="configForm.password.max"
+                    :counter="configForm.password.max"
+                    :rules="[
+                    configForm.password.rules.required,
+                    configForm.password.rules.min,
+                    configForm.password.rules.max
                   ]"
-                  rounded
-                  outlined
-                  dense
-                  v-model.trim="walletName"
-                >
-                  <template v-slot:prepend-inner>
-                    <v-img
-                      class="pr-2 mt-1"
-                      alt="logo"
-                      height="20"
-                      width="20"
-                      :src="require(`@/assets/img/${configForm.walletName.icon}`)"
-                    ></v-img>
-                  </template>
-                </v-text-field>
-              </v-col>
+                    :label="configForm.password.label"
+                    :type="configForm.password.show ? 'text' : 'password'"
+                    name="password"
+                    hint
+                    @click:append="configForm.password.show = !configForm.password.show"
+                  >
+                    <template v-slot:prepend-inner>
+                      <v-img
+                        class="pr-2 mt-1"
+                        alt="logo"
+                        height="20"
+                        width="20"
+                        :src="require(`@/assets/img/${configForm.password.icon}`)"
+                      ></v-img>
+                    </template>
+                  </v-text-field>
+                </v-col>
 
-              <!-- Password -->
-              <v-col cols="12" md="6">
-                <v-text-field
-                  rounded
-                  outlined
-                  dense
-                  v-model="passwords.password"
-                  :append-icon="configForm.password.show ? 'mdi-eye' : 'mdi-eye-off'"
-                  :minlength="configForm.password.min"
-                  :maxlength="configForm.password.max"
-                  :counter="configForm.password.max"
-                  :rules="[
-                  configForm.password.rules.required,
-                  configForm.password.rules.min,
-                  configForm.password.rules.max
-                ]"
-                  :label="configForm.password.label"
-                  :type="configForm.password.show ? 'text' : 'password'"
-                  name="password"
-                  hint
-                  @click:append="configForm.password.show = !configForm.password.show"
-                >
-                  <template v-slot:prepend-inner>
-                     <v-img
-                      class="pr-2 mt-1"
-                      alt="logo"
-                      height="20"
-                      width="20"
-                      :src="require(`@/assets/img/${configForm.password.icon}`)"
-                    ></v-img>
-                  </template>
-                </v-text-field>
-              </v-col>
+                <!-- Confirm Password -->
+                <v-col cols="12" md="6">
+                  <v-text-field
+                    rounded
+                    outlined
+                    dense
+                    name="confirmPassword"
+                    label="Confirm Password"
+                    hint="Confirm Password"
+                    v-model="passwords.confirmPassword"
+                    :append-icon="configForm.password.showConfirm ? 'mdi-eye' : 'mdi-eye-off'"
+                    :minlength="configForm.password.min"
+                    :maxlength="configForm.password.max"
+                    :counter="configForm.password.max"
+                    :rules="[
+                    configForm.password.rules.required,
+                    configForm.password.rules.min,
+                    configForm.password.rules.max,
+                    isMatch(passwords.password, passwords.confirmPassword, 'Password')
+                  ]"
+                    :type="configForm.password.showConfirm ? 'text' : 'password'"
+                    :disabled="disabledConfirmPassword"
+                    @click:append="configForm.password.showConfirm = !configForm.password.showConfirm"
+                  >
+                    <template v-slot:prepend-inner>
+                      <v-img
+                        class="pr-2 mt-1"
+                        alt="logo"
+                        height="20"
+                        width="20"
+                        :src="require(`@/assets/img/${configForm.password.icon}`)"
+                      ></v-img>
+                    </template>
+                  </v-text-field>
+                </v-col>
+              </v-row>
 
-              <!-- Confirm Password -->
-              <v-col cols="12" md="6">
-                <v-text-field
-                  rounded
-                  outlined
-                  dense
-                  name="confirmPassword"
-                  label="Confirm Password"
-                  hint="Confirm Password"
-                  v-model="passwords.confirmPassword"
-                  :append-icon="configForm.password.showConfirm ? 'mdi-eye' : 'mdi-eye-off'"
-                  :minlength="configForm.password.min"
-                  :maxlength="configForm.password.max"
-                  :counter="configForm.password.max"
-                  :rules="[
-                  configForm.password.rules.required,
-                  configForm.password.rules.min,
-                  configForm.password.rules.max,
-                  isMatch(passwords.password, passwords.confirmPassword, 'Password')
-                ]"
-                  :type="configForm.password.showConfirm ? 'text' : 'password'"
-                  :disabled="disabledConfirmPassword"
-                  @click:append="configForm.password.showConfirm = !configForm.password.showConfirm"
-                >
-                  <template v-slot:prepend-inner>
-                    <v-img
-                      class="pr-2 mt-1"
-                      alt="logo"
-                      height="20"
-                      width="20"
-                      :src="require(`@/assets/img/${configForm.password.icon}`)"
-                    ></v-img>
-                  </template>
-                </v-text-field>
-              </v-col>
-            </v-row>
+              <!-- Buttons -->
+              <custom-buttons @action="action" :arrayBtn="getArrayBtn"></custom-buttons>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-form>
+    </template>
 
-            <!-- Buttons -->
-            <custom-buttons @action="action" :arrayBtn="getArrayBtn"></custom-buttons>
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-form>
+    <template v-if="dataWalletCreated">
+      <wallet-created :data="dataWalletCreated"></wallet-created>
+    </template>
   </div>
 </template>
 
@@ -173,12 +179,14 @@ export default {
           loading: false,
           text: 'Create'
         }
-      }
+      },
+      dataWalletCreated: null
     }
   },
   components: {
     'title-subtitle': () => import('@/components/shared/Title'),
-    'custom-buttons': () => import('@/components/shared/Buttons')
+    'custom-buttons': () => import('@/components/shared/Buttons'),
+    'wallet-created': () => import('@/components/wallet/WalletCreated')
   },
   methods: {
     ...mapMutations(['SHOW_SNACKBAR', 'SHOW_LOADING']),
@@ -201,7 +209,7 @@ export default {
       if (this.valid && !this.sendingForm) {
         this.sendingForm = true
         this.SHOW_LOADING(true)
-        this.createWallet({
+        const response = this.createWallet({
           default: true,
           firstAccount: true,
           isMultisign: null,
@@ -215,6 +223,9 @@ export default {
           this.clear()
           this.sendingForm = false
           this.SHOW_LOADING(false)
+          if (response.status) {
+            this.dataWalletCreated = response
+          }
         }, 500)
       }
     },

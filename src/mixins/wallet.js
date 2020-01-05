@@ -22,7 +22,7 @@ export default {
           const wallets = this.getWallets(walletCreated.network)
           wallets.push(accountBuilded)
           this.$storage.set(`wallets-${walletCreated.network}`, wallets)
-          return { status: true, data: accountBuilded }
+          return { status: true, data: accountBuilded, pvk: decrypted.privateKey }
         }
 
         return { status: false, msg: 'Error to decrypt wallet' }

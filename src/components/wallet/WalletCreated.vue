@@ -2,13 +2,14 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="11" sm="11" class="mx-auto">
+      <v-col cols="11" class="mx-auto">
         <!-- Title & Subtitle -->
         <title-subtitle :title="title" :subtitle="subtitle" :separed2="true"></title-subtitle>
 
         <v-row>
+          <!-- Wallet name -->
           <v-col cols="12" class="pt-0 text-center headline font-weight-regular">
-            <span>rperaza</span>
+            <span>{{data.data.simpleWallet.name}}</span>
           </v-col>
 
           <v-col cols="12" sm="10" md="9" lg="8" class="mx-auto">
@@ -23,7 +24,7 @@
                       <br />
                     </span>
                     <!-- Address -->
-                    <span class="body-2">VA3ABO-RDH7SM-FWE2I3-3XFMZZ-62T5W5-GBQWGN-AUI6</span>
+                    <span class="body-2">{{data.data.simpleWallet.address.pretty()}}</span>
                   </v-col>
 
                   <!-- Icon -->
@@ -31,7 +32,7 @@
                     <v-btn
                       text
                       icon
-                      @click="doCopy('Address', 'VA3ABO-RDH7SM-FWE2I3-3XFMZZ-62T5W5-GBQWGN-AUI6')"
+                      @click="doCopy('Address', data.data.simpleWallet.address.pretty())"
                     >
                       <v-icon>mdi-content-copy</v-icon>
                     </v-btn>
@@ -50,7 +51,7 @@
               </v-col>
 
               <!-- Private Key -->
-              <v-col cols="12" class="box-gray mb-5">
+              <v-col cols="12" class="box-gray mb-5" v-if="showPrivateKey">
                 <v-row class="d-flex align-center">
                   <v-col cols="10" class="pt-0 pb-0 overflow-ellipsis-nowrap mx-auto">
                     <!-- Name Wallet -->
@@ -59,9 +60,7 @@
                       <br />
                     </span>
                     <!-- Private Key -->
-                    <span
-                      class="body-2"
-                    >BB7720C3489CB492066464F2157771037D899BA3CE8BA7FE1AF4CC5900B572D2</span>
+                    <span class="body-2 d-flex">{{data.pvk.toUpperCase()}}</span>
                   </v-col>
 
                   <!-- Icon -->
@@ -69,7 +68,7 @@
                     <v-btn
                       text
                       icon
-                      @click="doCopy('Private Key', 'BB7720C3489CB492066464F2157771037D899BA3CE8BA7FE1AF4CC5900B572D2')"
+                      @click="doCopy('Private Key', data.pvk.toUpperCase())"
                     >
                       <v-icon>mdi-content-copy</v-icon>
                     </v-btn>
@@ -79,18 +78,7 @@
             </v-row>
 
             <!-- Buttons -->
-            <custom-buttons @action="triggerClick" :arrayBtn="arrayBtn"></custom-buttons>
-            <!-- <v-row class="d-flex justify-center">
-              <template v-for="(item, key) of arrayBtn">
-                <v-btn
-                  :key="key"
-                  rounded
-                  color="primary"
-                  class="text-transform-none pl-8 pr-8 mt-2 mr-3 subtitle-1 font-regular"
-                  @click="triggerClick(item.action)"
-                >{{item.text}}</v-btn>
-              </template>
-            </v-row>-->
+            <custom-buttons @action="action" :arrayBtn="getArrayBtn"></custom-buttons>
           </v-col>
         </v-row>
       </v-col>
@@ -103,10 +91,12 @@ import generalMixins from '../../mixins/general'
 
 export default {
   mixins: [generalMixins],
+  props: ['data'],
   data: () => {
     return {
       title: 'Congratulations!',
       subtitle: 'Your wallet has been successfully created.',
+      showPrivateKey: false,
       arrayBtn: {
         showPvk: {
           key: 'showPvk',
@@ -140,18 +130,28 @@ export default {
     'custom-buttons': () => import('@/components/shared/Buttons')
   },
   methods: {
-    showPrivateKey () {
-      console.log('SHOW PRIVATE KEY')
-    },
-    triggerClick (action) {
+    action (action) {
       switch (action) {
         case 'showPrivateKey':
-          this.showPrivateKey()
+          this.showPrivateKey = !this.showPrivateKey
+          break
+        case 'savePaperWallet':
+          console.log('savePaperWallet')
+          break
+        case 'continue':
+          this.$router.push('/').catch(e => {})
           break
         default:
           console.log('default')
           break
       }
+    }
+  },
+  computed: {
+    getArrayBtn () {
+      const arrayBtn = this.arrayBtn
+      arrayBtn['showPvk'].text = (this.showPrivateKey) ? 'Hide Private Key' : 'Show Private Key'
+      return arrayBtn
     }
   }
 }
