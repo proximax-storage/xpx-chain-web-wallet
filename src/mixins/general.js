@@ -58,6 +58,19 @@ export default {
             max: v =>
               (v && v.length <= 30) || 'Password must be a maximum of 30 characters'
           }
+        },
+        privateKey: {
+          label: 'Private Key',
+          icon: 'icon-private-key-green-16h-proximax-sirius-wallet.svg',
+          min: 64,
+          max: 66,
+          show: false,
+          rules: {
+            required: value => !!value || 'Private Key is required',
+            min: v => (v && v.length >= 64) || 'Private Key must be less than 64 characters',
+            max: v => (v && v.length <= 66) || 'Private Key must be a maximum of 66 characters',
+            isHex: v => (this.$blockchainProvider.isHexadecimal(v) || 'Private key must be Hexadecimal')
+          }
         }
       }
     },

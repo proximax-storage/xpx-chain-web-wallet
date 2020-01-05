@@ -71,6 +71,20 @@ class BlockchainProvider {
   /**
    *
    *
+   * @param {*} nameWallet
+   * @param {*} password
+   * @param {*} privateKey
+   * @param {*} network
+   * @returns
+   * @memberof BlockchainProvider
+   */
+  createSimpleWalletFromPrivateKey (name, password, privateKey, network = this.typeNetwork) {
+    return SimpleWallet.createFromPrivateKey(name, this.createPassword(password), privateKey, network)
+  }
+
+  /**
+   *
+   *
    * @param {*} value
    * @returns
    * @memberof BlockchainProvider
@@ -164,6 +178,7 @@ class BlockchainProvider {
    * @memberof BlockchainProvider
    */
   isHexadecimal (str) {
+    console.log(str)
     return str.match('^(0x|0X)?[a-fA-F0-9]+$') !== null
   }
 

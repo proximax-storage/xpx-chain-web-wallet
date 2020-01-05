@@ -3,7 +3,14 @@ export default {
     createWallet (data) {
       const existWallet = this.getWalletByName(data.walletName, data.network)
       if (existWallet === undefined) {
-        const walletCreated = this.$blockchainProvider.createSimpleWallet(data.walletName, data.password, data.network)
+        let walletCreated = null
+        if (data.privateKey) {
+          console.log('data', data)
+          walletCreated = this.$blockchainProvider.createSimpleWalletFromPrivateKey(data.walletName, data.password, data.privateKey, data.network)
+        } else {
+          walletCreated = this.$blockchainProvider.createSimpleWallet(data.walletName, data.password, data.network)
+        }
+
         const decrypted = this.decryptWallet(walletCreated, data.password)
         if (decrypted.privateKey) {
           const publicAccount = this.$blockchainProvider.getPublicAccountFromPrivateKey(decrypted.privateKey, walletCreated.network).publicAccount
