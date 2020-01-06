@@ -2,7 +2,8 @@ export default {
   methods: {
     createWallet (data) {
       const existWallet = this.getWalletByName(data.walletName, data.network)
-      if (existWallet === undefined) {
+      console.log(existWallet)
+      if (existWallet === undefined || existWallet === null) {
         let walletCreated = null
         if (data.privateKey) {
           walletCreated = this.$blockchainProvider.createSimpleWalletFromPrivateKey(data.walletName, data.password, data.privateKey, data.network)
@@ -12,7 +13,7 @@ export default {
 
         const decrypted = this.decryptWallet(walletCreated, data.password)
         if (decrypted.privateKey) {
-          const account = this.$blockchainProvider.getAccountFromPrivateKey(decrypted.privateKey, walletCreated.network).publicAccount
+          const publicAccount = this.$blockchainProvider.getAccountFromPrivateKey(decrypted.privateKey, walletCreated.network).publicAccount
           const accountBuilded = {
             algo: 'pass:bip32',
             brain: true,
@@ -20,7 +21,7 @@ export default {
             firstAccount: data.firstAccount,
             isMultisign: data.isMultisign,
             nis1Account: data.nis1Account,
-            publicAccount: account.publicAccount,
+            publicAccount: publicAccount,
             prefixKeyNis1: data.prefixKeyNis1,
             simpleWallet: walletCreated
           }

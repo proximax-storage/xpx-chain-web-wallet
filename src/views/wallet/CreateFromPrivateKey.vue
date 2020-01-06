@@ -233,8 +233,8 @@ export default {
       this.searchingWalletName = false
       this.sendingForm = false
       this.$refs.form.reset()
-      const network = this.networksType.find(x => x.value === 168)
-      this.networkSelected = { text: network.text, value: network.value }
+      const network = this.$blockchainProvider.getNetworkTypes()
+      this.networkSelected = { text: network.testnet.text, value: network.testnet.value }
     },
     sendForm () {
       if (this.valid && !this.sendingForm) {
@@ -316,8 +316,9 @@ export default {
       500
     )
 
-    this.networksType = this.$blockchainProvider.getNetworkTypes()
-    this.networkSelected = this.networksType[0]
+    const networks = this.$blockchainProvider.getNetworkTypes()
+    this.networksType = [networks.testnet, networks.mainnet]
+    this.networkSelected = networks.testnet
     this.arrayBtn = {
       clear: this.typeButtons().clear,
       create: this.typeButtons().create

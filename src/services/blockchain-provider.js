@@ -204,16 +204,16 @@ class BlockchainProvider {
    * @memberof BlockchainProvider
    */
   getNetworkTypes () {
-    return [
-      {
+    return {
+      testnet: {
         text: 'Public Test',
         value: NetworkType.TEST_NET
       },
-      {
+      mainnet: {
         text: 'Main Net',
         value: NetworkType.MAIN_NET
       }
-    ]
+    }
   }
 }
 
