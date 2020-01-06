@@ -42,11 +42,8 @@
 </template>
 
 <script>
-import generalMixins from '../mixins/general'
-
 export default {
   name: 'home',
-  mixins: [generalMixins],
   data: () => ({
     title: 'ProximaX Sirius Wallet',
     sub: 'The secure interface that connects to the Proximax Sirius platform.',
@@ -60,7 +57,7 @@ export default {
         text: 'Sign In'
       },
       create: {
-        action: 'create',
+        action: 'selectCreationType',
         disabled: false,
         color: 'primary',
         loading: false,
@@ -105,12 +102,20 @@ export default {
       if (action === 'signIn') {
         this.signIn()
       } else {
-        this.createWallet()
+        this.$router.push('/select-wallet-creation-type').catch(e => {})
       }
     },
-    createWallet () {
-      console.log('Create wallet')
-      this.$router.push('/create-wallet').catch(e => {})
+    buildStructureService (t, s, d, i, r, ch, vch, cn) {
+      return {
+        title: t,
+        show: s,
+        description: d,
+        image: i,
+        route: r,
+        children: ch,
+        viewChildren: vch,
+        className: cn
+      }
     },
     signIn () {
       console.log('signIn')

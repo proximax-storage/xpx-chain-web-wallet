@@ -188,6 +188,18 @@ class BlockchainProvider {
   /**
    *
    *
+   * @param {*} privateKey
+   * @param {*} network
+   * @returns
+   * @memberof BlockchainProvider
+   */
+  getAccountFromPrivateKey (privateKey, network) {
+    return Account.createFromPrivateKey(privateKey, network)
+  }
+
+  /**
+   *
+   *
    * @returns
    * @memberof BlockchainProvider
    */
@@ -202,18 +214,6 @@ class BlockchainProvider {
         value: NetworkType.MAIN_NET
       }
     ]
-  }
-
-  /**
-   *
-   *
-   * @param {*} privateKey
-   * @param {*} network
-   * @returns
-   * @memberof BlockchainProvider
-   */
-  getPublicAccountFromPrivateKey (privateKey, network) {
-    return Account.createFromPrivateKey(privateKey, network)
   }
 }
 

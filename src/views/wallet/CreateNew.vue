@@ -16,7 +16,6 @@
                     dense
                     v-model="networkSelected"
                     :items="networksType"
-                    :hint="getHint"
                     item-text="text"
                     item-value="value"
                     label="Network type"
@@ -162,24 +161,7 @@ export default {
       passwords: { password: '', confirmPassword: '' },
       searchingWalletName: false,
       walletIsRepeat: false,
-      arrayBtn: {
-        clear: {
-          key: 'clear',
-          action: 'clear',
-          disabled: false,
-          color: 'primary',
-          loading: false,
-          text: 'Clear'
-        },
-        create: {
-          key: 'create',
-          action: 'create',
-          disabled: false,
-          color: 'primary',
-          loading: false,
-          text: 'Create'
-        }
-      },
+      arrayBtn: null,
       dataWalletCreated: null
     }
   },
@@ -262,11 +244,6 @@ export default {
         return true
       }
     },
-    getHint () {
-      return this.networkSelected && this.networkSelected.value !== ''
-        ? `${this.networkSelected.text}`
-        : ''
-    },
     getArrayBtn () {
       const arrayBtn = this.arrayBtn
       arrayBtn['clear'].disabled = this.sendingForm
@@ -289,6 +266,10 @@ export default {
 
     this.networksType = this.$blockchainProvider.getNetworkTypes()
     this.networkSelected = this.networksType[0]
+    this.arrayBtn = {
+      clear: this.typeButtons().clear,
+      create: this.typeButtons().create
+    }
   }
 }
 </script>

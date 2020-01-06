@@ -53,19 +53,19 @@ export default {
           title: 'New Wallet',
           nameButton: 'Create',
           icon: 'icon-add-new-blue.svg',
-          route: '/wallet/create-new'
+          route: '/create-new-wallet'
         },
         {
           title: 'From a Private Key',
           nameButton: 'Create',
           icon: 'icon-private-key-blue.svg',
-          route: '/wallet/create-from-private-key'
+          route: '/create-wallet-from-private-key'
         },
         {
           title: 'From a Wallet Backup',
           nameButton: 'Import',
           icon: 'icon-wallet-import-blue.svg',
-          route: '/wallet/create-new'
+          route: '/create-new-wallet'
         }
       ]
     }

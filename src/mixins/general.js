@@ -1,17 +1,5 @@
 export default {
   methods: {
-    buildStructureService (t, s, d, i, r, ch, vch, cn) {
-      return {
-        title: t,
-        show: s,
-        description: d,
-        image: i,
-        route: r,
-        children: ch,
-        viewChildren: vch,
-        className: cn
-      }
-    },
     doCopy (itemName, text) {
       this.$copyText(text).then((e) => {
         this.$store.dispatch('showMSG', {
@@ -84,6 +72,26 @@ export default {
       return str.replace(/\w\S*/g, function (txt) {
         return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
       })
+    },
+    typeButtons () {
+      return {
+        clear: {
+          key: 'clear',
+          action: 'clear',
+          disabled: false,
+          color: 'primary',
+          loading: false,
+          text: 'Clear'
+        },
+        create: {
+          key: 'create',
+          action: 'create',
+          disabled: false,
+          color: 'primary',
+          loading: false,
+          text: 'Create'
+        }
+      }
     }
   }
 }

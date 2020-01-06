@@ -27,23 +27,23 @@ const routes = [
       requiresNotAuth: true
     }
   }, {
-    path: '/create-wallet',
-    name: 'create-wallet',
-    component: () => import(/* webpackChunkName: "createWallet" */ '../views/wallet/CreateWallet.vue'),
+    path: '/select-wallet-creation-type',
+    name: 'select-wallet-creation-type',
+    component: () => import(/* webpackChunkName: "select-creation-type" */ '../views/wallet/SelectCreationType.vue'),
     meta: {
       requiresNotAuth: true
     }
   }, {
-    path: '/wallet/create-from-private-key',
-    name: 'create-from-private-key',
-    component: () => import(/* webpackChunkName: "create-wallet-from-private-key" */ '../components/wallet/CreateFromPrivateKey.vue'),
+    path: '/create-new-wallet',
+    name: 'create-new-wallet',
+    component: () => import(/* webpackChunkName: "CreateNew" */ '../views/wallet/CreateNew.vue'),
     meta: {
       requiresNotAuth: true
     }
   }, {
-    path: '/wallet/create-new',
-    name: 'create-wallet-new',
-    component: () => import(/* webpackChunkName: "create-wallet-new" */ '../components/wallet/CreateNew.vue'),
+    path: '/create-wallet-from-private-key',
+    name: 'create-wallet-from-private-key',
+    component: () => import(/* webpackChunkName: "CreateFromPrivateKey" */ '../views/wallet/CreateFromPrivateKey.vue'),
     meta: {
       requiresNotAuth: true
     }
