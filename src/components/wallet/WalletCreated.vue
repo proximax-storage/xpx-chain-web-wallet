@@ -171,11 +171,6 @@ export default {
       console.log('info', info)
       this.arrayBtn.continue.disabled = false
       this.arrayBtn.continue.loading = false
-      this.$store.commit('SHOW_SNACKBAR', {
-        snackbar: true,
-        text: info.msg,
-        color: (!info.status) ? 'warning' : 'success'
-      })
     }
   }
 }
