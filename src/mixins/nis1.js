@@ -1,14 +1,5 @@
-import {
-  Address,
-  NEMLibrary,
-  Account,
-  NetworkTypes,
-  PublicAccount,
-  AccountOwnedAssetService,
-  AccountHttp,
-  AssetHttp
-} from 'nem-library'
 import axios from 'axios'
+import { Account, AccountHttp, AccountOwnedAssetService, Address, AssetHttp, NEMLibrary, NetworkTypes, PublicAccount } from 'nem-library'
 
 export default {
   data: () => {
@@ -20,18 +11,11 @@ export default {
   },
   methods: {
     async validateBalanceAccounts (xpxFound, addressSigner) {
-    // console.log('xpxFound --> ', xpxFound)
       const quantityFillZeros = this.$blockchainProvider.addZeros(6, xpxFound.quantity)
-      let realQuantity = this.amountFormatter(quantityFillZeros, xpxFound, 6)
+      let realQuantity = this.$blockchainProvider.amountFormatter(quantityFillZeros, xpxFound, 6)
       const unconfirmedTxn = await this.getUnconfirmedTransaction(addressSigner)
-      // console.log('Address  ---> ', addressSigner)
       if (unconfirmedTxn.length > 0) {
-      // let quantity = realQuantity
-      // console.log('realQuantity', realQuantity)
         for (const item of unconfirmedTxn) {
-        // console.log('transaction unconfirmed -->', item)
-        // console.log(item['otherTransaction']['_assets'])
-        // console.log(this.hexToAscii(item['otherTransaction'].message.payload), '\n\n')
           let existMosaic = null
           if (item.type === 257 && item['signer']['address']['value'] === addressSigner['value'] && item['_assets'].length > 0) {
             existMosaic = item['_assets'].find((mosaic) => mosaic.assetId.namespaceId === 'prx' && mosaic.assetId.name === 'xpx')
@@ -39,16 +23,11 @@ export default {
             existMosaic = item['otherTransaction']['_assets'].find((mosaic) => mosaic.assetId.namespaceId === 'prx' && mosaic.assetId.name === 'xpx')
           }
 
-          // console.log('existMosaic -->', existMosaic)
           if (existMosaic) {
-            const unconfirmedFormatter = parseFloat(this.amountFormatter(existMosaic.quantity, xpxFound, 6))
-            // console.log('\n unconfirmedFormatter --->', unconfirmedFormatter)
+            const unconfirmedFormatter = parseFloat(this.$blockchainProvider.amountFormatter(existMosaic.quantity, xpxFound, 6))
             const quantityWhitoutFormat = realQuantity.split(',').join('')
-            // console.log('\nquantityWhitoutFormat --->', quantityWhitoutFormat)
             const residue = this.transactionService.subtractAmount(parseFloat(quantityWhitoutFormat), unconfirmedFormatter)
-            // console.log('\nresidue --->', residue, '\n')
-            const quantityFormat = this.amountFormatter(parseInt((residue).toString().split('.').join('')), xpxFound, 6)
-            // console.log('quantityFormat --->', quantityFormat)
+            const quantityFormat = this.$blockchainProvider.amountFormatter(parseInt((residue).toString().split('.').join('')), xpxFound, 6)
             realQuantity = quantityFormat
           }
         }
@@ -58,14 +37,7 @@ export default {
         return realQuantity
       }
     },
-    amountFormatter (amountParam, mosaic, manualDivisibility = 0) {
-      const divisibility = (manualDivisibility === 0) ? manualDivisibility : mosaic.properties.divisibility
-      const amountDivisibility = Number(amountParam / Math.pow(10, divisibility))
-      const amountFormatter = amountDivisibility.toLocaleString('en-us', { minimumFractionDigits: divisibility })
-      return amountFormatter
-    },
     buildAccountInfoNIS1 (data) {
-      console.log('buildAccountInfoNIS1 ---> ', data)
       let cosignatoryOf = false
       if (data.cosignersAccounts.length > 0) {
         cosignatoryOf = true
@@ -93,15 +65,12 @@ export default {
       return PublicAccount.createWithPublicKey(publicKey)
     },
     getAccountInfoNis1 (publicAccount) {
-      console.log('NIS1 PUBLIC ACCOUNT --->', publicAccount)
       const promise = new Promise(async (resolve, reject) => {
         try {
           let cosignatoryOf = []
           let accountsMultisigInfo = []
           const addressOwnedSwap = this.createAddressToString(publicAccount.address.pretty())
-          console.log('addressOwnedSwap', addressOwnedSwap)
           const accountInfoOwnedSwap = await this.getAccountInfo(addressOwnedSwap)
-          console.log('accountInfoOwnedSwap', accountInfoOwnedSwap)
           if (accountInfoOwnedSwap.data.meta.cosignatories.length === 0) {
             // INFO ACCOUNTS MULTISIG
             if (accountInfoOwnedSwap.data.meta.cosignatoryOf.length > 0) {
@@ -109,7 +78,7 @@ export default {
               for (let multisig of cosignatoryOf) {
                 try {
                   const addressMultisig = this.createAddressToString(multisig.address)
-                  const ownedMosaic = await this.getOwnedMosaics(addressMultisig)
+                  const ownedMosaic = await this.getOwnedMosaics(addressMultisig).toPromise()
                   const xpxFound = ownedMosaic.find(el => el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx')
                   if (xpxFound) {
                     multisig.balance = await this.validateBalanceAccounts(xpxFound, addressMultisig)
@@ -127,9 +96,7 @@ export default {
             try {
               // SEARCH INFO OWNED SWAP
               const ownedMosaic = await this.getOwnedMosaics(addressOwnedSwap).toPromise()
-              console.log('ownedMosaic --->', ownedMosaic)
               const xpxFound = ownedMosaic.find(el => el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx')
-              // console.log('xpxFound ---->', xpxFound)
               if (xpxFound) {
                 const balance = await this.validateBalanceAccounts(xpxFound, addressOwnedSwap)
                 const params = { publicAccount, accountsMultisigInfo, balance, cosignersAccounts: cosignatoryOf, isMultiSign: false, name, xpxFound }
@@ -137,7 +104,6 @@ export default {
                 console.log('nis1AccountsInfo ---->', nis1AccountsInfo)
                 // this.setNis1AccountsFound$(nis1AccountsInfo)
               } else if (cosignatoryOf.length > 0) {
-                console.log('cosignatoryOf zero')
                 const params = { publicAccount, accountsMultisigInfo, balance: null, cosignersAccounts: cosignatoryOf, isMultiSign: false, name, xpxFound: null }
                 nis1AccountsInfo = this.buildAccountInfoNIS1(params)
                 console.log('nis1AccountsInfo ---->', nis1AccountsInfo)
@@ -160,23 +126,15 @@ export default {
                 color: 'error'
               })
             }
-
-            console.log('nis1AccountsInfo', nis1AccountsInfo)
           } else {
-            /* if (!this.walletService.currentWallet) {
-              this.removeParamNis1WalletCreated(name)
-            } */
             this.$store.commit('SHOW_SNACKBAR', {
               snackbar: true,
               text: 'Swap does not support this account type',
               color: 'error'
             })
           }
-
           resolve({ status: false })
         } catch (error) {
-          // this.removeParamNis1WalletCreated(name)
-          console.log('error', error)
           this.$store.commit('SHOW_SNACKBAR', {
             snackbar: true,
             text: 'It was not possible to connect to the server, try later',
