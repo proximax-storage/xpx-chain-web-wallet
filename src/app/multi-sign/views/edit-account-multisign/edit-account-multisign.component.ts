@@ -22,7 +22,7 @@ import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/fo
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AccountsInterface, AccountsInfoInterface, WalletService } from '../../../wallet/services/wallet.service';
-import { MultiSignService } from '../../service/multi-sign.service';
+import { MultiSignService, TypeTx } from '../../service/multi-sign.service';
 import { ServicesModuleService, HeaderServicesInterface } from '../../../servicesModule/services/services-module.service';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { NodeService } from '../../../servicesModule/services/node.service';
@@ -63,7 +63,7 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
   accountValid: boolean;
   mdbBtnAddCosignatory: boolean;
   cosignatoryList: CosignatoryList[] = [];
-  consginerFirmList: any = [];
+  consginerFirmList: ConsginerFirmList[] = [];
   transactionHttp: TransactionHttp;
   listContact: ContactsListInterface[] = [];
   showContacts: boolean;
@@ -92,7 +92,8 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
     info: '',
     subInfo: ''
   };
-
+  typeTx: TypeTx
+  consginerFirmAccountList: ConsginerFirmList[] = [];
   constructor(
     private activateRoute: ActivatedRoute,
     private fb: FormBuilder,
@@ -121,13 +122,13 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.createForm();
+    this.selectCosignatorieSign();
     this.booksAddress();
     this.subscribeValueChange();
     this.changeformStatus();
     this.selectAccount(this.activateRoute.snapshot.paramMap.get('name'));
     this.builder();
   }
-
 
   /**
    *
@@ -166,7 +167,14 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
   }
 
   /**
-   *
+   * Clean select content - defined empty by default
+   * @memberof EditAccountMultisignComponent
+   */
+  clearItemSelect(item: any) {
+
+  }
+
+  /**
    *
    * @param {string} [nameInput='']
    * @param {string} [nameControl='']
@@ -437,34 +445,27 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
     this.consginerFirmList = [];
     this.consginerFirmName = 'empty';
     this.consginerFirmAccount = null;
-    // tslint:disable-next-line: prefer-for-of
     for (let index = 0; index < this.walletService.currentWallet.accounts.length; index++) {
       const publicAccount: PublicAccount = PublicAccount.createFromPublicKey(this.walletService.currentWallet.accounts[index].publicAccount.publicKey,
         this.walletService.currentWallet.accounts[index].publicAccount.address.networkType);
       if (this.accountInfo.multisigInfo.hasCosigner(publicAccount)) {
-        // this.consginerFirmName = '';
         this.consginerFirmAccount = this.walletService.currentWallet.accounts[index];
-
         const accountFiltered: AccountsInfoInterface = this.walletService.filterAccountInfo(this.walletService.currentWallet.accounts[index].name);
         const infValidate = this.transactionService.validateBalanceCosignatorie(accountFiltered, Number(this.totalFee)).infValidate;
-
-
         this.consginerFirmList.push({
           label: this.walletService.currentWallet.accounts[index].name,
-          value: this.walletService.currentWallet.accounts[index],
+          value: this.walletService.currentWallet.accounts[index].address,
           disabled: infValidate[0].disabled,
-          info: infValidate[0].info
+          info: infValidate[0].info,
+          account: this.walletService.currentWallet.accounts[index],
+          signatory: false
         });
-
         isCosigner = this.accountInfo.multisigInfo.hasCosigner(publicAccount);
         // break
       }
       if (this.consginerFirmList.length == 1) {
-
         isCosigner = (!this.consginerFirmList[0].disabled);
-
       }
-
       if (this.consginerFirmList.length > 1) {
         this.showConsginerFirmList = true;
         this.editAccountMultsignForm.controls['cosignatorieSign'].setValidators([Validators.required]);
@@ -485,6 +486,31 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
     return isCosigner;
   }
 
+  pushConsginerFirmList(id: []): ConsginerFirmList[] {
+    const value: ConsginerFirmList[] = [];
+    if (id) {
+      id.forEach((v, index) => {
+        this.consginerFirmList.forEach(item => {
+          if (v === item.value) {
+            value.push(item);
+          }
+        });
+
+      });
+    }
+    const firm = value.filter(item => item.signatory === true)
+    if (firm.length === 0 && value.length > 0) {
+      value[0].signatory = true
+    }
+    else if (firm.length > 1 && value.length > 0) {
+      value.filter(item => item.signatory === true).map((item: any) => {
+        item.signatory = false;
+      })
+      value[0].signatory = true
+    }
+    return value;
+  }
+
   setValueForm(action: string, disableItem: boolean, type: number) {
     const consignatarioList: CosignatoryList[] = [];
     for (const element of this.accountInfo.multisigInfo.cosignatories) {
@@ -498,23 +524,37 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
 
 
   /**
-   *
-   *
-   * @param {*} $event
+   * 
    * @memberof EditAccountMultisignComponent
    */
-  selectCosignatorieSign($event) {
-    if ($event) {
-      this.consginerFirmAccount = $event.value;
-    } else {
-      this.consginerFirmAccount = null;
-    }
+  selectCosignatorieSign() {
+    this.editAccountMultsignForm.get('cosignatorieSign').valueChanges.subscribe(
+      id => {
+        this.consginerFirmAccountList = this.pushConsginerFirmList(id)
+        this.builder()
+      }
+    );
   }
-
-
+  firm(id, array: ConsginerFirmList[]) {
+    this.consginerFirmAccountList = this.updateConsginerFirmList(id, array)
+  }
+  updateConsginerFirmList(id: any, array: ConsginerFirmList[]): ConsginerFirmList[] {
+    const value: ConsginerFirmList[] = [];
+    array.forEach(element => {
+      if (element.value === id) {
+        element.signatory = true
+      } else {
+        element.signatory = false
+      }
+      value.push(element)
+    });
+    return value
+  }
   builder() {
     let convertIntoMultisigTransaction: ModifyMultisigAccountTransaction;
+    this.typeTx = this.multiSignService.typeSignTxEdit(this.getCosignatoryListFilter(1, 2), this.accountInfo.multisigInfo, this.consginerFirmAccountList.length)
     convertIntoMultisigTransaction = this.modifyMultisigAccountTransaction();
+
     this.aggregateTransaction = AggregateTransaction.createBonded(
       Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
       [convertIntoMultisigTransaction.toAggregate(this.currentAccountToConvert.publicAccount)],
@@ -763,8 +803,8 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
       minRemovalDelta: 1,
       password: ''
     }, {
-      emitEvent: false
-    }
+        emitEvent: false
+      }
     );
   }
 
@@ -958,6 +998,14 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
         return 'gray';
     }
   }
+  getColorCosignatory(type) {
+    switch (type) {
+      case true:
+        return 'white';
+      case false:
+        return 'gray';
+    }
+  }
 
   /**
    *
@@ -1044,12 +1092,50 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
   amountFormatterSimple(amount): string {
     return this.transactionService.amountFormatterSimple(amount);
   }
+  cleanArray(actual) {
+    const newArray = new Array();
+    for (let i = 0, j = actual.length; i < j; i++) {
+      if (actual[i]) {
+        newArray.push(actual[i]);
+      }
+    }
+    return newArray;
+  }
+
+  // filter select all options
+  onSelectAllconsginerFirm() {
+    const selected = this.consginerFirmList.map(item => item.value);
+    this.editAccountMultsignForm.get('cosignatorieSign').patchValue(this.cleanArray(selected));
+  }
+
+  onClearAllconsginerFirm() {
+    this.editAccountMultsignForm.get('cosignatorieSign').patchValue([]);
+  }
+}
+
+/**
+ * Interface to enlist the cosigner in a select
+ * @param label - Label of select .
+ * @param value  - Select identifier.
+ * @param disabled - Select state
+ * @param info - Information to show.
+ * @param account - selected account.
+ * @param signatory - Indicator, true = tx signature, false = not signed
+*/
+export interface ConsginerFirmList {
+  label: string;
+  value: any;
+  disabled: boolean;
+  info: string;
+  account: AccountsInterface;
+  signatory: boolean
+
 }
 
 /**
  * Create a modify multisig account transaction object
  * @param deadline - The deadline to include the transaction.
- * @param minApprovalDelta - The min approval relative change.
+ * @param minApprovalDelta  - The min approval relative change.
  * @param minRemovalDelta - The min removal relative change.
  * @param modifications - The array of modifications.
  * @param networkType - The network type.

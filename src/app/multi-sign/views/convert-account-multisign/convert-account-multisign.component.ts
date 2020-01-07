@@ -476,7 +476,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
 * @memberof CreateMultiSignatureComponent
 */
   builder() {
-    this.typeTx = this.multiSignService.typeSignTx(this.getCosignatoryList(), this.walletService.currentWallet.accounts)
+    this.typeTx = this.multiSignService.typeSignTxConvert(this.getCosignatoryList(), this.walletService.currentWallet.accounts)
     let convertIntoMultisigTransaction: ModifyMultisigAccountTransaction;
     if (this.currentAccountToConvert !== undefined && this.currentAccountToConvert !== null) {
       convertIntoMultisigTransaction = ModifyMultisigAccountTransaction.create(

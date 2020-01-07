@@ -185,7 +185,7 @@
               <div class="col-12 text-center">Approve Transaction</div>
               <div class="col-12">
                 <div class="md-form form-sm mt-03rem mb-0rem">
-                  <input (keypress)="preventNumbers($event)" onkeydown="return false"  max="{{minApprovaMaxLength}}" min="{{minApprovaMinLength}}"
+                  <input (keypress)="preventNumbers($event)" onkeydown="return false" max="{{minApprovaMaxLength}}" min="{{minApprovaMinLength}}"
                     formControlName="minApprovalDelta" required mdbInputDirective mdbValidate [validateSuccess]="true"
                     [validateError]="true" type="number" id="minApprovalDelta" class="form-control form-control-sm input-border text-center"
                     placeholder="Min Approval" onkeyup="javascript:this.value=this.value.toLowerCase();">
@@ -210,7 +210,7 @@
               <div class="col-12 text-center">Delete Users</div>
               <div class="col-12">
                 <div class="md-form form-sm mt-03rem mb-0rem">
-                  <input (keypress)="preventNumbers($event)" onkeydown="return false"  max="{{minApprovaMaxLength}}" min="{{minApprovaMinLength}}"
+                  <input (keypress)="preventNumbers($event)" onkeydown="return false" max="{{minApprovaMaxLength}}" min="{{minApprovaMinLength}}"
                     formControlName="minRemovalDelta" required mdbInputDirective mdbValidate [validateSuccess]="true"
                     [validateError]="true" type="number" id="minRemovalDelta" class="form-control form-control-sm input-border text-center"
                     placeholder="Min Removal" onkeyup="javascript:this.value=this.value.toLowerCase();">
@@ -238,12 +238,26 @@
     <ng-container *ngIf="consginerFirmList.length > 1  && showConsginerFirmList">
       <div class="row mt-1-5rem">
         <div class="col-11 col-md-10 col-lg-9 col-xl-8 mx-auto">
-          <ng-select mdbInputDirective mdbValidate [clearable]="false" class="selectWrapper" [items]="consginerFirmList"
-            bindLabel="label" labelForId="cosignatorieSign" bindValue="value" placeholder="Cosignatorie sign"
-            formControlName="cosignatorieSign" (change)="selectCosignatorieSign($event)">
+          <ng-select class="selectWrapper" [items]="consginerFirmList" bindLabel="label" labelForId="cosignatorieSign"
+            bindValue="value" placeholder="Cosignatorie sign" formControlName="cosignatorieSign" [multiple]="true">
+
+            <ng-template ng-header-tmp>
+              <div>
+                <button class="btn-select-all btn-link" (click)="onSelectAllconsginerFirm()">Select All</button>
+                <button class="btn-select-all btn-link" (click)="onClearAllconsginerFirm()">Clear All</button>
+              </div>
+            </ng-template>
+            <ng-template ng-label-tmp let-item="item" let-clear="clear">
+
+              <span class="ng-value-icon left" (click)="clear(item)" *ngIf="item.disabled !== true">×</span>
+              <b>{{item.label}}</b>&nbsp;&nbsp;&nbsp;&nbsp;
+              <i [style.color]="getColorCosignatory(item.signatory)" (click)="firm(item.value ,consginerFirmList )"
+                style="cursor: pointer;" class="fa fa-pencil fs-1rem" aria-hidden="true"></i>
+            </ng-template>
 
             <ng-template ng-option-tmp let-item="item" let-index="index">
-              <b>{{item.label}}</b> &nbsp;<b class="color-error-message">{{item.info}}</b>
+              <b>{{item.label}}</b>
+              &nbsp;<b class="color-error-message">{{item.info}}</b>
             </ng-template>
             <ng-template ng-footer-tmp>
               <span class="fs-08rem color-error-message">
@@ -253,6 +267,16 @@
             </ng-template>
           </ng-select>
 
+
+          <!-- <ng-select  [items]="consginerFirmList" bindLabel="label" [multiple]="true" bindValue="value"
+            formControlName="cosignatorieSign">
+            <ng-template ng-header-tmp>
+              <div>
+                <button class="btn-select-all btn-link" (click)="onSelectAllpollMembers()">Select All</button>
+                <button class="btn-select-all btn-link" (click)="onClearAllpollMembers()">Clear All</button>
+              </div>
+            </ng-template>
+          </ng-select> -->
         </div>
       </div>
     </ng-container>
