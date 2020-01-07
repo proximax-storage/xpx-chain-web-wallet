@@ -29,7 +29,7 @@ const routes = [
   }, {
     path: '/select-wallet-creation-type',
     name: 'select-wallet-creation-type',
-    component: () => import(/* webpackChunkName: "select-creation-type" */ '../views/wallet/SelectCreationType.vue'),
+    component: () => import(/* webpackChunkName: "select-creation-type" */ '../views/wallet/SelectWalletCreationType.vue'),
     meta: {
       requiresNotAuth: true
     }

@@ -29,10 +29,6 @@ class BlockchainProvider {
     this.transactionHttp = new TransactionHttp(this.url)
   }
 
-  saluda () {
-    console.log('hola')
-  }
-
   /**
    *
    *
@@ -79,7 +75,8 @@ class BlockchainProvider {
    * @memberof BlockchainProvider
    */
   createSimpleWalletFromPrivateKey (name, password, privateKey, network = this.typeNetwork) {
-    return SimpleWallet.createFromPrivateKey(name, this.createPassword(password), privateKey, network)
+    const pass = this.createPassword(password)
+    return SimpleWallet.createFromPrivateKey(name, pass, privateKey, network)
   }
 
   /**
@@ -195,6 +192,27 @@ class BlockchainProvider {
    */
   getAccountFromPrivateKey (privateKey, network) {
     return Account.createFromPrivateKey(privateKey, network)
+  }
+
+  /**
+   *
+   *
+   * @param {*} privateKey
+   * @returns
+   * @memberof BlockchainProvider
+   */
+  getPrefixAndPrivateKey (privateKey) {
+    let pref = null
+    let newPrivateKey = privateKey
+    if (newPrivateKey && newPrivateKey.length > 64) {
+      pref = newPrivateKey.slice(0, -64)
+      newPrivateKey = newPrivateKey.slice(2)
+    }
+
+    return {
+      pref: pref,
+      pvk: newPrivateKey
+    }
   }
 
   /**

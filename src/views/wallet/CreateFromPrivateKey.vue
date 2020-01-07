@@ -11,10 +11,10 @@
           </v-row>
 
           <v-row>
-            <v-col cols="11" sm="8" md="7" lg="6" class="mx-auto">
+            <v-col cols="11" sm="8" md="7" lg="6" class="mx-auto pt-0">
               <v-row>
                 <!-- Type network -->
-                <v-col cols="12">
+                <v-col cols="12 pb-0">
                   <v-autocomplete
                     rounded
                     outlined
@@ -31,7 +31,7 @@
                 </v-col>
 
                 <!-- Private Key -->
-                <v-col cols="12">
+                <v-col cols="12 pb-0 pt-0">
                   <v-text-field
                     rounded
                     outlined
@@ -66,12 +66,12 @@
                 </v-col>
 
                 <!-- Is Swap Checkbox -->
-                <v-col cols="12" class="d-flex justify-center pt-0">
+                <v-col cols="12" class="d-flex justify-center pt-0 pb-0">
                   <v-checkbox v-model="isSwap" :label="`Check this box if you wish to swap with this private key.`"></v-checkbox>
                 </v-col>
 
                 <!-- Wallet name -->
-                <v-col cols="12 pt-0 pb-0">
+                <v-col cols="12">
                   <v-text-field
                     :label="configForm.walletName.label"
                     :loading="searchingWalletName"
@@ -182,7 +182,7 @@
     </template>
 
     <template v-if="dataWalletCreated">
-      <wallet-created :data="dataWalletCreated"></wallet-created>
+      <wallet-created :walletInfo="dataWalletCreated"></wallet-created>
     </template>
   </div>
 </template>
@@ -191,9 +191,10 @@
 import { mapMutations } from 'vuex'
 import generalMixins from '../../mixins/general'
 import walletMixins from '../../mixins/wallet'
+import nis1Mixins from '../../mixins/nis1'
 
 export default {
-  mixins: [generalMixins, walletMixins],
+  mixins: [generalMixins, nis1Mixins, walletMixins],
   data: () => {
     return {
       title: 'Create Wallet',
@@ -220,7 +221,7 @@ export default {
     'wallet-created': () => import('@/components/wallet/WalletCreated')
   },
   methods: {
-    ...mapMutations(['SHOW_SNACKBAR', 'SHOW_LOADING']),
+    ...mapMutations(['SHOW_LOADING']),
     action (action) {
       if (action === 'create') {
         this.sendForm()
@@ -240,18 +241,24 @@ export default {
       if (this.valid && !this.sendingForm) {
         this.sendingForm = true
         this.SHOW_LOADING(true)
+        let nis1Account = null
+        if (this.isSwap) {
+          this.setNetworkFromCatapultNet(this.networkSelected.value)
+          nis1Account = this.createAccountFromPrivateKey(this.privateKey)
+        }
+
         const response = this.createWallet({
           default: true,
           firstAccount: true,
           isMultisign: null,
-          nis1Account: this.isSwap,
+          nis1Account: nis1Account,
           walletName: this.walletName,
           network: this.networkSelected.value,
           password: this.passwords.password,
           privateKey: this.privateKey
         })
 
-        console.log('response --->', response)
+        console.log('walletCreated --->', response)
         setTimeout(() => {
           this.clear()
           this.sendingForm = false

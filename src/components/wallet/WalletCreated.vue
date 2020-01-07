@@ -9,7 +9,7 @@
         <v-row>
           <!-- Wallet name -->
           <v-col cols="12" class="pt-0 text-center headline font-weight-regular">
-            <span>{{data.data.simpleWallet.name}}</span>
+            <span>{{name}}</span>
           </v-col>
 
           <v-col cols="12" sm="10" md="9" lg="8" class="mx-auto">
@@ -24,7 +24,7 @@
                       <br />
                     </span>
                     <!-- Address -->
-                    <span class="body-2">{{data.data.simpleWallet.address.pretty()}}</span>
+                    <span class="body-2">{{address}}</span>
                   </v-col>
 
                   <!-- Icon -->
@@ -32,7 +32,7 @@
                     <v-btn
                       text
                       icon
-                      @click="doCopy('Address', data.data.simpleWallet.address.pretty())"
+                      @click="doCopy('Address', address)"
                     >
                       <v-icon>mdi-content-copy</v-icon>
                     </v-btn>
@@ -60,7 +60,7 @@
                       <br />
                     </span>
                     <!-- Private Key -->
-                    <span class="body-2 d-flex">{{data.pvk.toUpperCase()}}</span>
+                    <span class="body-2 d-flex">{{pvk}}</span>
                   </v-col>
 
                   <!-- Icon -->
@@ -68,7 +68,7 @@
                     <v-btn
                       text
                       icon
-                      @click="doCopy('Private Key', data.pvk.toUpperCase())"
+                      @click="doCopy('Private Key', pvk)"
                     >
                       <v-icon>mdi-content-copy</v-icon>
                     </v-btn>
@@ -88,12 +88,16 @@
 
 <script>
 import generalMixins from '../../mixins/general'
+import nis1Mixins from '../../mixins/nis1'
 
 export default {
-  mixins: [generalMixins],
-  props: ['data'],
+  mixins: [generalMixins, nis1Mixins],
+  props: ['walletInfo'],
   data: () => {
     return {
+      address: '',
+      name: '',
+      pvk: '',
       title: 'Congratulations!',
       subtitle: 'Your wallet has been successfully created.',
       showPrivateKey: false,
@@ -152,6 +156,26 @@ export default {
       const arrayBtn = this.arrayBtn
       arrayBtn['showPvk'].text = (this.showPrivateKey) ? 'Hide Private Key' : 'Show Private Key'
       return arrayBtn
+    }
+  },
+  async beforeMount () {
+    const walletInfo = this.walletInfo.data
+    this.address = walletInfo.catapulWallet.address.pretty()
+    this.name = walletInfo.catapulWallet.name
+    this.pvk = this.walletInfo.pvk.toUpperCase()
+    if (walletInfo.nis1Account) {
+      this.arrayBtn.continue.disabled = true
+      this.arrayBtn.continue.loading = true
+      const nis1PublicAccount = this.createPublicAccountFromPublicKey(walletInfo.nis1Account.publicKey)
+      const info = await this.getAccountInfoNis1(nis1PublicAccount)
+      console.log('info', info)
+      this.arrayBtn.continue.disabled = false
+      this.arrayBtn.continue.loading = false
+      this.$store.commit('SHOW_SNACKBAR', {
+        snackbar: true,
+        text: info.msg,
+        color: (!info.status) ? 'warning' : 'success'
+      })
     }
   }
 }

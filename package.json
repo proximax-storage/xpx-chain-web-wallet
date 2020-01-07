@@ -17,6 +17,8 @@
     "axios": "^0.19.0",
     "core-js": "^3.4.4",
     "js-xpx-chain-library": "^0.3.0",
+    "nem-library": "^2.0.0-RC4",
+    "nem-sdk": "^1.5.1",
     "roboto-fontface": "*",
     "tsjs-xpx-chain-sdk": "^0.7.0",
     "vue": "^2.6.10",

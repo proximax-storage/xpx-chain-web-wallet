@@ -17,6 +17,10 @@
     background-color: #f5f5f500 !important;
 }
 
+.v-text-field .v-label{
+    font-size: 12px !important;
+}
+
 /**OTHER STYLE**/
 
 hr {

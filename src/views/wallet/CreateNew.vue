@@ -6,7 +6,7 @@
           <!-- Title & Subtitle -->
           <title-subtitle :title="title" :separed1="true"></title-subtitle>
           <v-row>
-            <v-col cols="11" sm="8" md="7" lg="6" class="mx-auto">
+            <v-col cols="11" sm="8" md="7" lg="6" class="mx-auto pt-0">
               <v-row>
                 <!-- Type network -->
                 <v-col cols="12">
@@ -137,7 +137,7 @@
     </template>
 
     <template v-if="dataWalletCreated">
-      <wallet-created :data="dataWalletCreated"></wallet-created>
+      <wallet-created :walletInfo="dataWalletCreated"></wallet-created>
     </template>
   </div>
 </template>

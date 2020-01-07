@@ -14,9 +14,9 @@ export default new Vuex.Store({
       mode: '',
       snackbar: false,
       text: '',
-      timeout: 2500,
-      x: 'right',
-      y: 'top'
+      timeout: 6000,
+      x: 'bottom',
+      y: 'bottom'
     }
   },
   mutations: {

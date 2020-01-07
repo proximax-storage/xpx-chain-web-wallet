@@ -28,6 +28,7 @@ const configIntegration = async function () {
     const configInfo = await axios.get('../config/config.json')
     store.commit('ADD_CONFIG_INFO', configInfo.data)
     const environment = getEnvironment(configInfo.data)
+    Vue.prototype.$configInfo = configInfo
     Vue.prototype.$environment = environment
     Vue.prototype.$blockchainProvider = new BlockchainProvider(
       environment.connectionNodes.nodes[0],
