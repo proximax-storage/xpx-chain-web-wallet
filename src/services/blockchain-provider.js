@@ -15,6 +15,8 @@ import {
   Address
 } from 'tsjs-xpx-chain-sdk'
 
+import { GeneralService } from './general'
+
 class BlockchainProvider {
   constructor (node, protocol, typeNetwork) {
     this.url = this.buildURL(node, protocol)
@@ -27,55 +29,7 @@ class BlockchainProvider {
     this.mosaicHttp = new MosaicHttp(this.url)
     this.namespaceHttp = new NamespaceHttp(this.url)
     this.transactionHttp = new TransactionHttp(this.url)
-  }
-
-  /**
-   *
-   *
-   * @param {*} cant
-   * @param {number} [amount=0]
-   * @returns
-   * @memberof BlockchainProvider
-   */
-  addZeros (cant, amount = 0) {
-    let decimal
-    let realAmount
-    if (amount === 0) {
-      decimal = this.addDecimals(cant)
-      realAmount = `0${decimal}`
-    } else {
-      const arrAmount = amount.toString().replace(/,/g, '').split('.')
-      if (arrAmount.length < 2) {
-        decimal = this.addDecimals(cant)
-      } else {
-        const arrDecimals = arrAmount[1].split('')
-        decimal = this.addDecimals(cant - arrDecimals.length, arrAmount[1])
-      }
-      realAmount = `${arrAmount[0]}${decimal}`
-    }
-    return realAmount
-  }
-
-  /**
-   *
-   *
-   * @param {*} cant
-   * @param {string} [amount='0']
-   * @returns
-   * @memberof BlockchainProvider
-   */
-  addDecimals (cant, amount = '0') {
-    const x = '0'
-    if (amount === '0') {
-      for (let index = 0; index < cant - 1; index++) {
-        amount += x
-      }
-    } else {
-      for (let index = 0; index < cant; index++) {
-        amount += x
-      }
-    }
-    return amount
+    this.generalService = new GeneralService()
   }
 
   /**
@@ -205,30 +159,16 @@ class BlockchainProvider {
    * @memberof BlockchainProvider
    */
   isValidPrivateKey (privateKey) {
+    console.log('xd', this.generalService)
     if (privateKey && (privateKey.length !== 64 && privateKey.length !== 66)) {
       // console.error('Private key length must be 64 or 66 characters !')
       return false
-    } else if (privateKey && !this.isHexadecimal(privateKey)) {
+    } else if (privateKey && !this.generalService.isHexadecimal(privateKey)) {
       // console.error('Private key must be hexadecimal only !')
       return false
     } else {
       return true
     }
-  }
-
-  /**
-   *
-   *
-   * @param {*} str
-   * @returns
-   * @memberof BlockchainProvider
-   */
-  isHexadecimal (str) {
-    if (str) {
-      return str && str.match('^(0x|0X)?[a-fA-F0-9]+$') !== null
-    }
-
-    return false
   }
 
   /**

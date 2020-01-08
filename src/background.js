@@ -1,12 +1,13 @@
 'use strict'
 
-import { app, protocol, BrowserWindow } from 'electron'
+import { app, protocol, BrowserWindow, Menu } from 'electron'
 import {
   createProtocol
 } from 'vue-cli-plugin-electron-builder/lib'
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
-// installVueDevtools
+Menu.setApplicationMenu(false)
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win
@@ -16,11 +17,22 @@ protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { secure: tru
 
 function createWindow () {
   // Create the browser window.
-  win = new BrowserWindow({ width: 800,
-    height: 600,
+  win = new BrowserWindow({
+    width: 1000,
+    height: 650,
     webPreferences: {
       nodeIntegration: true
-    } })
+    },
+    // frame: false,
+    transparent: true,
+    resizable: false,
+    minimizable: true,
+    maximizable: true,
+    closable: true
+  })
+
+  win.removeMenu()
+  win.setMenuBarVisibility(false)
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode

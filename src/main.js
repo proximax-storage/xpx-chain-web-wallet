@@ -12,6 +12,7 @@ import store from './store'
 import vuetify from './plugins/vuetify'
 import { BlockchainProvider } from './services/blockchain-provider'
 import { StorageService } from './services/storage'
+import { GeneralService } from './services/general'
 import VueClipboard from 'vue-clipboard2'
 
 const options = { name: 'lodash' } // customize the way you want to call it
@@ -22,6 +23,7 @@ Vue.config.productionTip = false
 
 // Define prototype
 Vue.prototype.$storage = new StorageService(localStorage)
+Vue.prototype.$generalService = new GeneralService()
 
 const configIntegration = async function () {
   try {

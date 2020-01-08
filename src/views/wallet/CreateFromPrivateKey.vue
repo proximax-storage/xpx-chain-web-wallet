@@ -230,10 +230,12 @@ export default {
       }
     },
     clear () {
+      if (this.$refs && this.$refs.form) {
+        this.$refs.form.reset()
+      }
       this.walletIsRepeat = false
       this.searchingWalletName = false
       this.sendingForm = false
-      this.$refs.form.reset()
       const network = this.$blockchainProvider.getNetworkTypes()
       this.networkSelected = { text: network.testnet.text, value: network.testnet.value }
     },

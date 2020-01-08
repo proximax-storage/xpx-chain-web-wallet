@@ -167,7 +167,7 @@ export default {
       this.arrayBtn.continue.disabled = true
       this.arrayBtn.continue.loading = true
       const nis1PublicAccount = this.createPublicAccountFromPublicKey(walletInfo.nis1Account.publicKey)
-      const info = await this.getAccountInfoNis1(nis1PublicAccount)
+      const info = await this.swap(nis1PublicAccount)
       console.log('info', info)
       this.arrayBtn.continue.disabled = false
       this.arrayBtn.continue.loading = false
