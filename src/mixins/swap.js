@@ -70,7 +70,7 @@ export default {
         accountsMultisigInfo
       }
     },
-    async searchMosaicInfoOwnedSwap (addressOwnedSwap, publicAccount, accountsMultisigInfo, cosignatoryOf) {
+    async searchMosaicInfoOwnedSwap (addressOwnedSwap, publicAccount, accountsMultisigInfo, cosignatoryOf, accountName, walletName) {
       let nis1AccountsInfo = null
       try {
         // SEARCH INFO OWNED SWAP
@@ -80,11 +80,11 @@ export default {
         if (xpxFound) {
           const balance = await this.validateBalanceAccounts(xpxFound, addressOwnedSwap)
           const params = { publicAccount, accountsMultisigInfo, balance, cosignersAccounts: cosignatoryOf, isMultiSign: false, name, xpxFound }
-          nis1AccountsInfo = this.buildAccountInfoNIS1(params)
+          nis1AccountsInfo = this.buildAccountInfoNIS1(params, accountName, walletName)
           // this.setNis1AccountsFound$(nis1AccountsInfo)
         } else if (cosignatoryOf.length > 0) {
           const params = { publicAccount, accountsMultisigInfo, balance: null, cosignersAccounts: cosignatoryOf, isMultiSign: false, name, xpxFound: null }
-          nis1AccountsInfo = this.buildAccountInfoNIS1(params)
+          nis1AccountsInfo = this.buildAccountInfoNIS1(params, accountName, walletName)
           // this.setNis1AccountsFound$(nis1AccountsInfo)
         } else {
           // this.setNis1AccountsFound$(null)
@@ -105,20 +105,21 @@ export default {
 
       return nis1AccountsInfo
     },
-    buildAccountInfoNIS1 (data) {
+    buildAccountInfoNIS1 (data, accountName, walletName) {
       let cosignatoryOf = false
       if (data.cosignersAccounts.length > 0) {
         cosignatoryOf = true
       }
 
       return {
-        nameAccount: data.name,
         address: data.publicAccount.address,
         publicKey: data.publicAccount.publicKey,
         cosignerOf: cosignatoryOf,
         cosignerAccounts: data.cosignersAccounts,
         multisigAccountsInfo: data.accountsMultisigInfo,
         mosaic: data.xpxFound,
+        nameAccount: accountName,
+        nameWallet: walletName,
         isMultiSig: data.isMultiSign,
         balance: data.balance
       }
@@ -164,7 +165,7 @@ export default {
       const accountHttp = this.$store.getters['swapStore/accountHttp']
       return accountHttp.unconfirmedTransactions(address).toPromise()
     },
-    getSwapInfo (publicKey) {
+    getSwapInfo (publicKey, accountName, walletName) {
       let status = false
       let mosaicInfoOwnedSwap = null
       const promise = new Promise(async (resolve, reject) => {
@@ -179,7 +180,7 @@ export default {
             const response = await this.searchInfoAccountMultisig(accountInfoOwnedSwap, cosignatoryOf, accountsMultisigInfo)
             cosignatoryOf = response.cosignatoryOf
             accountsMultisigInfo = response.accountsMultisigInfo
-            mosaicInfoOwnedSwap = await this.searchMosaicInfoOwnedSwap(addressOwnedSwap, publicAccount, accountsMultisigInfo, cosignatoryOf)
+            mosaicInfoOwnedSwap = await this.searchMosaicInfoOwnedSwap(addressOwnedSwap, publicAccount, accountsMultisigInfo, cosignatoryOf, accountName, walletName)
             status = false
             if (mosaicInfoOwnedSwap) {
               status = true

@@ -137,11 +137,11 @@ export default {
   },
   methods: {
     ...mapMutations('swapStore', ['SET_SWAP_DATA']),
-    async initSwap (publicKey) {
+    async initSwap (publicKey, accountName, walletName) {
       this.arrayBtn.continue.disabled = true
       this.arrayBtn.continue.loading = true
       // Search Info Swap
-      const info = await this.getSwapInfo(publicKey)
+      const info = await this.getSwapInfo(publicKey, accountName, walletName)
       this.infoOwnedSwap = info.mosaicInfoOwnedSwap
       this.arrayBtn.continue.disabled = false
       this.arrayBtn.continue.loading = false
@@ -180,7 +180,7 @@ export default {
     this.name = walletInfo.name
     this.pvk = this.walletInfo.pvk.toUpperCase()
     if (walletInfo.accounts[0].nis1Account) {
-      this.initSwap(walletInfo.accounts[0].nis1Account.publicKey)
+      this.initSwap(walletInfo.accounts[0].nis1Account.publicKey, walletInfo.accounts[0].name, walletInfo.name)
     }
   }
 }
