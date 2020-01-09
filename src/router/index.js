@@ -20,13 +20,6 @@ const routes = [
       requiresAuth: true
     }
   }, {
-    path: '/auth',
-    name: 'auth',
-    component: () => import(/* webpackChunkName: "Auth" */ '../views/Auth.vue'),
-    meta: {
-      requiresNotAuth: true
-    }
-  }, {
     path: '/select-wallet-creation-type',
     name: 'select-wallet-creation-type',
     component: () => import(/* webpackChunkName: "select-creation-type" */ '../views/wallet/SelectWalletCreationType.vue'),
@@ -48,6 +41,27 @@ const routes = [
       requiresNotAuth: true
     }
   }, {
+    path: '/swap-account-nis1-found',
+    name: 'swap-account-nis1-found',
+    component: () => import(/* webpackChunkName: "AccountFound" */ '../views/swap/AccountFound.vue'),
+    meta: {
+      requiresSwap: true
+    }
+  }, {
+    path: '/swap-list-cosigners',
+    name: 'swap-list-cosigners',
+    component: () => import(/* webpackChunkName: "ListCosigners" */ '../views/swap/ListCosigners.vue'),
+    meta: {
+      requiresSwap: true
+    }
+  }, {
+    path: '/swap-transfer-assets',
+    name: 'swap-transfer-assets',
+    component: () => import(/* webpackChunkName: "TransferAssets" */ '../views/swap/TransferAssets.vue'),
+    meta: {
+      requiresSwap: true
+    }
+  }, {
     path: '*',
     redirect: '/'
   }
@@ -62,13 +76,23 @@ const router = new VueRouter({
 router.beforeEach(async (to, from, next) => {
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
   const requiresNotAuth = to.matched.some(record => record.meta.requiresNotAuth)
+  const requiresSwap = to.matched.some(record => record.meta.requiresSwap)
   const isLogged = store.getters['accountStore/isLogged']
-  if (requiresAuth && !isLogged) {
-    next('/auth')
-  } else if (requiresNotAuth && isLogged) {
-    next('/dashboard')
+  const swapData = store.getters['swapStore/swapData']
+  if (requiresSwap) {
+    if (swapData) {
+      next()
+    } else {
+      next('/')
+    }
   } else {
-    next()
+    if (requiresAuth && !isLogged) {
+      next('/')
+    } else if (requiresNotAuth && isLogged) {
+      next('/dashboard')
+    } else {
+      next()
+    }
   }
 })
 

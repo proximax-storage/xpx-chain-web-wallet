@@ -4,7 +4,7 @@
       <v-form v-model="valid" ref="form">
         <v-container>
           <v-row>
-           <v-col cols="11" sm="10" class="mx-auto">
+            <v-col cols="11" sm="10" class="mx-auto">
               <!-- Title & Subtitle -->
               <title-subtitle :title="title" :subtitle="sub" :separed1="true"></title-subtitle>
             </v-col>
@@ -67,7 +67,10 @@
 
                 <!-- Is Swap Checkbox -->
                 <v-col cols="12" class="d-flex justify-center pt-0 pb-0">
-                  <v-checkbox v-model="isSwap" :label="`Check this box if you wish to swap with this private key.`"></v-checkbox>
+                  <v-checkbox
+                    v-model="isSwap"
+                    :label="`Check this box if you wish to swap with this private key.`"
+                  ></v-checkbox>
                 </v-col>
 
                 <!-- Wallet name -->
@@ -191,10 +194,10 @@
 import { mapMutations } from 'vuex'
 import generalMixins from '../../mixins/general'
 import walletMixins from '../../mixins/wallet'
-import nis1Mixins from '../../mixins/nis1'
+import swapMixin from '../../mixins/swap'
 
 export default {
-  mixins: [generalMixins, nis1Mixins, walletMixins],
+  mixins: [generalMixins, swapMixin, walletMixins],
   data: () => {
     return {
       title: 'Create Wallet',
@@ -222,6 +225,7 @@ export default {
   },
   methods: {
     ...mapMutations(['SHOW_LOADING']),
+    ...mapMutations('swapStore', ['INIT_ENVIRONMENT_SWAP']),
     action (action) {
       if (action === 'create') {
         this.sendForm()
@@ -237,38 +241,55 @@ export default {
       this.searchingWalletName = false
       this.sendingForm = false
       const network = this.$blockchainProvider.getNetworkTypes()
-      this.networkSelected = { text: network.testnet.text, value: network.testnet.value }
+      this.networkSelected = {
+        text: network.testnet.text,
+        value: network.testnet.value
+      }
+    },
+    isMatch (value1, value2, nameValidation = '') {
+      return this.$generalService.isMatch(value1, value2, nameValidation)
     },
     sendForm () {
-      if (this.valid && !this.sendingForm) {
-        this.sendingForm = true
-        this.SHOW_LOADING(true)
-        let nis1Account = null
-        if (this.isSwap) {
-          this.setNetworkFromCatapultNet(this.networkSelected.value)
-          nis1Account = this.createAccountFromPrivateKey(this.privateKey)
-        }
-
-        const response = this.createWallet({
-          default: true,
-          firstAccount: true,
-          isMultisign: null,
-          nis1Account: nis1Account,
-          walletName: this.walletName,
-          network: this.networkSelected.value,
-          password: this.passwords.password,
-          privateKey: this.privateKey
-        })
-
-        console.log('walletCreated --->', response)
-        setTimeout(() => {
-          this.clear()
-          this.sendingForm = false
-          this.SHOW_LOADING(false)
-          if (response.status) {
-            this.dataWalletCreated = response
+      try {
+        if (this.valid && !this.sendingForm) {
+          this.sendingForm = true
+          this.SHOW_LOADING(true)
+          let nis1Account = null
+          if (this.isSwap) {
+            this.initConfigSwap(this.networkSelected.value)
+            nis1Account = this.createAccountFromPrivateKey(this.privateKey)
           }
-        }, 500)
+
+          const response = this.createWallet({
+            default: true,
+            firstAccount: true,
+            isMultisign: null,
+            nis1Account: nis1Account,
+            walletName: this.walletName,
+            network: this.networkSelected.value,
+            password: this.passwords.password,
+            privateKey: this.privateKey
+          })
+
+          setTimeout(() => {
+            this.clear()
+            this.sendingForm = false
+            this.SHOW_LOADING(false)
+            if (response.status) {
+              this.dataWalletCreated = response
+            }
+          }, 500)
+        }
+      } catch (error) {
+        console.log(error)
+        this.SHOW_LOADING(false)
+        this.clear()
+        this.sendingForm = false
+        this.$store.commit('SHOW_SNACKBAR', {
+          snackbar: true,
+          text: 'An error has occurred, try again',
+          color: 'warning'
+        })
       }
     },
     resetConfirmPassword () {

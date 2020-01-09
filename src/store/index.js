@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import { accountStore } from './modules/account-store'
+import { swapStore } from './modules/swap-store'
 
 Vue.use(Vuex)
 
@@ -43,6 +44,7 @@ export default new Vuex.Store({
     pseudonymApp: state => state.configInfo.pseudonymApp
   },
   modules: {
-    accountStore
+    accountStore,
+    swapStore
   }
 })

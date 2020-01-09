@@ -5,6 +5,7 @@ import './assets/css/style.css'
 import 'roboto-fontface/css/roboto/roboto-fontface.css'
 import '@mdi/font/css/materialdesignicons.css'
 import VueLodash from 'vue-lodash'
+import money from 'v-money'
 
 import App from './App.vue'
 import router from './router'
@@ -20,6 +21,7 @@ Vue.use(VueLodash, options)
 Vue.use(VueAxios, axios)
 Vue.use(VueClipboard)
 Vue.config.productionTip = false
+Vue.use(money, { precision: 4 })
 
 // Define prototype
 Vue.prototype.$storage = new StorageService(localStorage)

@@ -229,6 +229,9 @@ export default {
           this.searchingWalletName = false
         }, 500)
       }
+    },
+    isMatch (value1, value2, nameValidation = '') {
+      return this.$generalService.isMatch(value1, value2, nameValidation)
     }
   },
   computed: {

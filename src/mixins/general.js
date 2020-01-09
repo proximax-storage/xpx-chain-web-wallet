@@ -18,6 +18,17 @@ export default {
     },
     getConfigForm () {
       return {
+        amount: {
+          label: 'Amount',
+          icon: 'icon-amount-green-16h-proximax-sirius-wallet.svg',
+          min: 3,
+          max: 30,
+          rules: {
+            required: v => !!v || 'Amount is required',
+            min: v => (v && v.length >= 3) || 'Amount must be less than 3 characters',
+            max: v => (v && v.length <= 30) || 'Amount must be a maximum of 30 characters'
+          }
+        },
         generalRules: {
           notAllowSpaces: v => (v || '').indexOf(' ') < 0 || 'No spaces are allowed'
         },
@@ -61,17 +72,6 @@ export default {
           }
         }
       }
-    },
-    isMatch (value1, value2, nameValidation = '') {
-      return value1 === value2 || `${nameValidation} must match`
-    },
-    removeSpaces (input) {
-      return (input) ? input.replace(/ /g, '') : input
-    },
-    toTitleCase (str) {
-      return str.replace(/\w\S*/g, function (txt) {
-        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
-      })
     },
     typeButtons () {
       return {

@@ -21,12 +21,24 @@
     font-size: 12px !important;
 }
 
+.v-alert:not(.v-sheet--tile) {
+    border-radius: 20px !important;
+}
+
+.v-alert--prominent .v-alert__icon:after {
+    opacity: 0.2 !important;
+}
+
 /**OTHER STYLE**/
 
 hr {
     margin-bottom: 1rem;
     border: 0;
     border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+#amount{
+    text-align: right;
 }
 
 .text-transform-none {
@@ -49,4 +61,8 @@ hr {
 
 .line-h-1-02em {
     line-height: 1.2em !important;
+}
+
+.cursor-pointer {
+    cursor: pointer;
 }

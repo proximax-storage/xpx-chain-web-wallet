@@ -1,0 +1,275 @@
+
+<template>
+  <v-container class="pt-0">
+    <v-row>
+      <v-col cols="12" sm="10" class="mx-auto pt-0">
+        <!-- Title & Subtitle -->
+        <v-row>
+          <v-col cols="11" class="mx-auto pt-0">
+            <custom-breadcrumbs :items="breadcrumbsItems" :divider="'>'"></custom-breadcrumbs>
+          </v-col>
+        </v-row>
+
+        <v-row>
+          <!-- Title 1 -->
+          <v-col cols="12" class="text-center pt-0">
+            <span class="font-weight-regular title">{{swapTitle}}</span>
+          </v-col>
+
+          <!-- Address -->
+          <v-col cols="11" md="10" lg="9" class="box-gray mb-3 mx-auto">
+            <v-row>
+              <v-col cols="12" class="ml-0 pt-0 pb-0 overflow-ellipsis-nowrap mx-auto">
+                <!-- Name Wallet -->
+                <span class="body-1 font-weight-medium pr-1">Account Name:</span>
+                <span class="body-2">{{accountToSwap.name}}</span>
+                <br />
+                <!-- NIS1 Address -->
+                <span class="body-1 font-weight-medium pr-1">NIS1 Address:</span>
+                <span class="body-2">{{accountToSwap.address.pretty()}}</span>
+                <br />
+                <!-- NIS1 Balance -->
+                <div class="d-flex align-center">
+                  <span class="body-1 font-weight-medium pr-1">NIS1 Balance:</span>
+                  <img
+                    class="ml-1 mr-1"
+                    alt="logo"
+                    width="20"
+                    :src="require(`@/assets/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg`)"
+                  />
+                  <span class="body-2">{{accountToSwap.balance}}</span>
+                </div>
+              </v-col>
+            </v-row>
+          </v-col>
+
+          <!-- Title 2 -->
+          <v-col cols="12" class="text-center pt-5">
+            <span class="font-weight-regular title">{{swapTitle2}}</span>
+          </v-col>
+        </v-row>
+
+        <v-form v-model="valid" ref="form">
+          <v-row>
+            <!-- Amount -->
+            <v-col cols="11" md="10" lg="9" class="mx-auto">
+              <v-text-field
+                :label="configForm.amount.label"
+                :disabled="disableAmount"
+                :minlength="'1'"
+                :maxlength="accountToSwap.balance.length"
+                :rules="[
+                  configForm.amount.rules.required,
+                  isValidBalance
+                ]"
+                @keyup="validateBalance"
+                class="text-align-right"
+                rounded
+                outlined
+                dense
+                ref="amount"
+                id="amount"
+                v-model="amount"
+                v-money="money"
+              >
+                <template v-slot:prepend-inner>
+                  <v-img
+                    class="pr-2 mt-1"
+                    alt="logo"
+                    height="20"
+                    width="20"
+                    :src="require(`@/assets/img/${configForm.amount.icon}`)"
+                  ></v-img>
+                  <div class="d-flex align-center ml-2 cursor-pointer" @click="selectMaxAmount">
+                    <span class="caption font-weight-medium primary--text cursor-p pt-1">Use Max</span>
+                  </div>
+                </template>
+              </v-text-field>
+            </v-col>
+
+            <!-- Password -->
+            <v-col cols="11" md="10" lg="9" class="mx-auto">
+              <v-text-field
+                rounded
+                outlined
+                dense
+                v-model="password"
+                :append-icon="configForm.password.show ? 'mdi-eye' : 'mdi-eye-off'"
+                :minlength="configForm.password.min"
+                :maxlength="configForm.password.max"
+                :counter="configForm.password.max"
+                :rules="[
+                configForm.password.rules.required,
+                configForm.password.rules.min,
+                configForm.password.rules.max
+              ]"
+                :label="configForm.password.label"
+                :type="configForm.password.show ? 'text' : 'password'"
+                name="password"
+                hint
+                @click:append="configForm.password.show = !configForm.password.show"
+              >
+                <template v-slot:prepend-inner>
+                  <v-img
+                    class="pr-2 mt-1"
+                    alt="logo"
+                    height="20"
+                    width="20"
+                    :src="require(`@/assets/img/${configForm.password.icon}`)"
+                  ></v-img>
+                </template>
+              </v-text-field>
+            </v-col>
+          </v-row>
+        </v-form>
+
+        <v-row>
+          <v-col cols="11" md="10" lg="9" class="mx-auto">
+            <!-- Warning Message -->
+            <v-alert outlined type="warning" prominent class="text-center line-h-1-02em" dense>
+              <span class="gray-black--text caption">{{warningText}}</span>
+            </v-alert>
+          </v-col>
+        </v-row>
+
+        <!-- Buttons -->
+        <custom-buttons @action="action" :arrayBtn="buttons"></custom-buttons>
+      </v-col>
+    </v-row>
+  </v-container>
+</template>
+
+<script>
+import walletMixin from '../../mixins/wallet'
+import generalMixin from '../../mixins/general'
+import swapMixin from '../../mixins/swap'
+
+export default {
+  mixins: [generalMixin, swapMixin, walletMixin],
+  data: () => {
+    return {
+      amount: '',
+      accountToSwap: null,
+      arrayBtn: {
+        cancel: {
+          key: 'cancel',
+          action: 'cancel',
+          disabled: false,
+          color: 'primary',
+          loading: false,
+          text: 'Maybe Later'
+        },
+        continue: {
+          key: 'continue',
+          action: 'continue',
+          disabled: true,
+          color: 'primary',
+          loading: false,
+          text: 'Yes, Swap'
+        }
+      },
+      breadcrumbsItems: [
+        {
+          text: 'Mainnet Swap',
+          disabled: true,
+          style: 'gray-disabled--text'
+        },
+        {
+          text: 'Swap Process',
+          disabled: false,
+          style: 'primary--text'
+        }
+      ],
+      configForm: null,
+      disableAmount: false,
+      isValidBalance: false,
+      money: {
+        decimal: '.',
+        thousands: ',',
+        prefix: '',
+        suffix: '',
+        precision: 6,
+        masked: false
+      },
+      password: '',
+      sendingForm: false,
+      swapData: null,
+      swapTitle: 'NIS1 Account Selected',
+      swapTitle2: 'Swap Amount',
+      valid: false,
+      warningText:
+        'Swap process may take several hours to complete. If you wish to proceed, you will receive a certificate containing your transaction hash for your records.'
+    }
+  },
+  components: {
+    'custom-breadcrumbs': () => import('@/components/shared/Breadcrumbs'),
+    'custom-buttons': () => import('@/components/shared/Buttons')
+  },
+  methods: {
+    action (action) {
+      switch (action) {
+        case 'continue':
+          console.log('DESCRYPT ACCOUNT....')
+          // this.buildSwapTransaction(this.accountToSwap, this.amount)
+          break
+        case 'cancel':
+          this.$router.push('/').catch(e => {})
+          break
+      }
+    },
+    selectMaxAmount () {
+      this.$refs.amount.$el.getElementsByTagName('input')[0].value = this.accountToSwap.balance
+      this.amount = this.accountToSwap.balance
+      this.validateBalance()
+    },
+    validateBalance () {
+      let amount = null
+      try {
+        amount = parseFloat(this.amount.split(',').join(''))
+      } catch (error) {
+        amount = Number(this.amount)
+      }
+
+      if (amount !== null && amount !== undefined) {
+        if (amount > parseFloat(this.accountToSwap.balance.split(',').join(''))) {
+          this.isValidBalance = 'Insufficient balance'
+        } else if (amount === 0) {
+          this.isValidBalance = 'Cannot enter amount zero'
+        } else {
+          this.isValidBalance = true
+        }
+      }
+    }
+  },
+  computed: {
+    buttons () {
+      const arrayBtn = this.arrayBtn
+      arrayBtn['cancel'].disabled = this.sendingForm
+      arrayBtn['continue'].disabled =
+        !this.valid || this.sendingForm || this.isValidBalance !== true
+      arrayBtn['continue'].loading = this.sendingForm
+      return arrayBtn
+    }
+  },
+  beforeMount () {
+    this.swapData = this.$store.getters['swapStore/swapData']
+    const accountToSwap = this.$store.getters['swapStore/accountToSwap']
+    // let hola = null
+    if (accountToSwap.isMultisig) {
+
+    } else {
+      this.accountToSwap = this.swapData
+    }
+
+    console.log('accountToSwap', this.accountToSwap)
+    console.log('swapData', this.swapData)
+    this.configForm = this.getConfigForm()
+  }
+}
+</script>
+
+<style>
+.v-alert--outlined {
+  border: 3px solid currentColor !important;
+}
+</style>

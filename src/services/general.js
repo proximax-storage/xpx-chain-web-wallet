@@ -78,6 +78,58 @@ class GeneralService {
 
     return false
   }
+
+  /**
+   *
+   *
+   * @param {*} value1
+   * @param {*} value2
+   * @param {string} [nameValidation='']
+   * @returns
+   * @memberof GeneralService
+   */
+  isMatch (value1, value2, nameValidation = '') {
+    return value1 === value2 || `${nameValidation} must match`
+  }
+
+  /**
+   *
+   *
+   * @param {*} conn
+   * @param {*} timeOut
+   * @returns
+   * @memberof GeneralService
+   */
+  promiseTimeOut (conn, timeOut) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => reject(new Error('promise timeout')), timeOut)
+      conn.toPromise().then(resolve).catch(reject)
+    })
+  }
+
+  /**
+   *
+   *
+   * @param {*} input
+   * @returns
+   * @memberof GeneralService
+   */
+  removeSpaces (input) {
+    return (input) ? input.replace(/ /g, '') : input
+  }
+
+  /**
+   *
+   *
+   * @param {*} str
+   * @returns
+   * @memberof GeneralService
+   */
+  toTitleCase (str) {
+    return str.replace(/\w\S*/g, function (txt) {
+      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+    })
+  }
 }
 
 export { GeneralService }

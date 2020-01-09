@@ -18,7 +18,9 @@
         "urlExplorer": "http://testnet-explorer.nemtool.com/#/s_tx?hash=",
         "networkType": "TEST_NET",
         "burnAddress": "TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN",
-        "nodes": { "protocol": "https", "domain": "bctestnetswap.xpxsirius.io", "port": 7890 },
+        "nodes": [
+          { "protocol": "https", "domain": "bctestnetswap.xpxsirius.io", "port": 7890 }
+        ],
         "timeOutTransaction": 20000
       },
       "connectionNodes": {

@@ -19,7 +19,8 @@ export default new Vuetify({
         success: '#306EB5',
         warning: '#f3ad27',
         'gray-light': '#616161',
-        'gray-black': '#212529'
+        'gray-black': '#212529',
+        'gray-disabled': '#9a9a9a'
       }
     }
   }

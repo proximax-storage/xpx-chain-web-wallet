@@ -1,31 +1,26 @@
 import axios from 'axios'
-import { Account, AccountHttp, AccountOwnedAssetService, Address, AssetHttp, NEMLibrary, NetworkTypes, PublicAccount } from 'nem-library'
-// import { promiseTimeout } from '../services/javascript-promise-timeout'
+import { Account, AccountOwnedAssetService, Address, NetworkTypes, PublicAccount } from 'nem-library'
 
 export default {
   data: () => {
     return {
       configNIS1: null,
-      accountHttp: null,
-      assetHttp: null,
-      namespace: {
-        root: 'prx',
-        sub: 'xpxx'
-      },
-      divisibility: 6
+      namespace: null,
+      divisibility: null
     }
   },
   methods: {
     async validateBalanceAccounts (xpxFound, addressSigner) {
-      const quantityFillZeros = this.$generalService.addZeros(this.divisibility, xpxFound.quantity)
-      let realQuantity = this.$generalService.amountFormatter(quantityFillZeros, xpxFound, this.divisibility)
+      const env = this.$store.getters['swapStore/environment']
+      const quantityFillZeros = this.$generalService.addZeros(env.divisibility, xpxFound.quantity)
+      let realQuantity = this.$generalService.amountFormatter(quantityFillZeros, xpxFound, env.divisibility)
       const unconfirmedTxn = await this.getUnconfirmedTransaction(addressSigner)
       if (unconfirmedTxn.length > 0) {
         for (const item of unconfirmedTxn) {
           let existMosaic = null
           if (item.type === 257 && item['signer']['address']['value'] === addressSigner['value'] && item['_assets'].length > 0) {
             existMosaic = item['_assets'].find(
-              (mosaic) => mosaic.assetId.namespaceId === this.namespace.root && mosaic.assetId.name === this.namespace.sub
+              (mosaic) => mosaic.assetId.namespaceId === env.namespace.root && mosaic.assetId.name === env.namespace.sub
             )
           } else if (
             item.type === 4100 &&
@@ -33,15 +28,15 @@ export default {
             item['otherTransaction']['signer']['address']['value'] === addressSigner['value']
           ) {
             existMosaic = item['otherTransaction']['_assets'].find(
-              (mosaic) => mosaic.assetId.namespaceId === this.namespace.root && mosaic.assetId.name === this.namespace.sub
+              (mosaic) => mosaic.assetId.namespaceId === env.namespace.root && mosaic.assetId.name === env.namespace.sub
             )
           }
 
           if (existMosaic) {
-            const unconfirmedFormatter = parseFloat(this.$generalService.amountFormatter(existMosaic.quantity, xpxFound, this.divisibility))
+            const unconfirmedFormatter = parseFloat(this.$generalService.amountFormatter(existMosaic.quantity, xpxFound, env.divisibility))
             const quantityWhitoutFormat = realQuantity.split(',').join('')
             const residue = this.transactionService.subtractAmount(parseFloat(quantityWhitoutFormat), unconfirmedFormatter)
-            const quantityFormat = this.$generalService.amountFormatter(parseInt((residue).toString().split('.').join('')), xpxFound, this.divisibility)
+            const quantityFormat = this.$generalService.amountFormatter(parseInt((residue).toString().split('.').join('')), xpxFound, env.divisibility)
             realQuantity = quantityFormat
           }
         }
@@ -51,13 +46,13 @@ export default {
     },
     async searchInfoAccountMultisig (accountInfoOwnedSwap, cosignatoryOf, accountsMultisigInfo) {
       if (accountInfoOwnedSwap.data.meta.cosignatoryOf.length > 0) {
-        cosignatoryOf = accountInfoOwnedSwap.meta.cosignatoryOf
+        cosignatoryOf = accountInfoOwnedSwap.data.meta.cosignatoryOf
         for (let multisig of cosignatoryOf) {
           try {
             const addressMultisig = this.createAddressToString(multisig.address)
             const ownedMosaic = await this.getOwnedMosaics(addressMultisig)
-            const xpxFound = ownedMosaic.find(el => el.assetId.namespaceId === this.namespace.root && el.assetId.name === this.namespace.sub)
-            console.log('ownedMosaicownedMosaicownedMosaic', ownedMosaic)
+            const namespace = this.$store.getters['swapStore/namespace']
+            const xpxFound = ownedMosaic.find(el => el.assetId.namespaceId === namespace.root && el.assetId.name === namespace.sub)
             if (xpxFound) {
               multisig.balance = await this.validateBalanceAccounts(xpxFound, addressMultisig)
               multisig.mosaic = xpxFound
@@ -75,12 +70,13 @@ export default {
         accountsMultisigInfo
       }
     },
-    async searchInfoOwnedSwap (addressOwnedSwap, publicAccount, accountsMultisigInfo, cosignatoryOf) {
+    async searchMosaicInfoOwnedSwap (addressOwnedSwap, publicAccount, accountsMultisigInfo, cosignatoryOf) {
       let nis1AccountsInfo = null
       try {
         // SEARCH INFO OWNED SWAP
+        const namespace = this.$store.getters['swapStore/namespace']
         const ownedMosaic = await this.getOwnedMosaics(addressOwnedSwap)
-        const xpxFound = ownedMosaic.find(el => el.assetId.namespaceId === this.namespace.root && el.assetId.name === this.namespace.sub)
+        const xpxFound = ownedMosaic.find(el => el.assetId.namespaceId === namespace.root && el.assetId.name === namespace.sub)
         if (xpxFound) {
           const balance = await this.validateBalanceAccounts(xpxFound, addressOwnedSwap)
           const params = { publicAccount, accountsMultisigInfo, balance, cosignersAccounts: cosignatoryOf, isMultiSign: false, name, xpxFound }
@@ -127,6 +123,12 @@ export default {
         balance: data.balance
       }
     },
+    buildSwapTransaction (data, amount, signerPvk) {
+      const account = this.createAccountFromPrivateKey(signerPvk)
+      const assetId = data.mosaic.assetId
+      console.log('assetId', assetId)
+      console.log('account', account)
+    },
     createAddressToString (address) {
       return new Address(address)
     },
@@ -137,9 +139,9 @@ export default {
       return PublicAccount.createWithPublicKey(publicKey)
     },
     getAccountInfo (address) {
-      this.configNIS1 = this.getConfigFromNetworkNis1(NEMLibrary.getNetworkType()).nis1Config
-      const url = `${this.configNIS1.url}/account/get?address=${address.plain()}`
-      return axios.get(url, { timeout: this.configNIS1.timeOutTransaction })
+      const configNIS1 = this.$store.getters['swapStore/configNIS1']
+      const url = `${configNIS1.url}/account/get?address=${address.plain()}`
+      return axios.get(url, { timeout: configNIS1.timeOutTransaction })
     },
     getConfigFromNetworkNis1 (nis1Network) {
       let config = null
@@ -151,52 +153,35 @@ export default {
           config = this.$configInfo.data.environment.MAINNET
           break
       }
-
-      console.log('retornando aqui', config)
       return config
     },
     getOwnedMosaics (address) {
-      this.accountHttp = new AccountHttp(this.nodes)
-      this.assetHttp = new AssetHttp(this.nodes)
-      const accountOwnedMosaics = new AccountOwnedAssetService(this.accountHttp, this.assetHttp)
-      return new Promise((resolve, reject) => {
-        setTimeout(() => reject(new Error('promise timeout')), this.configNIS1.timeOutTransaction)
-        accountOwnedMosaics.fromAddress(address).toPromise().then(resolve).catch(reject)
-      })
+      const environment = this.$store.getters['swapStore/environment']
+      const accountOwnedMosaics = new AccountOwnedAssetService(environment.accountHttp, environment.assetHttp)
+      return this.$generalService.promiseTimeOut(accountOwnedMosaics.fromAddress(address), environment.configNIS1.timeOutTransaction)
     },
     getUnconfirmedTransaction (address) {
-      return this.accountHttp.unconfirmedTransactions(address).toPromise()
+      const accountHttp = this.$store.getters['swapStore/accountHttp']
+      return accountHttp.unconfirmedTransactions(address).toPromise()
     },
-    setNetworkFromCatapultNet (catapultNetwork) {
-      NEMLibrary.reset()
-      const siriusNetwork = this.$blockchainProvider.getNetworkTypes()
-      switch (catapultNetwork) {
-        case siriusNetwork.testnet.value:
-          NEMLibrary.bootstrap(NetworkTypes.TEST_NET)
-          console.log(NEMLibrary.getNetworkType())
-          break
-        case siriusNetwork.mainnet.value:
-          NEMLibrary.bootstrap(NetworkTypes.MAIN_NET)
-          break
-      }
-    },
-    swap (publicAccount) {
+    getSwapInfo (publicKey) {
       let status = false
-      let infoOwnedSwap = null
+      let mosaicInfoOwnedSwap = null
       const promise = new Promise(async (resolve, reject) => {
         try {
-          let cosignatoryOf = []
-          let accountsMultisigInfo = []
+          const publicAccount = this.createPublicAccountFromPublicKey(publicKey)
           const addressOwnedSwap = this.createAddressToString(publicAccount.address.pretty())
           const accountInfoOwnedSwap = await this.getAccountInfo(addressOwnedSwap)
           if (accountInfoOwnedSwap.data.meta.cosignatories.length === 0) {
             // INFO ACCOUNTS MULTISIG
-            const accountInfoMultisig = await this.searchInfoAccountMultisig(accountInfoOwnedSwap, cosignatoryOf, accountsMultisigInfo)
-            cosignatoryOf = accountInfoMultisig.cosignatoryOf
-            accountsMultisigInfo = accountInfoMultisig.accountsMultisigInfo
-            infoOwnedSwap = await this.searchInfoOwnedSwap(addressOwnedSwap, publicAccount, accountsMultisigInfo, cosignatoryOf)
+            let cosignatoryOf = []
+            let accountsMultisigInfo = []
+            const response = await this.searchInfoAccountMultisig(accountInfoOwnedSwap, cosignatoryOf, accountsMultisigInfo)
+            cosignatoryOf = response.cosignatoryOf
+            accountsMultisigInfo = response.accountsMultisigInfo
+            mosaicInfoOwnedSwap = await this.searchMosaicInfoOwnedSwap(addressOwnedSwap, publicAccount, accountsMultisigInfo, cosignatoryOf)
             status = false
-            if (infoOwnedSwap) {
+            if (mosaicInfoOwnedSwap) {
               status = true
             }
           } else {
@@ -216,11 +201,29 @@ export default {
           })
         }
 
-        console.log('infoOwnedSwap', infoOwnedSwap)
-        resolve({ status, infoOwnedSwap })
+        resolve({ status, mosaicInfoOwnedSwap })
       })
 
       return promise
+    },
+    initConfigSwap (catapultNetwork) {
+      const catapultNetworkTypes = this.$blockchainProvider.getNetworkTypes()
+      switch (catapultNetwork) {
+        case catapultNetworkTypes.testnet.value:
+          this.setSwapEnvironment(NetworkTypes.TEST_NET)
+          break
+        case catapultNetworkTypes.mainnet.value:
+          this.setSwapEnvironment(NetworkTypes.MAIN_NET)
+          break
+      }
+    },
+    setSwapEnvironment (network) {
+      const data = {
+        networkNis1: network,
+        configNIS1: this.getConfigFromNetworkNis1(network).nis1Config
+      }
+
+      this.$store.commit('swapStore/INIT_ENVIRONMENT_SWAP', data)
     }
   }
 }

@@ -87,20 +87,16 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
 import generalMixins from '../../mixins/general'
-import nis1Mixins from '../../mixins/nis1'
+import swapMixin from '../../mixins/swap'
 
 export default {
-  mixins: [generalMixins, nis1Mixins],
+  mixins: [generalMixins, swapMixin],
   props: ['walletInfo'],
   data: () => {
     return {
       address: '',
-      name: '',
-      pvk: '',
-      title: 'Congratulations!',
-      subtitle: 'Your wallet has been successfully created.',
-      showPrivateKey: false,
       arrayBtn: {
         showPvk: {
           key: 'showPvk',
@@ -126,7 +122,13 @@ export default {
           loading: false,
           text: 'Continue'
         }
-      }
+      },
+      infoOwnedSwap: null,
+      name: '',
+      pvk: '',
+      subtitle: 'Your wallet has been successfully created.',
+      showPrivateKey: false,
+      title: 'Congratulations!'
     }
   },
   components: {
@@ -134,6 +136,16 @@ export default {
     'custom-buttons': () => import('@/components/shared/Buttons')
   },
   methods: {
+    ...mapMutations('swapStore', ['SET_SWAP_DATA']),
+    async initSwap (walletInfo) {
+      this.arrayBtn.continue.disabled = true
+      this.arrayBtn.continue.loading = true
+      // Search Info Swap
+      const info = await this.getSwapInfo(walletInfo.nis1Account.publicKey)
+      this.infoOwnedSwap = info.mosaicInfoOwnedSwap
+      this.arrayBtn.continue.disabled = false
+      this.arrayBtn.continue.loading = false
+    },
     action (action) {
       switch (action) {
         case 'showPrivateKey':
@@ -143,10 +155,14 @@ export default {
           console.log('savePaperWallet')
           break
         case 'continue':
-          this.$router.push('/').catch(e => {})
-          break
-        default:
-          console.log('default')
+          if (this.infoOwnedSwap) {
+            console.log('this.infoOwnedSwaps', this.infoOwnedSwap)
+            this.SET_SWAP_DATA(this.infoOwnedSwap)
+            this.$router.push('/swap-account-nis1-found').catch(e => {})
+          } else {
+            this.SET_SWAP_DATA(null)
+            this.$router.push('/').catch(e => {})
+          }
           break
       }
     }
@@ -158,34 +174,20 @@ export default {
       return arrayBtn
     }
   },
-  async beforeMount () {
+  beforeMount () {
     const walletInfo = this.walletInfo.data
     this.address = walletInfo.catapulWallet.address.pretty()
     this.name = walletInfo.catapulWallet.name
     this.pvk = this.walletInfo.pvk.toUpperCase()
     if (walletInfo.nis1Account) {
-      this.arrayBtn.continue.disabled = true
-      this.arrayBtn.continue.loading = true
-      const nis1PublicAccount = this.createPublicAccountFromPublicKey(walletInfo.nis1Account.publicKey)
-      const info = await this.swap(nis1PublicAccount)
-      console.log('info', info)
-      this.arrayBtn.continue.disabled = false
-      this.arrayBtn.continue.loading = false
+      this.initSwap(walletInfo)
     }
   }
 }
 </script>
 
 <style>
-.v-alert:not(.v-sheet--tile) {
-  border-radius: 20px;
-}
-
 .v-alert--outlined {
-  border: 3px solid currentColor !important;
-}
-
-.v-alert--prominent .v-alert__icon:after {
-  opacity: 0.2 !important;
+    border: 3px solid currentColor !important;
 }
 </style>
