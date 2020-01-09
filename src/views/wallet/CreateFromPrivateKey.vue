@@ -264,7 +264,10 @@ export default {
             default: true,
             firstAccount: true,
             isMultisign: null,
-            nis1Account: nis1Account,
+            nis1Account: {
+              address: nis1Account.address,
+              publicKey: nis1Account.publicKey
+            },
             walletName: this.walletName,
             network: this.networkSelected.value,
             password: this.passwords.password,

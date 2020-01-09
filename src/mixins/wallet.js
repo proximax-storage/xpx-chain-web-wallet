@@ -16,22 +16,34 @@ export default {
         const decrypted = this.decryptWallet(walletCreated, data.password)
         if (decrypted.privateKey) {
           const account = this.$blockchainProvider.getAccountFromPrivateKey(decrypted.privateKey, walletCreated.network)
-          walletCreated['publicKey'] = account.publicAccount.publicKey
           const accountBuilded = {
             algo: 'pass:bip32',
+            address: walletCreated.address,
             brain: true,
-            catapulWallet: walletCreated,
+            creationDate: walletCreated.creationDate,
             default: data.default,
+            encryptedPrivateKey: walletCreated.encryptedPrivateKey,
             firstAccount: data.firstAccount,
             isMultisign: data.isMultisign,
+            name: 'Primary',
+            network: walletCreated.network,
             nis1Account: data.nis1Account,
-            prefixKeyNis1: prefix
+            prefixKeyNis1: prefix,
+            publicKey: account.publicAccount.publicKey,
+            schema: walletCreated.schema
           }
 
+          console.log('\n accountBuilded', accountBuilded)
+          const walletBuilded = {
+            name: data.walletName,
+            accounts: [accountBuilded]
+          }
+
+          console.log('\n walletBuilded', walletBuilded)
           const wallets = this.getWallets(walletCreated.network)
-          wallets.push(accountBuilded)
+          wallets.push(walletBuilded)
           this.$storage.set(`wallets-${walletCreated.network}`, wallets)
-          return { status: true, data: accountBuilded, pvk: decrypted.privateKey }
+          return { status: true, data: walletBuilded, pvk: decrypted.privateKey }
         }
 
         return { status: false, msg: 'Error to decrypt wallet' }
@@ -58,7 +70,7 @@ export default {
     getWalletByName (name, network) {
       const wallets = this.getWallets(network)
       if (wallets && wallets.length > 0) {
-        return wallets.find(x => x.catapulWallet.name === name)
+        return wallets.find(x => x.name === name)
       }
 
       return null
