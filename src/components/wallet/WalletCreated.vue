@@ -137,11 +137,11 @@ export default {
   },
   methods: {
     ...mapMutations('swapStore', ['SET_SWAP_DATA']),
-    async initSwap (walletInfo) {
+    async initSwap (publicKey) {
       this.arrayBtn.continue.disabled = true
       this.arrayBtn.continue.loading = true
       // Search Info Swap
-      const info = await this.getSwapInfo(walletInfo.nis1Account.publicKey)
+      const info = await this.getSwapInfo(publicKey)
       this.infoOwnedSwap = info.mosaicInfoOwnedSwap
       this.arrayBtn.continue.disabled = false
       this.arrayBtn.continue.loading = false
@@ -176,11 +176,11 @@ export default {
   },
   beforeMount () {
     const walletInfo = this.walletInfo.data
-    this.address = walletInfo.catapulWallet.address.pretty()
-    this.name = walletInfo.catapulWallet.name
+    this.address = walletInfo.accounts[0].address.pretty()
+    this.name = walletInfo.name
     this.pvk = this.walletInfo.pvk.toUpperCase()
-    if (walletInfo.nis1Account) {
-      this.initSwap(walletInfo)
+    if (walletInfo.accounts[0].nis1Account) {
+      this.initSwap(walletInfo.accounts[0].nis1Account.publicKey)
     }
   }
 }
