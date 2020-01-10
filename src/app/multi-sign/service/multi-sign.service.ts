@@ -66,6 +66,7 @@ export class MultiSignService {
     generationHash: any,
     myCosigners: Account[]): SignedTransaction {
     let signedTransaction: SignedTransaction = null
+    console.log('myCosigners', myCosigners)
     if (myCosigners.length > 0) {
       signedTransaction = accountSign.signTransactionWithCosignatories(aggregateTransaction, myCosigners, generationHash)
     } else {
@@ -92,34 +93,60 @@ export class MultiSignService {
     return typeTx
   }
 
-  typeSignTxEdit(cosignatoryList: CosignatoryList[], multisigAccountInfo: MultisigAccountInfo, cantFirm: number): TypeTx {
-    cantFirm = (cantFirm > 0) ? cantFirm : 1
-    console.log('cantFirm', cantFirm)
+  typeSignTxEdit(cosignatoryList: CosignatoryList[], multisigAccountInfo: MultisigAccountInfo, consginerFirmAccountList: ConsginerFirmList[], accounts: AccountsInterface[], signType: number): TypeTx {
+    let cantFirm = consginerFirmAccountList.length;
+    cantFirm = (cantFirm > 0) ? cantFirm : 1;
+    let Getcosignatory = (signType === 1) ? this.getvalidateCosignatoryList(cosignatoryList, accounts) : true
+
+    // console.log('cantFirm', cantFirm)
+    // console.log('cosignatoryList', cosignatoryList)
+    // console.log('multisigAccountInfo', multisigAccountInfo)
     let typeTx: TypeTx = { type: null, transactionType: null }
-    let cantAdd = this.countArray('type', 1, cosignatoryList)
-    let cabtRemove = this.countArray('type', 2, cosignatoryList)
-    if (cantAdd > 0 && cabtRemove > 0) {
-      if (cantFirm >= multisigAccountInfo.minRemoval && cantFirm >= multisigAccountInfo.minApproval) {
-        typeTx = { type: 2, transactionType: TransactionType.AGGREGATE_COMPLETE }
-      } else {
-        typeTx = { type: 1, transactionType: TransactionType.AGGREGATE_BONDED }
+    if (Getcosignatory) {
+      let cantAdd = this.countArray('type', 1, cosignatoryList)
+      let cabtRemove = this.countArray('type', 2, cosignatoryList)
+      if (cantAdd > 0 && cabtRemove > 0) {
+        if (cantFirm >= multisigAccountInfo.minRemoval && cantFirm >= multisigAccountInfo.minApproval) {
+          typeTx = { type: 2, transactionType: TransactionType.AGGREGATE_COMPLETE }
+        } else {
+          typeTx = { type: 1, transactionType: TransactionType.AGGREGATE_BONDED }
+        }
+      } else if (cantAdd == 0 && cabtRemove == 0) {
+        if (cantFirm >= multisigAccountInfo.minRemoval && cantFirm >= multisigAccountInfo.minApproval) {
+          typeTx = { type: 2, transactionType: TransactionType.AGGREGATE_COMPLETE }
+        } else {
+          typeTx = { type: 1, transactionType: TransactionType.AGGREGATE_BONDED }
+        }
+
+      } else if (cantAdd > 0) {
+        if (cantFirm >= multisigAccountInfo.minApproval) {
+          typeTx = { type: 2, transactionType: TransactionType.AGGREGATE_COMPLETE }
+        } else {
+          typeTx = { type: 1, transactionType: TransactionType.AGGREGATE_BONDED }
+        }
+      } else if (cabtRemove > 0) {
+        if (cantFirm >= multisigAccountInfo.minRemoval) {
+          typeTx = { type: 2, transactionType: TransactionType.AGGREGATE_COMPLETE }
+        } else {
+          typeTx = { type: 1, transactionType: TransactionType.AGGREGATE_BONDED }
+        }
       }
-    } else if (cantAdd > 0) {
-      if (cantFirm >= multisigAccountInfo.minApproval) {
-        typeTx = { type: 2, transactionType: TransactionType.AGGREGATE_COMPLETE }
-      } else {
-        typeTx = { type: 1, transactionType: TransactionType.AGGREGATE_BONDED }
-      }
-    } else if (cabtRemove > 0) {
-      if (cantFirm >= multisigAccountInfo.minRemoval) {
-        typeTx = { type: 2, transactionType: TransactionType.AGGREGATE_COMPLETE }
-      } else {
-        typeTx = { type: 1, transactionType: TransactionType.AGGREGATE_BONDED }
-      }
+    } else {
+      typeTx = { type: 1, transactionType: TransactionType.AGGREGATE_BONDED }
     }
     return typeTx
   }
 
+
+  getvalidateCosignatoryList(cosignatoryList: CosignatoryList[], accounts: AccountsInterface[]) {
+    let accountsFilter: AccountsInterface[] = []
+    for (const list of cosignatoryList) {
+      const account = accounts.find(items => list.publicAccount.publicKey === items.publicAccount.publicKey)
+      if (account)
+        accountsFilter.push(accounts.find(items => list.publicAccount.publicKey === items.publicAccount.publicKey))
+    }
+    return Boolean(accountsFilter.length === cosignatoryList.length)
+  }
   myCosigners(cosignatoryList: CosignatoryList[], accounts: AccountsInterface[]): AccountsInterface[] {
     // otherCosigners(cosignatoryList: CosignatoryList[], accounts: AccountsInterface[]): AccountsInterface[] {
     let myAccountsFilter: AccountsInterface[] = []
@@ -159,4 +186,12 @@ export interface TypeTx {
 export interface CosignersSignLis {
   myCosignatory: any
   otherCosigners: any,
+}
+export interface ConsginerFirmList {
+  label: string;
+  value: any;
+  disabled: boolean;
+  info: string;
+  account: AccountsInterface;
+  signatory: boolean
 }
