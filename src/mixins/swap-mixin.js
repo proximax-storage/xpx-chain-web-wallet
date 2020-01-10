@@ -115,28 +115,54 @@ export default {
 
       return nis1AccountsInfo
     },
-    async swap (nis1AccountData, catapultAccount, amount, signerPvk) {
-      let quantity = null
-      try {
-        quantity = parseFloat(amount.split(',').join(''))
-      } catch (error) {
-        quantity = Number(amount)
-      }
-      const env = this.$store.getters['swapStore/environment']
-      const nis1Account = this.createAccountFromPrivateKey(signerPvk)
-      const assetId = nis1AccountData.mosaic.assetId
-      const msg = PlainMessage.create(catapultAccount.publicKey)
-      const transaction = await this.createTransaction(msg, assetId, quantity, env)
-      // const catapultPublicAccount = this.$blockchainProvider.createPublicAccount(catapultAccount.publicKey, catapultAccount.network)
-      const signedTransaction = nis1Account.signTransaction(transaction)
-      const url = `${env.configNIS1.url}/transaction/announce`
-      axios.post(url, signedTransaction, { timeout: env.configNIS1.timeOutTransaction }).then(next => {
-        if (next.data && next.data['message'] && next.data['message'].toLowerCase() === 'success') {
-          console.log('success')
-        } else {
-          console.error('ERROR')
+    async swap (walletName, nis1AccountData, catapultAccount, amount, signerPvk) {
+      const promise = new Promise(async (resolve, reject) => {
+        try {
+          let quantity = null
+          try {
+            quantity = parseFloat(amount.split(',').join(''))
+          } catch (error) {
+            quantity = Number(amount)
+          }
+
+          const env = this.$store.getters['swapStore/environment']
+          const nis1Account = this.createAccountFromPrivateKey(signerPvk)
+          const assetId = nis1AccountData.mosaic.assetId
+          const msg = PlainMessage.create(catapultAccount.publicKey)
+          const transaction = await this.createTransaction(msg, assetId, quantity, env)
+          const signedTransaction = nis1Account.signTransaction(transaction)
+          const url = `${env.configNIS1.url}/transaction/announce`
+          axios.post(url, signedTransaction, { timeout: env.configNIS1.timeOutTransaction }).then(next => {
+            if (next.data && next.data['message'] && next.data['message'].toLowerCase() === 'success') {
+              const data = {
+                catapultAccount,
+                transaction,
+                hash: next.data['transactionHash'].data,
+                walletName
+              }
+
+              this.$store.dispatch('showMSG', {
+                snackbar: true,
+                text: `Swap in process`,
+                color: 'success'
+              })
+
+              const certified = this.saveCertifiedSwap(data)
+              resolve({ status: true, certified })
+            } else {
+              this.validateCodeMsgError(next.data['code'], next.data['message'])
+              resolve({ status: false })
+            }
+          }).catch(error => {
+            this.validateCodeMsgError(error.error.code, error.error.message)
+            resolve({ status: false })
+          })
+        } catch (error) {
+          resolve({ status: false })
         }
       })
+
+      return promise
     },
     buildAccountInfoNIS1 (data, accountName, walletName) {
       let cosignatoryOf = false
@@ -203,7 +229,48 @@ export default {
       const accountHttp = this.$store.getters['swapStore/accountHttp']
       return accountHttp.unconfirmedTransactions(address).toPromise()
     },
-    getSwapInfo (publicKey, accountName, walletName) {
+    getTimeStampTimeWindow (transaction) {
+      const year = transaction.timeWindow.timeStamp['_date']['_year']
+      const month = transaction.timeWindow.timeStamp['_date']['_month']
+      const day = transaction.timeWindow.timeStamp['_date']['_day']
+      const hour = transaction.timeWindow.timeStamp['_time']['_hour']
+      const minutes = transaction.timeWindow.timeStamp['_time']['_minute']
+      const seconds = transaction.timeWindow.timeStamp['_time']['_second']
+      return `${year}-${month}-${day} ${hour}:${minutes}:${seconds}`
+    },
+    getCertifiedSwap (catapultNetwork) {
+      if (catapultNetwork) {
+        const certifiedSwap = this.$storage.get(`certified-swap-${catapultNetwork}`)
+        if (!certifiedSwap) {
+          this.$storage.set(`certified-swap-${catapultNetwork}`, [])
+          return []
+        }
+
+        return JSON.parse(certifiedSwap)
+      }
+
+      return []
+    },
+    initConfigSwap (catapultNetwork) {
+      const catapultNetworkTypes = this.$blockchainProvider.getNetworkTypes()
+      switch (catapultNetwork) {
+        case catapultNetworkTypes.testnet.value:
+          this.setSwapEnvironment(NetworkTypes.TEST_NET)
+          break
+        case catapultNetworkTypes.mainnet.value:
+          this.setSwapEnvironment(NetworkTypes.MAIN_NET)
+          break
+      }
+    },
+    setSwapEnvironment (network) {
+      const data = {
+        networkNis1: network,
+        configNIS1: this.getConfigFromNetworkNis1(network).nis1Config
+      }
+
+      this.$store.commit('swapStore/INIT_ENVIRONMENT_SWAP', data)
+    },
+    searchSwapInfo (publicKey, accountName, walletName) {
       let status = false
       let mosaicInfoOwnedSwap = null
       const promise = new Promise(async (resolve, reject) => {
@@ -245,24 +312,130 @@ export default {
 
       return promise
     },
-    initConfigSwap (catapultNetwork) {
-      const catapultNetworkTypes = this.$blockchainProvider.getNetworkTypes()
-      switch (catapultNetwork) {
-        case catapultNetworkTypes.testnet.value:
-          this.setSwapEnvironment(NetworkTypes.TEST_NET)
-          break
-        case catapultNetworkTypes.mainnet.value:
-          this.setSwapEnvironment(NetworkTypes.MAIN_NET)
-          break
-      }
-    },
-    setSwapEnvironment (network) {
-      const data = {
-        networkNis1: network,
-        configNIS1: this.getConfigFromNetworkNis1(network).nis1Config
+    saveCertifiedSwap (data) {
+      const catapultPublicAccount = this.$blockchainProvider.createPublicAccount(data.catapultAccount.publicKey, data.catapultAccount.network)
+      const transactionNis1 = {
+        siriusAddres: catapultPublicAccount.address.pretty(),
+        nis1Timestamp: this.getTimeStampTimeWindow(data.transaction),
+        nis1PublicKey: data.transaction.signer.publicKey,
+        nis1TransactionHash: data.hash
       }
 
-      this.$store.commit('swapStore/INIT_ENVIRONMENT_SWAP', data)
+      const allCertified = this.getCertifiedSwap(data.catapultAccount.network)
+      let othersCertifiedSwap = allCertified.filter(b => b.name !== data.walletName)
+      let currentCertified = null
+      if (allCertified.length > 0) {
+        currentCertified = allCertified.find(b => b.name === data.walletName)
+        if (currentCertified && currentCertified.transactions) {
+          currentCertified.transactions.push(transactionNis1)
+        } else {
+          currentCertified = { name: data.walletName, transactions: [transactionNis1] }
+        }
+      } else {
+        currentCertified = { name: data.walletName, transactions: [transactionNis1] }
+      }
+
+      othersCertifiedSwap.push(currentCertified)
+      this.$storage.set(`txn-nis1-${data.catapultAccount.network}`, othersCertifiedSwap)
+      return transactionNis1
+    },
+    validateCodeMsgError (errorCode, errorMessage) {
+      switch (errorCode) {
+        case 521:
+        case 535:
+        case 542:
+        case 551:
+        case 565:
+        case 582:
+        case 610:
+        case 622:
+        case 672:
+        case 711:
+          this.$store.dispatch('showMSG', {
+            snackbar: true,
+            text: `Some data is invalid`,
+            color: 'error'
+          })
+          break
+
+        case 591:
+          this.$store.dispatch('showMSG', {
+            snackbar: true,
+            text: `Invalid Timestamp`,
+            color: 'error'
+          })
+          break
+
+        case 501:
+        case 635:
+        case 641:
+        case 685:
+        case 691:
+          this.$store.dispatch('showMSG', {
+            snackbar: true,
+            text: `Service not available`,
+            color: 'error'
+          })
+          break
+
+        case 655:
+        case 666:
+          this.$store.dispatch('showMSG', {
+            snackbar: true,
+            text: `Insufficient XPX Balance`,
+            color: 'error'
+          })
+          break
+
+        case 511:
+          this.$store.dispatch('showMSG', {
+            snackbar: true,
+            text: `Daily limit exceeded (5 swaps)`,
+            color: 'error'
+          })
+          break
+
+        case 705:
+          this.$store.dispatch('showMSG', {
+            snackbar: true,
+            text: `Invalid Url`,
+            color: 'error'
+          })
+          break
+
+        case 722:
+        case 822:
+          this.$store.dispatch('showMSG', {
+            snackbar: true,
+            text: `Account not allowed`,
+            color: 'error'
+          })
+          break
+
+        case 541:
+          this.$store.dispatch('showMSG', {
+            snackbar: true,
+            text: `Account not allowed`,
+            color: 'error'
+          })
+          break
+
+        default:
+          if (errorMessage) {
+            this.$store.dispatch('showMSG', {
+              snackbar: true,
+              text: errorMessage.toString().split('_').join(' '),
+              color: 'error'
+            })
+          } else {
+            this.$store.dispatch('showMSG', {
+              snackbar: true,
+              text: `Error! try again later`,
+              color: 'error'
+            })
+          }
+          break
+      }
     }
   }
 }

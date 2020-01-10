@@ -7,7 +7,7 @@ export const swapStore = {
   state: {
     accountHttp: null,
     assetHttp: null,
-    accountToSwap: null,
+    addressToSwap: null,
     configNIS1: null,
     swapData: null,
     divisibility: 6,
@@ -17,7 +17,7 @@ export const swapStore = {
     }
   },
   getters: {
-    accountToSwap: state => state.accountToSwap,
+    addressToSwap: state => state.addressToSwap,
     accountHttp: state => state.accountHttp,
     assetHttp: state => state.assetHttp,
     configNIS1: state => state.configNIS1,
@@ -30,8 +30,8 @@ export const swapStore = {
     SET_SWAP_DATA (state, data) {
       state.swapData = data
     },
-    SET_ACCOUNT_TO_SWAP (state, data) {
-      state.accountToSwap = data
+    SET_ADDRESS_TO_SWAP (state, data) {
+      state.addressToSwap = data
     },
     INIT_ENVIRONMENT_SWAP (state, data) {
       NEMLibrary.reset()

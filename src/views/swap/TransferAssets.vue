@@ -24,11 +24,11 @@
               <v-col cols="12" class="ml-0 pt-0 pb-0 overflow-ellipsis-nowrap mx-auto">
                 <!-- Name Account -->
                 <span class="body-1 font-weight-medium pr-1">Account Name:</span>
-                <span class="body-2">{{accountToSwap.nameAccount}}</span>
+                <span class="body-2">{{dataAccountToSwap.nameAccount}}</span>
                 <br />
                 <!-- NIS1 Address -->
                 <span class="body-1 font-weight-medium pr-1">NIS1 Address:</span>
-                <span class="body-2">{{accountToSwap.address.pretty()}}</span>
+                <span class="body-2">{{dataAccountToSwap.address.pretty()}}</span>
                 <br />
                 <!-- NIS1 Balance -->
                 <div class="d-flex align-center">
@@ -39,7 +39,7 @@
                     width="20"
                     :src="require(`@/assets/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg`)"
                   />
-                  <span class="body-2">{{accountToSwap.balance}}</span>
+                  <span class="body-2">{{dataAccountToSwap.balance}}</span>
                 </div>
               </v-col>
             </v-row>
@@ -62,7 +62,7 @@
                 :label="configForm.amount.label"
                 :disabled="disableAmount"
                 :minlength="'1'"
-                :maxlength="accountToSwap.balance.length"
+                :maxlength="dataAccountToSwap.balance.length"
                 :rules="[
                   configForm.amount.rules.required,
                   isValidBalance
@@ -145,16 +145,15 @@
 </template>
 
 <script>
-import walletMixin from '../../mixins/wallet'
-import generalMixin from '../../mixins/general'
-import swapMixin from '../../mixins/swap'
+import walletMixin from '../../mixins/wallet-mixin'
+import generalMixin from '../../mixins/general-mixin'
+import swapMixin from '../../mixins/swap-mixin'
 
 export default {
   mixins: [generalMixin, swapMixin, walletMixin],
   data: () => {
     return {
       amount: '1',
-      accountToSwap: null,
       arrayBtn: {
         cancel: {
           key: 'cancel',
@@ -186,6 +185,7 @@ export default {
         }
       ],
       configForm: null,
+      dataAccountToSwap: null,
       disableAmount: false,
       isValidBalance: false,
       money: {
@@ -206,16 +206,26 @@ export default {
         'Swap process may take several hours to complete. If you wish to proceed, you will receive a certificate containing your transaction hash for your records.'
     }
   },
+  beforeMount () {
+    this.swapData = this.$store.getters['swapStore/swapData']
+    const addressToSwap = this.$store.getters['swapStore/addressToSwap']
+    if (addressToSwap.isMultisig) {
+      // search in swapData with addressToSwap
+    } else {
+      this.dataAccountToSwap = this.swapData
+    }
+
+    this.configForm = this.getConfigForm()
+  },
   components: {
     'custom-breadcrumbs': () => import('@/components/shared/Breadcrumbs'),
     'custom-buttons': () => import('@/components/shared/Buttons')
   },
   methods: {
-    action (action) {
+    async action (action) {
       switch (action) {
         case 'continue':
-          console.log('DESCRYPT ACCOUNT....')
-          console.log('Account to swap -->', this.accountToSwap)
+          console.log('Account to swap -->', this.dataAccountToSwap)
           console.log('Amount to send --->', this.amount)
           if (this.$store.getters['accountStore/isLogged']) {
             console.log('isLogged')
@@ -223,12 +233,15 @@ export default {
             const currentWallet = this.$store.getters['walletStore/currentWallet']
             console.log('CURRENT WALLET ----->', currentWallet)
             if (currentWallet) {
-              const catapultAccount = currentWallet.accounts.find(x => x.name === this.accountToSwap.nameAccount)
+              const catapultAccount = currentWallet.accounts.find(x => x.name === this.dataAccountToSwap.nameAccount)
               console.log('CATAPULT ACCOUNT TO SWAP ----->', catapultAccount)
               if (catapultAccount) {
                 const decrypt = this.decrypt(catapultAccount, this.password)
                 if (decrypt.privateKey) {
-                  this.swap(this.accountToSwap, catapultAccount, this.amount, decrypt.privateKey)
+                  const certified = await this.swap(currentWallet.name, this.dataAccountToSwap, catapultAccount, this.amount, decrypt.privateKey)
+                  console.log('certified', certified)
+                } else {
+
                 }
               } else {
                 // has ocurred a error
@@ -246,8 +259,8 @@ export default {
       }
     },
     selectMaxAmount () {
-      this.$refs.amount.$el.getElementsByTagName('input')[0].value = this.accountToSwap.balance
-      this.amount = this.accountToSwap.balance
+      this.$refs.amount.$el.getElementsByTagName('input')[0].value = this.dataAccountToSwap.balance
+      this.amount = this.dataAccountToSwap.balance
       this.validateBalance()
     },
     validateBalance () {
@@ -259,7 +272,7 @@ export default {
       }
 
       if (amount !== null && amount !== undefined) {
-        if (amount > parseFloat(this.accountToSwap.balance.split(',').join(''))) {
+        if (amount > parseFloat(this.dataAccountToSwap.balance.split(',').join(''))) {
           this.isValidBalance = 'Insufficient balance'
         } else if (amount === 0) {
           this.isValidBalance = 'Cannot enter amount zero'
@@ -273,23 +286,10 @@ export default {
     buttons () {
       const arrayBtn = this.arrayBtn
       arrayBtn['cancel'].disabled = this.sendingForm
-      arrayBtn['continue'].disabled =
-        !this.valid || this.sendingForm || this.isValidBalance !== true
+      arrayBtn['continue'].disabled = !this.valid || this.sendingForm || this.isValidBalance !== true
       arrayBtn['continue'].loading = this.sendingForm
       return arrayBtn
     }
-  },
-  beforeMount () {
-    this.swapData = this.$store.getters['swapStore/swapData']
-    const accountToSwap = this.$store.getters['swapStore/accountToSwap']
-    // let hola = null
-    if (accountToSwap.isMultisig) {
-
-    } else {
-      this.accountToSwap = this.swapData
-    }
-
-    this.configForm = this.getConfigForm()
   }
 }
 </script>

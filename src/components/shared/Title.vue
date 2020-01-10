@@ -3,7 +3,7 @@
     <v-container>
       <v-row>
         <v-col cols="12" md="10" class="mx-auto text-center mt-5 pb-0">
-          <span class="headline font-weight-bold primary--text">{{title}}</span>
+          <span class="headline font-weight-medium primary--text">{{title}}</span>
         </v-col>
 
         <v-col cols="11" class="mx-auto pt-1 pb-0" v-if="separed1">

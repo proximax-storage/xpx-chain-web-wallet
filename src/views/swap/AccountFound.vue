@@ -27,8 +27,8 @@
 </template>
 
 <script>
-import { mapMutations } from 'vuex'
-import swapMixin from '../../mixins/swap'
+import { mapMutations, mapGetters } from 'vuex'
+import swapMixin from '../../mixins/swap-mixin'
 
 export default {
   mixins: [swapMixin],
@@ -64,17 +64,18 @@ export default {
     'custom-buttons': () => import('@/components/shared/Buttons')
   },
   methods: {
-    ...mapMutations('swapStore', ['SET_ACCOUNT_TO_SWAP']),
+    ...mapMutations('swapStore', ['SET_ADDRESS_TO_SWAP']),
+    ...mapGetters('swapStore', ['swapData']),
     action (action) {
       switch (action) {
         case 'continue':
-          const swapData = this.$store.getters['swapStore/swapData']
+          const swapData = this.swapData()
           if (swapData.cosignerAccounts.length > 0) {
             this.$router.push('/swap-list-cosigners').catch(e => {})
           } else {
             // Save account to swap and redirect view swap transfer assets
-            this.SET_ACCOUNT_TO_SWAP({
-              account: swapData.address,
+            this.SET_ADDRESS_TO_SWAP({
+              address: swapData.address,
               isMultisig: false
             })
             this.$router.push('/swap-transfer-assets').catch(e => {})
@@ -82,9 +83,6 @@ export default {
           break
         case 'cancel':
           this.$router.push('/').catch(e => {})
-          break
-        default:
-          console.log('default')
           break
       }
     }

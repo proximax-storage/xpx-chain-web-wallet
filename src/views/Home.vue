@@ -46,7 +46,7 @@ export default {
   name: 'home',
   data: () => ({
     title: 'ProximaX Sirius Wallet',
-    sub: 'The secure interface that connects to the Proximax Sirius platform.',
+    sub: 'The secure interface that connects to the ProximaX Sirius platform.',
     servicesList: [],
     arrayBtn: {
       signIn: {

@@ -84,8 +84,8 @@
 
 <script>
 import { mapMutations } from 'vuex'
-import generalMixins from '../../mixins/general'
-import swapMixin from '../../mixins/swap'
+import generalMixins from '../../mixins/general-mixin'
+import swapMixin from '../../mixins/swap-mixin'
 
 export default {
   mixins: [generalMixins, swapMixin],
@@ -137,7 +137,7 @@ export default {
       this.arrayBtn.continue.disabled = true
       this.arrayBtn.continue.loading = true
       // Search Info Swap
-      const info = await this.getSwapInfo(publicKey, accountName, walletName)
+      const info = await this.searchSwapInfo(publicKey, accountName, walletName)
       this.infoOwnedSwap = info.mosaicInfoOwnedSwap
       this.arrayBtn.continue.disabled = false
       this.arrayBtn.continue.loading = false
@@ -155,7 +155,6 @@ export default {
             this.SET_SWAP_DATA(this.infoOwnedSwap)
             this.$router.push('/swap-account-nis1-found').catch(e => {})
           } else {
-            this.SET_SWAP_DATA(null)
             this.$router.push('/').catch(e => {})
           }
           break
@@ -181,6 +180,7 @@ export default {
     if (walletInfo.accounts[0].nis1Account) {
       const publicKey = walletInfo.accounts[0].nis1Account.publicKey
       const accountName = walletInfo.accounts[0].name
+      this.SET_SWAP_DATA(null)
       this.initSwap(publicKey, accountName, this.walletName)
     }
   }

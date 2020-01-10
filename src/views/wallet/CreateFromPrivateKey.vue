@@ -192,9 +192,9 @@
 
 <script>
 import { mapMutations } from 'vuex'
-import generalMixins from '../../mixins/general'
-import walletMixins from '../../mixins/wallet'
-import swapMixin from '../../mixins/swap'
+import generalMixins from '../../mixins/general-mixin'
+import walletMixins from '../../mixins/wallet-mixin'
+import swapMixin from '../../mixins/swap-mixin'
 
 export default {
   mixins: [generalMixins, swapMixin, walletMixins],
@@ -257,17 +257,18 @@ export default {
           let nis1Account = null
           if (this.isSwap) {
             this.initConfigSwap(this.networkSelected.value)
-            nis1Account = this.createAccountFromPrivateKey(this.privateKey)
+            const account = this.createAccountFromPrivateKey(this.privateKey)
+            nis1Account = {
+              address: account.address,
+              publicKey: account.publicKey
+            }
           }
 
-          const response = this.createWallet({
+          const walletCreated = this.createWallet({
             default: true,
             firstAccount: true,
             isMultisign: null,
-            nis1Account: {
-              address: nis1Account.address,
-              publicKey: nis1Account.publicKey
-            },
+            nis1Account,
             walletName: this.walletName,
             network: this.networkSelected.value,
             password: this.passwords.password,
@@ -278,8 +279,9 @@ export default {
             this.clear()
             this.sendingForm = false
             this.SHOW_LOADING(false)
-            if (response.status) {
-              this.dataWalletCreated = response
+            if (walletCreated.status) {
+              // show view wallet created
+              this.dataWalletCreated = walletCreated
             }
           }, 500)
         }

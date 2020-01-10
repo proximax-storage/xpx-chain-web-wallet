@@ -86,6 +86,8 @@ export default {
 
         return JSON.parse(wallets)
       }
+
+      return []
     }
   }
 }

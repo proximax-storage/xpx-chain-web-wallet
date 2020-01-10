@@ -144,8 +144,8 @@
 
 <script>
 import { mapMutations } from 'vuex'
-import generalMixins from '../../mixins/general'
-import walletMixins from '../../mixins/wallet'
+import generalMixins from '../../mixins/general-mixin'
+import walletMixins from '../../mixins/wallet-mixin'
 
 export default {
   mixins: [generalMixins, walletMixins],
