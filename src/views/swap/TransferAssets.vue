@@ -10,19 +10,21 @@
           </v-col>
         </v-row>
 
+        <!-- Title 1 -->
         <v-row>
-          <!-- Title 1 -->
           <v-col cols="12" class="text-center pt-0">
             <span class="font-weight-regular title">{{swapTitle}}</span>
           </v-col>
+        </v-row>
 
-          <!-- Address -->
+        <!-- Address, balance, account name -->
+        <v-row>
           <v-col cols="11" md="10" lg="9" class="box-gray mb-3 mx-auto">
             <v-row>
               <v-col cols="12" class="ml-0 pt-0 pb-0 overflow-ellipsis-nowrap mx-auto">
-                <!-- Name Wallet -->
+                <!-- Name Account -->
                 <span class="body-1 font-weight-medium pr-1">Account Name:</span>
-                <span class="body-2">{{accountToSwap.name}}</span>
+                <span class="body-2">{{accountToSwap.nameAccount}}</span>
                 <br />
                 <!-- NIS1 Address -->
                 <span class="body-1 font-weight-medium pr-1">NIS1 Address:</span>
@@ -42,13 +44,16 @@
               </v-col>
             </v-row>
           </v-col>
+        </v-row>
 
-          <!-- Title 2 -->
+        <!-- Title 2 -->
+        <v-row>
           <v-col cols="12" class="text-center pt-5">
             <span class="font-weight-regular title">{{swapTitle2}}</span>
           </v-col>
         </v-row>
 
+        <!-- Form -->
         <v-form v-model="valid" ref="form">
           <v-row>
             <!-- Amount -->
@@ -123,9 +128,9 @@
           </v-row>
         </v-form>
 
+        <!-- Warning Message -->
         <v-row>
           <v-col cols="11" md="10" lg="9" class="mx-auto">
-            <!-- Warning Message -->
             <v-alert outlined type="warning" prominent class="text-center line-h-1-02em" dense>
               <span class="gray-black--text caption">{{warningText}}</span>
             </v-alert>
@@ -148,7 +153,7 @@ export default {
   mixins: [generalMixin, swapMixin, walletMixin],
   data: () => {
     return {
-      amount: '',
+      amount: '1',
       accountToSwap: null,
       arrayBtn: {
         cancel: {
@@ -191,7 +196,7 @@ export default {
         precision: 6,
         masked: false
       },
-      password: '',
+      password: '1qazxsw2',
       sendingForm: false,
       swapData: null,
       swapTitle: 'NIS1 Account Selected',
@@ -210,7 +215,30 @@ export default {
       switch (action) {
         case 'continue':
           console.log('DESCRYPT ACCOUNT....')
-          // this.buildSwapTransaction(this.accountToSwap, this.amount)
+          console.log('Account to swap -->', this.accountToSwap)
+          console.log('Amount to send --->', this.amount)
+          if (this.$store.getters['accountStore/isLogged']) {
+            console.log('isLogged')
+          } else {
+            const currentWallet = this.$store.getters['walletStore/currentWallet']
+            console.log('CURRENT WALLET ----->', currentWallet)
+            if (currentWallet) {
+              const catapultAccount = currentWallet.accounts.find(x => x.name === this.accountToSwap.nameAccount)
+              console.log('CATAPULT ACCOUNT TO SWAP ----->', catapultAccount)
+              if (catapultAccount) {
+                const decrypt = this.decrypt(catapultAccount, this.password)
+                if (decrypt.privateKey) {
+                  this.swap(this.accountToSwap, catapultAccount, this.amount, decrypt.privateKey)
+                }
+              } else {
+                // has ocurred a error
+                this.$router.push('/').catch(e => {})
+              }
+            } else {
+              // has ocurred a error
+              this.$router.push('/').catch(e => {})
+            }
+          }
           break
         case 'cancel':
           this.$router.push('/').catch(e => {})
@@ -261,8 +289,6 @@ export default {
       this.accountToSwap = this.swapData
     }
 
-    console.log('accountToSwap', this.accountToSwap)
-    console.log('swapData', this.swapData)
     this.configForm = this.getConfigForm()
   }
 }

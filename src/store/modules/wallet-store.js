@@ -3,14 +3,14 @@ export const walletStore = {
   // instead of mounting getters, mutations, and actions to the root namespace.
   namespaced: true,
   state: {
-    dataSwap: null
+    currentWallet: null
   },
   getters: {
-    dataSwap: state => state.dataSwap
+    currentWallet: state => state.currentWallet
   },
   mutations: {
-    SET_DATA_SWAP (state, data) {
-      state.dataSwap = data
+    SET_CURRENT_WALLET (state, data) {
+      state.currentWallet = data
     }
   }
 }

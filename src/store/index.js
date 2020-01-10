@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import { accountStore } from './modules/account-store'
 import { swapStore } from './modules/swap-store'
+import { walletStore } from './modules/wallet-store'
 
 Vue.use(Vuex)
 
@@ -45,6 +46,7 @@ export default new Vuex.Store({
   },
   modules: {
     accountStore,
-    swapStore
+    swapStore,
+    walletStore
   }
 })

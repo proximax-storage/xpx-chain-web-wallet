@@ -12,7 +12,8 @@ import {
   DiagnosticHttp,
   MetadataHttp,
   NetworkType,
-  Address
+  Address,
+  PublicAccount
 } from 'tsjs-xpx-chain-sdk'
 
 import { GeneralService } from './general'
@@ -96,6 +97,18 @@ class BlockchainProvider {
   /**
    *
    *
+   * @param {*} publicKey
+   * @param {*} network
+   * @returns
+   * @memberof BlockchainProvider
+   */
+  createPublicAccount (publicKey, network) {
+    return PublicAccount.createFromPublicKey(publicKey, network)
+  }
+
+  /**
+   *
+   *
    * @param {*} address
    * @returns
    * @memberof BlockchainProvider
@@ -114,7 +127,7 @@ class BlockchainProvider {
    * @memberof BlockchainProvider
    */
   checkAddress (privateKey, network, address) {
-    return (Account.createFromPrivateKey(privateKey, network).address.plain() === address)
+    return (privateKey && privateKey !== '') ? Account.createFromPrivateKey(privateKey, network).address.plain() === address : null
   }
 
   /**
@@ -134,7 +147,7 @@ class BlockchainProvider {
         }
 
         if (common.isHW) {
-          return { status: true, msg: '' }
+          return { status: false, msg: 'Invalid password' }
         }
 
         if (!this.isValidPrivateKey(common.privateKey) || !this.checkAddress(common.privateKey, network, account.address)) {
@@ -146,7 +159,6 @@ class BlockchainProvider {
         return { status: false, msg: 'You do not have a valid account selected' }
       }
     } catch (error) {
-      console.log(error)
       return { status: false, msg: 'You do not have a valid account selected.' }
     }
   }
@@ -159,7 +171,6 @@ class BlockchainProvider {
    * @memberof BlockchainProvider
    */
   isValidPrivateKey (privateKey) {
-    console.log('xd', this.generalService)
     if (privateKey && (privateKey.length !== 64 && privateKey.length !== 66)) {
       // console.error('Private key length must be 64 or 66 characters !')
       return false
@@ -167,6 +178,7 @@ class BlockchainProvider {
       // console.error('Private key must be hexadecimal only !')
       return false
     } else {
+      // console.error('fine !')
       return true
     }
   }

@@ -1,15 +1,29 @@
 import axios from 'axios'
-import { Account, AccountOwnedAssetService, Address, NetworkTypes, PublicAccount } from 'nem-library'
+import * as JsJoda from 'js-joda'
+import { Account, AccountOwnedAssetService, Address, NetworkTypes, PublicAccount, PlainMessage, TransferTransaction, TimeWindow } from 'nem-library'
 
 export default {
-  data: () => {
-    return {
-      configNIS1: null,
-      namespace: null,
-      divisibility: null
-    }
-  },
   methods: {
+    async createTransaction (message, assetId, quantity, env) {
+      const resultAssets = await env.assetHttp.getAssetTransferableWithAbsoluteAmount(assetId, quantity).toPromise()
+      const part = quantity.toString().split('.')
+      const cant = (part.length === 1) ? 6 : 6 - part[1].length
+      for (let index = 0; index < cant; index++) {
+        if (part.length === 1) {
+          part[0] += 0
+        } else {
+          part[1] += 0
+        }
+      }
+
+      resultAssets['quantity'] = Number(part.join(''))
+      return TransferTransaction.createWithAssets(
+        this.createWithDeadline(),
+        new Address(env.configNIS1.burnAddress),
+        [resultAssets],
+        message
+      )
+    },
     async validateBalanceAccounts (xpxFound, addressSigner) {
       const env = this.$store.getters['swapStore/environment']
       const quantityFillZeros = this.$generalService.addZeros(env.divisibility, xpxFound.quantity)
@@ -81,13 +95,10 @@ export default {
           const balance = await this.validateBalanceAccounts(xpxFound, addressOwnedSwap)
           const params = { publicAccount, accountsMultisigInfo, balance, cosignersAccounts: cosignatoryOf, isMultiSign: false, name, xpxFound }
           nis1AccountsInfo = this.buildAccountInfoNIS1(params, accountName, walletName)
-          // this.setNis1AccountsFound$(nis1AccountsInfo)
         } else if (cosignatoryOf.length > 0) {
           const params = { publicAccount, accountsMultisigInfo, balance: null, cosignersAccounts: cosignatoryOf, isMultiSign: false, name, xpxFound: null }
           nis1AccountsInfo = this.buildAccountInfoNIS1(params, accountName, walletName)
-          // this.setNis1AccountsFound$(nis1AccountsInfo)
         } else {
-          // this.setNis1AccountsFound$(null)
           this.$store.commit('SHOW_SNACKBAR', {
             snackbar: true,
             text: 'The account has no balance to swap',
@@ -95,7 +106,6 @@ export default {
           })
         }
       } catch (error) {
-        // this.setNis1AccountsFound$(null)
         this.$store.commit('SHOW_SNACKBAR', {
           snackbar: true,
           text: 'It was not possible to connect to the server, try later',
@@ -104,6 +114,29 @@ export default {
       }
 
       return nis1AccountsInfo
+    },
+    async swap (nis1AccountData, catapultAccount, amount, signerPvk) {
+      let quantity = null
+      try {
+        quantity = parseFloat(amount.split(',').join(''))
+      } catch (error) {
+        quantity = Number(amount)
+      }
+      const env = this.$store.getters['swapStore/environment']
+      const nis1Account = this.createAccountFromPrivateKey(signerPvk)
+      const assetId = nis1AccountData.mosaic.assetId
+      const msg = PlainMessage.create(catapultAccount.publicKey)
+      const transaction = await this.createTransaction(msg, assetId, quantity, env)
+      // const catapultPublicAccount = this.$blockchainProvider.createPublicAccount(catapultAccount.publicKey, catapultAccount.network)
+      const signedTransaction = nis1Account.signTransaction(transaction)
+      const url = `${env.configNIS1.url}/transaction/announce`
+      axios.post(url, signedTransaction, { timeout: env.configNIS1.timeOutTransaction }).then(next => {
+        if (next.data && next.data['message'] && next.data['message'].toLowerCase() === 'success') {
+          console.log('success')
+        } else {
+          console.error('ERROR')
+        }
+      })
     },
     buildAccountInfoNIS1 (data, accountName, walletName) {
       let cosignatoryOf = false
@@ -124,12 +157,6 @@ export default {
         balance: data.balance
       }
     },
-    buildSwapTransaction (data, amount, signerPvk) {
-      const account = this.createAccountFromPrivateKey(signerPvk)
-      const assetId = data.mosaic.assetId
-      console.log('assetId', assetId)
-      console.log('account', account)
-    },
     createAddressToString (address) {
       return new Address(address)
     },
@@ -138,6 +165,17 @@ export default {
     },
     createPublicAccountFromPublicKey (publicKey) {
       return PublicAccount.createWithPublicKey(publicKey)
+    },
+    createWithDeadline (deadline = 2, chronoUnit = JsJoda.ChronoUnit.HOURS) {
+      const currentTimeStamp = (new Date()).getTime() - 600000
+      const timeStampDateTime = JsJoda.LocalDateTime.ofInstant(JsJoda.Instant.ofEpochMilli(currentTimeStamp), JsJoda.ZoneId.SYSTEM)
+      const deadlineDateTime = timeStampDateTime.plus(deadline, chronoUnit)
+      if (deadline <= 0) {
+        throw new Error('deadline should be greater than 0')
+      } else if (timeStampDateTime.plus(24, JsJoda.ChronoUnit.HOURS).compareTo(deadlineDateTime) !== 1) {
+        throw new Error('deadline should be less than 24 hours')
+      }
+      return new TimeWindow(timeStampDateTime, deadlineDateTime)
     },
     getAccountInfo (address) {
       const configNIS1 = this.$store.getters['swapStore/configNIS1']

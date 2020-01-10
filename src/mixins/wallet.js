@@ -13,7 +13,7 @@ export default {
           walletCreated = this.$blockchainProvider.createSimpleWallet(data.walletName, data.password, data.network)
         }
 
-        const decrypted = this.decryptWallet(walletCreated, data.password)
+        const decrypted = this.decrypt(walletCreated, data.password)
         if (decrypted.privateKey) {
           const account = this.$blockchainProvider.getAccountFromPrivateKey(decrypted.privateKey, walletCreated.network)
           const accountBuilded = {
@@ -33,7 +33,6 @@ export default {
             schema: walletCreated.schema
           }
 
-          console.log('\n accountBuilded', accountBuilded)
           const walletBuilded = {
             name: data.walletName,
             accounts: [accountBuilded]
@@ -43,6 +42,7 @@ export default {
           const wallets = this.getWallets(walletCreated.network)
           wallets.push(walletBuilded)
           this.$storage.set(`wallets-${walletCreated.network}`, wallets)
+          this.$store.commit('walletStore/SET_CURRENT_WALLET', walletBuilded)
           return { status: true, data: walletBuilded, pvk: decrypted.privateKey }
         }
 
@@ -51,16 +51,16 @@ export default {
 
       return { status: false, msg: 'Wallet name already exists, try another name' }
     },
-    decryptWallet (catapulWallet, password) {
+    decrypt (account, password) {
       const common = { password: password }
-      const account = {
+      const toDecrypt = {
         algo: 'pass:bip32',
-        address: catapulWallet.address['address'],
-        encrypted: catapulWallet.encryptedPrivateKey.encryptedKey,
-        iv: catapulWallet.encryptedPrivateKey.iv
+        address: account.address['address'],
+        encrypted: account.encryptedPrivateKey.encryptedKey,
+        iv: account.encryptedPrivateKey.iv
       }
 
-      const decrypt = this.$blockchainProvider.decrypt(common, account, catapulWallet.network)
+      const decrypt = this.$blockchainProvider.decrypt(common, toDecrypt, account.network)
       if (decrypt && decrypt.status) {
         return common
       }
@@ -69,6 +69,7 @@ export default {
     },
     getWalletByName (name, network) {
       const wallets = this.getWallets(network)
+      console.log('all wallets', wallets)
       if (wallets && wallets.length > 0) {
         return wallets.find(x => x.name === name)
       }

@@ -9,7 +9,7 @@
         <v-row>
           <!-- Wallet name -->
           <v-col cols="12" class="pt-0 text-center headline font-weight-regular">
-            <span>{{name}}</span>
+            <span>{{walletName}}</span>
           </v-col>
 
           <v-col cols="12" sm="10" md="9" lg="8" class="mx-auto">
@@ -18,12 +18,10 @@
               <v-col cols="12" class="box-gray mb-3">
                 <v-row class="d-flex align-center">
                   <v-col cols="10" class="pt-0 pb-0 overflow-ellipsis-nowrap mx-auto">
-                    <!-- Name Wallet -->
                     <span class="body-1 font-weight-medium">
                       Address:
                       <br />
                     </span>
-                    <!-- Address -->
                     <span class="body-2">{{address}}</span>
                   </v-col>
 
@@ -54,13 +52,11 @@
               <v-col cols="12" class="box-gray mb-5" v-if="showPrivateKey">
                 <v-row class="d-flex align-center">
                   <v-col cols="10" class="pt-0 pb-0 overflow-ellipsis-nowrap mx-auto">
-                    <!-- Name Wallet -->
                     <span class="body-1 font-weight-medium">
                       Private Key:
                       <br />
                     </span>
-                    <!-- Private Key -->
-                    <span class="body-2 d-flex">{{pvk}}</span>
+                    <span class="body-2 d-flex">{{privateKey}}</span>
                   </v-col>
 
                   <!-- Icon -->
@@ -68,7 +64,7 @@
                     <v-btn
                       text
                       icon
-                      @click="doCopy('Private Key', pvk)"
+                      @click="doCopy('Private Key', privateKey)"
                     >
                       <v-icon>mdi-content-copy</v-icon>
                     </v-btn>
@@ -78,7 +74,7 @@
             </v-row>
 
             <!-- Buttons -->
-            <custom-buttons @action="action" :arrayBtn="getArrayBtn"></custom-buttons>
+            <custom-buttons @action="action" :arrayBtn="buttons"></custom-buttons>
           </v-col>
         </v-row>
       </v-col>
@@ -124,11 +120,11 @@ export default {
         }
       },
       infoOwnedSwap: null,
-      name: '',
-      pvk: '',
+      privateKey: '',
       subtitle: 'Your wallet has been successfully created.',
       showPrivateKey: false,
-      title: 'Congratulations!'
+      title: 'Congratulations!',
+      walletName: ''
     }
   },
   components: {
@@ -156,7 +152,6 @@ export default {
           break
         case 'continue':
           if (this.infoOwnedSwap) {
-            console.log('this.infoOwnedSwaps', this.infoOwnedSwap)
             this.SET_SWAP_DATA(this.infoOwnedSwap)
             this.$router.push('/swap-account-nis1-found').catch(e => {})
           } else {
@@ -165,10 +160,14 @@ export default {
           }
           break
       }
+    },
+    enableDisableBtn (status) {
+      this.arrayBtn.continue.disabled = status
+      this.arrayBtn.continue.loading = status
     }
   },
   computed: {
-    getArrayBtn () {
+    buttons () {
       const arrayBtn = this.arrayBtn
       arrayBtn['showPvk'].text = (this.showPrivateKey) ? 'Hide Private Key' : 'Show Private Key'
       return arrayBtn
@@ -177,10 +176,12 @@ export default {
   beforeMount () {
     const walletInfo = this.walletInfo.data
     this.address = walletInfo.accounts[0].address.pretty()
-    this.name = walletInfo.name
+    this.walletName = walletInfo.name
     this.pvk = this.walletInfo.pvk.toUpperCase()
     if (walletInfo.accounts[0].nis1Account) {
-      this.initSwap(walletInfo.accounts[0].nis1Account.publicKey, walletInfo.accounts[0].name, walletInfo.name)
+      const publicKey = walletInfo.accounts[0].nis1Account.publicKey
+      const accountName = walletInfo.accounts[0].name
+      this.initSwap(publicKey, accountName, this.walletName)
     }
   }
 }
