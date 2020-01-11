@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subscription, Subject } from 'rxjs';
 import * as js_joda_1 from 'js-joda';
@@ -22,7 +22,7 @@ import {
   TransactionHttp,
   MultisigTransaction,
   Transaction
-} from "nem-library";
+} from 'nem-library';
 import { PublicAccount as PublicAccountTsjs, Message } from 'tsjs-xpx-chain-sdk';
 
 import { WalletService, AccountsInterface } from '../../wallet/services/wallet.service';
@@ -58,19 +58,18 @@ export class NemProviderService {
     this.assetHttp = new AssetHttp(this.nodes);
   }
 
-
   /**
-  *
-  *
-  * @param {PlainMessage} message
-  * @param {AssetId} assetId
-  * @param {number} quantity
-  * @returns
-  * @memberof NemProviderService
-  */
+   *
+   *
+   * @param {PlainMessage} message
+   * @param {AssetId} assetId
+   * @param {number} quantity
+   * @returns
+   * @memberof NemProviderService
+   */
   async createTransaction(message: PlainMessage, assetId: AssetId, quantity: number) {
     // console.log('my quantity to send -->', quantity);
-    let resultAssets: any = await this.assetHttp.getAssetTransferableWithAbsoluteAmount(assetId, quantity).toPromise();
+    const resultAssets: any = await this.assetHttp.getAssetTransferableWithAbsoluteAmount(assetId, quantity).toPromise();
     // console.log('RESULT ASSETS');
     const part = quantity.toString().split('.');
     const cant = (part.length === 1) ? 6 : 6 - part[1].length;
@@ -114,7 +113,7 @@ export class NemProviderService {
         // INFO ACCOUNTS MULTISIG
         if (accountInfoOwnedSwap['meta']['cosignatoryOf'].length > 0) {
           cosignatoryOf = accountInfoOwnedSwap['meta']['cosignatoryOf'];
-          for (let multisig of cosignatoryOf) {
+          for (const multisig of cosignatoryOf) {
             try {
               const addressMultisig = this.createAddressToString(multisig.address);
               const ownedMosaic = await this.getOwnedMosaics(addressMultisig).pipe(first()).pipe((timeout(environment.timeOutTransactionNis1))).toPromise();
@@ -201,7 +200,7 @@ export class NemProviderService {
     const unconfirmedTxn = await this.getUnconfirmedTransaction(addressSigner);
     // console.log('Address  ---> ', addressSigner);
     if (unconfirmedTxn.length > 0) {
-      //let quantity = realQuantity;
+      // let quantity = realQuantity;
       // console.log('realQuantity', realQuantity);
       for (const item of unconfirmedTxn) {
         // console.log('transaction unconfirmed -->', item);
@@ -260,7 +259,7 @@ export class NemProviderService {
   amountFormatter(amountParam: number, mosaic: AssetTransferable, manualDivisibility: number = 0) {
     const divisibility = (manualDivisibility === 0) ? manualDivisibility : mosaic.properties.divisibility;
     const amountDivisibility = Number(amountParam / Math.pow(10, divisibility));
-    const amountFormatter = amountDivisibility.toLocaleString("en-us", { minimumFractionDigits: divisibility });
+    const amountFormatter = amountDivisibility.toLocaleString('en-us', { minimumFractionDigits: divisibility });
     return amountFormatter;
   }
 
@@ -293,7 +292,7 @@ export class NemProviderService {
       multisigAccountsInfo: accountsMultisigInfo,
       mosaic: xpxFound,
       isMultiSig: isMultiSign,
-      balance: balance
+      balance
     };
   }
 
@@ -332,9 +331,9 @@ export class NemProviderService {
     const timeStampDateTime = js_joda_1.LocalDateTime.ofInstant(js_joda_1.Instant.ofEpochMilli(currentTimeStamp), js_joda_1.ZoneId.SYSTEM);
     const deadlineDateTime = timeStampDateTime.plus(deadline, chronoUnit);
     if (deadline <= 0) {
-      throw new Error("deadline should be greater than 0");
+      throw new Error('deadline should be greater than 0');
     } else if (timeStampDateTime.plus(24, js_joda_1.ChronoUnit.HOURS).compareTo(deadlineDateTime) != 1) {
-      throw new Error("deadline should be less than 24 hours");
+      throw new Error('deadline should be less than 24 hours');
     }
     return new TimeWindow(timeStampDateTime, deadlineDateTime);
   }
@@ -484,9 +483,9 @@ export class NemProviderService {
    * @memberof NemProviderService
    */
   hexToAscii(str1: string) {
-    var hex = str1.toString();
-    var str = '';
-    for (var n = 0; n < hex.length; n += 2) {
+    let hex = str1.toString();
+    let str = '';
+    for (let n = 0; n < hex.length; n += 2) {
       str += String.fromCharCode(parseInt(hex.substr(n, 2), 16));
     }
     return str;
@@ -501,7 +500,7 @@ export class NemProviderService {
   removeParamNis1WalletCreated(nameWallet: string) {
     const wallet = this.walletService.getWalletStorage();
     const otherWallets = wallet.filter(wallet => wallet.name !== nameWallet);
-    let currentWallet = wallet.find(wallet => wallet.name === nameWallet);
+    const currentWallet = wallet.find(wallet => wallet.name === nameWallet);
     currentWallet.accounts[0].nis1Account = null;
     otherWallets.push(currentWallet);
     this.walletService.saveWallet(otherWallets);
@@ -516,7 +515,7 @@ export class NemProviderService {
   saveAccountWalletTransNisStorage(transactionNis1: WalletTransactionsNis1Interface) {
     const othersWallet = this.getWalletTransNisStorage().filter((element: WalletTransactionsNis1Interface) => {
       const currentWallet = this.walletService.getCurrentWallet();
-      const walletName = (currentWallet) ? currentWallet.name : this.walletService.accountWalletCreated.wallet.name
+      const walletName = (currentWallet) ? currentWallet.name : this.walletService.accountWalletCreated.wallet.name;
       return element.name !== walletName;
     });
 
@@ -741,7 +740,7 @@ export interface CosignatoryOf {
   multisigInfo: {
     cosignatoriesCount: number;
     minCosignatories: number;
-  },
+  };
   publicKey: string;
   vestedBalance: number;
 }
@@ -755,5 +754,5 @@ export interface TransactionsNis1Interface {
 
 export interface WalletTransactionsNis1Interface {
   name: string;
-  transactions: TransactionsNis1Interface[],
+  transactions: TransactionsNis1Interface[];
 }

@@ -21,10 +21,10 @@ export class CreateWalletComponent implements OnInit {
   description = '';
   errorMatchPassword: string;
   errorWalletExist: string;
-  isValid: boolean = false;
-  newName: string = '';
-  passwordMain = 'password'
-  passwordConfirm = 'password'
+  isValid = false;
+  newName = '';
+  passwordMain = 'password';
+  passwordConfirm = 'password';
   title = 'Create Wallet';
   typeNetwork = [{
     value: environment.typeNetwork.value,
@@ -52,7 +52,7 @@ export class CreateWalletComponent implements OnInit {
   }
 
   changeInputType(inputType, main = true) {
-    let newType = this.sharedService.changeInputType(inputType)
+    const newType = this.sharedService.changeInputType(inputType);
     if (main === true) {
       this.passwordMain = newType;
     } else if (main === false) {
@@ -106,19 +106,19 @@ export class CreateWalletComponent implements OnInit {
    */
   createSimpleWallet() {
     if (this.createWalletForm.valid && this.isValid) {
-      //verify if name wallet isset
+      // verify if name wallet isset
       const existWallet = this.walletService.getWalletStorage().find(
         (element: any) => {
-          let walletName = this.createWalletForm.get('nameWallet').value
-          walletName = (walletName.includes(' ') === true) ? walletName.split(' ').join('_') : walletName
+          let walletName = this.createWalletForm.get('nameWallet').value;
+          walletName = (walletName.includes(' ') === true) ? walletName.split(' ').join('_') : walletName;
           return element.name === walletName;
         }
       );
 
-      //Wallet does not exist
+      // Wallet does not exist
       if (existWallet === undefined) {
-        let walletName = this.createWalletForm.get('nameWallet').value
-        walletName = (walletName.includes(' ') === true) ? walletName.split(' ').join('_') : walletName
+        let walletName = this.createWalletForm.get('nameWallet').value;
+        walletName = (walletName.includes(' ') === true) ? walletName.split(' ').join('_') : walletName;
         const nameWallet = walletName;
         const network = this.createWalletForm.get('network').value;
         const password = this.proximaxProvider.createPassword(this.createWalletForm.controls.passwords.get('password').value);
@@ -166,7 +166,7 @@ export class CreateWalletComponent implements OnInit {
         this.walletService.saveWalletStorage(nameWallet, accountBuilded);
         this.router.navigate([`/${AppConfig.routes.walletCreated}`]);
       } else {
-        //Error of repeated Wallet
+        // Error of repeated Wallet
         this.clearForm('nameWallet');
         this.sharedService.showError('', 'This name is already in use, try another name');
       }

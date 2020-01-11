@@ -381,6 +381,7 @@ export class Nis1TransferAssetsComponent implements OnInit {
     this.subscription.push(
       this.formTransfer.get('amountXpx').valueChanges.subscribe(
         next => {
+          console.log('next', next);
           if (next !== null && next !== undefined) {
             if (next > parseFloat(this.quantity.split(',').join(''))) {
               this.blockButton = true;

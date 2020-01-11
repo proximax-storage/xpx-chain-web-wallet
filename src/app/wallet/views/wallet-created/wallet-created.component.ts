@@ -19,7 +19,7 @@ export class WalletCreatedComponent implements OnInit {
 
   address = '';
   description = 'Warning! Before proceeding, make sure store your private key in a safe place. Access to your digital assets cannot be recovered without it.';
-  disabledContinue: boolean = true;
+  disabledContinue = true;
   imgBackground = '';
   publicKey = '';
   privateKey = '';
@@ -71,7 +71,12 @@ export class WalletCreatedComponent implements OnInit {
     if (this.walletData !== null) {
       this.subTitle = this.walletData.data.name;
       this.address = this.walletData.wallet.address.pretty();
-      this.privateKey = this.proximaxProvider.decryptPrivateKey(this.walletData.data.algo, this.walletData.dataAccount.encrypted, this.walletData.dataAccount.iv).toUpperCase();
+      this.privateKey = this.proximaxProvider.decryptPrivateKey(
+        this.walletData.data.algo,
+        this.walletData.dataAccount.encrypted,
+        this.walletData.dataAccount.iv
+      ).toUpperCase();
+
       this.publicKey = this.proximaxProvider.getPublicAccountFromPrivateKey(this.privateKey, this.walletData.data.network).publicKey;
       if (this.walletData.dataAccount.nis1Account !== null) {
         this.subscription.push(this.nemProvider.getNis1AccountsFound$().subscribe(next => {
@@ -83,7 +88,7 @@ export class WalletCreatedComponent implements OnInit {
           }
           this.disabledContinue = false;
         }, error => {
-          this.disabledContinue = false
+          this.disabledContinue = false;
           this.routeContinue = `/${AppConfig.routes.home}`;
         }));
       } else {
@@ -122,7 +127,7 @@ export class WalletCreatedComponent implements OnInit {
    * @memberof WalletCreatedComponent
    */
   printAccountInfo() {
-    let doc = new jsPDF({ unit: 'px' });
+    const doc = new jsPDF({ unit: 'px' });
     doc.addImage(this.imgBackground, 'JPEG', 120, 60, 205, 132);
     // QR Code Address
     doc.addImage(this.qrConstruntion(this.privateKey, 1, 0), 151.5, 105);
@@ -143,7 +148,7 @@ export class WalletCreatedComponent implements OnInit {
    * @memberof WalletCreatedComponent
    */
   qrConstruntion(url, size = 2, margin = 0) {
-    let qr = qrcode(10, 'H');
+    const qr = qrcode(10, 'H');
     qr.addData(url);
     qr.make();
     return qr.createDataURL(size, margin);
