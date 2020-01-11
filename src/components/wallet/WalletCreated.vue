@@ -127,6 +127,20 @@ export default {
       walletName: ''
     }
   },
+  beforeMount () {
+    console.log('this.walletInfo', this.walletInfo)
+    const walletInfo = this.walletInfo.data
+    console.log(walletInfo)
+    this.address = walletInfo.accounts[0].address.pretty()
+    this.walletName = walletInfo.name
+    this.privateKey = this.walletInfo.pvk
+    if (walletInfo.accounts[0].nis1Account) {
+      const publicKey = walletInfo.accounts[0].nis1Account.publicKey
+      const accountName = walletInfo.accounts[0].name
+      this.SET_SWAP_DATA(null)
+      this.initSwap(publicKey, accountName, this.walletName)
+    }
+  },
   components: {
     'title-subtitle': () => import('@/components/shared/Title'),
     'custom-buttons': () => import('@/components/shared/Buttons')
@@ -170,20 +184,6 @@ export default {
       const arrayBtn = this.arrayBtn
       arrayBtn['showPvk'].text = (this.showPrivateKey) ? 'Hide Private Key' : 'Show Private Key'
       return arrayBtn
-    }
-  },
-  beforeMount () {
-    console.log('this.walletInfo', this.walletInfo)
-    const walletInfo = this.walletInfo.data
-    console.log(walletInfo)
-    this.address = walletInfo.accounts[0].address.pretty()
-    this.walletName = walletInfo.name
-    this.privateKey = this.walletInfo.pvk
-    if (walletInfo.accounts[0].nis1Account) {
-      const publicKey = walletInfo.accounts[0].nis1Account.publicKey
-      const accountName = walletInfo.accounts[0].name
-      this.SET_SWAP_DATA(null)
-      this.initSwap(publicKey, accountName, this.walletName)
     }
   }
 }
