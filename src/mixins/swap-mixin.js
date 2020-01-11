@@ -254,7 +254,6 @@ export default {
     },
     initConfigSwap (catapultNetwork) {
       const catapultNetworkTypes = this.$blockchainProvider.getNetworkTypes()
-      console.log('catapultNetworkTypes', catapultNetworkTypes)
       switch (catapultNetwork) {
         case catapultNetworkTypes.testnet.value:
           this.setSwapEnvironment(NetworkTypes.TEST_NET)
@@ -301,7 +300,6 @@ export default {
             })
           }
         } catch (error) {
-          console.log('error --->', error)
           status = false
           this.$store.commit('SHOW_SNACKBAR', {
             snackbar: true,

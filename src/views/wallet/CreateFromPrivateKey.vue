@@ -74,13 +74,14 @@
                       >
                         <v-icon>mdi-qrcode-scan</v-icon>
                       </v-btn>
+
+                      <qrcode-capture
+                        v-show="false"
+                        id="scanPrivateKey"
+                        @detect="onDetect"
+                      />
                     </template>
                   </v-text-field>
-                  <qrcode-capture
-                    v-show="false"
-                    id="scanPrivateKey"
-                    @detect="onDetect"
-                  />
                 </v-col>
 
                 <!-- Is Swap Checkbox -->
