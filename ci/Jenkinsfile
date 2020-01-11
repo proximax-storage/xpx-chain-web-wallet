@@ -33,7 +33,7 @@ pipeline {
           echo 'Building for Mainnet'
           sh 'npm run build:optimizer-mainnet'
           sh 'mv dist/proximax-sirius-wallet/ dist/proximax-mainnet-sirius-wallet'
-          sh 'tar cJfv proximax-web-wallet-${env.GIT_BRANCH}.tar.xz dist'
+          sh "tar cJfv proximax-web-wallet-${env.GIT_BRANCH}.tar.xz dist"
         }
         echo 'Leaving Container'
       }
