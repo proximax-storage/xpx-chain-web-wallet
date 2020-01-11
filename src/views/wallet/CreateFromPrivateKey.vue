@@ -330,6 +330,7 @@ export default {
             this.clear()
             this.sendingForm = false
             this.SHOW_LOADING(false)
+            console.log('walletCreated', walletCreated)
             if (walletCreated.status) {
               this.dataWalletCreated = walletCreated
             }

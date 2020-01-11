@@ -173,10 +173,12 @@ export default {
     }
   },
   beforeMount () {
+    console.log('this.walletInfo', this.walletInfo)
     const walletInfo = this.walletInfo.data
+    console.log(walletInfo)
     this.address = walletInfo.accounts[0].address.pretty()
     this.walletName = walletInfo.name
-    this.pvk = this.walletInfo.pvk.toUpperCase()
+    this.privateKey = this.walletInfo.pvk
     if (walletInfo.accounts[0].nis1Account) {
       const publicKey = walletInfo.accounts[0].nis1Account.publicKey
       const accountName = walletInfo.accounts[0].name
