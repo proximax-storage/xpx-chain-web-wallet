@@ -66,7 +66,7 @@
                     <template v-slot:append-outer>
                       <v-btn
                         title="Only images containing QR CODE"
-                        @click="click"
+                        @click="openInputFile"
                         color="primary"
                         fab
                         x-small
@@ -175,7 +175,7 @@
                     configForm.password.rules.required,
                     configForm.password.rules.min,
                     configForm.password.rules.max,
-                    isMatch(passwords.password, passwords.confirmPassword, 'Password')
+                    $generalService.isMatch(passwords.password, passwords.confirmPassword, 'Password')
                   ]"
                     :type="configForm.password.showConfirm ? 'text' : 'password'"
                     :disabled="disabledConfirmPassword"
@@ -195,7 +195,7 @@
               </v-row>
 
               <!-- Buttons -->
-              <custom-buttons @action="action" :arrayBtn="getArrayBtn"></custom-buttons>
+              <custom-buttons @action="actionButtons" :arrayBtn="getArrayBtn"></custom-buttons>
             </v-col>
           </v-row>
         </v-container>
@@ -248,15 +248,11 @@ export default {
     ...mapMutations('swapStore', ['INIT_ENVIRONMENT_SWAP']),
     async onDetect (promise) {
       this.SHOW_LOADING(true)
-
-      // this.privateKey = promise
       try {
-        const prom = await promise
-        // eslint-disable-next-line no-unused-vars
-        const imageData = prom.imageData // raw image data of image/frame
-        const content = prom.content // decoded String or null
-        // eslint-disable-next-line no-unused-vars
-        const location = prom.location // QR code coordinates or null
+        const data = await promise
+        // const imageData = data.imageData // raw image data of image/frame
+        // const location = data.location // QR code coordinates or null
+        const content = data.content // decoded String or null
         if (content === null) {
           // decoded nothing
           this.$store.commit('SHOW_SNACKBAR', {
@@ -270,7 +266,6 @@ export default {
           this.SHOW_LOADING(false)
         }
       } catch (error) {
-        // console.log('error', error)
         this.SHOW_LOADING(false)
         this.$store.commit('SHOW_SNACKBAR', {
           snackbar: true,
@@ -279,17 +274,12 @@ export default {
         })
       }
     },
-    action (action) {
+    actionButtons (action) {
       if (action === 'create') {
         this.sendForm()
       } else {
         this.clear()
       }
-    },
-    click () {
-      const inputFile = document.getElementById('scanPrivateKey')
-      inputFile.value = ''
-      inputFile.click()
     },
     clear () {
       if (this.$refs && this.$refs.form) {
@@ -304,11 +294,10 @@ export default {
         value: network.testnet.value
       }
     },
-    isMatch (value1, value2, nameValidation = '') {
-      return this.$generalService.isMatch(value1, value2, nameValidation)
-    },
-    onDecode (data) {
-      this.privateKey = data
+    openInputFile () {
+      const inputFile = document.getElementById('scanPrivateKey')
+      inputFile.value = ''
+      inputFile.click()
     },
     sendForm () {
       try {
@@ -341,13 +330,12 @@ export default {
             this.sendingForm = false
             this.SHOW_LOADING(false)
             if (walletCreated.status) {
-              // show view wallet created
               this.dataWalletCreated = walletCreated
             }
           }, 500)
         }
       } catch (error) {
-        console.log(error)
+        console.log('error', error)
         this.SHOW_LOADING(false)
         this.clear()
         this.sendingForm = false
@@ -357,9 +345,6 @@ export default {
           color: 'warning'
         })
       }
-    },
-    resetConfirmPassword () {
-      this.passwords.confirmPassword = ''
     },
     validateWalletName () {
       const usr = this.walletName
@@ -383,7 +368,8 @@ export default {
       const password = this.passwords.password
       if (password) {
         if (password === '' || password.length < this.configForm.password.min) {
-          this.resetConfirmPassword()
+          // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+          this.passwords.confirmPassword = ''
           return true
         }
         return false

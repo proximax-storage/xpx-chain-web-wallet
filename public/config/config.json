@@ -62,7 +62,9 @@
         "urlExplorer": "http://explorer.nemtool.com/#/s_tx?hash=",
         "networkType": "MAIN_NET",
         "burnAddress": "ND7WVWPWNTJR75CYC3D73LSVP7WIL7BL77QNT7NZ",
-        "nodes": { "protocol": "https", "domain": "swap.brimstone.xpxsirius.io", "port": 7890 },
+        "nodes": [
+          { "protocol": "https", "domain": "swap.brimstone.xpxsirius.io", "port": 7890 }
+        ],
         "timeOutTransaction": 20000
       },
       "connectionNodes": {

@@ -254,6 +254,7 @@ export default {
     },
     initConfigSwap (catapultNetwork) {
       const catapultNetworkTypes = this.$blockchainProvider.getNetworkTypes()
+      console.log('catapultNetworkTypes', catapultNetworkTypes)
       switch (catapultNetwork) {
         case catapultNetworkTypes.testnet.value:
           this.setSwapEnvironment(NetworkTypes.TEST_NET)

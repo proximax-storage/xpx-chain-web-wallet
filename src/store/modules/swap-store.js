@@ -35,6 +35,7 @@ export const swapStore = {
     },
     INIT_ENVIRONMENT_SWAP (state, data) {
       NEMLibrary.reset()
+      console.log(data.networkNis1)
       NEMLibrary.bootstrap(data.networkNis1)
       state.configNIS1 = data.configNIS1
       state.accountHttp = new AccountHttp(data.configNIS1.nodes)
