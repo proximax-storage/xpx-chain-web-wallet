@@ -121,6 +121,26 @@ class GeneralService {
   /**
    *
    *
+   * @param {*} quantityOne
+   * @param {*} quantityTwo
+   * @param {number} [limitDecimal=6]
+   * @returns
+   * @memberof GeneralService
+   */
+  subtractAmount (quantityOne, quantityTwo, limitDecimal = 6) {
+    const residue = (quantityOne - quantityTwo).toString().replace(/,/g, '').split('.')
+    const missing = (residue.length > 1) ? limitDecimal - residue[1].length : 6
+    residue[1] = (residue.length > 1) ? residue[1].slice(0, 6) : ''
+    for (let index = 0; index < missing; index++) {
+      residue[1] += 0
+    }
+
+    return residue.join().replace(/,/g, '.')
+  }
+
+  /**
+   *
+   *
    * @param {*} str
    * @returns
    * @memberof GeneralService

@@ -49,7 +49,7 @@ export default {
           if (existMosaic) {
             const unconfirmedFormatter = parseFloat(this.$generalService.amountFormatter(existMosaic.quantity, xpxFound, env.divisibility))
             const quantityWhitoutFormat = realQuantity.split(',').join('')
-            const residue = this.transactionService.subtractAmount(parseFloat(quantityWhitoutFormat), unconfirmedFormatter)
+            const residue = this.$generalService.subtractAmount(parseFloat(quantityWhitoutFormat), unconfirmedFormatter)
             const quantityFormat = this.$generalService.amountFormatter(parseInt((residue).toString().split('.').join('')), xpxFound, env.divisibility)
             realQuantity = quantityFormat
           }
@@ -106,6 +106,7 @@ export default {
           })
         }
       } catch (error) {
+        console.log('error --->', error)
         this.$store.commit('SHOW_SNACKBAR', {
           snackbar: true,
           text: 'It was not possible to connect to the server, try later',
@@ -299,6 +300,7 @@ export default {
             })
           }
         } catch (error) {
+          console.log('error --->', error)
           status = false
           this.$store.commit('SHOW_SNACKBAR', {
             snackbar: true,

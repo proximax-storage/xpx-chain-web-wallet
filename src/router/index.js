@@ -62,6 +62,10 @@ const routes = [
       requiresSwap: true
     }
   }, {
+    path: '/habla',
+    name: 'habla',
+    component: () => import(/* webpackChunkName: "TransferAssets" */ '../components/SwapCertified.vue')
+  }, {
     path: '*',
     redirect: '/'
   }

@@ -51,6 +51,14 @@ hr {
     text-overflow: ellipsis
 }
 
+.word-break-all {
+    word-break: break-all;
+}
+
+.w-w-b-w {
+    word-wrap: break-word;
+}
+
 .box-gray{
     padding: 10px 20px 10px 20px !important;
     border-radius: 20px;
@@ -66,3 +74,35 @@ hr {
 .cursor-pointer {
     cursor: pointer;
 }
+
+.border-gray-5px {
+    border: 8px solid #f4f4f4
+}
+
+.background-blue-gradient {
+    background: -webkit-linear-gradient(top, #5aa6db, #306EB5);
+}
+
+.text-d-none{
+    text-decoration: none;
+}
+
+/** FONT-SIZE **/
+.fs-07rem{
+    font-size: .7rem;
+}
+
+.fs-08rem{
+    font-size: .8rem;
+}
+
+.fs-09rem{
+    font-size: .9rem;
+}
+
+.fs-1-2rem {
+    font-size: 1.2rem;
+}
+
+/******************/
+

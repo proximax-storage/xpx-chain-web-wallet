@@ -1,0 +1,149 @@
+
+<template>
+  <v-container>
+    <v-row>
+      <v-col cols="11" class="mx-auto">
+        <!-- Title & Subtitle -->
+        <title-subtitle :title="title" :subtitle="subtitle" :separed2="true"></title-subtitle>
+
+        <!-- Swap Title -->
+        <v-row>
+          <v-col cols="12" class="text-center pt-2">
+            <span class="font-weight-regular fs-1-2rem">Swap Certificate:</span>
+          </v-col>
+        </v-row>
+
+        <v-row>
+          <v-col cols="12" md="10" lg="8" class="mx-auto border-gray-5px pt-0 pb-0">
+            <v-row>
+              <v-col cols="12" sm="8" md="7" lg="8" class="mx-auto pa-5 pb-0">
+                <v-row>
+                  <!-- Sirius Account -->
+                  <v-col cols="12" class="w-w-b-w word-break-all pt-0">
+                    <span class="fs-08rem font-weight-bold">
+                      Sirius Account:
+                      <br />
+                    </span>
+                    <span class="fs-09rem">{{certified.siriusAddres}}</span>
+                  </v-col>
+                  <!-- Nis1 timestamp -->
+                  <v-col cols="12" class="w-w-b-w word-break-all pt-0">
+                    <span class="fs-08rem font-weight-bold">NIS1 Timestamp:&nbsp;</span>
+                    <span class="fs-09rem">{{certified.nis1Timestamp}}</span>
+                  </v-col>
+                  <!-- Nis1 public key -->
+                  <v-col cols="12" class="w-w-b-w word-break-all pt-0">
+                    <span class="fs-08rem font-weight-bold">
+                      NIS1 Public Key:
+                      <br />
+                    </span>
+                    <span
+                      class="fs-09rem"
+                    >{{certified.nis1PublicKey}}</span>
+                  </v-col>
+                  <!-- QR & Hash -->
+                  <v-col cols="12 pb-0">
+                    <v-row>
+                      <!-- QR -->
+                      <v-col cols="6" md="6" lg="5" class="pt-0 pb-0">
+                        <vue-qr
+                          :logoSrc="require(`@/assets/${logo}`)"
+                          :text="certified.privateKey"
+                          :size="150"
+                          :dotScale="0.5"
+                          :correctLevel="1"
+                          :margin="0"
+                        ></vue-qr>
+                      </v-col>
+                      <!-- Hash -->
+                      <v-col cols="6" md="6" lg="7" class="w-w-b-w word-break-all pt-0 pb-0">
+                        <span class="fs-08rem font-weight-bold">
+                          NIS1 Transation Hash:
+                          <br />
+                        </span>
+                        <span class="fs-09rem primary--text cursor-pointer">
+                          <a
+                            class="text-d-none"
+                            :href="`https://testnet-explorer.nemtool.com/#/s_tx?hash=${certified.nis1TransactionHash}`"
+                            target="_blank"
+                          >{{certified.nis1TransactionHash}}</a>
+                        </span>
+                      </v-col>
+                      <!-- Swap Note -->
+                      <v-col cols="12" class="pt-2 pb-0">
+                        <p class="fs-08rem"><b>Note: </b> The Swap Process may take a few hours to complete.</p>
+                      </v-col>
+                    </v-row>
+                  </v-col>
+                </v-row>
+              </v-col>
+              <!-- Badge -->
+              <v-col cols="12" sm="4" md="5" lg="4" class="background-blue-gradient d-flex align-center justify-center mx-auto">
+                <v-img :src="require(`@/assets/img/${badge}`)" max-width="150" max-height="150"></v-img>
+              </v-col>
+            </v-row>
+          </v-col>
+        </v-row>
+
+        <!-- Buttons -->
+        <custom-buttons class="mt-10" @action="action" :arrayBtn="arrayBtn"></custom-buttons>
+      </v-col>
+    </v-row>
+  </v-container>
+</template>
+
+<script>
+import VueQr from 'vue-qr'
+
+//  siriusAddres: catapultPublicAccount.address.pretty(),
+//  nis1Timestamp: this.getTimeStampTimeWindow(data.transaction),
+//  nis1PublicKey: data.transaction.signer.publicKey,
+//  nis1TransactionHash: data.nis1TransactionHash
+export default {
+  props: ['certified'],
+  data: () => {
+    return {
+      arrayBtn: {
+        save: {
+          key: 'save',
+          action: 'save',
+          disabled: false,
+          color: 'primary',
+          loading: false,
+          text: 'Save'
+        },
+        continue: {
+          key: 'continue',
+          action: 'continue',
+          disabled: true,
+          color: 'primary',
+          loading: false,
+          text: 'Continue'
+        }
+      },
+      logo: 'ProximaX-Favicon.png',
+      title: 'Congratulations!',
+      subtitle: 'The Swap Process has already started.',
+      privateKey:
+        'e942a4745c1e377e65cfafc87e00fefc28fa9aa964e5e5ea13da51924e850424',
+      badge: 'badge-silver-proximax-sirius-wallet.svg'
+    }
+  },
+  methods: {
+    action (action) {
+      console.log('Action', action)
+    }
+  },
+  components: {
+    VueQr,
+    'title-subtitle': () => import('@/components/shared/Title'),
+    'custom-buttons': () => import('@/components/shared/Buttons')
+  }
+}
+</script>
+
+<style>
+.v-alert--outlined {
+  border: 3px solid currentColor !important;
+}
+</style>
