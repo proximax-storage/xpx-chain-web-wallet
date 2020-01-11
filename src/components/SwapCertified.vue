@@ -85,8 +85,24 @@
           </v-col>
         </v-row>
 
+        <!-- Warning Message -->
+        <v-row>
+          <v-col cols="12" md="10" lg="8" class="mx-auto mt-8">
+            <v-alert outlined type="warning" prominent class="text-center line-h-1-02em" dense>
+              <span class="gray-black--text caption">{{warningText}}</span>
+            </v-alert>
+          </v-col>
+        </v-row>
+
+        <!-- Checkbox -->
+        <v-row>
+          <v-col cols="12" md="10" lg="8" class="mx-auto d-flex align-center justify-center pb-0">
+            <v-checkbox v-model="confirmSwap" :label="`I confirm that I have saved a copy of my certificate.`"></v-checkbox>
+          </v-col>
+        </v-row>
+
         <!-- Buttons -->
-        <custom-buttons class="mt-10" @action="action" :arrayBtn="arrayBtn"></custom-buttons>
+        <custom-buttons class="mt-4" @action="action" :arrayBtn="arrayBtn"></custom-buttons>
       </v-col>
     </v-row>
   </v-container>
@@ -95,10 +111,6 @@
 <script>
 import VueQr from 'vue-qr'
 
-//  siriusAddres: catapultPublicAccount.address.pretty(),
-//  nis1Timestamp: this.getTimeStampTimeWindow(data.transaction),
-//  nis1PublicKey: data.transaction.signer.publicKey,
-//  nis1TransactionHash: data.nis1TransactionHash
 export default {
   props: ['certified'],
   data: () => {
@@ -121,17 +133,32 @@ export default {
           text: 'Continue'
         }
       },
+      badge: 'badge-silver-proximax-sirius-wallet.svg',
+      confirmSwap: false,
       logo: 'ProximaX-Favicon.png',
-      title: 'Congratulations!',
+      privateKey: 'e942a4745c1e377e65cfafc87e00fefc28fa9aa964e5e5ea13da51924e850424',
       subtitle: 'The Swap Process has already started.',
-      privateKey:
-        'e942a4745c1e377e65cfafc87e00fefc28fa9aa964e5e5ea13da51924e850424',
-      badge: 'badge-silver-proximax-sirius-wallet.svg'
+      title: 'Congratulations!',
+      warningText: 'Save a copy of your certificate. It is needed in the event of an error.'
     }
   },
   methods: {
     action (action) {
       console.log('Action', action)
+      switch (action) {
+        case 'continue':
+          this.$router.push('/').catch(e => {})
+          break
+        case 'save':
+          console.log('Save')
+          break
+      }
+    }
+  },
+  watch: {
+    confirmSwap: function () {
+      const arrayBtn = this.arrayBtn
+      arrayBtn.continue.disabled = !this.confirmSwap
     }
   },
   components: {

@@ -14,7 +14,7 @@
             <v-col cols="11" sm="8" md="7" lg="6" class="mx-auto pt-0">
               <v-row>
                 <!-- Type network -->
-                <v-col cols="12 pb-0">
+                <v-col cols="12" class="pb-0">
                   <v-autocomplete
                     rounded
                     outlined
@@ -31,7 +31,7 @@
                 </v-col>
 
                 <!-- Private Key -->
-                <v-col cols="12 pb-0 pt-0">
+                <v-col cols="12" class="pb-0 pt-0">
                   <v-text-field
                     rounded
                     outlined
@@ -62,7 +62,25 @@
                         :src="require(`@/assets/img/${configForm.privateKey.icon}`)"
                       ></v-img>
                     </template>
+
+                    <template v-slot:append-outer>
+                      <v-btn
+                        title="Only images containing QR CODE"
+                        @click="click"
+                        color="primary"
+                        fab
+                        x-small
+                        dark
+                      >
+                        <v-icon>mdi-qrcode-scan</v-icon>
+                      </v-btn>
+                    </template>
                   </v-text-field>
+                  <qrcode-capture
+                    v-show="false"
+                    id="scanPrivateKey"
+                    @detect="onDetect"
+                  />
                 </v-col>
 
                 <!-- Is Swap Checkbox -->
@@ -191,6 +209,7 @@
 </template>
 
 <script>
+import { QrcodeCapture } from 'vue-qrcode-reader'
 import { mapMutations } from 'vuex'
 import generalMixins from '../../mixins/general-mixin'
 import walletMixins from '../../mixins/wallet-mixin'
@@ -200,6 +219,7 @@ export default {
   mixins: [generalMixins, swapMixin, walletMixins],
   data: () => {
     return {
+      arrayBtn: null,
       title: 'Create Wallet',
       sub:
         'Restore your existing ProximaX Sirius Wallet, import a private key from another service or create a new wallet right now!',
@@ -214,11 +234,11 @@ export default {
       passwords: { password: '', confirmPassword: '' },
       searchingWalletName: false,
       walletIsRepeat: false,
-      isSwap: false,
-      arrayBtn: null
+      isSwap: false
     }
   },
   components: {
+    QrcodeCapture,
     'title-subtitle': () => import('@/components/shared/Title'),
     'custom-buttons': () => import('@/components/shared/Buttons'),
     'wallet-created': () => import('@/components/wallet/WalletCreated')
@@ -226,12 +246,50 @@ export default {
   methods: {
     ...mapMutations(['SHOW_LOADING']),
     ...mapMutations('swapStore', ['INIT_ENVIRONMENT_SWAP']),
+    async onDetect (promise) {
+      this.SHOW_LOADING(true)
+
+      // this.privateKey = promise
+      try {
+        const prom = await promise
+        // eslint-disable-next-line no-unused-vars
+        const imageData = prom.imageData // raw image data of image/frame
+        const content = prom.content // decoded String or null
+        // eslint-disable-next-line no-unused-vars
+        const location = prom.location // QR code coordinates or null
+        if (content === null) {
+          // decoded nothing
+          this.$store.commit('SHOW_SNACKBAR', {
+            snackbar: true,
+            text: 'Could not read QR code',
+            color: 'warning'
+          })
+          this.SHOW_LOADING(false)
+        } else {
+          this.privateKey = content
+          this.SHOW_LOADING(false)
+        }
+      } catch (error) {
+        // console.log('error', error)
+        this.SHOW_LOADING(false)
+        this.$store.commit('SHOW_SNACKBAR', {
+          snackbar: true,
+          text: 'Unsupported file, images only',
+          color: 'error'
+        })
+      }
+    },
     action (action) {
       if (action === 'create') {
         this.sendForm()
       } else {
         this.clear()
       }
+    },
+    click () {
+      const inputFile = document.getElementById('scanPrivateKey')
+      inputFile.value = ''
+      inputFile.click()
     },
     clear () {
       if (this.$refs && this.$refs.form) {
@@ -248,6 +306,9 @@ export default {
     },
     isMatch (value1, value2, nameValidation = '') {
       return this.$generalService.isMatch(value1, value2, nameValidation)
+    },
+    onDecode (data) {
+      this.privateKey = data
     },
     sendForm () {
       try {
