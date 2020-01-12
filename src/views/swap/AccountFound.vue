@@ -70,6 +70,7 @@ export default {
       switch (action) {
         case 'continue':
           const swapData = this.swapData()
+          console.log('swapData', swapData)
           if (swapData.cosignerAccounts.length > 0) {
             this.$router.push('/swap-list-cosigners').catch(e => {})
           } else {

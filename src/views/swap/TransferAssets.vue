@@ -24,30 +24,42 @@
               <v-row>
                 <v-col cols="12" class="ml-0 pt-0 pb-0 overflow-ellipsis-nowrap mx-auto">
                   <!-- Name Account -->
-                  <span class="body-1 font-weight-medium pr-1">Account Name:</span>
+                  <span class="fs-09rem font-weight-bold pr-1">{{titleNameAccount}}</span>
                   <span class="body-2">{{dataAccountToSwap.nameAccount}}</span>
                   <br />
                   <!-- NIS1 Address -->
-                  <span class="body-1 font-weight-medium pr-1">NIS1 Address:</span>
-                  <span class="body-2">{{dataAccountToSwap.address.pretty()}}</span>
+                  <span class="fs-09rem font-weight-bold pr-1">NIS1 Address:</span>
+                  <span class="body-2">{{dataAccountToSwap.address}}</span>
                   <br />
                   <!-- NIS1 Balance -->
                   <div class="d-flex align-center">
-                    <span class="body-1 font-weight-medium pr-1">NIS1 Balance:</span>
+                    <span class="fs-09rem font-weight-bold pr-1">NIS1 Balance:</span>
                     <img
                       class="ml-1 mr-1"
                       alt="logo"
                       width="20"
                       :src="require(`@/assets/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg`)"
                     />
-                    <span class="body-2">{{dataAccountToSwap.balance}}</span>
+                    <span
+                      class="body-1 font-weight-medium pr-1"
+                      v-quantity="{q: dataAccountToSwap.balance, coin: 'XPX'}"
+                    ></span>
                   </div>
                 </v-col>
               </v-row>
             </v-col>
           </v-row>
 
-          <!-- Title 2 -->
+          <!-- Is Multisig -->
+          <v-row v-if="dataAccountToSwap.isMultisig">
+            <v-col cols="11" md="10" lg="9" class="pt-0 mx-auto">
+              <span class="fs-09rem font-weight-bold pr-1">Account that will receive swap transfer:</span>
+              <br />
+              <span class="body-2">{{catapultAccount.address.pretty()}}</span>
+            </v-col>
+          </v-row>
+
+          <!-- Title Swap Amount -->
           <v-row>
             <v-col cols="12" class="text-center pt-5">
               <span class="font-weight-regular title">{{swapTitle2}}</span>
@@ -190,9 +202,11 @@ export default {
           style: 'primary--text'
         }
       ],
+      catapultAccount: null,
       certified: null,
       configForm: null,
-      dataAccountToSwap: null,
+      currentWallet: null,
+      dataAccountToSwap: {},
       isValidBalance: false,
       money: {
         decimal: '.',
@@ -204,24 +218,43 @@ export default {
       },
       password: '',
       sendingForm: false,
-      swapData: null,
       swapTitle: 'NIS1 Account Selected',
       swapTitle2: 'Swap Amount',
+      titleNameAccount: '',
       valid: false,
       warningText:
         'Swap process may take several hours to complete. If you wish to proceed, you will receive a certificate containing your transaction hash for your records.'
     }
   },
   beforeMount () {
-    this.swapData = this.$store.getters['swapStore/swapData']
+    const swapData = this.$store.getters['swapStore/swapData']
     const addressToSwap = this.$store.getters['swapStore/addressToSwap']
+    this.currentWallet = this.$store.getters['walletStore/currentWallet']
     if (addressToSwap.isMultisig) {
       // search in swapData with addressToSwap
+      this.titleNameAccount = 'Multisig Of:'
+      const acc = swapData.multisigAccountsInfo.find(
+        x => x.address === addressToSwap.address
+      )
+      this.dataAccountToSwap = {
+        nameAccount: swapData.nameAccount,
+        address: this.createAddressToString(acc.address).pretty(),
+        balance: acc.balance,
+        isMultisig: true
+      }
     } else {
-      this.dataAccountToSwap = this.swapData
+      this.titleNameAccount = 'Account Name:'
+      this.dataAccountToSwap = {
+        nameAccount: swapData.nameAccount,
+        address: swapData.address.pretty(),
+        balance: swapData.balance,
+        isMultisig: false
+      }
     }
 
+    this.catapultAccount = this.currentWallet.accounts.find(x => x.name === this.dataAccountToSwap.nameAccount)
     this.configForm = this.getConfigForm()
+    console.log(this.catapultAccount)
   },
   components: {
     'custom-breadcrumbs': () => import('@/components/shared/Breadcrumbs'),
@@ -237,16 +270,20 @@ export default {
           if (this.$store.getters['accountStore/isLogged']) {
             console.log('isLogged')
           } else {
-            const currentWallet = this.$store.getters['walletStore/currentWallet']
-            if (currentWallet) {
-              const catapultAccount = currentWallet.accounts.find(x => x.name === this.dataAccountToSwap.nameAccount)
-              if (catapultAccount) {
-                let decrypt = this.decrypt(catapultAccount, this.password)
+            if (this.currentWallet) {
+              if (this.catapultAccount) {
+                let decrypt = this.decrypt(this.catapultAccount, this.password)
                 if (decrypt.privateKey) {
                   const amount = this.amount
                   this.sendingForm = true
                   this.SHOW_LOADING(true)
-                  const data = await this.swap(currentWallet.name, this.dataAccountToSwap, catapultAccount, amount, decrypt.privateKey)
+                  const data = await this.swap(
+                    this.currentWallet.name,
+                    this.dataAccountToSwap,
+                    this.catapultAccount,
+                    amount,
+                    decrypt.privateKey
+                  )
                   this.certified = data.certified
                   decrypt = null
                   this.clear()
@@ -289,7 +326,9 @@ export default {
       }
     },
     selectMaxAmount () {
-      this.$refs.amount.$el.getElementsByTagName('input')[0].value = this.dataAccountToSwap.balance
+      this.$refs.amount.$el.getElementsByTagName(
+        'input'
+      )[0].value = this.dataAccountToSwap.balance
       this.amount = this.dataAccountToSwap.balance
       this.validateBalance()
     },
@@ -302,7 +341,10 @@ export default {
       }
 
       if (amount !== null && amount !== undefined) {
-        if (amount > parseFloat(this.dataAccountToSwap.balance.split(',').join(''))) {
+        if (
+          amount >
+          parseFloat(this.dataAccountToSwap.balance.split(',').join(''))
+        ) {
           this.isValidBalance = 'Insufficient balance'
         } else if (amount === 0) {
           this.isValidBalance = 'Cannot enter amount zero'
@@ -316,7 +358,8 @@ export default {
     buttons () {
       const arrayBtn = this.arrayBtn
       arrayBtn['cancel'].disabled = this.sendingForm
-      arrayBtn['continue'].disabled = !this.valid || this.sendingForm || this.isValidBalance !== true
+      arrayBtn['continue'].disabled =
+        !this.valid || this.sendingForm || this.isValidBalance !== true
       arrayBtn['continue'].loading = this.sendingForm
       return arrayBtn
     }

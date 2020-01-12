@@ -28,6 +28,20 @@ Vue.use(money, { precision: 6 })
 Vue.prototype.$storage = new StorageService(localStorage)
 Vue.prototype.$generalService = new GeneralService()
 Vue.prototype.$pdfGenerator = new PdfGenerator()
+Vue.directive('quantity', {
+  bind: function (el, binding) {
+    var s = JSON.stringify
+    const res = s(binding.value.q).replace(/["]+/g, ' ').split('.')
+    const coin = s(binding.value.coin).replace(/["]+/g, ' ')
+    if (res.length > 1) {
+      el.innerHTML = `<span class="fs-085rem font-weight-medium">${res[0]}.</span><span class="fs-07rem">${res[1]}</span>
+                      <span class="fs-085rem font-weight-medium">${coin}</span>`
+    } else {
+      el.innerHTML = `<span class="fs-085rem font-weight-medium"> ${res[0]}</span>
+                      <span class="fs-085rem font-weight-medium">${coin}</span>`
+    }
+  }
+})
 
 const configIntegration = async function () {
   try {
