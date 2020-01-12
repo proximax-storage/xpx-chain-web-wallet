@@ -233,20 +233,20 @@ export default {
       this.titleNameAccount = 'Multisig Of:'
       const acc = swapData.multisigAccountsInfo.find(x => x.address === addressToSwap.address)
       this.dataAccountToSwap = {
-        nameAccount: swapData.nameAccount,
         address: this.createAddressToString(acc.address).pretty(),
         balance: acc.balance,
         isMultisig: true,
-        mosaic: acc.mosaic
+        mosaic: acc.mosaic,
+        nameAccount: swapData.nameAccount
       }
     } else {
       this.titleNameAccount = 'Account Name:'
       this.dataAccountToSwap = {
-        nameAccount: swapData.nameAccount,
         address: swapData.address.pretty(),
         balance: swapData.balance,
         isMultisig: false,
-        mosaic: swapData.mosaic
+        mosaic: swapData.mosaic,
+        nameAccount: swapData.nameAccount
       }
     }
 
@@ -278,13 +278,12 @@ export default {
                 privateKey: decrypt.privateKey
               }
               const data = await this.swap(params)
-              console.log('siriusAddres', data)
               this.SHOW_LOADING(false)
               if (data.status) {
                 this.certified = data.certified
-                // this.clear()
+                this.clear()
               } else {
-
+                this.throwError('', true)
               }
             } else {
               this.password = ''
@@ -309,11 +308,13 @@ export default {
       this.amount = ''
     },
     throwError (msg, redirect) {
-      this.$store.dispatch('showMSG', {
-        snackbar: true,
-        text: msg,
-        color: 'error'
-      })
+      if (msg !== '') {
+        this.$store.dispatch('showMSG', {
+          snackbar: true,
+          text: msg,
+          color: 'error'
+        })
+      }
 
       if (redirect) {
         this.$router.push('/').catch(e => {})
