@@ -73,6 +73,18 @@
               </v-col>
             </v-row>
 
+            <!-- QR CODE -->
+            <vue-qr
+              v-show="false"
+              :logoSrc="require(`@/assets/${logo}`)"
+              :text="privateKey"
+              :size="150"
+              :dotScale="0.5"
+              :correctLevel="1"
+              :margin="0"
+              :callback="qrBase64"
+            ></vue-qr>
+
             <!-- Buttons -->
             <custom-buttons @action="action" :arrayBtn="buttons"></custom-buttons>
           </v-col>
@@ -83,6 +95,7 @@
 </template>
 
 <script>
+import VueQr from 'vue-qr'
 import { mapMutations } from 'vuex'
 import generalMixins from '../../mixins/general-mixin'
 import swapMixin from '../../mixins/swap-mixin'
@@ -119,18 +132,18 @@ export default {
           text: 'Continue'
         }
       },
+      base64QR: '',
       infoOwnedSwap: null,
       privateKey: '',
       subtitle: 'Your wallet has been successfully created.',
       showPrivateKey: false,
       title: 'Congratulations!',
-      walletName: ''
+      walletName: '',
+      logo: 'ProximaX-Favicon.png'
     }
   },
   beforeMount () {
-    console.log('this.walletInfo', this.walletInfo)
     const walletInfo = this.walletInfo.data
-    console.log(walletInfo)
     this.address = walletInfo.accounts[0].address.pretty()
     this.walletName = walletInfo.name
     this.privateKey = this.walletInfo.pvk
@@ -142,6 +155,7 @@ export default {
     }
   },
   components: {
+    VueQr,
     'title-subtitle': () => import('@/components/shared/Title'),
     'custom-buttons': () => import('@/components/shared/Buttons')
   },
@@ -162,7 +176,8 @@ export default {
           this.showPrivateKey = !this.showPrivateKey
           break
         case 'savePaperWallet':
-          console.log('savePaperWallet')
+          const pdf = this.$pdfGenerator.walletCreatedCertified(this.base64QR, this.address, this.walletName)
+          pdf.save(`${this.walletName}_paper_wallet`)
           break
         case 'continue':
           if (this.infoOwnedSwap) {
@@ -177,6 +192,9 @@ export default {
     enableDisableBtn (status) {
       this.arrayBtn.continue.disabled = status
       this.arrayBtn.continue.loading = status
+    },
+    qrBase64 (base64) {
+      this.base64QR = base64
     }
   },
   computed: {

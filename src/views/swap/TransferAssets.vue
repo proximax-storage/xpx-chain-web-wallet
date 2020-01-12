@@ -248,7 +248,6 @@ export default {
                   this.SHOW_LOADING(true)
                   const data = await this.swap(currentWallet.name, this.dataAccountToSwap, catapultAccount, amount, decrypt.privateKey)
                   this.certified = data.certified
-                  this.certified.privateKey = decrypt.privateKey
                   decrypt = null
                   this.clear()
                   this.SHOW_LOADING(false)

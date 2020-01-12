@@ -14,6 +14,7 @@ import vuetify from './plugins/vuetify'
 import { BlockchainProvider } from './services/blockchain-provider'
 import { StorageService } from './services/storage'
 import { GeneralService } from './services/general'
+import { PdfGenerator } from './services/pdfGenerator'
 import VueClipboard from 'vue-clipboard2'
 
 const options = { name: 'lodash' } // customize the way you want to call it
@@ -21,11 +22,12 @@ Vue.use(VueLodash, options)
 Vue.use(VueAxios, axios)
 Vue.use(VueClipboard)
 Vue.config.productionTip = false
-Vue.use(money, { precision: 4 })
+Vue.use(money, { precision: 6 })
 
 // Define prototype
 Vue.prototype.$storage = new StorageService(localStorage)
 Vue.prototype.$generalService = new GeneralService()
+Vue.prototype.$pdfGenerator = new PdfGenerator()
 
 const configIntegration = async function () {
   try {

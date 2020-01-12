@@ -17,6 +17,7 @@
     "axios": "^0.19.0",
     "core-js": "^3.4.4",
     "js-xpx-chain-library": "^0.3.0",
+    "jspdf": "^1.5.3",
     "nem-library": "^2.0.0-RC4",
     "nem-sdk": "^1.6.7",
     "roboto-fontface": "*",

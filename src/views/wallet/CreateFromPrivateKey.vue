@@ -363,6 +363,9 @@ export default {
           this.searchingWalletName = false
         }, 500)
       }
+    },
+    test (image) {
+      console.log(image)
     }
   },
   computed: {

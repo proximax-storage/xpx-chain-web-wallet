@@ -48,11 +48,12 @@
                       <v-col cols="6" md="6" lg="5" class="pt-0 pb-0">
                         <vue-qr
                           :logoSrc="require(`@/assets/${logo}`)"
-                          :text="certified.privateKey"
+                          :text="`${urlExplorer}${certified.nis1TransactionHash}`"
                           :size="150"
                           :dotScale="0.5"
                           :correctLevel="1"
                           :margin="0"
+                          :callback="qrBase64"
                         ></vue-qr>
                       </v-col>
                       <!-- Hash -->
@@ -64,7 +65,7 @@
                         <span class="fs-09rem primary--text cursor-pointer">
                           <a
                             class="text-d-none"
-                            :href="`https://testnet-explorer.nemtool.com/#/s_tx?hash=${certified.nis1TransactionHash}`"
+                            :href="`${urlExplorer}${certified.nis1TransactionHash}`"
                             target="_blank"
                           >{{certified.nis1TransactionHash}}</a>
                         </span>
@@ -113,6 +114,10 @@ import VueQr from 'vue-qr'
 
 export default {
   props: ['certified'],
+  beforeMount () {
+    this.urlExplorer = this.$store.getters['swapStore/configNIS1'].urlExplorer
+    console.log(this.urlExplorer)
+  },
   data: () => {
     return {
       arrayBtn: {
@@ -134,9 +139,10 @@ export default {
         }
       },
       badge: 'badge-silver-proximax-sirius-wallet.svg',
+      base64QR: '',
       confirmSwap: false,
+      urlExplorer: '',
       logo: 'ProximaX-Favicon.png',
-      privateKey: 'e942a4745c1e377e65cfafc87e00fefc28fa9aa964e5e5ea13da51924e850424',
       subtitle: 'The Swap Process has already started.',
       title: 'Congratulations!',
       warningText: 'Save a copy of your certificate. It is needed in the event of an error.'
@@ -144,15 +150,26 @@ export default {
   },
   methods: {
     action (action) {
-      console.log('Action', action)
       switch (action) {
         case 'continue':
           this.$router.push('/').catch(e => {})
           break
         case 'save':
-          console.log('Save')
+          const param = {
+            qr: this.base64QR,
+            address: this.certified.siriusAddres,
+            timestamp: this.certified.nis1Timestamp,
+            publicKey: this.certified.nis1PublicKey,
+            hash: this.certified.nis1TransactionHash
+          }
+
+          const pdf = this.$pdfGenerator.swapCertified(param)
+          pdf.save(`${this.certified.nis1TransactionHash}_swap_certified`)
           break
       }
+    },
+    qrBase64 (base64) {
+      this.base64QR = base64
     }
   },
   watch: {
