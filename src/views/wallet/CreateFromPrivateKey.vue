@@ -330,14 +330,12 @@ export default {
             this.clear()
             this.sendingForm = false
             this.SHOW_LOADING(false)
-            console.log('walletCreated', walletCreated)
             if (walletCreated.status) {
               this.dataWalletCreated = walletCreated
             }
           }, 500)
         }
       } catch (error) {
-        console.log('error', error)
         this.SHOW_LOADING(false)
         this.clear()
         this.sendingForm = false
@@ -363,9 +361,6 @@ export default {
           this.searchingWalletName = false
         }, 500)
       }
-    },
-    test (image) {
-      console.log(image)
     }
   },
   computed: {

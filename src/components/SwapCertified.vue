@@ -116,7 +116,6 @@ export default {
   props: ['certified'],
   beforeMount () {
     this.urlExplorer = this.$store.getters['swapStore/configNIS1'].urlExplorer
-    console.log(this.urlExplorer)
   },
   data: () => {
     return {

@@ -8,7 +8,6 @@ export default {
           color: 'success'
         })
       }, (e) => {
-        console.log(e)
         this.$store.dispatch('showMSG', {
           snackbar: true,
           text: `Can not copy`,

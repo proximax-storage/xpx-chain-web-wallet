@@ -106,7 +106,6 @@ export default {
           })
         }
       } catch (error) {
-        console.log('error --->', error)
         this.$store.commit('SHOW_SNACKBAR', {
           snackbar: true,
           text: 'It was not possible to connect to the server, try later',

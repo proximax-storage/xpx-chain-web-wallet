@@ -38,7 +38,6 @@ export default {
             accounts: [accountBuilded]
           }
 
-          console.log('\n walletBuilded', walletBuilded)
           const wallets = this.getWallets(walletCreated.network)
           wallets.push(walletBuilded)
           this.$storage.set(`wallets-${walletCreated.network}`, wallets)
@@ -69,7 +68,6 @@ export default {
     },
     getWalletByName (name, network) {
       const wallets = this.getWallets(network)
-      console.log('all wallets', wallets)
       if (wallets && wallets.length > 0) {
         return wallets.find(x => x.name === name)
       }
