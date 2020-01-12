@@ -222,25 +222,22 @@ export default {
       swapTitle2: 'Swap Amount',
       titleNameAccount: '',
       valid: false,
-      warningText:
-        'Swap process may take several hours to complete. If you wish to proceed, you will receive a certificate containing your transaction hash for your records.'
+      warningText: 'Swap process may take several hours to complete. If you wish to proceed, you will receive a certificate containing your transaction hash for your records.'
     }
   },
   beforeMount () {
     const swapData = this.$store.getters['swapStore/swapData']
+    console.log('swapData', swapData)
     const addressToSwap = this.$store.getters['swapStore/addressToSwap']
-    this.currentWallet = this.$store.getters['walletStore/currentWallet']
     if (addressToSwap.isMultisig) {
-      // search in swapData with addressToSwap
       this.titleNameAccount = 'Multisig Of:'
-      const acc = swapData.multisigAccountsInfo.find(
-        x => x.address === addressToSwap.address
-      )
+      const acc = swapData.multisigAccountsInfo.find(x => x.address === addressToSwap.address)
       this.dataAccountToSwap = {
         nameAccount: swapData.nameAccount,
         address: this.createAddressToString(acc.address).pretty(),
         balance: acc.balance,
-        isMultisig: true
+        isMultisig: true,
+        mosaic: acc.mosaic
       }
     } else {
       this.titleNameAccount = 'Account Name:'
@@ -248,13 +245,14 @@ export default {
         nameAccount: swapData.nameAccount,
         address: swapData.address.pretty(),
         balance: swapData.balance,
-        isMultisig: false
+        isMultisig: false,
+        mosaic: swapData.mosaic
       }
     }
 
+    this.currentWallet = this.$store.getters['walletStore/currentWallet']
     this.catapultAccount = this.currentWallet.accounts.find(x => x.name === this.dataAccountToSwap.nameAccount)
     this.configForm = this.getConfigForm()
-    console.log(this.catapultAccount)
   },
   components: {
     'custom-breadcrumbs': () => import('@/components/shared/Breadcrumbs'),
@@ -267,37 +265,33 @@ export default {
       switch (action) {
         case 'continue':
           this.sendingForm = true
-          if (this.$store.getters['accountStore/isLogged']) {
-            console.log('isLogged')
-          } else {
-            if (this.currentWallet) {
-              if (this.catapultAccount) {
-                let decrypt = this.decrypt(this.catapultAccount, this.password)
-                if (decrypt.privateKey) {
-                  const amount = this.amount
-                  this.sendingForm = true
-                  this.SHOW_LOADING(true)
-                  const data = await this.swap(
-                    this.currentWallet.name,
-                    this.dataAccountToSwap,
-                    this.catapultAccount,
-                    amount,
-                    decrypt.privateKey
-                  )
-                  this.certified = data.certified
-                  decrypt = null
-                  this.clear()
-                  this.SHOW_LOADING(false)
-                } else {
-                  this.password = ''
-                  this.throwError('Invalid password', false)
-                }
+          if (this.currentWallet) {
+            const decrypt = this.decrypt(this.catapultAccount, this.password)
+            if (decrypt.privateKey) {
+              this.sendingForm = true
+              this.SHOW_LOADING(true)
+              const params = {
+                walletName: this.currentWallet.name,
+                nis1AccountData: this.dataAccountToSwap,
+                catapultAccount: this.catapultAccount,
+                amount: this.amount,
+                privateKey: decrypt.privateKey
+              }
+              const data = await this.swap(params)
+              console.log('siriusAddres', data)
+              this.SHOW_LOADING(false)
+              if (data.status) {
+                this.certified = data.certified
+                // this.clear()
               } else {
-                this.throwError('Error! try again', true)
+
               }
             } else {
-              this.throwError('Error! try again', true)
+              this.password = ''
+              this.throwError('Invalid password', false)
             }
+          } else {
+            this.throwError('Error! try again', true)
           }
 
           this.sendingForm = false

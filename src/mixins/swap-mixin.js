@@ -115,30 +115,31 @@ export default {
 
       return nis1AccountsInfo
     },
-    async swap (walletName, nis1AccountData, catapultAccount, amount, signerPvk) {
+    async swap (param) {
+      console.log(param)
       const promise = new Promise(async (resolve, reject) => {
         try {
           let quantity = null
           try {
-            quantity = parseFloat(amount.split(',').join(''))
+            quantity = parseFloat(param.amount.split(',').join(''))
           } catch (error) {
-            quantity = Number(amount)
+            quantity = Number(param.amount)
           }
 
           const env = this.$store.getters['swapStore/environment']
-          const nis1Account = this.createAccountFromPrivateKey(signerPvk)
-          const assetId = nis1AccountData.mosaic.assetId
-          const msg = PlainMessage.create(catapultAccount.publicKey)
+          const nis1Account = this.createAccountFromPrivateKey(param.privateKey)
+          const assetId = param.nis1AccountData.mosaic.assetId
+          const msg = PlainMessage.create(param.catapultAccount.publicKey)
           const transaction = await this.createTransaction(msg, assetId, quantity, env)
           const signedTransaction = nis1Account.signTransaction(transaction)
           const url = `${env.configNIS1.url}/transaction/announce`
           axios.post(url, signedTransaction, { timeout: env.configNIS1.timeOutTransaction }).then(next => {
             if (next.data && next.data['message'] && next.data['message'].toLowerCase() === 'success') {
               const data = {
-                catapultAccount,
+                catapultAccount: param.catapultAccount,
                 transaction,
                 hash: next.data['transactionHash'].data,
-                walletName
+                walletName: param.walletName
               }
 
               this.$store.dispatch('showMSG', {
