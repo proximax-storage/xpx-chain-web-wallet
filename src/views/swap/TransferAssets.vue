@@ -227,26 +227,31 @@ export default {
   },
   beforeMount () {
     const swapData = this.$store.getters['swapStore/swapData']
-    console.log('swapData', swapData)
+    console.log('swapDatas', swapData)
     const addressToSwap = this.$store.getters['swapStore/addressToSwap']
     if (addressToSwap.isMultisig) {
       this.titleNameAccount = 'Multisig Of:'
       const acc = swapData.multisigAccountsInfo.find(x => x.address === addressToSwap.address)
+      console.log('DATA MULTISIG', acc)
       this.dataAccountToSwap = {
         address: this.createAddressToString(acc.address).pretty(),
         balance: acc.balance,
+        cosignatory: swapData.publicKey,
         isMultisig: true,
         mosaic: acc.mosaic,
-        nameAccount: swapData.nameAccount
+        nameAccount: swapData.nameAccount,
+        publicKey: acc.publicKey
       }
     } else {
       this.titleNameAccount = 'Account Name:'
       this.dataAccountToSwap = {
         address: swapData.address.pretty(),
         balance: swapData.balance,
+        cosignatory: null,
         isMultisig: false,
         mosaic: swapData.mosaic,
-        nameAccount: swapData.nameAccount
+        nameAccount: swapData.nameAccount,
+        publicKey: swapData.publicKey
       }
     }
 
@@ -271,13 +276,14 @@ export default {
               this.sendingForm = true
               this.SHOW_LOADING(true)
               const params = {
-                walletName: this.currentWallet.name,
-                nis1AccountData: this.dataAccountToSwap,
-                catapultAccount: this.catapultAccount,
                 amount: this.amount,
-                privateKey: decrypt.privateKey
+                catapultAccount: this.catapultAccount,
+                nis1AccountData: this.dataAccountToSwap,
+                privateKey: decrypt.privateKey,
+                walletName: this.currentWallet.name
               }
               const data = await this.swap(params)
+              console.log(data)
               this.SHOW_LOADING(false)
               if (data.status) {
                 this.certified = data.certified

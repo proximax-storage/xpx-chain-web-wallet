@@ -1,9 +1,42 @@
 import axios from 'axios'
 import * as JsJoda from 'js-joda'
-import { Account, AccountOwnedAssetService, Address, NetworkTypes, PublicAccount, PlainMessage, TransferTransaction, TimeWindow } from 'nem-library'
+import { Account, AccountOwnedAssetService, Address, NetworkTypes, PublicAccount, PlainMessage, TransferTransaction, TimeWindow, MultisigTransaction } from 'nem-library'
 
 export default {
   methods: {
+    async announceTransaction (nis1Account, transaction, param, env) {
+      const promise = new Promise(async (resolve, reject) => {
+        const signedTransaction = nis1Account.signTransaction(transaction)
+        const url = `${env.configNIS1.url}/transaction/announce`
+        axios.post(url, signedTransaction, { timeout: env.configNIS1.timeOutTransaction }).then(next => {
+          if (next.data && next.data['message'] && next.data['message'].toLowerCase() === 'success') {
+            const data = {
+              catapultAccount: param.catapultAccount,
+              transaction,
+              hash: next.data['transactionHash'].data,
+              walletName: param.walletName
+            }
+
+            this.$store.dispatch('showMSG', {
+              snackbar: true,
+              text: `Swap in process`,
+              color: 'success'
+            })
+
+            const certified = this.saveCertifiedSwap(data)
+            resolve({ status: true, certified })
+          } else {
+            this.validateCodeMsgError(next.data['code'], next.data['message'])
+            resolve({ status: false })
+          }
+        }).catch(error => {
+          this.validateCodeMsgError(error.error.code, error.error.message)
+          resolve({ status: false })
+        })
+      })
+
+      return promise
+    },
     async createTransaction (message, assetId, quantity, env) {
       const resultAssets = await env.assetHttp.getAssetTransferableWithAbsoluteAmount(assetId, quantity).toPromise()
       const part = quantity.toString().split('.')
@@ -22,6 +55,13 @@ export default {
         new Address(env.configNIS1.burnAddress),
         [resultAssets],
         message
+      )
+    },
+    async createTransactionMultisign (transaction, publicAccountMultisig) {
+      return MultisigTransaction.create(
+        this.createWithDeadline(),
+        transaction,
+        publicAccountMultisig
       )
     },
     async validateBalanceAccounts (xpxFound, addressSigner) {
@@ -116,7 +156,7 @@ export default {
       return nis1AccountsInfo
     },
     async swap (param) {
-      console.log(param)
+      console.log('param', param)
       const promise = new Promise(async (resolve, reject) => {
         try {
           let quantity = null
@@ -131,33 +171,22 @@ export default {
           const assetId = param.nis1AccountData.mosaic.assetId
           const msg = PlainMessage.create(param.catapultAccount.publicKey)
           const transaction = await this.createTransaction(msg, assetId, quantity, env)
-          const signedTransaction = nis1Account.signTransaction(transaction)
-          const url = `${env.configNIS1.url}/transaction/announce`
-          axios.post(url, signedTransaction, { timeout: env.configNIS1.timeOutTransaction }).then(next => {
-            if (next.data && next.data['message'] && next.data['message'].toLowerCase() === 'success') {
-              const data = {
-                catapultAccount: param.catapultAccount,
-                transaction,
-                hash: next.data['transactionHash'].data,
-                walletName: param.walletName
-              }
-
-              this.$store.dispatch('showMSG', {
-                snackbar: true,
-                text: `Swap in process`,
-                color: 'success'
-              })
-
-              const certified = this.saveCertifiedSwap(data)
-              resolve({ status: true, certified })
-            } else {
-              this.validateCodeMsgError(next.data['code'], next.data['message'])
+          if (param.nis1AccountData.isMultisig) {
+            console.log('isMultisig')
+            const publicAccountMultisig = this.createPublicAccountFromPublicKey(param.nis1AccountData.publicKey)
+            console.log('publicAccountMultisig', publicAccountMultisig)
+            this.createTransactionMultisign(transaction, publicAccountMultisig).then(async (next) => {
+              console.log('MULTISIG TX ', next)
+              const response = await this.announceTransaction(nis1Account, next, param, env)
+              resolve(response)
+            }).catch(error => {
+              console.log(error)
               resolve({ status: false })
-            }
-          }).catch(error => {
-            this.validateCodeMsgError(error.error.code, error.error.message)
-            resolve({ status: false })
-          })
+            })
+          } else {
+            const response = await this.announceTransaction(nis1Account, transaction, param, env)
+            resolve(response)
+          }
         } catch (error) {
           resolve({ status: false })
         }
