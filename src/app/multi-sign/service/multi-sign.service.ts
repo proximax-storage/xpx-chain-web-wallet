@@ -96,22 +96,25 @@ export class MultiSignService {
   typeSignTxEdit(cosignatoryList: CosignatoryList[], multisigAccountInfo: MultisigAccountInfo, consginerFirmAccountList: ConsginerFirmList[], accounts: AccountsInterface[], signType: number): TypeTx {
     let cantFirm = consginerFirmAccountList.length;
     cantFirm = (cantFirm > 0) ? cantFirm : 1;
-    let Getcosignatory = (signType === 1) ? this.getvalidateCosignatoryList(cosignatoryList, accounts) : true
-
-    // console.log('cantFirm', cantFirm)
-    // console.log('cosignatoryList', cosignatoryList)
-    // console.log('multisigAccountInfo', multisigAccountInfo)
+    let Getcosignatory = this.getvalidateCosignatoryList(cosignatoryList, accounts)
     let typeTx: TypeTx = { type: null, transactionType: null }
+    console.log('minRemoval', multisigAccountInfo.minRemoval)
+    console.log('minApproval', multisigAccountInfo.minApproval)
+    console.log('cantFirm', cantFirm)
+    console.log('Getcosignatory', Getcosignatory)
+
     if (Getcosignatory) {
       let cantAdd = this.countArray('type', 1, cosignatoryList)
       let cabtRemove = this.countArray('type', 2, cosignatoryList)
       if (cantAdd > 0 && cabtRemove > 0) {
+        console.log('ADD Y REMOVE')
         if (cantFirm >= multisigAccountInfo.minRemoval && cantFirm >= multisigAccountInfo.minApproval) {
           typeTx = { type: 2, transactionType: TransactionType.AGGREGATE_COMPLETE }
         } else {
           typeTx = { type: 1, transactionType: TransactionType.AGGREGATE_BONDED }
         }
       } else if (cantAdd == 0 && cabtRemove == 0) {
+        console.log('NEVER')
         if (cantFirm >= multisigAccountInfo.minRemoval && cantFirm >= multisigAccountInfo.minApproval) {
           typeTx = { type: 2, transactionType: TransactionType.AGGREGATE_COMPLETE }
         } else {
@@ -119,12 +122,14 @@ export class MultiSignService {
         }
 
       } else if (cantAdd > 0) {
+        console.log('ADD')
         if (cantFirm >= multisigAccountInfo.minApproval) {
           typeTx = { type: 2, transactionType: TransactionType.AGGREGATE_COMPLETE }
         } else {
           typeTx = { type: 1, transactionType: TransactionType.AGGREGATE_BONDED }
         }
       } else if (cabtRemove > 0) {
+        console.log('REMOVE')
         if (cantFirm >= multisigAccountInfo.minRemoval) {
           typeTx = { type: 2, transactionType: TransactionType.AGGREGATE_COMPLETE }
         } else {
@@ -132,6 +137,7 @@ export class MultiSignService {
         }
       }
     } else {
+      console.log('FORSE')
       typeTx = { type: 1, transactionType: TransactionType.AGGREGATE_BONDED }
     }
     return typeTx

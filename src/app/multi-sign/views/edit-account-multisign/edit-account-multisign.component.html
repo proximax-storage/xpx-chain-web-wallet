@@ -251,7 +251,7 @@
 
               <span class="ng-value-icon left" (click)="clear(item)" *ngIf="item.disabled !== true">×</span>
               <b>{{item.label}}</b>&nbsp;&nbsp;&nbsp;&nbsp;
-              <i [style.color]="getColorCosignatory(item.signatory)" (click)="markSign(item.value ,consginerFirmList )"
+              <i [style.color]="getColorCosignatory(item.signatory)" title="Mark To Sign" (click)="markSign(item.value ,consginerFirmList )"
                 style="cursor: pointer;" class="fa fa-pencil fs-1rem" aria-hidden="true"></i>
             </ng-template>
 
