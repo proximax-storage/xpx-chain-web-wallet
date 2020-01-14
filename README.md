@@ -1,27 +1,102 @@
-# ProximaxSiriusWallet
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.0.4.
+<p align="center">
+  <a href="https://www.proximax.io/">
+    <img src="https://www.proximax.io/user/themes/proximaxvrs1/images/logo.png" alt="Logo" width=280 height=60>
+  </a>
+  <h3 align="center">ProximaX Sirius Wallet</h3>
+</p>
+  <p>
+    The ProximaX Sirius Wallet is one of the official applications of ProximaX, offering total security for the storage, sending and receiving of your assets. With ProximaX Sirius Wallet you can make use of mosaics, namespace, notarization of documents, voting, transaction explorer, contact directory as well as create and import your encrypted account. <br> It is available for Windows operating systems, Mac OS, Linux and a generic version.
+</p>
+<p align="center">
+    <a href="https://t.me/proximaxhelpdesk">Report bug</a>
+  </p>
 
-## Development server
+## Table of contents
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+- [Requirements](#requirements)
+- [Quick start development](#quick-start-development)
+- [Build to production](#build-to-production)
 
-## Code scaffolding
+## Requirements
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+```bash
+Angular CLI: 8.0.6
+Angular: 8.0.3
+Node: 10.16.3
+Npm: 6.13.4
+```
 
-## Build
+## Quick start development
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+```bash
+git clone https://github.com/proximax-storage/xpx-chain-web-wallet.git
+cd xpx-chain-web-wallet
+npm i
+npm start or ng serve
+```
 
-## Running unit tests
+**WARNING**
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+> To execute the `ng serve` command, you must make other settings. Navigate to the following directories:
+```
+├── /node_modules/                  
+│   ├── /@angular-devkit/  
+│   │   ├── /build-angular/
+│   │   │   ├── /src/
+│   │   │   │   ├── /angular-cli-files/
+│   │   │   │   │   ├── /models/
+│   │   │   │   │   │   ├── /webpack-configs/
+└── ──  ──  ──  ──  ──  ── ── /browser.js
+```	
 
-## Running end-to-end tests
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+>You must change <br>
+`node: false` to <br>
+`node: {crypto: true, stream: true, fs: 'empty', net: 'empty', tls: 'empty'}`.
 
-## Further help
+## Build to production
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+For build to production (Minified and optimized).
+
+<b>Generic version TestNet</b>
+
+```bash
+npm run build:optimizer-testnet
+```
+
+<b>Generic version MainNet</b>
+
+```bash
+npm run build:optimizer-mainnet
+```
+
+<br>
+
+**WARNING**
+> Before compiling for other platforms, you must compile the generic version.
+
+   <br>
+  
+  <b>Electron Version</b>
+ ```bash
+npm run electron-build
+ ```
+ <br>
+ 
+<b>Windows version</b>
+ ```bash
+npm run package-win
+ ```
+  <br>
+  
+ <b>Linux version</b>
+ ```bash
+npm run package-linux
+ ```
+  <br>
+  
+  <b>Mac OS version</b> (It can only be compiled from Mac Os)
+ ```bash
+npm run package-mac
+ ```

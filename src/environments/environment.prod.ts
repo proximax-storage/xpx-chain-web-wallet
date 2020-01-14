@@ -7,6 +7,7 @@ import { ChronoUnit } from 'js-joda';
 
 export const environment = {
   production: true,
+  routeNodesJson: 'testnet',
   itemBooksAddress: 'sw-books-testnet',
   version: '0.4.13',
   cacheVersion: '07',
