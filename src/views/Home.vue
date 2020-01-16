@@ -8,12 +8,14 @@
       <v-row>
         <v-col cols="12" sm="9" md="10" lg="11" class="mx-auto">
           <v-row>
-            <template v-for="(service, key) of servicesList">
+            <template v-for="(service, key) of services">
               <v-col :key="key" cols="12" sm="6" md="6" lg="3" class="pt-0">
                 <v-row>
                   <v-col cols="12" class="d-flex justify-center">
                     <v-img
                       :src="require(`@/assets/img/${service.image}`)"
+                      width="70"
+                      height="70"
                       max-width="70"
                       max-height="70"
                     ></v-img>
@@ -65,11 +67,16 @@ export default {
       }
     }
   }),
+  computed: {
+    services () {
+      return this.servicesList
+    }
+  },
   components: {
     'title-subtitle': () => import('@/components/shared/Title'),
     'custom-buttons': () => import('@/components/shared/Buttons')
   },
-  beforeMount () {
+  mounted () {
     this.servicesList = [
       this.buildStructureService(
         'Blockchain',

@@ -225,7 +225,7 @@ export default {
             return
           }
 
-          this.walletIsRepeat = false
+          this.walletIsRepeat = true
           this.searchingWalletName = false
         }, 500)
       }

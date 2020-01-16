@@ -19,6 +19,8 @@
                     <div class="d-flex justify-center pb-2">
                       <v-img
                         :src="require(`@/assets/img/${item.icon}`)"
+                        width="40"
+                        height="40"
                         max-width="40"
                         max-height="40"
                       ></v-img>
