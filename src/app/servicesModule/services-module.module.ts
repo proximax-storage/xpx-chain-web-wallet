@@ -9,6 +9,7 @@ import { ExportWalletComponent } from './views/wallet/export-wallet/export-walle
 import { BlockchainComponent } from './views/nodes/blockchain/blockchain.component';
 import { DeleteWalletComponent } from './views/wallet/delete-wallet/delete-wallet.component';
 import { NotificationComponent } from './views/notification/notification.component';
+import { CreateGiftComponent } from './views/gift/create-gift/create-gift.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { NotificationComponent } from './views/notification/notification.compone
     BlockchainComponent,
     ExportWalletComponent,
     DeleteWalletComponent,
-    NotificationComponent
+    NotificationComponent,
+    CreateGiftComponent
   ],
   schemas: [NO_ERRORS_SCHEMA],
   imports: [

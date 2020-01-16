@@ -403,6 +403,25 @@ export class ServicesBoxComponent implements OnInit {
         true,
         ''//disable-module
       ),
+       // GIFT
+       this.services.buildStructureService(
+        'Sirius Gift',
+        true,
+        'Create a redeemable gift',
+        'icon-gift-sirius-full-color-80h-proximax-sirius-wallet.svg',
+        '',
+        {
+          create: this.services.buildStructureService(
+            'Create',
+            true,
+            '',
+            '',
+            AppConfig.routes.createGift
+          )
+        },
+        true,
+        ''
+      ),
 
       // Agregate transactions
       this.services.buildStructureService(
@@ -431,6 +450,7 @@ export class ServicesBoxComponent implements OnInit {
         'disable-module'
       ),
 
+     
       // Cross-Chain Swaps
       this.services.buildStructureService(
         'Cross-Chain Swaps',
@@ -540,26 +560,6 @@ export class ServicesBoxComponent implements OnInit {
             ''
           ), schedule: this.services.buildStructureService(
             'Schedule',
-            false,
-            '',
-            '',
-            ''
-          )
-        },
-        true,
-        'disable-module'
-      ),
-
-      // VIDEO CONFERENCING
-      this.services.buildStructureService(
-        'Sirius Gift',
-        true,
-        'Create a redeemable gift',
-        'icon-gift-sirius-full-color-80h-proximax-sirius-wallet.svg',
-        '',
-        {
-          create: this.services.buildStructureService(
-            'Create',
             false,
             '',
             '',

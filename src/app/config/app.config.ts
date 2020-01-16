@@ -14,6 +14,7 @@ export const AppConfig: Config = {
     blockchain: 'nodes',
     createAccount: 'create-account',
     createApostille: 'create-attestation',
+    createGift :'create-gift',
     convertToAccountMultisign: 'convert-account-multisign',
     createMosaic: 'create-mosaic',
     createNamespace: 'create-namespace',
@@ -100,6 +101,7 @@ export interface Config {
     createWallet: string;
     createAccount: string;
     createApostille: string;
+    createGift: string
     dashboard: string;
     deleteAccount:string;
     deleteAccountConfirm:string;
