@@ -1,1 +1,151 @@
-<p>create-gift works!</p>
+<app-header [params]="paramsHeader"></app-header>
+
+
+<div class="container mt-3rem mb-2rem animated fadeIn">
+
+   <form [formGroup]="createGift" (ngSubmit)="sendTransfer()">
+
+      <div class="row mt-2rem">
+         <div class="col-10 mx-auto">
+            <!-- SELECT ACCOUNT -->
+            <div class="row mt-1rem">
+               <div class="col-12 mx-auto">
+                  <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [searchable]="false" [clearable]="false"
+                     [validateError]="true" class="selectWrapper" [items]="currentAccounts" formControlName="selectAccount"
+                     bindLabel="label" placeholder="Select an Account" (change)="selectAccount($event)">
+                     <ng-template ng-option-tmp let-item="item" let-index="index">
+                        <b>{{item.label}}</b>
+                     </ng-template>
+                  </ng-select>
+                  <!-- VALIDATION -->
+                  <mdb-error class="ml-1rem">
+                     <span *ngIf="validateInput('selectAccount').invalid && (validateInput('selectAccount').dirty || validateInput('selectAccount').touched)"
+                        class="fs-08rem fw-600 color-error-message">Select an Account</span>
+                  </mdb-error>
+               </div>
+            </div>
+            <!-- MESSAGE INFO -->
+            <div class="row " *ngIf="valueValidateAccount?.disabledItem">
+               <div class="col-12 mx-auto mb-1rem  box-transparent-border-red">
+                  <div class="txt-a-center">
+                     <img src="assets/images/img/icon-restriction-white.svg" style="filter: invert(50%)" alt="" width="30">
+                  </div>
+                  <h6 *ngIf="valueValidateAccount?.info !==''" class="fw-600">{{valueValidateAccount.info}}</h6>
+               </div>
+            </div>
+            <!-- AMOUNT & TO BE SENT -->
+            <div class="row mt-1rem">
+               <!-- Card -->
+               <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6  mx-auto">
+                  <div class="md-form form-sm mt-1rem mb-0rem">
+                     <img class="form-control-feedback" src="assets/images/img/icon-amount-green-16h-proximax-sirius-wallet.svg"
+                        alt="">
+                     <input  min="1" max="1000" formControlName="cantCard"
+                        required mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="number"
+                        id="cantCard" class="form-control form-control-sm input-border text-center" placeholder="How many cards do you need?"
+                        onkeyup="javascript:this.value=this.value.toLowerCase();">
+                     <!-- VALIDATION -->
+                     <mdb-error *ngIf="validateInput('cantCard', '').invalid && (validateInput('cantCard', '').dirty || validateInput('cantCard', '').touched)">
+                        <span>Invalid Value</span>
+                     </mdb-error>
+                  </div>
+               </div>
+               <!-- Amount Input -->
+               <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6  mx-auto">
+                  <div class="md-form form-sm mt-1rem mb-0rem">
+                     <img class="form-control-feedback" src="assets/images/img/icon-amount-green-16h-proximax-sirius-wallet.svg"
+                        alt="">
+                     <input pattern="^[+]?([0-9]*[.])?[0-9]+$" currencyMask [options]="optionsXPX" mdbInputDirective
+                        mdbValidate [validateSuccess]="true" [maxlength]="configurationForm.amount.maxLength"
+                        [validateError]="true" type="text" class="form-control form-control-sm input-border input-amount"
+                        placeholder="Enter Amount" formControlName="amountXpx">
+                     <span class="label-i fw-600 pl-2rem">Send</span>
+
+                     <mdb-error *ngIf="validateInput('amountXpx').invalid && (validateInput('amountXpx').dirty || validateInput('amountXpx').touched)">
+                        <span class="fs-08rem fw-600 color-error-message">Invalid Amount</span>
+                     </mdb-error>
+
+                     <!-- Message Error Insufficient balance-->
+                     <!-- <mdb-error *ngIf="insufficientBalance">
+                  <span class="fs-08rem fw-600 color-error-message">Insufficient Balance</span>
+                </mdb-error> -->
+                  </div>
+               </div>
+            </div>
+            <!-- MESSAGE -->
+            <div class="row mt-1rem">
+               <div class="col-12 mx-auto">
+                  <div class="md-form form-sm mt-1rem mb-0rem">
+                     <img class="form-control-feedback" src="assets/images/img/icon-messenger-green-16h-proximax-sirius-wallet.svg"
+                        alt="" style="padding: 30px 10px !important">
+                     <textarea mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
+                        id="message" class="md-textarea form-control" mdbInput placeholder="Message" formControlName="message"
+                        [maxlength]="messageMaxLength"></textarea>
+                     <span class="fs-08rem text-cl-m d-flex justify-content-end">{{ charRest }} / {{ messageMaxLength
+                        }}</span>
+                     <mdb-error *ngIf="validateInput('message').invalid && (validateInput('message').dirty || validateInput('message').touched)">
+                        <span>Invalid Recipient</span>
+                     </mdb-error>
+                  </div>
+               </div>
+            </div>
+            <!-- FEE -->
+            <div class="row">
+               <div class="col-11 col-md-10 col-lg-8 mx-auto">
+                  <div class="box-grey d-flex justify-content-center pt-09rem pb-09rem">
+                     <div class="row">
+                        <div class="col-12 text-center">
+                           <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
+                              width="20" alt="">
+                           <span class="fs-08rem">
+                              Unconfirmed/Recommended Fee:&nbsp;
+                              <a [innerHTML]="getQuantity(fee)"></a> XPX
+                           </span>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <!-- PASSWORD -->
+            <div class="row">
+               <div class="col-11 col-md-10 col-lg-8 mx-auto">
+                  <div class="md-form form-sm">
+                     <img class="form-control-feedback" src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg"
+                        alt="">
+                     <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)" src="assets/images/img/icon-show-hide-password.svg"
+                        *ngIf="passwordMain === 'password'">
+                     <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)" src="assets/images/img/icon-show-hide-password-grey.svg"
+                        *ngIf="passwordMain === 'text'">
+                     <input [maxlength]="configurationForm.passwordWallet.maxLength" [minlength]="configurationForm.passwordWallet.minLength"
+                        formControlName="password" required mdbInputDirective mdbValidate [validateSuccess]="true"
+                        [validateError]="true" [type]="passwordMain" id="password" class="form-control form-control-sm input-border"
+                        placeholder="Enter Wallet Password">
+
+                     <!-- VALIDATION -->
+                     <mdb-error *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
+                        <span>Password Required</span>
+                     </mdb-error>
+                  </div>
+               </div>
+            </div>
+            <!-- BUTTONS -->
+            <div class="row">
+               <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+                  <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="md" (click)="clearForm()">
+                     <span class="fs-1-2em color-white">Clear</span>
+                  </button>
+               </div>
+
+               <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+                  <button [disabled]="createGift.invalid && !reloadBtn" mdbBtn type="submit" rounded="true"
+                     mdbWavesEffect class="btn-proximax" size="md">
+                     <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+                        *ngIf="reloadBtn"></span>
+                     <span class="fs-1-2em color-white">Send</span>
+                  </button>
+               </div>
+            </div>
+         </div>
+      </div>
+   </form>
+</div>
