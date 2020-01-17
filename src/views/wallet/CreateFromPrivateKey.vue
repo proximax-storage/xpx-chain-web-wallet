@@ -267,6 +267,7 @@ export default {
           this.SHOW_LOADING(false)
         }
       } catch (error) {
+        console.log('error', error)
         this.SHOW_LOADING(false)
         this.$store.commit('SHOW_SNACKBAR', {
           snackbar: true,
@@ -393,11 +394,7 @@ export default {
   },
   beforeMount () {
     this.configForm = this.getConfigForm()
-    this.debouncedValidateWalletName = this.lodash.debounce(
-      this.validateWalletName,
-      500
-    )
-
+    this.debouncedValidateWalletName = this.lodash.debounce(this.validateWalletName, 500)
     const networks = this.$blockchainProvider.getNetworkTypes()
     this.networksType = [networks.testnet, networks.mainnet]
     this.networkSelected = networks.testnet
