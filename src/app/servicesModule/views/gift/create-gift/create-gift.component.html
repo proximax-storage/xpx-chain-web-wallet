@@ -5,10 +5,10 @@
 
    <form [formGroup]="createGift" (ngSubmit)="sendTransfer()">
 
-      <div class="row mt-2rem">
+      <div class="row">
          <div class="col-10 mx-auto">
             <!-- SELECT ACCOUNT -->
-            <div class="row mt-1rem">
+            <div class="row">
                <div class="col-12 mx-auto">
                   <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [searchable]="false" [clearable]="false"
                      [validateError]="true" class="selectWrapper" [items]="currentAccounts" formControlName="selectAccount"
@@ -20,12 +20,12 @@
                   <!-- VALIDATION -->
                   <mdb-error class="ml-1rem">
                      <span *ngIf="validateInput('selectAccount').invalid && (validateInput('selectAccount').dirty || validateInput('selectAccount').touched)"
-                        class="fs-08rem fw-600 color-error-message">Select an Account</span>
+                        class="fs-08rem fw-600 color-error-message">Select Your Account</span>
                   </mdb-error>
                </div>
             </div>
             <!-- MESSAGE INFO -->
-            <div class="row " *ngIf="valueValidateAccount?.disabledItem">
+            <div class="row" *ngIf="valueValidateAccount?.disabledItem">
                <div class="col-12 mx-auto mb-1rem  box-transparent-border-red">
                   <div class="txt-a-center">
                      <img src="assets/images/img/icon-restriction-white.svg" style="filter: invert(50%)" alt="" width="30">
@@ -34,16 +34,15 @@
                </div>
             </div>
             <!-- AMOUNT & TO BE SENT -->
-            <div class="row mt-1rem">
+            <div class="row">
                <!-- Card -->
                <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6  mx-auto">
                   <div class="md-form form-sm mt-1rem mb-0rem">
-                     <img class="form-control-feedback" src="assets/images/img/icon-amount-green-16h-proximax-sirius-wallet.svg"
+                     <img class="form-control-feedback" src="assets/images/img/icon-card-green-16h-proximax-sirius-wallet.svg"
                         alt="">
-                     <input  min="1" max="1000" formControlName="cantCard"
-                        required mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="number"
-                        id="cantCard" class="form-control form-control-sm input-border text-center" placeholder="How many cards do you need?"
-                        onkeyup="javascript:this.value=this.value.toLowerCase();">
+                     <input min="1" max="1000" formControlName="cantCard" required mdbInputDirective mdbValidate
+                        [validateSuccess]="true" [validateError]="true" type="number" id="cantCard" class="form-control form-control-sm input-border text-center"
+                        placeholder="Number of Gift Cards" onkeyup="javascript:this.value=this.value.toLowerCase();">
                      <!-- VALIDATION -->
                      <mdb-error *ngIf="validateInput('cantCard', '').invalid && (validateInput('cantCard', '').dirty || validateInput('cantCard', '').touched)">
                         <span>Invalid Value</span>
@@ -58,7 +57,7 @@
                      <input pattern="^[+]?([0-9]*[.])?[0-9]+$" currencyMask [options]="optionsXPX" mdbInputDirective
                         mdbValidate [validateSuccess]="true" [maxlength]="configurationForm.amount.maxLength"
                         [validateError]="true" type="text" class="form-control form-control-sm input-border input-amount"
-                        placeholder="Enter Amount" formControlName="amountXpx">
+                        placeholder="Amount per Gift Cards" formControlName="amountXpx">
                      <span class="label-i fw-600 pl-2rem">Send</span>
 
                      <mdb-error *ngIf="validateInput('amountXpx').invalid && (validateInput('amountXpx').dirty || validateInput('amountXpx').touched)">
@@ -73,13 +72,13 @@
                </div>
             </div>
             <!-- MESSAGE -->
-            <div class="row mt-1rem">
+            <div class="row">
                <div class="col-12 mx-auto">
                   <div class="md-form form-sm mt-1rem mb-0rem">
                      <img class="form-control-feedback" src="assets/images/img/icon-messenger-green-16h-proximax-sirius-wallet.svg"
                         alt="" style="padding: 30px 10px !important">
                      <textarea mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
-                        id="message" class="md-textarea form-control" mdbInput placeholder="Message" formControlName="message"
+                        id="message" class="md-textarea form-control" mdbInput placeholder="Message on Gift Cards" formControlName="message"
                         [maxlength]="messageMaxLength"></textarea>
                      <span class="fs-08rem text-cl-m d-flex justify-content-end">{{ charRest }} / {{ messageMaxLength
                         }}</span>
@@ -89,9 +88,10 @@
                   </div>
                </div>
             </div>
+            
             <!-- FEE -->
             <div class="row">
-               <div class="col-11 col-md-10 col-lg-8 mx-auto">
+               <div class="col-12 mx-auto">
                   <div class="box-grey d-flex justify-content-center pt-09rem pb-09rem">
                      <div class="row">
                         <div class="col-12 text-center">
@@ -106,9 +106,20 @@
                   </div>
                </div>
             </div>
+
+            <div [hidden]="true" class="row">
+               <div class="col-11 col-md-10 col-lg-8 mx-auto">
+                  <div class="row">
+                     <div class="col-12 text-center">
+                        <canvas id="idCanvas" width="502" height="326"></canvas>
+                     </div>
+
+                  </div>
+               </div>
+            </div>
             <!-- PASSWORD -->
             <div class="row">
-               <div class="col-11 col-md-10 col-lg-8 mx-auto">
+               <div class="col-12 mx-auto">
                   <div class="md-form form-sm">
                      <img class="form-control-feedback" src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg"
                         alt="">
@@ -135,13 +146,12 @@
                      <span class="fs-1-2em color-white">Clear</span>
                   </button>
                </div>
-
                <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
                   <button [disabled]="createGift.invalid && !reloadBtn" mdbBtn type="submit" rounded="true"
                      mdbWavesEffect class="btn-proximax" size="md">
                      <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
                         *ngIf="reloadBtn"></span>
-                     <span class="fs-1-2em color-white">Send</span>
+                     <span class="fs-1-2em color-white">Generate</span>
                   </button>
                </div>
             </div>
