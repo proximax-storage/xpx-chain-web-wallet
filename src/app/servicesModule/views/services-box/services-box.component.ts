@@ -403,8 +403,8 @@ export class ServicesBoxComponent implements OnInit {
         true,
         ''//disable-module
       ),
-       // GIFT
-       this.services.buildStructureService(
+      // GIFT
+      this.services.buildStructureService(
         'Sirius Gift',
         true,
         'Create a redeemable gift',
@@ -417,6 +417,13 @@ export class ServicesBoxComponent implements OnInit {
             '',
             '',
             AppConfig.routes.createGift
+          ),
+          redeem: this.services.buildStructureService(
+            'Redeem',
+            true,
+            '',
+            '',
+            AppConfig.routes.redeemGiftCard
           )
         },
         true,
@@ -450,7 +457,7 @@ export class ServicesBoxComponent implements OnInit {
         'disable-module'
       ),
 
-     
+
       // Cross-Chain Swaps
       this.services.buildStructureService(
         'Cross-Chain Swaps',

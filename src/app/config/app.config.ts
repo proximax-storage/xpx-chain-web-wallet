@@ -46,7 +46,7 @@ export const AppConfig: Config = {
     polls: 'polls',
     renewNamespace: 'renew-namespace',
     renovateNamespace: 'renovate-namespace',
-
+    redeemGiftCard:'redeem-gift-card',
     swapAccountFound: 'swap-account-found',
     swapAccountNis1Found: 'swap-account-nis1-found',
     swapTransactions: 'swap-transactions',
@@ -127,7 +127,7 @@ export interface Config {
     polls: string;
     renewNamespace: string;
     renovateNamespace: string;
-
+    redeemGiftCard:string;
     swapAccountFound: string;
     swapAccountNis1Found: string;
     swapTransactions: string;

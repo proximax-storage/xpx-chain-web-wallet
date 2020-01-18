@@ -596,19 +596,15 @@ export class CreateGiftComponent implements OnInit {
   }
   dataURItoBlob(dataURI) {
     // Convert Base64 to raw binary data held in a string.
-
     var byteString = atob(dataURI.split(',')[1]);
-
     // Separate the MIME component.
     var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0]
-
     // Write the bytes of the string to an ArrayBuffer.
     var ab = new ArrayBuffer(byteString.length);
     var ia = new Uint8Array(ab);
     for (var i = 0; i < byteString.length; i++) {
       ia[i] = byteString.charCodeAt(i);
     }
-
     // Write the ArrayBuffer to a BLOB and you're done.
     var bb = new Blob([ab]);
 
@@ -619,9 +615,13 @@ export class CreateGiftComponent implements OnInit {
     console.log(this.accountList)
     let count = 0
     let imgZip: any = null
+    if (this.accountList.length == 1) {
+      saveAs(new Blob([this.dataURItoBlob(imgZip)], { type: "image/jpeg" }), "Gitf Card Sirius.jpeg")
+      return
+    }
     for (let item of this.accountList) {
       count++;
-      const nameImg = `Gitf Sirius --number (${count}).jpeg`;
+      const nameImg = `Gitf Card Sirius (${count}).jpeg`;
       const data = this.giftService.serializeData(this.realAmount, item.privateKey, this.descrip);
       // console.log('desceriazlizacion ', this.giftService.unSerialize(data))
       const qr = qrcode(10, 'H');
@@ -631,15 +631,11 @@ export class CreateGiftComponent implements OnInit {
       // console.log('imgZippp', imgZip)
       zip.file(nameImg, this.dataURItoBlob(imgZip), { comment: 'image/jpeg' })
     }
-    if (this.accountList.length == 1) {
-      saveAs(new Blob([this.dataURItoBlob(imgZip)], { type: "image/jpeg" }), "Gitf Sirius.jpeg")
-    }
-
     if (Object.keys(zip.files).length > 0) {
       zip.generateAsync({
         type: "blob"
       }).then(async (content: any) => {
-        const fileName = `Gift Sirius ${this.amountFormatterSimple(this.realAmount)}.zip`;
+        const fileName = `Gift Card Sirius ${this.amountFormatterSimple(this.realAmount)}.zip`;
         saveAs(content, fileName);
       });
     }
