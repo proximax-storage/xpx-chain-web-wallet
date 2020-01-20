@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Convert, UInt64 } from 'tsjs-xpx-chain-sdk';
+import { Convert, UInt64, PublicAccount } from 'tsjs-xpx-chain-sdk';
 
 @Injectable({
   providedIn: 'root'
@@ -60,6 +60,6 @@ export interface DataDececode {
 
 }
 export interface RecipientData {
-  address: string;
+  publicAccount: PublicAccount;
   name: string;
 }
