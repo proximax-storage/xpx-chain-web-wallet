@@ -9,7 +9,7 @@ import { environment } from 'src/environments/environment';
 import { MosaicService } from '../../../../servicesModule/services/mosaic.service';
 import { TransactionsService } from '../../../../transactions/services/transactions.service';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
-import { AccountInfo, UInt64, AggregateTransaction, Deadline, InnerTransaction, TransferTransaction, PlainMessage, Mosaic, MosaicId, Address, Account, SignedTransaction } from 'tsjs-xpx-chain-sdk';
+import { AccountInfo, UInt64, AggregateTransaction, Deadline, InnerTransaction, TransferTransaction, PlainMessage, Mosaic, MosaicId, Address, Account, SignedTransaction, Transaction } from 'tsjs-xpx-chain-sdk';
 import { DataBridgeService } from '../../../../shared/services/data-bridge.service';
 import * as JSZip from 'jszip';
 import * as qrcode from 'qrcode-generator';
@@ -66,7 +66,7 @@ export class CreateGiftComponent implements OnInit {
   haveBalance: boolean;
   balanceXpx: string;
   accountList: Account[] = [];
-  aggregateTransaction: AggregateTransaction;
+  aggregateTransaction: Transaction;
   constructor(private fb: FormBuilder,
     private sharedService: SharedService,
     private walletService: WalletService,
@@ -129,13 +129,13 @@ export class CreateGiftComponent implements OnInit {
       amountXpx: ['', [
         Validators.maxLength(this.configurationForm.amount.maxLength)
       ]],
-      message: ['', [
-        Validators.maxLength(10)
+      message: ['', [Validators.required,
+      Validators.maxLength(10)
       ]],
-      cantCard: ['', [Validators.compose([
+      cantCard: ['', [
         Validators.required, Validators.minLength(1),
-        Validators.maxLength(1000)])]
-      ],
+        Validators.maxLength(20)
+      ]],
       password: [
         '',
         [
@@ -150,6 +150,30 @@ export class CreateGiftComponent implements OnInit {
     }, 10);
     // this.convertAccountMultsignForm.get('selectAccount').patchValue('ACCOUNT-2');
   }
+  /**
+ *
+ *
+ * @param {*} e
+ * @memberof CreateNamespaceComponent
+ */
+  limitDuration(e: any) {
+    // tslint:disable-next-line: radix
+    if (isNaN(parseInt(e.target.value))) {
+      e.target.value = '';
+      this.createGift.get('cantCard').setValue('');
+    } else {
+      // tslint:disable-next-line: radix
+      if (parseInt(e.target.value) > 20) {
+        e.target.value = '20';
+        this.createGift.get('cantCard').patchValue('20')
+        // tslint:disable-next-line: radix
+      } else if (parseInt(e.target.value) < 1) {
+        e.target.value = '';
+        this.createGift.get('cantCard').setValue('');
+      }
+    }
+  }
+
 
   draw(imgQR: string, des: string, amount: any) {
     return new Promise((resolve, reject) => {
@@ -193,17 +217,38 @@ export class CreateGiftComponent implements OnInit {
       if (val && val !== '') {
         this.charRest = val.length;
         this.descrip = val
+
         // this.calculateFee(val.length);
       } else {
         this.charRest = 0;
+        this.descrip = ''
         // this.calculateFee(0);
       }
     }));
     this.subscription.push(this.createGift.get('cantCard').valueChanges.subscribe(val => {
-      if (val > 1000) {
-        this.createGift.get('cantCard').patchValue(1, { emitEvent: true, onlySelf: true })
-      }
-      this.builder();
+      setTimeout(() => {
+        if (!isNaN(parseInt(val))) {
+          if (parseInt(val) <= 20 && parseInt(val) >= 1)
+            this.builder();
+        }
+      }, 100);
+
+      //   this.createGift.get('cantCard').patchValue('', { emitEvent: true, onlySelf: true })
+      // } else {
+      //   // tslint:disable-next-line: radix
+      //   if (parseInt(val) > 20) {
+      //     this.createGift.get('cantCard').patchValue('20', { emitEvent: true, onlySelf: true })
+      //     // tslint:disable-next-line: radix
+      //   } else if (parseInt(val) < 1) {
+      //     this.createGift.get('cantCard').patchValue('', { emitEvent: true, onlySelf: true });
+      //   }
+      // }
+      // console.log(parseInt(val))
+      // if (parseInt(val) > 1000) {
+      //   this.createGift.get('cantCard').setValue('', { emitEvent: true, onlySelf: true })
+      // }
+
+
     }));
     this.subscription.push(this.createGift.get('amountXpx').valueChanges.subscribe(val => {
       this.builder();
@@ -621,6 +666,7 @@ export class CreateGiftComponent implements OnInit {
     return bb;
   }
   async builGitf() {
+    console.log('builGitf builGitf')
     const zip = new JSZip();
     // console.log(this.accountList)
     let count = 0
@@ -640,7 +686,7 @@ export class CreateGiftComponent implements OnInit {
       count++;
       const nameImg = `Gitf Card Sirius (${count}).jpeg`;
       const data = this.giftService.serializeData(this.realAmount, item.privateKey, this.descrip);
-      // console.log('desceriazlizacion ', this.giftService.unSerialize(data))
+      console.log('desceriazlizacion ', this.giftService.unSerialize(data))
       const qr = qrcode(10, 'H');
       qr.addData(data);
       qr.make();
@@ -699,37 +745,52 @@ export class CreateGiftComponent implements OnInit {
       );
     }
   }
-  aggregateTransactionFunc(): AggregateTransaction {
+  aggregateTransactionFunc(): Transaction {
     this.realAmount = 0;
     let innerTransaction: InnerTransaction[] = []
-    let aggregateTransaction: AggregateTransaction = null
-    const cantCard: number = this.createGift.get('cantCard').value
+    let aggregateTransaction: Transaction = null
+    const cantCard: number = parseInt(this.createGift.get('cantCard').value)
+    const array = new Array(cantCard)
     this.accountList = []
     const network = (this.sender) ? this.sender.network : this.walletService.currentAccount.network
     const mosaicsToSend: any = this.validateMosaicsToSend(this.mosaicXpx.id);
     this.realAmount = Number(mosaicsToSend.amount)
-    for (let index = 0; index < cantCard; index++) {
+
+    if (cantCard === 1) {
       const account: Account = Account.generateNewAccount(network)
-      const transferTransaction = TransferTransaction.create(
+      aggregateTransaction = TransferTransaction.create(
         Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
         account.address,
         [new Mosaic(new MosaicId(mosaicsToSend.id), UInt64.fromUint(Number(this.sum(mosaicsToSend.amount, this.feeCover))))],
         PlainMessage.create(''),
         network);
-      innerTransaction.push(transferTransaction.toAggregate(this.sender.publicAccount))
       this.accountList.push(account)
+      return aggregateTransaction
+    }
+    if (cantCard > 1) {
+      for (let index = 0; index < cantCard; index++) {
+        const account: Account = Account.generateNewAccount(network)
+        const transferTransaction = TransferTransaction.create(
+          Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
+          account.address,
+          [new Mosaic(new MosaicId(mosaicsToSend.id), UInt64.fromUint(Number(this.sum(mosaicsToSend.amount, this.feeCover))))],
+          PlainMessage.create(''),
+          network);
+        innerTransaction.push(transferTransaction.toAggregate(this.sender.publicAccount))
+        this.accountList.push(account)
+      }
+      return aggregateTransaction = AggregateTransaction.createComplete(
+        Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
+        innerTransaction,
+        this.sender.network,
+        []
+      )
     }
 
-    aggregateTransaction = AggregateTransaction.createComplete(
-      Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
-      innerTransaction,
-      this.sender.network,
-      []
-    )
-    return aggregateTransaction
   }
   builder() {
-    const cantCard: number = this.createGift.get('cantCard').value
+    const cantCard: number = parseInt(this.createGift.get('cantCard').value)
+    console.log('cantCard', cantCard)
     if (!this.sender)
       return
     if (!this.createGift.get('cantCard').value)

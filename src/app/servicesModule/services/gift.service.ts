@@ -30,7 +30,9 @@ export class GiftService {
   }
 
   serializeData(amount, pk, des) {
-    console.log('deskiiiiiiiiiiii', des)
+    console.log('amount', amount)
+    console.log('pk', pk)
+    console.log('des', des)
     const ammountUin64 = UInt64.fromUint(amount)
     const amountUin8 = Convert.hexToUint8(ammountUin64.toHex())
     const pkUin8 = Convert.hexToUint8(pk)

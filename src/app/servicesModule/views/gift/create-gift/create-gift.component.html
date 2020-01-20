@@ -6,7 +6,7 @@
    <form [formGroup]="createGift" (ngSubmit)="sendTransfer()">
 
       <div class="row">
-         <div class="col-10 mx-auto">
+         <div class="col-8 mx-auto">
             <!-- SELECT ACCOUNT -->
             <div class="row">
                <div class="col-12 mx-auto">
@@ -18,7 +18,7 @@
                      </ng-template>
                   </ng-select>
                   <!-- VALIDATION -->
-                  <mdb-error class="ml-1rem">
+                  <mdb-error class="ml-1rem mt-06rem">
                      <span *ngIf="validateInput('selectAccount').invalid && (validateInput('selectAccount').dirty || validateInput('selectAccount').touched)"
                         class="fs-08rem fw-600 color-error-message">Select Your Account</span>
                   </mdb-error>
@@ -37,16 +37,21 @@
             <div class="row">
                <!-- Card -->
                <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6  mx-auto">
+              
                   <div class="md-form form-sm mt-1rem mb-0rem">
                      <img class="form-control-feedback" src="assets/images/img/icon-card-green-16h-proximax-sirius-wallet.svg"
                         alt="">
-                     <input min="1" max="1000" formControlName="cantCard" required mdbInputDirective mdbValidate
-                        [validateSuccess]="true" [validateError]="true" type="number" id="cantCard" class="form-control form-control-sm input-border text-center"
-                        placeholder="Number of Gift Cards" onkeyup="javascript:this.value=this.value.toLowerCase();">
+                     <input mask="0*" formControlName="cantCard" required mdbInputDirective mdbValidate
+                        [validateSuccess]="true" [validateError]="true" type="text" id="cantCard" class="form-control form-control-sm input-border txt-a-right input-amount"
+                        placeholder="Number of Gift Cards" (keyup)="limitDuration($event)">
+                     <span class="label-i-icon pl-2rem"></span>
+
                      <!-- VALIDATION -->
                      <mdb-error *ngIf="validateInput('cantCard', '').invalid && (validateInput('cantCard', '').dirty || validateInput('cantCard', '').touched)">
-                        <span>Invalid Value</span>
+                        <span>Number Required</span>
                      </mdb-error>
+
+
                   </div>
                </div>
                <!-- Amount Input -->
@@ -58,16 +63,12 @@
                         mdbValidate [validateSuccess]="true" [maxlength]="configurationForm.amount.maxLength"
                         [validateError]="true" type="text" class="form-control form-control-sm input-border input-amount"
                         placeholder="Amount per Gift Cards" formControlName="amountXpx">
-                     <span class="label-i fw-600 pl-2rem">Send</span>
+                     <span class="label-i-icon pl-2rem"></span>
 
                      <mdb-error *ngIf="validateInput('amountXpx').invalid && (validateInput('amountXpx').dirty || validateInput('amountXpx').touched)">
                         <span class="fs-08rem fw-600 color-error-message">Invalid Amount</span>
                      </mdb-error>
 
-                     <!-- Message Error Insufficient balance-->
-                     <!-- <mdb-error *ngIf="insufficientBalance">
-                  <span class="fs-08rem fw-600 color-error-message">Insufficient Balance</span>
-                </mdb-error> -->
                   </div>
                </div>
             </div>
@@ -76,19 +77,19 @@
                <div class="col-12 mx-auto">
                   <div class="md-form form-sm mt-1rem mb-0rem">
                      <img class="form-control-feedback" src="assets/images/img/icon-messenger-green-16h-proximax-sirius-wallet.svg"
-                        alt="" style="padding: 30px 10px !important">
-                     <textarea mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
-                        id="message" class="md-textarea form-control" mdbInput placeholder="Message on Gift Cards" formControlName="message"
-                        [maxlength]="messageMaxLength"></textarea>
+                        alt="" >
+                     <input mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
+                        id="message" class="form-control form-control-sm input-border" mdbInput placeholder="Message on Gift Cards"
+                        formControlName="message" [maxlength]="messageMaxLength">
                      <span class="fs-08rem text-cl-m d-flex justify-content-end">{{ charRest }} / {{ messageMaxLength
                         }}</span>
                      <mdb-error *ngIf="validateInput('message').invalid && (validateInput('message').dirty || validateInput('message').touched)">
-                        <span>Invalid Recipient</span>
+                        <span>Message Required</span>
                      </mdb-error>
                   </div>
                </div>
             </div>
-            
+
             <!-- FEE -->
             <div class="row">
                <div class="col-12 mx-auto">
