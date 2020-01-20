@@ -9,26 +9,28 @@ export class GiftService {
   constructor() { }
 
 
-  unSerialize(hex) {
-    const dataUin8 = Convert.hexToUint8(hex)
-    const amountUin8 = new Uint8Array(8)
-    let amountUin32 = new Uint32Array(2)
-    const pkUin8 = new Uint8Array(32)
-    const desUin8 = new Uint8Array(20)
-    amountUin8.set(new Uint8Array(dataUin8.subarray(0, 8)), 0)
-    pkUin8.set(new Uint8Array(dataUin8.subarray(8, 40)), 0)
-    desUin8.set(new Uint8Array(dataUin8.subarray(40, dataUin8.byteLength)), 0)
-    amountUin32 = Convert.uint8ToUint32(amountUin8)
-    const amount = UInt64.fromHex(Convert.uint8ToHex(amountUin8))
-    const privatekey = Convert.uint8ToHex(pkUin8)
-    const des = this.hexToString(Convert.uint8ToHex(desUin8))
-    console.log('amount', amount)
-    console.log('privatekey', privatekey)
-    console.log('des', des)
+  unSerialize(hex): DataDececode {
+    try {
+      const dataUin8 = Convert.hexToUint8(hex)
+      const amountUin8 = new Uint8Array(8)
+      let amountUin32 = new Uint32Array(2)
+      const pkUin8 = new Uint8Array(32)
+      const desUin8 = new Uint8Array(20)
+      amountUin8.set(new Uint8Array(dataUin8.subarray(0, 8)), 0)
+      pkUin8.set(new Uint8Array(dataUin8.subarray(8, 40)), 0)
+      desUin8.set(new Uint8Array(dataUin8.subarray(40, dataUin8.byteLength)), 0)
+      amountUin32 = Convert.uint8ToUint32(amountUin8)
+      const amount = UInt64.fromHex(Convert.uint8ToHex(amountUin8))
+      const privatekey = Convert.uint8ToHex(pkUin8)
+      const des = this.hexToString(Convert.uint8ToHex(desUin8))
+      return { amount, privatekey, des }
+    } catch (error) {
+      console.error('error', error)
+    }
   }
 
   serializeData(amount, pk, des) {
-    console.log('deskiiiiiiiiiiii',des)
+    console.log('deskiiiiiiiiiiii', des)
     const ammountUin64 = UInt64.fromUint(amount)
     const amountUin8 = Convert.hexToUint8(ammountUin64.toHex())
     const pkUin8 = Convert.hexToUint8(pk)
@@ -50,4 +52,14 @@ export class GiftService {
     }
     return string;
   }
+}
+export interface DataDececode {
+  amount: UInt64,
+  privatekey: string
+  des: string
+
+}
+export interface RecipientData {
+  address: string;
+  name: string;
 }

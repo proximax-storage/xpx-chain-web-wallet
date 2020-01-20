@@ -9,6 +9,7 @@ import { NgxCurrencyModule } from "ngx-currency";
 import { NgxUiLoaderModule, NgxUiLoaderConfig, POSITION, SPINNER, PB_DIRECTION } from 'ngx-ui-loader';
 import { TagInputModule } from 'ngx-chips';
 import { NgxDropzoneModule } from 'ngx-dropzone';
+import { NgQRCodeReaderModule } from 'ng2-qrcode-reader';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { RouterModule } from '@angular/router';
 
@@ -88,6 +89,7 @@ const moduls = [
   FormsModule,
   ClipboardModule,
   NgxCurrencyModule,
+  NgQRCodeReaderModule,
   RouterModule
 ];
 

@@ -1,0 +1,51 @@
+<div *ngIf="!showViewsConfirm" class="container-fluid">
+    <div class="row">
+        <div class="col-8 mx-auto mb-1rem mt-1rem ">
+            <div class="row">
+                <div class="col-12 d-flex justify-content-center">
+                    <img class="h-80px" src="assets/images/img/icon-gift-sirius-full-color-80h-proximax-sirius-wallet.svg"
+                        alt="">
+                </div>
+                <div class="col-12 txt-a-center line-h-1em mt-1rem">
+                    <span class="fs-1-1rem">You will receive in your account:</span>
+                </div>
+                <div class="col-12 txt-a-center mt-04rem">
+                    <span class="fs-1-1rem fw-600">{{nameAccount}}</span>
+                </div>
+                <div class="col-12 mt-04rem">
+                    <hr class="mt-03rem mb-05rem">
+                </div>
+                <div class="col-12 txt-a-center mt-04rem">
+                    <span class="fs-1-1rem fw-600">Sirius Gift for</span>
+                </div>
+                <div class="col-12 txt-a-center">
+                    <span class="fs-1-1rem">
+                        {{amount}} XPX
+                    </span>
+                </div>
+                <div class="col-12 txt-a-center">
+                    <span class="fs-075rem "> {{descrip}}</span>
+                </div>
+                <div class="col-12 mt-04rem">
+                    <hr class="mt-03rem mb-05rem">
+                </div>
+            </div>
+
+            <!-- BUTTONS -->
+            <div class="row">
+                <div class="col-11 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+                    <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="md" (click)="cancelGitf('cancel')">
+                        <span class="fs-1-2em color-white">Cancel</span>
+                    </button>
+                </div>
+                <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+                    <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="md" (click)="acceptGitf()">
+                        <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+                            *ngIf="reloadBtn"></span>
+                        <span class="fs-1-2em color-white">Accept</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

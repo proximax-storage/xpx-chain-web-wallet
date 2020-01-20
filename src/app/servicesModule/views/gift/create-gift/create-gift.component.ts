@@ -78,7 +78,7 @@ export class CreateGiftComponent implements OnInit {
     this.realAmount = 0;
     this.charRest = 0;
     this.currentBlock = 0;
-    this.messageMaxLength = 20;
+    this.messageMaxLength = 10;
     this.reloadBtn = false;
     this.blockSendButton = false;
     this.accountValid = false;
@@ -129,7 +129,7 @@ export class CreateGiftComponent implements OnInit {
         Validators.maxLength(this.configurationForm.amount.maxLength)
       ]],
       message: ['', [
-        Validators.maxLength(20)
+        Validators.maxLength(10)
       ]],
       cantCard: ['', [Validators.compose([
         Validators.required, Validators.minLength(1),
@@ -364,12 +364,13 @@ export class CreateGiftComponent implements OnInit {
   * @memberof CreateGiftComponent
   */
   getAccounts() {
-    if (this.walletService.currentWallet.accounts.length > 0) {
-      this.currentAccounts = [];
-      for (let element of this.walletService.currentWallet.accounts) {
-        this.buildSelectAccount(element)
+    if (this.walletService.currentWallet)
+      if (this.walletService.currentWallet.accounts.length > 0) {
+        this.currentAccounts = [];
+        for (let element of this.walletService.currentWallet.accounts) {
+          this.buildSelectAccount(element)
+        }
       }
-    }
   }
   selectAccount($event: Event) {
     const event: any = $event;
@@ -511,6 +512,10 @@ export class CreateGiftComponent implements OnInit {
     }
     return amount;
   }
+
+  sum(n1, n2) {
+    return (parseInt(n1) + parseInt(n2));
+  }
   /**
    *
    *
@@ -540,7 +545,6 @@ export class CreateGiftComponent implements OnInit {
       };
     }
 
-
     return mosaics;
   }
 
@@ -550,10 +554,14 @@ export class CreateGiftComponent implements OnInit {
      * @memberof CreateTransferComponent
      */
   sendTransfer() {
-    console.log('send')
+    // console.log('send')
     if (this.createGift.valid && (!this.blockSendButton)) {
       this.reloadBtn = true;
       this.blockSendButton = true;
+      // console.log('feeeee', this.fee)
+      // console.log(this.balanceXpx.split(',').join(''))
+      // console.log(this.aggregateTransaction.innerTransactions[0]['mosaics'][0]['amount'].compact())
+      // console.log(this.amountFormatterSimple(this.aggregateTransaction.innerTransactions[0]['mosaics'][0]['amount'].compact()))
       if (this.transactionService.validateBuildSelectAccountBalance(Number(this.balanceXpx.split(',').join('')), Number(this.fee), Number(this.createGift.get('amountXpx').value))) {
         const common: any = { password: this.createGift.get('password').value };
         this.transactionSigned = []
@@ -566,6 +574,8 @@ export class CreateGiftComponent implements OnInit {
           )
           this.transactionSigned.push(signedTransaction);
           this.clearForm();
+          // this.reloadBtn = false;
+          // this.blockSendButton = false;
           this.transactionService.buildTransactionHttp().announce(signedTransaction).subscribe(
             async () => {
               this.getTransactionStatus();
@@ -612,10 +622,17 @@ export class CreateGiftComponent implements OnInit {
   }
   async builGitf() {
     const zip = new JSZip();
-    console.log(this.accountList)
+    // console.log(this.accountList)
     let count = 0
     let imgZip: any = null
+
     if (this.accountList.length == 1) {
+      const data = this.giftService.serializeData(this.realAmount, this.accountList[0].privateKey, this.descrip);
+      // console.log('desceriazlizacion ', this.giftService.unSerialize(data))
+      const qr = qrcode(10, 'H');
+      qr.addData(data);
+      qr.make();
+      imgZip = await this.draw(qr.createDataURL(), this.descrip, this.amountFormatterSimple(this.realAmount))
       saveAs(new Blob([this.dataURItoBlob(imgZip)], { type: "image/jpeg" }), "Gitf Card Sirius.jpeg")
       return
     }
@@ -628,14 +645,13 @@ export class CreateGiftComponent implements OnInit {
       qr.addData(data);
       qr.make();
       imgZip = await this.draw(qr.createDataURL(), this.descrip, this.amountFormatterSimple(this.realAmount))
-      // console.log('imgZippp', imgZip)
       zip.file(nameImg, this.dataURItoBlob(imgZip), { comment: 'image/jpeg' })
     }
     if (Object.keys(zip.files).length > 0) {
       zip.generateAsync({
         type: "blob"
       }).then(async (content: any) => {
-        const fileName = `Gift Card Sirius ${this.amountFormatterSimple(this.realAmount)}.zip`;
+        const fileName = `Gift Card Sirius.zip`;
         saveAs(content, fileName);
       });
     }
@@ -697,7 +713,7 @@ export class CreateGiftComponent implements OnInit {
       const transferTransaction = TransferTransaction.create(
         Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
         account.address,
-        [new Mosaic(new MosaicId(mosaicsToSend.id), UInt64.fromUint(Number(mosaicsToSend.amount)))],
+        [new Mosaic(new MosaicId(mosaicsToSend.id), UInt64.fromUint(Number(this.sum(mosaicsToSend.amount, 41750))))],
         PlainMessage.create(''),
         network);
       innerTransaction.push(transferTransaction.toAggregate(this.sender.publicAccount))

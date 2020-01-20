@@ -11,6 +11,7 @@ import { DeleteWalletComponent } from './views/wallet/delete-wallet/delete-walle
 import { NotificationComponent } from './views/notification/notification.component';
 import { CreateGiftComponent } from './views/gift/create-gift/create-gift.component';
 import { RedeemGiftCardComponent } from './views/gift/redeem-gift-card/redeem-gift-card.component';
+import { ConfirmRedeemGitfCardComponent } from './components/confirm-redeem-gitf-card/confirm-redeem-gitf-card.component';
 
 @NgModule({
   declarations: [
@@ -24,12 +25,16 @@ import { RedeemGiftCardComponent } from './views/gift/redeem-gift-card/redeem-gi
     DeleteWalletComponent,
     NotificationComponent,
     CreateGiftComponent,
-    RedeemGiftCardComponent
+    RedeemGiftCardComponent,
+    ConfirmRedeemGitfCardComponent
   ],
   schemas: [NO_ERRORS_SCHEMA],
   imports: [
     CoreModule,
     ServicesModuleRoutingModule
+  ],
+  exports: [
+    ConfirmRedeemGitfCardComponent
   ]
 })
 export class ServicesModule { }
