@@ -58,7 +58,8 @@ export class CreateGiftComponent implements OnInit {
   messageMaxLength: number;
   mosaicXpx: { id: string, name: string; divisibility: number } = null;
   subscription: Subscription[] = [];
-  fee: any = '0.037250';
+  fee: any = '0.053250';
+  feeCover: number = 41750
   currentBlock: number;
   valueValidateAccount: validateBuildAccount
   blockSendButton: boolean;
@@ -163,9 +164,9 @@ export class CreateGiftComponent implements OnInit {
         context.drawImage(imageObj, 0, 0);
         context.font = '17px Open Sans';
         context.fillStyle = 'black';
-        context.fillText(amount, 40, 206);
-        context.font = 'bold 20px Sans';
-        context.fillText('XPX', 28 + context.measureText(amount).width, 206);
+        context.fillText(amount + ' XPX', 40, 208);
+        // context.font = 'bold 20px Sans';
+        // context.fillText('XPX', 28 + context.measureText(amount).width, 206);
         context.font = '16px Sans';
         context.fillText(des, 40, 276);
         // context.putImageData(imgData, 10, 70);
@@ -576,6 +577,7 @@ export class CreateGiftComponent implements OnInit {
           this.clearForm();
           // this.reloadBtn = false;
           // this.blockSendButton = false;
+          // this.builGitf()
           this.transactionService.buildTransactionHttp().announce(signedTransaction).subscribe(
             async () => {
               this.getTransactionStatus();
@@ -586,13 +588,11 @@ export class CreateGiftComponent implements OnInit {
               this.sharedService.showError('', err);
             }
           );
-
         } else {
           this.createGift.get('password').setValue('');
           this.blockSendButton = false;
           this.reloadBtn = false;
         }
-
       } else {
         this.reloadBtn = false;
         this.blockSendButton = false;
@@ -713,7 +713,7 @@ export class CreateGiftComponent implements OnInit {
       const transferTransaction = TransferTransaction.create(
         Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
         account.address,
-        [new Mosaic(new MosaicId(mosaicsToSend.id), UInt64.fromUint(Number(this.sum(mosaicsToSend.amount, 41750))))],
+        [new Mosaic(new MosaicId(mosaicsToSend.id), UInt64.fromUint(Number(this.sum(mosaicsToSend.amount, this.feeCover))))],
         PlainMessage.create(''),
         network);
       innerTransaction.push(transferTransaction.toAggregate(this.sender.publicAccount))
@@ -735,7 +735,7 @@ export class CreateGiftComponent implements OnInit {
     if (!this.createGift.get('cantCard').value)
       return
     this.aggregateTransaction = this.aggregateTransactionFunc()
-    let feeAgregate = Number(this.transactionService.amountFormatterSimple(this.aggregateTransaction.maxFee.compact()));
+    let feeAgregate = Number(this.transactionService.amountFormatterSimple(this.sum(this.aggregateTransaction.maxFee.compact(), this.feeCover)));
     this.fee = feeAgregate.toFixed(6);
   }
 }
