@@ -25,6 +25,8 @@ export class CreateGiftComponent implements OnInit {
   accountValid: boolean;
   allMosaics = [];
   showCanva = false
+  showViewsConfirm = false;
+  checked: boolean = false;
   dataURL: any;
   imgBackground;
   descrip: string
@@ -99,7 +101,7 @@ export class CreateGiftComponent implements OnInit {
     this.subscribeValue();
     this.getAccountInfo();
     this.imgBackground = this.sharedService.walletGitf();
-    this.draw('', 'hello', '100,000,000000');
+
     // Find Current Block
     this.subscription.push(this.dataBridge.getBlock().subscribe(next => {
       this.currentBlock = next;
@@ -110,6 +112,11 @@ export class CreateGiftComponent implements OnInit {
       name: environment.mosaicXpxInfo.name,
       divisibility: environment.mosaicXpxInfo.divisibility
     };
+
+    setTimeout(() => {
+      // this.draw('', 'hello', '100,000,000000');
+    }, 10);
+
   }
 
   /**
@@ -690,6 +697,11 @@ export class CreateGiftComponent implements OnInit {
 
     return bb;
   }
+
+  showViewsConfirmFunc() {
+    this.showViewsConfirm = !this.showViewsConfirm;
+    this.checked = false
+  }
   async builGitf() {
     this.giftService.setTypeDonwnload = null
     this.giftService.setImgFileData = null
@@ -772,9 +784,11 @@ export class CreateGiftComponent implements OnInit {
                 this.reloadBtn = false;
                 this.blockSendButton = false;
                 // this.builGitf()
+                // this.showViewsConfirmFunc()
                 this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
               } else if (statusTransaction['type'] === 'unconfirmed' && match) {
-                this.builGitf()
+                // this.builGitf()
+                this.showViewsConfirmFunc()
                 this.reloadBtn = false;
                 this.blockSendButton = false;
               } else if (statusTransaction['type'] === 'aggregateBondedAdded' && match) {
