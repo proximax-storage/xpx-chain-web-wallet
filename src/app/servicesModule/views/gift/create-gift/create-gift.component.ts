@@ -29,6 +29,7 @@ export class CreateGiftComponent implements OnInit {
   checked: boolean = false;
   dataURL: any;
   imgBackground;
+  cantCard: number = 0;
   descrip: string
   selectOtherMosaics = [];
   configurationForm: ConfigurationForm;
@@ -813,6 +814,8 @@ export class CreateGiftComponent implements OnInit {
     let innerTransaction: InnerTransaction[] = []
     let aggregateTransaction: Transaction = null
     const cantCard: number = parseInt(this.createGift.get('cantCard').value)
+
+    this.cantCard = cantCard
     const array = new Array(cantCard)
     this.accountList = []
     const network = (this.sender) ? this.sender.network : this.walletService.currentAccount.network
@@ -853,7 +856,6 @@ export class CreateGiftComponent implements OnInit {
   }
   builder() {
     const cantCard: number = parseInt(this.createGift.get('cantCard').value)
-    console.log('cantCard', cantCard)
     if (!this.sender)
       return
     if (!this.createGift.get('cantCard').value)
