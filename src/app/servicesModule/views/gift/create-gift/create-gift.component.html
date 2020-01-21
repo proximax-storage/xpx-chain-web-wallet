@@ -37,7 +37,7 @@
             <div class="row">
                <!-- Card -->
                <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6  mx-auto">
-              
+
                   <div class="md-form form-sm mt-1rem mb-0rem">
                      <img class="form-control-feedback" src="assets/images/img/icon-card-green-16h-proximax-sirius-wallet.svg"
                         alt="">
@@ -77,7 +77,7 @@
                <div class="col-12 mx-auto">
                   <div class="md-form form-sm mt-1rem mb-0rem">
                      <img class="form-control-feedback" src="assets/images/img/icon-messenger-green-16h-proximax-sirius-wallet.svg"
-                        alt="" >
+                        alt="">
                      <input mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
                         id="message" class="form-control form-control-sm input-border" mdbInput placeholder="Message on Gift Cards"
                         formControlName="message" [maxlength]="messageMaxLength">
@@ -153,6 +153,12 @@
                      <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
                         *ngIf="reloadBtn"></span>
                      <span class="fs-1-2em color-white">Generate</span>
+                  </button>
+               </div>
+               <div class="col-12  d-flex justify-content-center justify-content-sm-center">
+                  <button [disabled]="!save" (click)="donwnload()" mdbBtn type="button" rounded="true" mdbWavesEffect
+                     class="btn-proximax" size="md">
+                     <span class="fs-1-2em color-white">Save (Copy)</span>
                   </button>
                </div>
             </div>

@@ -5,9 +5,32 @@ import { Convert, UInt64, PublicAccount } from 'tsjs-xpx-chain-sdk';
   providedIn: 'root'
 })
 export class GiftService {
-
+  typeDonwnload: string = ''
+  imgFileData: Blob = null
+  zipFileData: any = null
   constructor() { }
 
+
+  get getTypeDonwnload(): string {
+    return this.typeDonwnload;
+  }
+  set setTypeDonwnload(val: string) {
+    this.typeDonwnload = val;
+  }
+
+  get getImgFileData(): Blob {
+    return this.imgFileData;
+  }
+  set setImgFileData(val: Blob) {
+    this.imgFileData = val;
+  }
+
+  get getZipFileData(): any {
+    return this.zipFileData;
+  }
+  set setZipFileData(val: any) {
+    this.zipFileData = val;
+  }
 
   unSerialize(hex): DataDececode {
     try {

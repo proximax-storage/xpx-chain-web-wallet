@@ -65,6 +65,8 @@ export class CreateGiftComponent implements OnInit {
   blockSendButton: boolean;
   haveBalance: boolean;
   balanceXpx: string;
+  save: boolean;
+  limit: number = 20
   accountList: Account[] = [];
   aggregateTransaction: Transaction;
   constructor(private fb: FormBuilder,
@@ -86,10 +88,12 @@ export class CreateGiftComponent implements OnInit {
     this.notBalance = false;
     this.isMultisig = false;
     this.haveBalance = false;
+    this.save = false;
     this.balanceXpx = '0.000000'
   }
 
   ngOnInit() {
+    this.validateSave()
     this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
     this.subscribeValue();
@@ -134,7 +138,7 @@ export class CreateGiftComponent implements OnInit {
       ]],
       cantCard: ['', [
         Validators.required, Validators.minLength(1),
-        Validators.maxLength(20)
+        Validators.maxLength(this.limit)
       ]],
       password: [
         '',
@@ -150,6 +154,17 @@ export class CreateGiftComponent implements OnInit {
     }, 10);
     // this.convertAccountMultsignForm.get('selectAccount').patchValue('ACCOUNT-2');
   }
+  validateSave() {
+    console.log('this.giftService.typeDonwnload', this.giftService.getTypeDonwnload)
+    if (this.giftService.typeDonwnload) {
+      this.save = true
+    } else {
+      this.save = false
+    }
+
+
+
+  }
   /**
  *
  *
@@ -163,9 +178,9 @@ export class CreateGiftComponent implements OnInit {
       this.createGift.get('cantCard').setValue('');
     } else {
       // tslint:disable-next-line: radix
-      if (parseInt(e.target.value) > 20) {
-        e.target.value = '20';
-        this.createGift.get('cantCard').patchValue('20')
+      if (parseInt(e.target.value) > this.limit) {
+        e.target.value = this.limit.toString();
+        this.createGift.get('cantCard').patchValue(this.limit.toString())
         // tslint:disable-next-line: radix
       } else if (parseInt(e.target.value) < 1) {
         e.target.value = '';
@@ -228,7 +243,7 @@ export class CreateGiftComponent implements OnInit {
     this.subscription.push(this.createGift.get('cantCard').valueChanges.subscribe(val => {
       setTimeout(() => {
         if (!isNaN(parseInt(val))) {
-          if (parseInt(val) <= 20 && parseInt(val) >= 1)
+          if (parseInt(val) <= this.limit && parseInt(val) >= 1)
             this.builder();
         }
       }, 100);
@@ -416,6 +431,14 @@ export class CreateGiftComponent implements OnInit {
         for (let element of this.walletService.currentWallet.accounts) {
           this.buildSelectAccount(element)
         }
+        // if (this.currentAccounts) {
+        //   const currentAccountDef = this.currentAccounts.find(item => item.default)
+        //   if (currentAccountDef) {
+        //     this.createGift.get('selectAccount').setValue(currentAccountDef)
+        //   } else {
+        //     this.createGift.get('selectAccount').setValue(this.currentAccounts[0])
+        //   }
+        // }
       }
   }
   selectAccount($event: Event) {
@@ -454,11 +477,13 @@ export class CreateGiftComponent implements OnInit {
     const validateBuildAccount: validateBuildAccount = this.validateBuildSelectAccount(accountFiltered)
     if (accountFiltered) {
       if (!this.isMultisign(param)) {
+        console.log('paramparam', param.default)
         this.currentAccounts.push({
           label: param.name,
           value: param,
           disabledItem: validateBuildAccount.disabledItem,
           info: validateBuildAccount.info,
+          default: param.default
         });
         // if (this.activateRoute.snapshot.paramMap.get('name') !== null)
 
@@ -666,6 +691,9 @@ export class CreateGiftComponent implements OnInit {
     return bb;
   }
   async builGitf() {
+    this.giftService.setTypeDonwnload = null
+    this.giftService.setImgFileData = null
+    this.giftService.setZipFileData = null
     console.log('builGitf builGitf')
     const zip = new JSZip();
     // console.log(this.accountList)
@@ -680,6 +708,9 @@ export class CreateGiftComponent implements OnInit {
       qr.make();
       imgZip = await this.draw(qr.createDataURL(), this.descrip, this.amountFormatterSimple(this.realAmount))
       saveAs(new Blob([this.dataURItoBlob(imgZip)], { type: "image/jpeg" }), "Gitf Card Sirius.jpeg")
+      this.giftService.setTypeDonwnload = 'image/jpeg'
+      this.giftService.setImgFileData = this.dataURItoBlob(imgZip);
+      this.validateSave()
       return
     }
     for (let item of this.accountList) {
@@ -699,8 +730,26 @@ export class CreateGiftComponent implements OnInit {
       }).then(async (content: any) => {
         const fileName = `Gift Card Sirius.zip`;
         saveAs(content, fileName);
+        this.giftService.setTypeDonwnload = 'zip'
+        this.giftService.setZipFileData = content;
+        this.validateSave()
       });
     }
+
+
+
+
+  }
+
+  donwnload() {
+    console.log('giftServicegiftService', this.giftService.getImgFileData)
+    if (this.giftService.getTypeDonwnload === 'image/jpeg') {
+      saveAs(new Blob([this.giftService.getImgFileData], { type: "image/jpeg" }), "Gitf Card Sirius (copy).jpeg")
+    } else {
+      const fileName = `Gift Card Sirius (copy).zip`;
+      saveAs(this.giftService.getZipFileData, fileName);
+    }
+
   }
 
   /**
