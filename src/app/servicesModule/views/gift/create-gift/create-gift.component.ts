@@ -485,7 +485,6 @@ export class CreateGiftComponent implements OnInit {
     const validateBuildAccount: validateBuildAccount = this.validateBuildSelectAccount(accountFiltered)
     if (accountFiltered) {
       if (!this.isMultisign(param)) {
-        console.log('paramparam', param.default)
         this.currentAccounts.push({
           label: param.name,
           value: param,
@@ -627,6 +626,39 @@ export class CreateGiftComponent implements OnInit {
     return mosaics;
   }
 
+
+  getStatusTransaction(hash: string) {
+
+  }
+
+  /**
+   *
+   *
+   * @param {string} hash
+   * @memberof DataBridgeService
+   */
+  setTimeOutValidateTransaction(hash: string): void {
+    console.log('hash', hash)
+    setTimeout(async () => {
+      const exist = (this.transactionReady.find(x => x.hash === hash)) ? true : false;
+      // this.subscription['transactionStatus'].unsubscribe()
+      if (!exist) {
+        this.proximaxProvider.getTransactionStatus(hash).subscribe(status => {
+          this.sharedService.showWarning('', status.status.split('_').join(' '));
+        }, error => {
+          this.sharedService.showWarning(
+            '',
+            'An error has occurred with your transaction'
+          );
+          this.reloadBtn = false;
+          this.blockSendButton = false;
+        })
+
+      }
+    }, 10000);
+    // 10000
+  }
+
   /**
      *
      *
@@ -659,7 +691,7 @@ export class CreateGiftComponent implements OnInit {
           this.transactionService.buildTransactionHttp().announce(signedTransaction).subscribe(
             async () => {
               this.getTransactionStatus();
-              this.dataBridge.setTimeOutValidateTransaction(signedTransaction.hash);
+              this.setTimeOutValidateTransaction(signedTransaction.hash);
             }, err => {
               this.reloadBtn = false;
               this.blockSendButton = false;
@@ -773,6 +805,7 @@ export class CreateGiftComponent implements OnInit {
   getTransactionStatus() {
     // Get transaction status
     if (!this.subscription['transactionStatus']) {
+
       this.subscription['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
         statusTransaction => {
           if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
