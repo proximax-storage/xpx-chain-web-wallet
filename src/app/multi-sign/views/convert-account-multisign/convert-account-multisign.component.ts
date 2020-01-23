@@ -722,33 +722,9 @@ export class ConvertAccountMultisignComponent implements OnInit {
         }));
 
       } else {
-        this.walletService.getAccountsInfo$().subscribe(
-          accountInfo => {
-            if (accountInfo) {
-              const account = this.walletService.filterAccountInfo(event.label);
-              const accountValid = (
-                account !== null &&
-                account !== undefined &&
-                account.accountInfo &&
-                account.accountInfo.publicKey !== "0000000000000000000000000000000000000000000000000000000000000000"
-              );
-
-              if (accountValid) {
-                this.convertAccountMultsignForm.get('cosignatory').patchValue(account.accountInfo.publicKey, { emitEvent: true })
-                this.convertAccountMultsignForm.get('contact').patchValue('', { emitEvent: false, onlySelf: true });
-              } else {
-                this.sharedService.showWarning('', 'Cosignatory does not have a public key');
-                this.convertAccountMultsignForm.get('contact').patchValue('', { emitEvent: false, onlySelf: true });
-              }
-
-            } else {
-              this.convertAccountMultsignForm.get('contact').patchValue('', { emitEvent: false, onlySelf: true });
-              this.sharedService.showWarning('', 'Address is not valid');
-
-            }
-          }
-        ).unsubscribe();
-
+        const account = this.walletService.filterAccountWallet(event.label)
+        this.convertAccountMultsignForm.get('cosignatory').patchValue(account.publicAccount.publicKey, { emitEvent: true });
+        this.convertAccountMultsignForm.get('contact').patchValue('', { emitEvent: false, onlySelf: true });
       }
     }
   }
