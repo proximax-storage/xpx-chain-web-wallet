@@ -1174,34 +1174,9 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
           this.sharedService.showWarning('', 'Address is not valid');
         });
       } else {
-        this.subscribeAccountContat = this.walletService.getAccountsInfo$().subscribe(
-          async accountInfo => {
-            if (accountInfo) {
-              const account = this.walletService.filterAccountInfo(event.label);
-              console.log('filterAccountWallet', this.walletService.  filterAccountWallet(event.label))
-              console.log('validate::account:::', account)
-              const accountValid = (
-                account !== null &&
-                account !== undefined &&
-                account.accountInfo &&
-                account.accountInfo.publicKey !== '0000000000000000000000000000000000000000000000000000000000000000'
-              );
-              if (this.subscribeAccountContat) {
-                this.subscribeAccountContat.unsubscribe();
-              }
-              if (accountValid) {
-                this.editAccountMultsignForm.get('cosignatory').patchValue(account.accountInfo.publicKey, { emitEvent: true });
-                this.editAccountMultsignForm.get('contact').patchValue('', { emitEvent: false, onlySelf: true });
-              } else {
-                this.sharedService.showWarning('', 'Cosignatory does not have a public key');
-                this.editAccountMultsignForm.get('contact').patchValue('', { emitEvent: false, onlySelf: true });
-              }
-            } else {
-              this.editAccountMultsignForm.get('contact').patchValue('', { emitEvent: false, onlySelf: true });
-              this.sharedService.showWarning('', 'Address is not valid');
-            }
-          }
-        );
+        const account = this.walletService.filterAccountWallet(event.label)
+        this.editAccountMultsignForm.get('cosignatory').patchValue(account.publicAccount.publicKey, { emitEvent: true });
+        this.editAccountMultsignForm.get('contact').patchValue('', { emitEvent: false, onlySelf: true });
       }
       this.builder();
     }
