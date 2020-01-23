@@ -17,7 +17,7 @@
                   <div class="col-12">
                     <img class="mr-1rem h2em" src="assets/images/img/icon-upload-gray-28h-proximax-sirius-wallet.svg"
                       width="25">
-                    <span class="fs-1-2em color-grey fw-600">Upload Gift Card Sirius</span>
+                    <span class="fs-1-2em color-grey fw-600">Upload Gift Card Redeem</span>
                   </div>
                 </div>
               </label>
@@ -43,7 +43,7 @@
           <div class="col-8 d-flex justify-content-center flex-column mx-auto">
             <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [searchable]="false" [clearable]="false"
               [validateError]="true" class="selectWrapper" [items]="currentAccounts" formControlName="selectAccount"
-              bindLabel="label" placeholder="Select Your Account" (change)="selectAccount($event)">
+              bindLabel="label" placeholder="Select your account" (change)="selectAccount($event)">
               <ng-template ng-option-tmp let-item="item" let-index="index">
                 <b>{{item.label}}</b>
               </ng-template>
@@ -51,7 +51,7 @@
             <!-- VALIDATION -->
             <mdb-error class="ml-1rem">
               <span *ngIf="validateInput('selectAccount').invalid && (validateInput('selectAccount').dirty || validateInput('selectAccount').touched)"
-                class="fs-08rem fw-600 color-error-message">Select Your Account</span>
+                class="fs-08rem fw-600 color-error-message">Select your account</span>
             </mdb-error>
           </div>
         </div>
