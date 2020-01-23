@@ -66,7 +66,6 @@ export class MultiSignService {
     generationHash: any,
     myCosigners: Account[]): SignedTransaction {
     let signedTransaction: SignedTransaction = null
-    console.log('myCosigners', myCosigners)
     if (myCosigners.length > 0) {
       signedTransaction = accountSign.signTransactionWithCosignatories(aggregateTransaction, myCosigners, generationHash)
     } else {
@@ -96,14 +95,14 @@ export class MultiSignService {
   typeSignTxEdit(cosignatoryList: CosignatoryList[], multisigAccountInfo: MultisigAccountInfo, consginerFirmAccountList: ConsginerFirmList[], accounts: AccountsInterface[], signType: number): TypeTx {
     let cantFirm = consginerFirmAccountList.length;
     cantFirm = (cantFirm > 0) ? cantFirm : 1;
-    let Getcosignatory = this.getvalidateCosignatoryList(cosignatoryList, accounts)
+    let getcosignatory = this.getvalidateCosignatoryList(cosignatoryList, accounts)
     let typeTx: TypeTx = { type: null, transactionType: null }
     console.log('minRemoval', multisigAccountInfo.minRemoval)
     console.log('minApproval', multisigAccountInfo.minApproval)
     console.log('cantFirm', cantFirm)
-    console.log('Getcosignatory', Getcosignatory)
+    console.log('Getcosignatory', getcosignatory)
 
-    if (Getcosignatory) {
+    if (getcosignatory) {
       let cantAdd = this.countArray('type', 1, cosignatoryList)
       let cabtRemove = this.countArray('type', 2, cosignatoryList)
       if (cantAdd > 0 && cabtRemove > 0) {
@@ -198,6 +197,5 @@ export interface ConsginerFirmList {
   value: any;
   disabled: boolean;
   info: string;
-  account: AccountsInterface;
-  signatory: boolean
+  account: AccountsInterface
 }

@@ -238,15 +238,54 @@
     <ng-container *ngIf="consginerFirmList.length > 1  && showConsginerFirmList">
       <div class="row mt-1-5rem">
         <div class="col-11 col-md-10 col-lg-9 col-xl-8 mx-auto">
-          <ng-select class="selectWrapper" [items]="consginerFirmList" [maxSelectedItems]="limitSelect" bindLabel="label" labelForId="cosignatorieSign"
-            bindValue="value" placeholder="Cosignatorie sign" formControlName="cosignatorieSign" [multiple]="true">
+          <div class="class row">
+            <div class="col-sm-12 col-md-7 col-lg-7 col-xl-7 mx-auto">
 
-            <!-- <ng-template ng-header-tmp>
-              <div>
-                <button class="btn-select-all btn-link" (click)="onSelectAllconsginerFirm()">Select All</button>
-                <button class="btn-select-all btn-link" (click)="onClearAllconsginerFirm()">Clear All</button>
-              </div>
-            </ng-template> -->
+              <!-- ssss -->
+              <ng-select class="selectWrapper mt-06rem"  [items]="consginerFirmList" bindLabel="label" labelForId="cosignatorieSign"
+                bindValue="value" placeholder="Cosignatorie sign" formControlName="cosignatorieSign">
+                <ng-template ng-option-tmp let-item="item" let-index="index">
+                  <b>{{item.label}}</b>
+                  &nbsp;<b class="color-error-message">{{item.info}}</b>
+                </ng-template>
+                <ng-template ng-footer-tmp>
+                  <span class="fs-08rem color-error-message">
+                    Cosignatory has sufficient balance ({{amountFormatterSimple(totalFee)}} XPX) to cover LockFund Fee
+                  </span>
+
+                </ng-template>
+              </ng-select>
+              <ng-container *ngIf="showSignCosignatory">
+                <span *ngIf="infoBalance.disabled" class="fs-07rem color-error-message">
+                  - {{infoBalance.info}}
+                </span>
+              </ng-container>
+
+            </div>
+            <div class="col-sm-12 col-md-5 col-lg-5 col-xl-5 mx-auto">
+              <ng-select class="selectWrapper" [items]="otherCosignatorieList" [maxSelectedItems]="limitSelect-1"
+                bindLabel="label" labelForId="otherCosignatorie" [multiple]="true" formControlName="otherCosignatorie"
+                bindValue="value" placeholder="Other Cosignatorie">
+
+              </ng-select>
+            </div>
+
+
+          </div>
+
+
+        </div>
+
+        <!-- par de select -->
+
+
+
+
+
+        <!-- <div class="col-11 col-md-10 col-lg-9 col-xl-8 mx-auto">
+          <ng-select class="selectWrapper" [items]="consginerFirmList" [maxSelectedItems]="limitSelect" bindLabel="label"
+            labelForId="cosignatorieSign" bindValue="value" placeholder="Cosignatorie sign" formControlName="cosignatorieSign"
+            [multiple]="true">
             <ng-template ng-label-tmp let-item="item" let-clear="clear">
 
               <span class="ng-value-icon left" (click)="clear(item)" *ngIf="item.disabled !== true">×</span>
@@ -265,14 +304,15 @@
               </span>
 
             </ng-template>
-          </ng-select> 
+          </ng-select>
           <ng-container *ngIf="showSignCosignatory">
-            <span class="fs-08rem">Account sign : {{signCosignatory?.label}}&nbsp;</span> <span *ngIf="infoBalance.disabled" class="fs-07rem color-error-message">
-                - {{infoBalance.info}} 
+            <span class="fs-08rem">Account sign : {{signCosignatory?.label}}&nbsp;</span> <span *ngIf="infoBalance.disabled"
+              class="fs-07rem color-error-message">
+              - {{infoBalance.info}}
             </span>
           </ng-container>
-          
-        </div>
+
+        </div> -->
       </div>
     </ng-container>
 

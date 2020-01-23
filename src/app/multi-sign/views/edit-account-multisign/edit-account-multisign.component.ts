@@ -68,6 +68,8 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
   minRemoveMaxLength = 1;
   minRemoveMinLength = 1;
   mdbBtnAddCosignatory: boolean;
+  otherCosignatorieList: ConsginerFirmList[] = [];
+  otherConsginerFirmAccountList: ConsginerFirmList[] = [];
   publicAccountEdit: PublicAccount;
   publicAccountToConvert: PublicAccount;
   paramsHeader: HeaderServicesInterface = {
@@ -136,6 +138,7 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.createForm();
     this.selectCosignatorieSign();
+    this.selectOtherCosignatorieSign()
     this.booksAddress();
     this.subscribeValueChange();
     this.changeformStatus();
@@ -280,16 +283,30 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
           value: accounts[index].address,
           disabled: infValidate[0].disabled,
           info: infValidate[0].info,
-          account: accounts[index],
-          signatory: false
+          account: accounts[index]
         });
       }
     }
-    if (list.length === 1) {
-      list[0].signatory = true
-    }
+
     return list
   }
+
+  pushOtherConsginerFirmList(id: []): ConsginerFirmList[] {
+
+    const value: ConsginerFirmList[] = [];
+    if (id) {
+      id.forEach((v, index) => {
+        this.otherCosignatorieList.forEach(item => {
+          if (v === item.value) {
+            value.push(item);
+          }
+        });
+
+      });
+    }
+    return value;
+  }
+
 
   /**
    *
@@ -297,12 +314,15 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
    */
   builder() {
     this.infoBalance = { disabled: false, info: '' }
-    const consginerFirmAccountList = (this.consginerFirmAccount) ? [this.consginerFirmAccount] : this.consginerFirmAccountList
+    if (!this.consginerFirmAccount)
+      return
+    const consginerFirmAccountList = this.updateConsginerFirmList([this.consginerFirmAccount], this.otherConsginerFirmAccountList)
+    console.log('consginer Firm Account List:', consginerFirmAccountList)
     this.typeTx = this.multiSignService.typeSignTxEdit(this.getCosignatoryListFilter(1, 2), this.accountInfo.multisigInfo, consginerFirmAccountList, this.walletService.currentWallet.accounts, this.signType)
     if (this.typeTx.transactionType === TransactionType.AGGREGATE_BONDED) {
       this.totalFee = this.feeTransaction + this.feeLockfund;
       this.showLockfund = true
-      const cosignatorySign = (this.signType === 1) ? this.consginerFirmAccount : this.consginerFirmAccountList.find(item => item.signatory)
+      const cosignatorySign = this.consginerFirmAccount
       if (cosignatorySign) {
         this.infoBalance = this.validateBalanceCosignatorySign(cosignatorySign.account, this.totalFee)
       }
@@ -341,6 +361,7 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
     this.editAccountMultsignForm = this.fb.group({
       cosignatory: [''],
       cosignatorieSign: [''],
+      otherCosignatorie: [''],
       contact: [''],
       minApprovalDelta: [1, [
         Validators.required, Validators.minLength(this.minApprovaMinLength),
@@ -394,6 +415,7 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
     this.editAccountMultsignForm.reset({
       cosignatory: '',
       cosignatorieSign: '',
+      otherCosignatorie: '',
       contact: '',
       minApprovalDelta: 1,
       minRemovalDelta: 1,
@@ -436,11 +458,11 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
    */
   editIntoMultisigTransaction() {
     if (this.editAccountMultsignForm.valid && this.cosignatoryList.length > 0 && !this.blockSend) {
+      console.log('entron entro')
       if (this.infoBalance.disabled)
         return this.sharedService.showWarning('LockFund', this.infoBalance.info);
-      // this.blockSend = true;
+      this.blockSend = true;
       let common: any = { password: this.editAccountMultsignForm.get('password').value };
-      this.consginerFirmAccount = (this.signType === 1) ? this.consginerFirmAccount : this.consginerFirmAccountList.find(item => item.signatory);
       if (this.walletService.decrypt(common, this.consginerFirmAccount.account)) {
         const accountToConvertSign = Account.createFromPrivateKey(common.privateKey, this.consginerFirmAccount.account.network);
         let myCosigners: AccountsInterface[] = []
@@ -448,19 +470,10 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
         if (this.signType === 1) {
           myCosigners = this.multiSignService.myCosigners(this.getCosignatoryListFilter(1, 2), this.walletService.currentWallet.accounts).filter(item => item.address !== this.consginerFirmAccount.account.address)
         } else {
-          // console.log("estoy aca")
-          // myCosigners = this.consginerFirmAccountList.filter(item => !item.signatory).map(key => key.account);
-          // otherCosigners = this.multiSignService.myCosigners(this.getCosignatoryListFilter(1, 2), this.walletService.currentWallet.accounts).filter(item => item.address !== this.consginerFirmAccount.account.address)
-          // myCosigners = this.filterArrayUnic(this.consginerFirmAccountList.filter(item => !item.signatory).map(key => key.account), this.multiSignService.myCosigners(this.getCosignatoryListFilter(1, 2), this.walletService.currentWallet.accounts).filter(item => item.address !== this.consginerFirmAccount.account.address), 'address')
-          myCosigners = this.consginerFirmAccountList.filter(item => !item.signatory).map(key => key.account);
-          otherCosigners = this.filterArrayUnic(this.multiSignService.myCosigners(this.getCosignatoryListFilter(1, 1), this.walletService.currentWallet.accounts).filter(item => item.address !== this.consginerFirmAccount.account.address), this.consginerFirmAccountList.filter(item => !item.signatory).map(key => key.account), 'address')
+          myCosigners = this.otherConsginerFirmAccountList.map(key => key.account)
+          otherCosigners = this.filterArrayUnic(this.multiSignService.myCosigners(this.getCosignatoryListFilter(1, 1), this.walletService.currentWallet.accounts).filter(item => item.address !== this.consginerFirmAccount.account.address), myCosigners, 'address')
 
         }
-        // console.log('consginerFirmAccount', this.consginerFirmAccount)
-        // console.log('keloque', keloque)
-        // console.log('signType', this.signType)
-        // console.log('myCosigners', myCosigners)
-        // console.log('otherCosigners', otherCosigners)
         const AccountMyCosigners: Account[] = [];
         if (myCosigners.length > 0) {
           for (let item of myCosigners) {
@@ -477,21 +490,28 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
           }
         }
         common = '';
-        // console.log('consginerFirmAccount', this.consginerFirmAccount)
-        // console.log('AccountMyCosigners', AccountMyCosigners)
-        // console.log('accountToConvertSign', accountToConvertSign)
-        // console.log('typeCosi', this.signType)
+        console.log('consginerFirmAccount', this.consginerFirmAccount)
+        console.log('AccountMyCosigners', AccountMyCosigners)
+        console.log('accountToConvertSign', accountToConvertSign)
+        console.log('typeCosi', this.signType)
+        console.log('this.typeTx.transactionType', this.typeTx.transactionType)
         const signedTransaction = this.multiSignService.signedTransaction(
           accountToConvertSign,
           this.aggregateTransaction,
           this.dataBridge.blockInfo.generationHash,
           AccountMyCosigners)
+
         if (this.typeTx.transactionType === TransactionType.AGGREGATE_BONDED) {
           const hashLockSigned = this.transactionService.buildHashLockTransaction(signedTransaction, accountToConvertSign, this.dataBridge.blockInfo.generationHash)
           this.hashLock(hashLockSigned, signedTransaction)
         } else {
           this.announceAggregateComplete(signedTransaction)
         }
+
+        // setTimeout(() => {
+        //   this.blockSend = false;
+        // }, 1000);
+
       } else {
         this.blockSend = false;
       }
@@ -757,14 +777,6 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
     return value[0];
   }
 
-  markSign(id, array: ConsginerFirmList[]) {
-    this.consginerFirmAccountList = this.updateConsginerFirmList(id, array)
-    const signCosignatory = this.consginerFirmAccountList.find(item => item.signatory)
-    if (signCosignatory)
-      this.signCosignatory = signCosignatory
-    this.builder()
-  }
-
   modifyMultisigAccountTransaction(): ModifyMultisigAccountTransaction {
     let modifyobject: Modifyobject;
     const valor = this.multiSignService.calcMinDelta(
@@ -830,31 +842,6 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
     }
   }
 
-  pushConsginerFirmList(id: []): ConsginerFirmList[] {
-    const value: ConsginerFirmList[] = [];
-    if (id) {
-      id.forEach((v, index) => {
-        this.consginerFirmList.forEach(item => {
-          if (v === item.value) {
-            value.push(item);
-          }
-        });
-
-      });
-    }
-    const firm = value.filter(item => item.signatory === true)
-    if (firm.length === 0 && value.length > 0) {
-      value[0].signatory = true
-    }
-    else if (firm.length > 1 && value.length > 0) {
-      value.filter(item => item.signatory === true).map((item: any) => {
-        item.signatory = false;
-      })
-      value[0].signatory = true
-    }
-    return value;
-  }
-
   /**
    *
    *
@@ -875,6 +862,23 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
     // this.clearData();
   }
 
+  updateConsginerFirmList(array1: ConsginerFirmList[], array2: ConsginerFirmList[]): ConsginerFirmList[] {
+    const value: ConsginerFirmList[] = [];
+    for (let item of array1) {
+      value.push(item)
+    }
+    for (let item of array2) {
+      value.push(item)
+    }
+    return value
+  }
+
+  builderOtherCosignatorie(id) {
+    if (id) {
+      this.otherCosignatorieList = this.consginerFirmList.filter(item => item.value !== id)
+    }
+  }
+
   /**
    * 
    * @memberof EditAccountMultisignComponent
@@ -882,14 +886,31 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
   selectCosignatorieSign() {
     this.editAccountMultsignForm.get('cosignatorieSign').valueChanges.subscribe(
       id => {
-        this.showSignCosignatory = false
-        this.consginerFirmAccountList = this.pushConsginerFirmList(id)
-        const signCosignatory = this.consginerFirmAccountList.find(item => item.signatory)
+        this.showSignCosignatory = false;
+        this.editAccountMultsignForm.get('otherCosignatorie').setValue('', {
+          emitEvent: false
+        })
+        // this.consginerFirmAccountList = this.pushConsginerFirmList(id)
+        const signCosignatory = this.consginerFirmList.find(item => item.value === id)
         if (signCosignatory) {
-          this.showSignCosignatory = true
-          this.signCosignatory = signCosignatory
+          this.showSignCosignatory = true;
+          this.consginerFirmAccount = signCosignatory;
         }
+        this.builderOtherCosignatorie(id)
+        this.builder()
+      }
+    );
+  }
 
+  /**
+   * 
+   * @memberof EditAccountMultisignComponent
+   */
+  selectOtherCosignatorieSign() {
+    this.editAccountMultsignForm.get('otherCosignatorie').valueChanges.subscribe(
+      id => {
+        this.otherConsginerFirmAccountList = []
+        this.otherConsginerFirmAccountList = this.pushOtherConsginerFirmList(id)
         this.builder()
       }
     );
@@ -955,18 +976,6 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
     }
   }
 
-  updateConsginerFirmList(id: any, array: ConsginerFirmList[]): ConsginerFirmList[] {
-    const value: ConsginerFirmList[] = [];
-    array.forEach(element => {
-      if (element.value === id) {
-        element.signatory = true
-      } else {
-        element.signatory = false
-      }
-      value.push(element)
-    });
-    return value
-  }
 
   /**
    *
@@ -1066,7 +1075,7 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
       this.consginerFirmList = this.builConsginerList(this.walletService.currentWallet.accounts)
       if (this.consginerFirmList.length === 1) {
         this.signType = 1;
-        this.consginerFirmAccount = this.consginerFirmList.find(item => item.signatory)
+        this.consginerFirmAccount = this.consginerFirmList[0]
       } else {
         this.signType = 2;
       }
@@ -1169,6 +1178,8 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
           async accountInfo => {
             if (accountInfo) {
               const account = this.walletService.filterAccountInfo(event.label);
+              console.log('filterAccountWallet', this.walletService.  filterAccountWallet(event.label))
+              console.log('validate::account:::', account)
               const accountValid = (
                 account !== null &&
                 account !== undefined &&
@@ -1236,18 +1247,7 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
 
     this.editAccountMultsignForm.controls['minRemovalDelta'].setValidators(validators);
     this.editAccountMultsignForm.controls['minRemovalDelta'].updateValueAndValidity({ emitEvent: false, onlySelf: true });
-
   }
-  // filter select all options
-  // onSelectAllconsginerFirm() {
-  //   // const selected = this.consginerFirmList.filter(item => !item.disabled).map(item => item.value);
-  //   const selected = this.consginerFirmList.map(item => item.value);
-  //   this.editAccountMultsignForm.get('cosignatorieSign').patchValue(this.cleanArray(selected));
-  // }
-
-  // onClearAllconsginerFirm() {
-  //   this.editAccountMultsignForm.get('cosignatorieSign').patchValue([]);
-  // }
 }
 
 /**
@@ -1264,8 +1264,7 @@ export interface ConsginerFirmList {
   value: any;
   disabled: boolean;
   info: string;
-  account: AccountsInterface;
-  signatory: boolean
+  account: AccountsInterface
 }
 
 /**
