@@ -40,7 +40,7 @@
       <ng-container *ngIf="consginerFirmList.length === 1">
         <div class="col-11 col-md-10 col-lg-8 mx-auto d-flex justify-content-start pt-05rem pb-05rem">
           <span class="fs-08rem fw-600">Cosignatory Account:&nbsp;</span>
-          <span class="fs-08rem">{{consginerFirmAccount.address}}</span>
+          <span class="fs-08rem">{{consginerFirmAccount?.label}}</span>
         </div>
       </ng-container>
 
@@ -185,7 +185,7 @@
               <div class="col-12 text-center">Approve Transaction</div>
               <div class="col-12">
                 <div class="md-form form-sm mt-03rem mb-0rem">
-                  <input (keypress)="preventNumbers($event)" onkeydown="return false"  max="{{minApprovaMaxLength}}" min="{{minApprovaMinLength}}"
+                  <input (keypress)="preventNumbers($event)" onkeydown="return false" max="{{minApprovaMaxLength}}" min="{{minApprovaMinLength}}"
                     formControlName="minApprovalDelta" required mdbInputDirective mdbValidate [validateSuccess]="true"
                     [validateError]="true" type="number" id="minApprovalDelta" class="form-control form-control-sm input-border text-center"
                     placeholder="Min Approval" onkeyup="javascript:this.value=this.value.toLowerCase();">
@@ -210,7 +210,7 @@
               <div class="col-12 text-center">Delete Users</div>
               <div class="col-12">
                 <div class="md-form form-sm mt-03rem mb-0rem">
-                  <input (keypress)="preventNumbers($event)" onkeydown="return false"  max="{{minApprovaMaxLength}}" min="{{minApprovaMinLength}}"
+                  <input (keypress)="preventNumbers($event)" onkeydown="return false" max="{{minApprovaMaxLength}}" min="{{minApprovaMinLength}}"
                     formControlName="minRemovalDelta" required mdbInputDirective mdbValidate [validateSuccess]="true"
                     [validateError]="true" type="number" id="minRemovalDelta" class="form-control form-control-sm input-border text-center"
                     placeholder="Min Removal" onkeyup="javascript:this.value=this.value.toLowerCase();">
@@ -238,12 +238,65 @@
     <ng-container *ngIf="consginerFirmList.length > 1  && showConsginerFirmList">
       <div class="row mt-1-5rem">
         <div class="col-11 col-md-10 col-lg-9 col-xl-8 mx-auto">
-          <ng-select mdbInputDirective mdbValidate [clearable]="false" class="selectWrapper" [items]="consginerFirmList"
-            bindLabel="label" labelForId="cosignatorieSign" bindValue="value" placeholder="Cosignatorie sign"
-            formControlName="cosignatorieSign" (change)="selectCosignatorieSign($event)">
+          <div class="class row">
+            <div class="col-sm-12 col-md-7 col-lg-7 col-xl-7 mx-auto">
+
+              <!-- ssss -->
+              <ng-select class="selectWrapper mt-06rem"  [items]="consginerFirmList" bindLabel="label" labelForId="cosignatorieSign"
+                bindValue="value" placeholder="Cosignatorie sign" formControlName="cosignatorieSign">
+                <ng-template ng-option-tmp let-item="item" let-index="index">
+                  <b>{{item.label}}</b>
+                  &nbsp;<b class="color-error-message">{{item.info}}</b>
+                </ng-template>
+                <ng-template ng-footer-tmp>
+                  <span class="fs-08rem color-error-message">
+                    Cosignatory has sufficient balance ({{amountFormatterSimple(totalFee)}} XPX) to cover LockFund Fee
+                  </span>
+
+                </ng-template>
+              </ng-select>
+              <ng-container *ngIf="showSignCosignatory">
+                <span *ngIf="infoBalance.disabled" class="fs-07rem color-error-message">
+                  - {{infoBalance.info}}
+                </span>
+              </ng-container>
+
+            </div>
+            <div class="col-sm-12 col-md-5 col-lg-5 col-xl-5 mx-auto">
+              <ng-select class="selectWrapper" [items]="otherCosignatorieList" [maxSelectedItems]="limitSelect-1"
+                bindLabel="label" labelForId="otherCosignatorie" [multiple]="true" formControlName="otherCosignatorie"
+                bindValue="value" placeholder="Other Cosignatorie">
+
+              </ng-select>
+            </div>
+
+
+          </div>
+
+
+        </div>
+
+        <!-- par de select -->
+
+
+
+
+
+        <!-- <div class="col-11 col-md-10 col-lg-9 col-xl-8 mx-auto">
+          <ng-select class="selectWrapper" [items]="consginerFirmList" [maxSelectedItems]="limitSelect" bindLabel="label"
+            labelForId="cosignatorieSign" bindValue="value" placeholder="Cosignatorie sign" formControlName="cosignatorieSign"
+            [multiple]="true">
+            <ng-template ng-label-tmp let-item="item" let-clear="clear">
+
+              <span class="ng-value-icon left" (click)="clear(item)" *ngIf="item.disabled !== true">×</span>
+              <b>{{item.label}}</b>&nbsp;&nbsp;&nbsp;&nbsp;
+              <i [style.color]="getColorCosignatory(item.signatory)" title="Mark To Sign" (click)="markSign(item.value ,consginerFirmList )"
+                style="cursor: pointer;" class="fa fa-pencil fs-1rem" aria-hidden="true"></i>
+            </ng-template>
 
             <ng-template ng-option-tmp let-item="item" let-index="index">
-              <b>{{item.label}}</b> &nbsp;<b class="color-error-message">{{item.info}}</b>
+              <b>{{item.label}}</b>
+              &nbsp;<b class="color-error-message">{{item.info}}</b>
             </ng-template>
             <ng-template ng-footer-tmp>
               <span class="fs-08rem color-error-message">
@@ -252,41 +305,17 @@
 
             </ng-template>
           </ng-select>
+          <ng-container *ngIf="showSignCosignatory">
+            <span class="fs-08rem">Account sign : {{signCosignatory?.label}}&nbsp;</span> <span *ngIf="infoBalance.disabled"
+              class="fs-07rem color-error-message">
+              - {{infoBalance.info}}
+            </span>
+          </ng-container>
 
-        </div>
+        </div> -->
       </div>
     </ng-container>
 
-    <!-- FEE -->
-    <!-- <div class="row mt-1-5rem">
-      <div class="col-11 col-md-10 col-lg-9 col-xl-8 mx-auto">
-        <div class="row">
-          <div class="col-12 col-sm-6">
-            <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
-              <div class="row">
-                <div class="col-12 text-center">
-                  <span>Unconfirmed/Recommended Fee: <br></span>
-                  <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" alt="">
-                  <span class="fs-09rem">{{amountFormatterSimple(feeTransaction)}} XPX </span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-12 col-sm-6">
-            <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
-              <div class="row">
-                <div class="col-12 text-center">
-                  <span>Lockfund: <br> </span>
-                  <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" alt="">
-                  <span class="fs-09rem">{{amountFormatterSimple(feeLockfund)}} XPX</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div> -->
     <div class="row mt-1-5rem">
       <div class="col-11 col-md-10 col-lg-8 mx-auto">
         <div class="row">
@@ -302,7 +331,7 @@
             </div>
           </div>
 
-          <div class="col-12 col-md-6 mx-auto">
+          <div *ngIf="showLockfund" class="col-12 col-md-6 mx-auto">
             <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
               <div class="row">
                 <div class="col-12 d-flex align-items-center">
@@ -316,7 +345,6 @@
         </div>
       </div>
     </div>
-
 
     <!-- PASSWORD -->
     <div class="row mt-1-5rem">
@@ -333,28 +361,6 @@
         </div>
       </div>
     </div>
-
-    <!-- <div class="row">
-      <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
-
-        <div class="row">
-          <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-            <button [disabled]="editAccountMultsignForm.status=='DISABLED'" mdbBtn type="button" rounded="true"
-              mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md" (click)="clearForm()">
-              <span class="fs-1-2em color-white">Clear</span>
-            </button>
-          </div>
-          <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-            <button [disabled]="editAccountMultsignForm.invalid || cosignatoryList.length == 0" mdbBtn type="submit"
-              rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
-              <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
-                *ngIf="blockSend"></span>
-              <span class="fs-1-2em color-white">Send</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div> -->
 
     <!-- Buttons -->
     <div class="row mt-1-5rem">
