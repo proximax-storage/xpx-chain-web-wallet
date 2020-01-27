@@ -9,6 +9,9 @@ import { ExportWalletComponent } from './views/wallet/export-wallet/export-walle
 import { BlockchainComponent } from './views/nodes/blockchain/blockchain.component';
 import { DeleteWalletComponent } from './views/wallet/delete-wallet/delete-wallet.component';
 import { NotificationComponent } from './views/notification/notification.component';
+import { CreateGiftComponent } from './views/gift/create-gift/create-gift.component';
+import { RedeemGiftCardComponent } from './views/gift/redeem-gift-card/redeem-gift-card.component';
+import { ConfirmRedeemGitfCardComponent } from './components/confirm-redeem-gitf-card/confirm-redeem-gitf-card.component';
 
 @NgModule({
   declarations: [
@@ -20,12 +23,18 @@ import { NotificationComponent } from './views/notification/notification.compone
     BlockchainComponent,
     ExportWalletComponent,
     DeleteWalletComponent,
-    NotificationComponent
+    NotificationComponent,
+    CreateGiftComponent,
+    RedeemGiftCardComponent,
+    ConfirmRedeemGitfCardComponent
   ],
   schemas: [NO_ERRORS_SCHEMA],
   imports: [
     CoreModule,
     ServicesModuleRoutingModule
+  ],
+  exports: [
+    ConfirmRedeemGitfCardComponent
   ]
 })
 export class ServicesModule { }

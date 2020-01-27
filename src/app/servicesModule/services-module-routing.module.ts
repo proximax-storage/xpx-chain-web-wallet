@@ -9,6 +9,8 @@ import { ExportWalletComponent } from './views/wallet/export-wallet/export-walle
 import { BlockchainComponent } from './views/nodes/blockchain/blockchain.component';
 import { DeleteWalletComponent } from './views/wallet/delete-wallet/delete-wallet.component';
 import { NotificationComponent } from './views/notification/notification.component';
+import { CreateGiftComponent } from './views/gift/create-gift/create-gift.component';
+import { RedeemGiftCardComponent } from './views/gift/redeem-gift-card/redeem-gift-card.component';
 
 const routes: Routes = [
   {
@@ -31,7 +33,30 @@ const routes: Routes = [
         override: true,
       }
     }
-  }, {
+  },{
+    path: AppConfig.routes.createGift,
+    component: CreateGiftComponent,
+    data: {
+      meta: {
+        title: 'gift.title',
+        description: 'gift.text',
+        override: true,
+      }
+    }
+  },
+  {
+    path: AppConfig.routes.redeemGiftCard,
+    component: RedeemGiftCardComponent,
+    data: {
+      meta: {
+        title: 'redeem-gift.title',
+        description: 'redeem-gift.text',
+        override: true,
+      }
+    }
+  }
+  
+  , {
     path: AppConfig.routes.addressBook,
     component: ListContactsComponent,
     data: {

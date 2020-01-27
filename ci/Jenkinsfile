@@ -1,13 +1,12 @@
 pipeline {
   agent {
     node {
-      label 'docker-build-node-t3Xlarge'
+      label 'docker-c5-xlarge'
     }
   }
 
   environment {
     npm_config_cache = "npm-cache"
-    nexusAuth = credentials('jenkins-nexus-npm')
   }
 
   options {
@@ -17,12 +16,6 @@ pipeline {
   stages {
     stage('Build') {
       steps {
-        // echo 'Writing Nexus Credentials'
-        // script {
-        //   // Writes a multi-line .npmrc file with the authentication hash for Nexus
-        //   writeFile file: '.npmrc', text: 'registry=https://nexus.internal.proximax.io/repository/npm-group/\n@scope:registry=https://nexus.internal.proximax.io/repository/npm-private/\nemail=jenkins@proximax.io\nalways-auth=true\n_auth=' + env.nexusAuth + '\n'
-        // }
-
         echo 'Starting Docker Container'
         withDockerContainer(image: 'node:10.16') {
           echo 'Installing dependencies'
@@ -33,13 +26,14 @@ pipeline {
           echo 'Patching dependency'
           sh 'sed -i "/node:/c\\\\node: { crypto: true, stream: true, fs: \\\'empty\\\', net: \\\'empty\\\', tls: \\\'empty\\\'}" ./node_modules/@angular-devkit/build-angular/src/angular-cli-files/models/webpack-configs/browser.js'
 
-          echo 'Patching tsjs dependency'
-          sh 'sed -i "s/this.apiUrl = builder.toString()/this.apiUrl = builder.toString().match(\\/[^\\/].*[^\\/]\\/g)[0]/" ./node_modules/tsjs-chain-xipfs-sdk/build/main/src/lib/connection/blockchain-network-connection.js'
-          sh 'cat ./node_modules/tsjs-chain-xipfs-sdk/build/main/src/lib/connection/blockchain-network-connection.js'
-
-          // TODO: Build production version in the future
-          echo 'Building'
-          sh './node_modules/@angular/cli/bin/ng build --aot --prod --build-optimizer=true --vendor-chunk=true'
+          echo 'Building for Testnet'
+          sh 'npm run build:optimizer-testnet'
+          sh 'mv dist/proximax-sirius-wallet/ dist/proximax-testnet-sirius-wallet'
+          
+          echo 'Building for Mainnet'
+          sh 'npm run build:optimizer-mainnet'
+          sh 'mv dist/proximax-sirius-wallet/ dist/proximax-mainnet-sirius-wallet'
+          sh "tar cJfv proximax-web-wallet-${env.GIT_BRANCH}.tar.xz dist"
         }
         echo 'Leaving Container'
       }
@@ -53,50 +47,40 @@ pipeline {
       }
     }
 
-    stage('Deploy to Staging') {
-      when {
-        branch 'staging' // Deploy only if tagged with release-testnet*
-      }
-
+    stage('Archive Artifact') {
       steps {
-        echo 'Deploying'
-
-        echo 'Managing S3'
-
-        // AWS Plugin cannot sync. It must clear the bucket then reupload
-        withAWS(credentials: 'jenkins-ecr', region: 'ap-southeast-2') {
-          echo 'Deleting old files'
-          s3Delete bucket: 'bcstagingwallet.xpxsirius.io', path: './'
-
-          echo 'Uploading new files'
-          s3Upload bucket: 'bcstagingwallet.xpxsirius.io', acl: 'PublicRead', file: 'dist/proximax-sirius-wallet/', sseAlgorithm: 'AES256'
-        }
-
-        echo 'Managing CloudFront'
-
-        withAWS(credentials: 'jenkins-ecr') {
-          echo 'Invalidating CloudFront'
-          cfInvalidate distribution: 'E2NM10XJGT15TZ', paths: ['/*']
-        }
+        echo 'Archiving Artifact'
+        archiveArtifacts "proximax-web-wallet-${env.GIT_BRANCH}.tar.xz"
       }
-
       post {
         success {
           slackSend channel: '#devops',
             color: 'good',
-            message: "Branch *${env.GIT_BRANCH}* build of *${currentBuild.fullDisplayName}* completed successfully :100:\nDeployed to https://bcstagingwallet.xpxsirius.io"
-        }
-        failure {
-          slackSend channel: '#devops',
-            color: 'bad',
-            message: "Branch *${env.GIT_BRANCH}* of *${currentBuild.fullDisplayName}* FAILED :scream:"
+            message:  "Branch *${env.GIT_BRANCH}* build of *${currentBuild.fullDisplayName}* completed successfully :100:\nArtifact stored in S3"
         }
       }
     }
 
-    stage('Deploy Testnet Tag') {
+    stage('Promotion to Testnet') {
       when {
-        tag 'release-testnet*' // Deploy only if tagged with release-testnet*
+        tag 'release-v*'
+      }
+      steps {
+        slackSend channel: '#devops',
+             color: 'bad',
+             message: "*${currentBuild.fullDisplayName}* is awaiting user input confirmation for testnet deployment"
+        script {
+          timeout(time: 1, unit: 'HOURS') {
+          env.DEPLOY_TO_TESTNET = input message: "User Input Required",
+            parameters: [choice(name: 'Deploy to Testnet', choices: 'no\nyes', description: 'Choose yes if you want to deploy to Testnet')]
+          }
+        }
+      }
+    }
+
+    stage('Deploy to Testnet') {
+      when {
+        environment name: 'DEPLOY_TO_TESTNET', value: 'yes'
       }
 
       steps {
@@ -110,7 +94,7 @@ pipeline {
           s3Delete bucket: 'bctestnetwallet.xpxsirius.io', path: './'
 
           echo 'Uploading new files'
-          s3Upload bucket: 'bctestnetwallet.xpxsirius.io', acl: 'PublicRead', file: 'dist/proximax-sirius-wallet/', sseAlgorithm: 'AES256'
+          s3Upload bucket: 'bctestnetwallet.xpxsirius.io', acl: 'PublicRead', file: 'dist/proximax-testnet-sirius-wallet/', sseAlgorithm: 'AES256'
         }
 
         echo 'Managing CloudFront'
@@ -135,13 +119,29 @@ pipeline {
       }
     }
 
-    stage('Deploy Mainnet Tag') {
+    stage('Promotion to Mainnet') {
       when {
-        tag 'release-mainnet*' // Deploy only if tagged with release-testnet*
+        tag 'release-v*'
+      }
+      steps {
+        slackSend channel: '#devops',
+             color: 'bad',
+             message: "*${currentBuild.fullDisplayName}* is awaiting user input confirmation for mainnet deployment"
+        script {
+          timeout(time: 1, unit: 'HOURS') {
+          env.DEPLOY_TO_MAINNET = input message: "User Input Required",
+            parameters: [choice(name: 'Deploy to Mainnet', choices: 'no\nyes', description: 'Choose yes if you want to deploy to Mainnet')]
+          }
+        }
+      }
+    }
+
+    stage('Deploy to Mainnet') {
+      when {
+        environment name: 'DEPLOY_TO_MAINNET', value: 'yes'
       }
 
       steps {
-        echo 'Deploying'
 
         echo 'Managing S3'
 
@@ -151,7 +151,7 @@ pipeline {
           s3Delete bucket: 'bcmainnetwallet.xpxsirius.io', path: './'
 
           echo 'Uploading new files'
-          s3Upload bucket: 'bcmainnetwallet.xpxsirius.io', acl: 'PublicRead', file: 'dist/proximax-sirius-wallet/', sseAlgorithm: 'AES256'
+          s3Upload bucket: 'bcmainnetwallet.xpxsirius.io', acl: 'PublicRead', file: 'dist/proximax-mainnet-sirius-wallet/', sseAlgorithm: 'AES256'
         }
 
         echo 'Managing CloudFront'

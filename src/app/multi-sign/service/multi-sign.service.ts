@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AggregateTransaction, PublicAccount, Transaction, Deadline, TransactionType, Address } from 'tsjs-xpx-chain-sdk';
+import { AggregateTransaction, PublicAccount, Transaction, Deadline, TransactionType, Address, SignedTransaction, Account, MultisigAccountInfo } from 'tsjs-xpx-chain-sdk';
 import { environment } from 'src/environments/environment';
 import { AccountsInterface } from 'src/app/wallet/services/wallet.service';
 
@@ -12,14 +12,18 @@ export class MultiSignService {
   minApprovaMinCalc: number;
   constructor() { }
 
-  aggregateTransactionType(arrayTx: arrayTx[], transactionType: TransactionType, currentAccountToConvert: AccountsInterface): AggregateTransaction {
+
+
+  aggregateTransactionType(arrayTx: arrayTx[], transactionType: TypeTx, currentAccountToConvert: AccountsInterface): AggregateTransaction {
     const innerTxn = [];
     arrayTx.forEach(element => {
       innerTxn.push(element.tx.toAggregate(element.signer));
     });
     let aggregateTransaction: AggregateTransaction = null
-    switch (transactionType) {
+    console.log('type:', transactionType.transactionType)
+    switch (transactionType.transactionType) {
       case TransactionType.AGGREGATE_BONDED:
+        console.log('AGGREGATE_BONDED  AggregateTransaction')
         aggregateTransaction = AggregateTransaction.createBonded(
           Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
           innerTxn,
@@ -27,45 +31,137 @@ export class MultiSignService {
         );
         break
       case TransactionType.AGGREGATE_COMPLETE:
+        console.log('AGGREGATE_COMPLETE  AggregateTransaction')
+        aggregateTransaction = AggregateTransaction.createComplete(
+          Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
+          innerTxn,
+          currentAccountToConvert.network,
+          []
+        );
 
         break
-
     }
     return aggregateTransaction;
 
-
-
   }
-
-  typeSignTx(cosignatoryList: CosignatoryList[], accounts: AccountsInterface[]) {
-
-    const lengthListCosig = cosignatoryList.length
-    const lengthAccounts = accounts.length
-
-    console.log('cosignatoryList', cosignatoryList.length)
-    console.log('accountsInterface', accounts)
-
-    for (const list of cosignatoryList) {
-      console.log('list')
-
-      accounts.filter(items => list.publicAccount.publicKey === items.publicAccount.publicKey)
-
-
-    }
-
-    return null
-  }
-
-
-
-
 
   calcMinDelta(minApprovalDeltaE: number, minRemovalDeltaE: number, minApprovalDeltaM: number, minRemovalDeltaM: number) {
     return new Object({
       minApprovalDelta: minApprovalDeltaM - minApprovalDeltaE,
       minRemovalDelta: minRemovalDeltaM - minRemovalDeltaE
-
     })
+  }
+  countArray(key: string, value: any, array: any): number {
+    let count = 0;
+    for (let i = 0; i < array.length; ++i) {
+      if (array[i][key] == value)
+        count++;
+    }
+    return count
+
+  }
+
+  signedTransaction(accountSign: Account,
+    aggregateTransaction: AggregateTransaction,
+    generationHash: any,
+    myCosigners: Account[]): SignedTransaction {
+    let signedTransaction: SignedTransaction = null
+    if (myCosigners.length > 0) {
+      signedTransaction = accountSign.signTransactionWithCosignatories(aggregateTransaction, myCosigners, generationHash)
+    } else {
+      signedTransaction = accountSign.sign(aggregateTransaction, generationHash)
+    }
+    return signedTransaction
+  }
+
+  typeSignTxConvert(cosignatoryList: CosignatoryList[], accounts: AccountsInterface[]): TypeTx {
+    let accountsFilter: AccountsInterface[] = []
+    let typeTx: TypeTx = { type: null, transactionType: null }
+    for (const list of cosignatoryList) {
+      const account = accounts.find(items => list.publicAccount.publicKey === items.publicAccount.publicKey)
+      if (account)
+        accountsFilter.push(accounts.find(items => list.publicAccount.publicKey === items.publicAccount.publicKey))
+    }
+    if (accountsFilter === null || accountsFilter === undefined || accountsFilter.length === 0) {
+      typeTx = { type: 0, transactionType: TransactionType.AGGREGATE_BONDED }
+    } else if (accountsFilter.length === cosignatoryList.length) {
+      typeTx = { type: 2, transactionType: TransactionType.AGGREGATE_COMPLETE }
+    } else {
+      typeTx = { type: 1, transactionType: TransactionType.AGGREGATE_BONDED }
+    }
+    return typeTx
+  }
+
+  typeSignTxEdit(cosignatoryList: CosignatoryList[], multisigAccountInfo: MultisigAccountInfo, consginerFirmAccountList: ConsginerFirmList[], accounts: AccountsInterface[], signType: number): TypeTx {
+    let cantFirm = consginerFirmAccountList.length;
+    cantFirm = (cantFirm > 0) ? cantFirm : 1;
+    let getcosignatory = this.getvalidateCosignatoryList(cosignatoryList, accounts)
+    let typeTx: TypeTx = { type: null, transactionType: null }
+    console.log('minRemoval', multisigAccountInfo.minRemoval)
+    console.log('minApproval', multisigAccountInfo.minApproval)
+    console.log('cantFirm', cantFirm)
+    console.log('Getcosignatory', getcosignatory)
+
+    if (getcosignatory) {
+      let cantAdd = this.countArray('type', 1, cosignatoryList)
+      let cabtRemove = this.countArray('type', 2, cosignatoryList)
+      if (cantAdd > 0 && cabtRemove > 0) {
+        console.log('ADD Y REMOVE')
+        if (cantFirm >= multisigAccountInfo.minRemoval && cantFirm >= multisigAccountInfo.minApproval) {
+          typeTx = { type: 2, transactionType: TransactionType.AGGREGATE_COMPLETE }
+        } else {
+          typeTx = { type: 1, transactionType: TransactionType.AGGREGATE_BONDED }
+        }
+      } else if (cantAdd == 0 && cabtRemove == 0) {
+        console.log('NEVER')
+        if (cantFirm >= multisigAccountInfo.minRemoval && cantFirm >= multisigAccountInfo.minApproval) {
+          typeTx = { type: 2, transactionType: TransactionType.AGGREGATE_COMPLETE }
+        } else {
+          typeTx = { type: 1, transactionType: TransactionType.AGGREGATE_BONDED }
+        }
+
+      } else if (cantAdd > 0) {
+        console.log('ADD')
+        if (cantFirm >= multisigAccountInfo.minApproval) {
+          typeTx = { type: 2, transactionType: TransactionType.AGGREGATE_COMPLETE }
+        } else {
+          typeTx = { type: 1, transactionType: TransactionType.AGGREGATE_BONDED }
+        }
+      } else if (cabtRemove > 0) {
+        console.log('REMOVE')
+        if (cantFirm >= multisigAccountInfo.minRemoval) {
+          typeTx = { type: 2, transactionType: TransactionType.AGGREGATE_COMPLETE }
+        } else {
+          typeTx = { type: 1, transactionType: TransactionType.AGGREGATE_BONDED }
+        }
+      }
+    } else {
+      console.log('FORSE')
+      typeTx = { type: 1, transactionType: TransactionType.AGGREGATE_BONDED }
+    }
+    return typeTx
+  }
+
+
+  getvalidateCosignatoryList(cosignatoryList: CosignatoryList[], accounts: AccountsInterface[]) {
+    let accountsFilter: AccountsInterface[] = []
+    for (const list of cosignatoryList) {
+      const account = accounts.find(items => list.publicAccount.publicKey === items.publicAccount.publicKey)
+      if (account)
+        accountsFilter.push(accounts.find(items => list.publicAccount.publicKey === items.publicAccount.publicKey))
+    }
+    return Boolean(accountsFilter.length === cosignatoryList.length)
+  }
+  myCosigners(cosignatoryList: CosignatoryList[], accounts: AccountsInterface[]): AccountsInterface[] {
+    // otherCosigners(cosignatoryList: CosignatoryList[], accounts: AccountsInterface[]): AccountsInterface[] {
+    let myAccountsFilter: AccountsInterface[] = []
+    let otherAccountsFilter: CosignatoryList[] = []
+    for (const list of cosignatoryList) {
+      const myAccount = accounts.find(items => list.publicAccount.publicKey === items.publicAccount.publicKey)
+      if (myAccount)
+        myAccountsFilter.push(myAccount)
+    }
+    return myAccountsFilter
   }
 }
 interface arrayTx { tx: Transaction, signer: PublicAccount }[]
@@ -83,4 +179,23 @@ export interface CosignatoryList {
   type: number,
   disableItem: boolean;
   id: Address;
+}
+/**
+ * @param type - 0 = AGGREGATE_BONDED , 1 = AGGREGATE_BONDED (COSIGNER) , 2 = AGGREGATE_COMPLETE (COSIGNER)
+ * @param transactionType - Transaction type 
+ **/
+export interface TypeTx {
+  type: number,
+  transactionType: number,
+}
+export interface CosignersSignLis {
+  myCosignatory: any
+  otherCosigners: any,
+}
+export interface ConsginerFirmList {
+  label: string;
+  value: any;
+  disabled: boolean;
+  info: string;
+  account: AccountsInterface
 }
