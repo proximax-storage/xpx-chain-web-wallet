@@ -14,6 +14,7 @@ export const AppConfig: Config = {
     blockchain: 'nodes',
     createAccount: 'create-account',
     createApostille: 'create-attestation',
+    createGift :'create-gift',
     convertToAccountMultisign: 'convert-account-multisign',
     createMosaic: 'create-mosaic',
     createNamespace: 'create-namespace',
@@ -45,7 +46,7 @@ export const AppConfig: Config = {
     polls: 'polls',
     renewNamespace: 'renew-namespace',
     renovateNamespace: 'renovate-namespace',
-
+    redeemGiftCard:'redeem-gift-card',
     swapAccountFound: 'swap-account-found',
     swapAccountNis1Found: 'swap-account-nis1-found',
     swapTransactions: 'swap-transactions',
@@ -100,6 +101,7 @@ export interface Config {
     createWallet: string;
     createAccount: string;
     createApostille: string;
+    createGift: string
     dashboard: string;
     deleteAccount:string;
     deleteAccountConfirm:string;
@@ -125,7 +127,7 @@ export interface Config {
     polls: string;
     renewNamespace: string;
     renovateNamespace: string;
-
+    redeemGiftCard:string;
     swapAccountFound: string;
     swapAccountNis1Found: string;
     swapTransactions: string;
