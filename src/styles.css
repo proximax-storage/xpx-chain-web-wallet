@@ -962,6 +962,27 @@ html, body {
   font-size: 16px !important;
   font-weight: bold !important;
 }
+.btn-select-all {
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  margin: 0.375rem;
+  border: 0;
+  border-radius: 0.125rem;
+  cursor: pointer;
+  text-transform: uppercase;
+  white-space: normal;
+  word-wrap: break-word;
+  color: rgb(77, 80, 236);
+}
+
+.btn-select-all.btn-link {
+  box-shadow: none;
+  background-color: transparent;
+}
+
+.btn-select-all:not(:disabled):not(.disabled) {
+  cursor: pointer;
+}
 
 .background-orange {
   background-color: #f2a917 !important;
@@ -1423,6 +1444,7 @@ button.md-toast-close-button {
 .selectWrapper.ng-select.validate-success.validate-error.ng-select-single.ng-select-searchable.ng-select-clearable.ng-dirty.ng-invalid.ng-touched.ng-select .ng-select-container:after {
   border-color: #e06e38 !important;
 }
+
 
 .navbar-toggler-icon {
   height: 25px !important;
