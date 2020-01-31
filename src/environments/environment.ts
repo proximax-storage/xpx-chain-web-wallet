@@ -10,7 +10,7 @@ export const environment = {
   routeNodesJson: 'testnet',
   itemBooksAddress: 'sw-books-testnet',
   version: '0.4.14',
-  cacheVersion: '01',
+  cacheVersion: '02',
   nameKeyBlockStorage: `sw-blocks`,
   nameKeyNodeSelected: `sw-selected-node-testnet`,
   nameKeyWalletStorage: `sw-testnet`,
@@ -22,11 +22,13 @@ export const environment = {
   protocol: `https`,
   protocolWs: `wss`,
   nodeExplorer: 'https://bctestnetexplorer.xpxsirius.io/#/result/hash',
+
+  
   mosaicXpxInfo: {
     name: 'prx.xpx',
     coin: 'XPX',
-    id: '13bfc518e40549d7',
-    mosaicIdUint64: [3825551831, 331334936],
+    id: '6ad1fa3645ee1987',
+    mosaicIdUint64: [1173232007, 1792145974],
     namespaceIdUint64: [2434186742, 3220914849],
     namespaceId: 'bffb42a19116bdf6',
     divisibility: 6
