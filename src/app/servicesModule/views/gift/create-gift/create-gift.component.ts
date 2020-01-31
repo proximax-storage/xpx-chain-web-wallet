@@ -632,19 +632,27 @@ export class CreateGiftComponent implements OnInit {
   }
 
   /**
-   *
-   *
-   * @param {string} hash
-   * @memberof DataBridgeService
-   */
+     *
+     *
+     * @param {string} hash
+     * @memberof DataBridgeService
+     */
   setTimeOutValidateTransaction(hash: string): void {
-    console.log('hash', hash)
+    console.log('hash setTimeOutValidateTransaction', hash)
     setTimeout(async () => {
       const exist = (this.transactionReady.find(x => x.hash === hash)) ? true : false;
       // this.subscription['transactionStatus'].unsubscribe()
       if (!exist) {
         this.proximaxProvider.getTransactionStatus(hash).subscribe(status => {
-          this.sharedService.showWarning('', status.status.split('_').join(' '));
+          if (status.status.split('_').join(' ') === 'Success') {
+            this.sharedService.showSuccess('', 'Transaction Confirmed')
+            this.showViewsConfirmFunc()
+          } else {
+            this.sharedService.showWarning('', status.status.split('_').join(' '));
+          }
+
+          this.reloadBtn = false;
+          this.blockSendButton = false;
         }, error => {
           this.sharedService.showWarning(
             '',
@@ -655,7 +663,7 @@ export class CreateGiftComponent implements OnInit {
         })
 
       }
-    }, 10000);
+    }, 15000);
     // 10000
   }
 
