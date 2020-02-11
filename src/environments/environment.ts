@@ -65,18 +65,24 @@ export const environment = {
     address_public_test: 'VDYN53-XXEGKK-3XHQYE-K6ZBMN-JPXN57-ZBHXA3-AW55'
   },
   nis1: {
-    url: 'https://bctestnetswap.xpxsirius.io:7890',
+    // url: 'https://bctestnetswap.xpxsirius.io:7890',
+    url: 'http://192.168.1.60:7890',
     urlExplorer: 'http://testnet-explorer.nemtool.com/#/s_tx?hash=',
     networkType: NetworkTypes.TEST_NET,
     burnAddress: 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN',
     nodes: [
-      { protocol: 'https', domain: 'bctestnetswap.xpxsirius.io', port: 7890 } as ServerConfig
+      { protocol: 'http', domain: '192.168.1.60', port: 7890 } as ServerConfig
     ],
   },
   swapAccount: {
     addressAccountMultisig: 'VAWOEOWTABXR7O3ZAK2XNA5GIBNE6PZIXDAFDWBU',
-    addressAccountSimple: 'VCWLIYQPQAJSYWMWL5BHUCA3VOWVOXZ3WTNJPTUJ'
+    addressAccountSimple: 'VCWAHAMZRKWU4T3MSBEV7CJVYN7TGX5ZCYMVTUJW'
+    // addressAccountSimple: 'VCWLIYQPQAJSYWMWL5BHUCA3VOWVOXZ3WTNJPTUJ'
   },
+  swapAllowedMosaics: [
+    { namespaceId: 'zarcade', name: 'xar' },
+    { namespaceId: 'prx', name: 'xpx' }
+  ],
   typeNetwork: {
     value: NetworkType.TEST_NET,
     label: 'PUBLIC TEST'

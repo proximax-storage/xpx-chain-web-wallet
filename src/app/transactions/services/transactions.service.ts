@@ -916,8 +916,8 @@ export class TransactionsService {
     const residue: string[] = (quantityOne - quantityTwo).toString().replace(/,/g, '').split('.');
     // console.log('residue', residue);
     // console.log('residue.length', residue.length);
-    const missing = (residue.length > 1) ? limitDecimal - residue[1].length : 6;
-    residue[1] = (residue.length > 1) ? residue[1].slice(0, 6) : '';
+    const missing = (residue.length > 1) ? limitDecimal - residue[1].length : limitDecimal;
+    residue[1] = (residue.length > 1) ? residue[1].slice(0, limitDecimal) : '';
     for (let index = 0; index < missing; index++) {
       residue[1] += 0;
     }
