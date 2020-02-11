@@ -144,13 +144,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
 
- /**
-  *
-  *
-  * @param {boolean} [reload=false]
-  * @memberof DashboardComponent
-  */
- async getRecentTransactions(reload = false) {
+  /**
+   *
+   *
+   * @param {boolean} [reload=false]
+   * @memberof DashboardComponent
+   */
+  async getRecentTransactions(reload = false) {
+    console.log('que es esto', this.dashboardService.getCantViewDashboard());
     this.iconReloadDashboard = true;
     // Validate if it is the first time the dashboard is loaded or if you click on the reload button
     if (this.dashboardService.getCantViewDashboard() === 1 || reload) {
