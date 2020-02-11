@@ -365,6 +365,7 @@ export class Nis1TransferAssetsComponent implements OnInit, OnDestroy {
    * @memberof Nis1TransferAssetsComponent
    */
   mosaicSelected(bSelected: { assetId: { namespaceId: string, name: string }, amount: string }) {
+    console.log('bSelected --->', bSelected);
     // build mosaic name selected
     this.selectedMosaic = bSelected;
     this.mosaic = `${bSelected.assetId.namespaceId}:${bSelected.assetId.name}`;

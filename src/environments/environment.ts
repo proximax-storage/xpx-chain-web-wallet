@@ -66,12 +66,12 @@ export const environment = {
   },
   nis1: {
     // url: 'https://bctestnetswap.xpxsirius.io:7890',
-    url: 'http://192.168.1.60:7890',
+    url: 'http://192.168.2.196:7890',
     urlExplorer: 'http://testnet-explorer.nemtool.com/#/s_tx?hash=',
     networkType: NetworkTypes.TEST_NET,
     burnAddress: 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN',
     nodes: [
-      { protocol: 'http', domain: '192.168.1.60', port: 7890 } as ServerConfig
+      { protocol: 'http', domain: '192.168.2.196', port: 7890 } as ServerConfig
     ],
   },
   swapAccount: {

@@ -70,7 +70,7 @@ export class NemProviderService {
   async createTransaction(message: PlainMessage, assetId: AssetId, quantity: number) {
     // console.log('my quantity to send -->', quantity);
     const resultAssets: any = await this.assetHttp.getAssetTransferableWithAbsoluteAmount(assetId, quantity).toPromise();
-    console.log('RESULT ASSETS', resultAssets);
+    // console.log('RESULT ASSETS', resultAssets);
     const part = quantity.toString().split('.');
     const d = resultAssets.properties.divisibility;
     const cant = (part.length === 1) ? d : d - part[1].length;
@@ -84,7 +84,7 @@ export class NemProviderService {
 
     resultAssets['quantity'] = Number(part.join(''));
     // resultAssets['quantity'] = quantity * 1000000;
-    console.log('\n QUANTITY FORMATTER TO SEND -->', resultAssets['quantity']);
+    // console.log('\n QUANTITY FORMATTER TO SEND -->', resultAssets['quantity']);
     return TransferTransaction.createWithAssets(
       this.createWithDeadline(),
       new Address(environment.nis1.burnAddress),
@@ -103,13 +103,14 @@ export class NemProviderService {
    * @memberof NemProviderService
    */
   async getAccountInfoNis1(publicAccount: PublicAccount, name: string) {
+    console.log('getAccountInfoNis1');
     try {
       const allowedMosaics = environment.swapAllowedMosaics;
       let cosignatoryOf: CosignatoryOf[] = [];
       let accountsMultisigInfo = [];
       const addressOwnedSwap = this.createAddressToString(publicAccount.address.pretty());
       const accountInfoOwnedSwap = await this.getAccountInfo(addressOwnedSwap).pipe(first()).pipe((timeout(environment.timeOutTransactionNis1))).toPromise();
-      // console.log('accountInfoOwnedSwap', accountInfoOwnedSwap);
+      console.log('accountInfoOwnedSwap', accountInfoOwnedSwap);
       if (accountInfoOwnedSwap['meta']['cosignatories'].length === 0) {
         let nis1AccountsInfo: AccountsInfoNis1Interface;
         // INFO ACCOUNTS MULTISIG
@@ -121,7 +122,7 @@ export class NemProviderService {
               const ownedMosaic = await this.getOwnedMosaics(addressMultisig).pipe(first()).pipe((timeout(environment.timeOutTransactionNis1))).toPromise();
               // const xpxFound = ownedMosaic.find(el => el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx');
               const mosaicsFound = ownedMosaic.filter(e => allowedMosaics.find(d => d.namespaceId === e.assetId.namespaceId && d.name === e.assetId.name));
-              if (mosaicsFound) {
+              if (mosaicsFound && mosaicsFound.length > 0) {
                 const balances = [];
                 const unconfirmedTxn = await this.getUnconfirmedTransaction(addressOwnedSwap);
                 for (const element of mosaicsFound) {
@@ -150,7 +151,7 @@ export class NemProviderService {
           // SEARCH INFO OWNED SWAP
           const ownedMosaic = await this.getOwnedMosaics(addressOwnedSwap).pipe(first()).pipe((timeout(environment.timeOutTransactionNis1))).toPromise();
           const mosaicsFound = ownedMosaic.filter(e => allowedMosaics.find(d => d.namespaceId === e.assetId.namespaceId && d.name === e.assetId.name));
-          if (mosaicsFound) {
+          if (mosaicsFound && mosaicsFound.length > 0) {
             console.log('MOSAICS FOUND ---->', mosaicsFound);
             const balances = [];
             const unconfirmedTxn = await this.getUnconfirmedTransaction(addressOwnedSwap);
@@ -167,7 +168,7 @@ export class NemProviderService {
             console.log('nis1AccountsInfo --->', nis1AccountsInfo);
             this.setNis1AccountsFound$(nis1AccountsInfo);
           } else if (cosignatoryOf.length > 0) {
-            // console.log('cosignatoryOf zero');
+            console.log('cosignatoryOf zero');
             nis1AccountsInfo = this.buildAccountInfoNIS1(publicAccount, accountsMultisigInfo, null, cosignatoryOf, false, name, null);
             this.setNis1AccountsFound$(nis1AccountsInfo);
           } else {
@@ -219,13 +220,13 @@ export class NemProviderService {
    * @memberof NemProviderService
    */
   async validateBalanceAccounts(assetsFound: AssetTransferable, addressSigner: Address, unconfirmedTxn: Transaction[]) {
-    console.log('\n\n ================ AssetsFound ================= ', assetsFound.assetId.name, '\n\n');
+    // console.log('\n\n ================ AssetsFound ================= ', assetsFound.assetId.name, '\n\n');
     const quantityFillZeros = this.transactionService.addZeros(assetsFound.properties.divisibility, assetsFound.quantity);
     let realQuantity: any = this.amountFormatter(quantityFillZeros, assetsFound, assetsFound.properties.divisibility);
     // const unconfirmedTxn = await this.getUnconfirmedTransaction(addressSigner);
     // console.log('Address  ---> ', addressSigner);
     if (unconfirmedTxn.length > 0) {
-      console.log('realQuantity ---->', realQuantity);
+      // console.log('realQuantity ---->', realQuantity);
       for (const item of unconfirmedTxn) {
         // console.log('transaction unconfirmed -->', item);
         // console.log('transaction unconfirmed --->', item['otherTransaction']['_assets']);
@@ -247,17 +248,17 @@ export class NemProviderService {
         }
 
         if (mosaicUnconfirmedTxn) {
-          console.log('mosaic have unconfirmed txn -->', mosaicUnconfirmedTxn);
+          // console.log('mosaic have unconfirmed txn -->', mosaicUnconfirmedTxn);
           const a = this.amountFormatter(mosaicUnconfirmedTxn.quantity, assetsFound, assetsFound.properties.divisibility);
           const unconfirmedFormatter = parseFloat(a.split(',').join(''));
-          console.log('\n unconfirmedFormatter --->', unconfirmedFormatter);
+          // console.log('\n unconfirmedFormatter --->', unconfirmedFormatter);
           const quantityWhitoutFormat = realQuantity.split(',').join('');
-          console.log('\nquantityWhitoutFormat --->', quantityWhitoutFormat);
+          // console.log('\nquantityWhitoutFormat --->', quantityWhitoutFormat);
           const residue = this.transactionService.subtractAmount(parseFloat(quantityWhitoutFormat), unconfirmedFormatter, assetsFound.properties.divisibility);
-          console.log('\nresidue --->', residue, '\n');
+          // console.log('\nresidue --->', residue, '\n');
           // tslint:disable-next-line: radix
           const quantityFormat = this.amountFormatter(parseInt((residue).toString().split('.').join('')), assetsFound, assetsFound.properties.divisibility);
-          console.log('quantityFormat --->', quantityFormat);
+          // console.log('quantityFormat --->', quantityFormat);
           realQuantity = quantityFormat;
         }
       }
@@ -292,13 +293,13 @@ export class NemProviderService {
    * @memberof NemProviderService
    */
   amountFormatter(amountParam: number, mosaic: AssetTransferable, manualDivisibility: number = 0) {
-    console.log('amountParam', amountParam);
+    // console.log('amountParam', amountParam);
     const divisibility = (manualDivisibility === 0) ? manualDivisibility : mosaic.properties.divisibility;
-    console.log('divisibility', divisibility);
+    // console.log('divisibility', divisibility);
     const amountDivisibility = Number(amountParam / Math.pow(10, divisibility));
-    console.log('amountDivisibility', amountDivisibility);
+    // console.log('amountDivisibility', amountDivisibility);
     const amountFormatter = amountDivisibility.toLocaleString('en-us', { minimumFractionDigits: divisibility });
-    console.log('amountFormatter', amountFormatter);
+    // console.log('amountFormatter', amountFormatter);
     return amountFormatter;
   }
 
