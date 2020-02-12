@@ -341,6 +341,7 @@ export class SidebarMainComponent implements OnInit {
     this.currentBlock = 0;
     this.walletService.destroyDataWalletAccount();
     this.dashboardService.processComplete = false;
+    this.dashboardService.isIncrementViewDashboard = 0;
     this.authService.setLogged(false);
     this.authService.destroyNodeSelected();
     this.walletService.setAccountSelectedWalletNis1(null);

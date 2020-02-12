@@ -1,30 +1,32 @@
-import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
-import { EncryptedMessage } from 'tsjs-xpx-chain-sdk'
+import { Component, OnInit, Input, SimpleChanges, OnChanges } from '@angular/core';
+import { EncryptedMessage } from 'tsjs-xpx-chain-sdk';
 import { TransactionsInterface, TransactionsService } from '../../../transactions/services/transactions.service';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { environment } from '../../../../environments/environment';
 import { SharedService } from '../../../shared/services/shared.service';
-import { WalletService } from "../../../wallet/services/wallet.service";
+import { WalletService } from '../../../wallet/services/wallet.service';
+import { NamespacesService } from '../../../servicesModule/services/namespaces.service';
 
 @Component({
   selector: 'app-transfer-type',
   templateUrl: './transfer-type.component.html',
   styleUrls: ['./transfer-type.component.css']
 })
-export class TransferTypeComponent implements OnInit {
+export class TransferTypeComponent implements OnInit, OnChanges {
 
   @Input() transferTransaction: TransactionsInterface;
   searching = true;
   simple = null;
   typeTransactionHex: string;
   msg = '';
-  typeMsg = null
+  typeMsg = null;
   amountTwoPart: { part1: string; part2: string; };
   decryptedMessage: any;
   nis1hash: any;
   routeNis1Explorer = environment.nis1.urlExplorer;
   message: any;
-  panelDecrypt: number = 0;
+  namespaceName = '';
+  panelDecrypt = 0;
   password = null;
   passwordMain = 'password';
   recipientPublicAccount = null;
@@ -32,6 +34,7 @@ export class TransferTypeComponent implements OnInit {
   showEncryptedMessage = false;
 
   constructor(
+    private namesapceService: NamespacesService,
     public transactionService: TransactionsService,
     public sharedService: SharedService,
     public proximaxProvider: ProximaxProvider,
@@ -49,13 +52,14 @@ export class TransferTypeComponent implements OnInit {
     this.typeTransactionHex = `${this.transferTransaction.data['type'].toString(16).toUpperCase()}`;
     this.message = null;
     this.message = this.transferTransaction.data.message;
+    this.amountTwoPart = { part1: '', part2: '' };
+    this.namespaceName = '';
     if (this.transferTransaction.data.transactionInfo) {
       const height = this.transferTransaction.data.transactionInfo.height.compact();
     }
 
     if (this.transferTransaction.data['message'].payload !== '') {
       try {
-        const simple = false;
         const addressAccountMultisig = environment.swapAccount.addressAccountMultisig;
         const addressAccountSimple = environment.swapAccount.addressAccountSimple;
         const addressSender = this.transferTransaction.sender.address.plain();
@@ -65,14 +69,12 @@ export class TransferTypeComponent implements OnInit {
             this.msg = msg['message'];
             this.nis1hash = msg['nis1Hash'];
             if (this.transferTransaction.data['mosaics'].length > 0) {
-              // console.log(this.transferTransaction.data['mosaics'][0].amount.compact());
-              const amount = this.transactionService.amountFormatterSimple(this.transferTransaction.data['mosaics'][0].amount.compact());
-              this.amountTwoPart = this.transactionService.getDataPart(amount.toString(), 6);
-              // console.log('----> ', this.amountTwoPart);
-              this.simple = false;
-            } else {
-              this.simple = false;
+              const id = this.transferTransaction.data['mosaics'][0].id;
+              this.build(id);
             }
+
+            this.simple = false;
+            return;
           } else {
             this.simple = true;
           }
@@ -91,22 +93,41 @@ export class TransferTypeComponent implements OnInit {
   /**
    *
    *
+   * @param {*} id
+   * @memberof TransferTypeComponent
+   */
+  async build(id: any) {
+    let d = 6;
+    const n = await this.namesapceService.getNamespaceFromId([id]);
+    this.namespaceName = id.toHex();
+    if ((n.length > 0)) {
+      this.namespaceName = (n[0].namespaceName.name === 'prx.xpx') ? 'XPX' : n[0].namespaceName.name;
+      const x = environment.swapAllowedMosaics.find(r => `${r.namespaceId}.${r.name}` === n[0].namespaceName.name);
+      if (x) { d = x.divisibility; }
+    }
+    const amount = this.transactionService.amountFormatterSimple(this.transferTransaction.data['mosaics'][0].amount.compact(), d);
+    this.amountTwoPart = this.transactionService.getDataPart(amount.toString(), d);
+  }
+
+  /**
+   *
+   *
    * @memberof TransferTypeComponent
    */
   async verifyRecipientInfo() {
-    let address = this.proximaxProvider.createFromRawAddress(this.transferTransaction.recipient['address']);
+    const address = this.proximaxProvider.createFromRawAddress(this.transferTransaction.recipient['address']);
     try {
-      let accountInfo = await this.proximaxProvider.getAccountInfo(address).toPromise();
+      const accountInfo = await this.proximaxProvider.getAccountInfo(address).toPromise();
       this.recipientPublicAccount = accountInfo.publicAccount;
-    } catch (e) {}
+    } catch (e) { }
 
     this.senderPublicAccount = this.transferTransaction.data.signer;
-    let firstAccount = this.walletService.currentAccount;
+    const firstAccount = this.walletService.currentAccount;
 
-    let availableAddress = [
+    const availableAddress = [
       this.recipientPublicAccount.address.address,
       this.senderPublicAccount.address.address
-    ]
+    ];
 
     if (availableAddress.includes(firstAccount.address)) {
       this.showEncryptedMessage = true;
@@ -120,7 +141,7 @@ export class TransferTypeComponent implements OnInit {
    * @memberof TransferTypeComponent
    */
   changeInputType(inputType: string) {
-    let newType = this.sharedService.changeInputType(inputType);
+    const newType = this.sharedService.changeInputType(inputType);
     this.passwordMain = newType;
   }
 
@@ -130,8 +151,8 @@ export class TransferTypeComponent implements OnInit {
    * @memberof TransferTypeComponent
    */
   decryptMessage() {
-    let common = { password: this.password };
-    let firstAccount = this.walletService.currentAccount;
+    const common = { password: this.password };
+    const firstAccount = this.walletService.currentAccount;
     if (this.walletService.decrypt(common, firstAccount)) {
       let recipientMsg = EncryptedMessage.decrypt(this.message, common['privateKey'], this.senderPublicAccount);
       let senderMsg = EncryptedMessage.decrypt(this.message, common['privateKey'], this.recipientPublicAccount);

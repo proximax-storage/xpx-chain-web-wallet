@@ -49,7 +49,7 @@ export class Nis1CosignerAccountsComponent implements OnInit {
     } else if (this.mainAccount.multisigAccountsInfo.length > 0) {
       this.mainAccount.multisigAccountsInfo.forEach(element => {
         if (typeof (element.address) === 'string') {
-          element.address = this.nemProvider.createAddressToString(element.address).pretty()
+          element.address = this.nemProvider.createAddressToString(element.address).pretty();
         } else if (element.address && element.address['value']) {
           element.address = this.nemProvider.createAddressToString(element.address['value']).pretty();
         } else {
@@ -92,7 +92,7 @@ export class Nis1CosignerAccountsComponent implements OnInit {
   selectAccount(address: string, type: string) {
     if (this.walletService.getCurrentWallet()) {
       this.router.navigate([`/${AppConfig.routes.swapTransferAssetsLogged}/${address}/${type}/1`]);
-    }else {
+    } else {
       this.router.navigate([`/${AppConfig.routes.swapTransferAssets}/${address}/${type}/1`]);
     }
   }

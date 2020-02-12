@@ -79,8 +79,8 @@ export class NamespacesService {
         }
       }
     } else {
-      namespaceId.forEach(namespaceId => {
-        missingId.push(namespaceId);
+      namespaceId.forEach(id => {
+        missingId.push(id);
       });
     }
 
@@ -111,11 +111,13 @@ export class NamespacesService {
    * @memberof NamespacesService
    */
   async getNamespacesName(namespaceIds: NamespaceId[]) {
+    console.log('namespaceIds ---> ', namespaceIds);
     try {
       // Gets array of NamespaceName for an account
       const namespaceName = await this.proximaxProvider.namespaceHttp.getNamespacesName(namespaceIds).toPromise();
       return namespaceName;
     } catch (error) {
+      console.log(error);
       // Nothing!
       return [];
     }

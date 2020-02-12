@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { first, timeout } from 'rxjs/operators';
@@ -20,7 +20,7 @@ import { ServicesModuleService } from './../../../servicesModule/services/servic
   templateUrl: './nis1-transfer-assets.component.html',
   styleUrls: ['./nis1-transfer-assets.component.css']
 })
-export class Nis1TransferAssetsComponent implements OnInit {
+export class Nis1TransferAssetsComponent implements OnInit, OnDestroy {
 
   accountToSwap: AccountsInfoNis1Interface = null;
   accountSelected: AccountsInfoNis1Interface = null;
@@ -34,13 +34,14 @@ export class Nis1TransferAssetsComponent implements OnInit {
   insufficientBalance = false;
   maxAmount = 0;
   mainAccount = false;
+  mosaic = '';
   nameBtnBack = '';
   listContacts: any = [];
   optionsXPX = {
     prefix: '',
     thousands: ',',
     decimal: '.',
-    precision: '6'
+    precision: ''
   };
 
   // ownedAccountSwap: AccountsInfoNis1Interface = null;
@@ -56,6 +57,7 @@ export class Nis1TransferAssetsComponent implements OnInit {
   subscription: Subscription[] = [];
   transactionNis1: TransactionsNis1Interface;
   isLogged = false;
+  selectedMosaic = null;
 
   constructor(
     private activateRoute: ActivatedRoute,
@@ -91,20 +93,21 @@ export class Nis1TransferAssetsComponent implements OnInit {
   }
 
   /**
-  *
-  *
-  * @memberof Nis1TransferAssetsComponent
-  */
+   *
+   *
+   * @memberof Nis1TransferAssetsComponent
+   */
   async createTransaction() {
+    console.log(this.selectedMosaic);
     if (!this.processing) {
       this.processing = true;
       const common = { password: this.formTransfer.get('password').value };
       if (this.ownedAccountSwap) {
         if (this.walletService.decrypt(common, this.ownedAccountSwap)) {
           const account = this.nemProvider.createAccountPrivateKey(common['privateKey']);
-          const quantity = this.formTransfer.get('amountXpx').value;
+          const quantity = this.formTransfer.get('amount').value;
           if (this.isMultisig) {
-            const assetId = this.accountToSwap.mosaic.assetId;
+            const assetId = this.selectedMosaic.assetId;
             const recipient = this.formTransfer.get('accountRecipient').value;
             let msg: PlainMessage = null;
             if (recipient !== '' && recipient.length === 40 || recipient.length === 46) {
@@ -129,7 +132,7 @@ export class Nis1TransferAssetsComponent implements OnInit {
             });
           } else if (!this.isMultisig) {
             // const assetId = this.ownedAccountSwap.mosaic.assetId;
-            const assetId = this.accountToSwap.mosaic.assetId;
+            const assetId = this.selectedMosaic.assetId;
             // console.log(assetId);
             const msg = PlainMessage.create(this.ownedAccountSwap.publicAccount.publicKey);
             const transaction = await this.nemProvider.createTransaction(msg, assetId, quantity);
@@ -237,7 +240,7 @@ export class Nis1TransferAssetsComponent implements OnInit {
         Validators.minLength(this.configurationForm.address.minLength),
         Validators.maxLength(this.configurationForm.address.maxLength)
       ]] : ['', []],
-      amountXpx: ['', [
+      amount: ['', [
         Validators.required,
         Validators.maxLength(this.configurationForm.amount.maxLength)
       ]],
@@ -317,8 +320,8 @@ export class Nis1TransferAssetsComponent implements OnInit {
         if (!this.isMultisig && this.accountSelected.address.plain() === account.replace(/-/g, '')) {
           // SIMPLE ACCOUNT
           this.accountToSwap = Object.assign({}, this.accountSelected);
-          this.quantity = this.accountToSwap.balance;
-          this.maxAmount = this.quantity.length;
+          console.log('account to swap', this.accountToSwap);
+          this.mosaicSelected(this.accountToSwap.balances[0]);
           this.showCertifiedSwap = false;
           this.createFormTransfer();
           this.subscribeAmount();
@@ -332,11 +335,15 @@ export class Nis1TransferAssetsComponent implements OnInit {
           // console.log('----accountFiltered----', accountFiltered);
           if (accountFiltered) {
             this.accountToSwap = Object.assign({}, accountFiltered);
+            console.log('this.accountToSwap', this.accountToSwap);
             this.accountToSwap.address = this.nemProvider.createAddressToString(accountFiltered.address);
             this.accountToSwap.nameAccount = this.accountSelected.nameAccount;
             this.accountToSwap.accountCosignatory = this.proximaxProvider.createPublicAccount(this.ownedAccountSwap.publicAccount.publicKey);
-            this.quantity = this.accountToSwap.balance;
-            this.maxAmount = this.quantity.length;
+            // this.selectedMosaic = this.accountToSwap.balances[0];
+            this.mosaicSelected(this.accountToSwap.balances[0]);
+            // this.mosaic = `${this.selectedMosaic.assetId.namespaceId}:${this.selectedMosaic.assetId.name}`;
+            // this.quantity = this.accountToSwap.balances[0].amount;
+            // this.maxAmount = this.quantity.length;
             this.showCertifiedSwap = false;
             // console.log(this.accountToSwap);
             this.createFormTransfer();
@@ -349,6 +356,35 @@ export class Nis1TransferAssetsComponent implements OnInit {
     if (!this.accountToSwap) {
       this.router.navigate([`/${AppConfig.routes.home}`]);
     }
+  }
+
+  /**
+   *
+   *
+   * @param {{ assetId: { namespaceId: string, name: string }, amount: string }} bSelected
+   * @memberof Nis1TransferAssetsComponent
+   */
+  mosaicSelected(bSelected: { assetId: { namespaceId: string, name: string }, amount: string }) {
+    console.log('bSelected --->', bSelected);
+    // build mosaic name selected
+    this.selectedMosaic = bSelected;
+    this.mosaic = `${bSelected.assetId.namespaceId}:${bSelected.assetId.name}`;
+    // take precision
+    const mosaic = this.accountToSwap.mosaics.find(x => x.assetId.namespaceId === bSelected.assetId.namespaceId && x.assetId.name === bSelected.assetId.name);
+    this.optionsXPX.precision = (mosaic.properties.divisibility).toString();
+    this.quantity = bSelected.amount;
+    this.maxAmount = this.quantity.length;
+  }
+
+  /**
+   *
+   *
+   * @param {{ assetId: { namespaceId: string, name: string }, amount: string }} bSelected
+   * @memberof Nis1TransferAssetsComponent
+   */
+  mosaicChanged(bSelected: { assetId: { namespaceId: string, name: string }, amount: string }) {
+    this.formTransfer.get('amount').setValue('');
+    this.mosaicSelected(bSelected);
   }
 
   /**
@@ -369,7 +405,7 @@ export class Nis1TransferAssetsComponent implements OnInit {
    * @memberof Nis1TransferAssetsComponent
    */
   selectMaxAmount() {
-    this.formTransfer.get('amountXpx').setValue(this.quantity.split(',').join(''));
+    this.formTransfer.get('amount').setValue(this.quantity.split(',').join(''));
   }
 
   /**
@@ -379,7 +415,7 @@ export class Nis1TransferAssetsComponent implements OnInit {
    */
   subscribeAmount() {
     this.subscription.push(
-      this.formTransfer.get('amountXpx').valueChanges.subscribe(
+      this.formTransfer.get('amount').valueChanges.subscribe(
         next => {
           console.log('next', next);
           if (next !== null && next !== undefined) {

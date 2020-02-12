@@ -54,8 +54,14 @@
             </div>
             <div>
               <span class="color-black fw-bold">NIS1 Balance:&nbsp;</span>
-              <img src="./assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20px" alt="logo">
-              <span [innerHTML]="getQuantity(accountToSwap.balance)">{{accountToSwap.address}}</span>
+              <ng-container *ngIf="accountToSwap.balances.length > 1"><br></ng-container>
+              <ng-container *ngFor="let balance of accountToSwap.balances; let i = index">
+                <img src="./assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20px"
+                  alt="logo">
+                <span [innerHTML]="getQuantity(balance.amount)"></span>
+                <span class="fw-600"> {{balance.assetId.namespaceId}}:{{balance.assetId.name}}</span>
+                <ng-container *ngIf="accountToSwap.balances.length > 1"><br></ng-container>
+              </ng-container>
             </div>
           </div>
         </div>
@@ -98,9 +104,28 @@
               </div>
             </ng-container>
 
+            <!-- TITLE SWAP AMOUNT -->
             <div class="col-12 d-flex justify-content-center pt-1rem">
               <span class="fs-1-2rem fw-500 txt-a-center line-h-1-2em color-black">Swap Amount</span>
             </div>
+
+            <!-- RADIO BUTTON SELECT MOSAIC -->
+            <ng-container *ngIf="accountToSwap.balances.length > 1">
+              <div class="col-12 d-flex justify-content-center pt-1rem">
+                <ng-container *ngFor="let balance of accountToSwap.balances; let i = index">
+                  <div class="form-check form-check-inline">
+                    <input (change)="mosaicChanged(balance)" [(ngModel)]="mosaic"
+                      value="{{balance.assetId}}"
+                      [ngModelOptions]="{standalone: true}" type="radio" class="form-check-input"
+                      id="{{balance.assetId.namespaceId}}:{{balance.assetId.name}}" name="materialExampleRadios"
+                      mdbInput>
+                    <label class="form-check-label" for="{{balance.assetId.namespaceId}}:{{balance.assetId.name}}">
+                      {{balance.assetId.namespaceId}}:{{balance.assetId.name}}
+                    </label>
+                  </div>
+                </ng-container>
+              </div>
+            </ng-container>
 
             <!-- INPUT AMOUNT TO SWAP -->
             <div class="col-12 mx-auto">
@@ -110,7 +135,7 @@
                 <input pattern="^[+]?([0-9]*[.])?[0-9]+$" currencyMask [options]="optionsXPX" mdbInputDirective
                   mdbValidate [validateSuccess]="true" id="amount{{errorAmount}}" [validateError]="true" type="text"
                   class="form-control form-control-sm input-border input-amount" placeholder="Enter Amount"
-                  formControlName="amountXpx" [maxlength]="maxAmount">
+                  formControlName="amount" [maxlength]="maxAmount">
                 <span class="label-i fw-600 text-cl-m cursor-p pl-2rem" (click)="selectMaxAmount()">Use Max</span>
               </div>
               <mdb-error *ngIf="insufficientBalance">
@@ -150,6 +175,7 @@
           </div>
           <!-- END ACCOUNT LIST -->
 
+          <!-- BOX SWAP PROCESS -->
           <div class="row">
             <div class="col-12 mx-auto">
               <div class="row">

@@ -60,10 +60,11 @@ export class ImportWalletComponent implements OnInit {
   }
 
   /**
- *
- *
- * @memberof ImportWalletComponent
- */
+   *
+   *
+   * @returns
+   * @memberof ImportWalletComponent
+   */
   async importSimpleWallet() {
     if (this.importWalletForm.valid && this.isValid) {
       // Check if name wallet exist
