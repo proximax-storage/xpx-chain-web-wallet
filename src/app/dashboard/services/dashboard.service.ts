@@ -33,10 +33,10 @@ export class DashboardService {
   ) { }
 
   /**
-  * Destroy all subscriptions
-  *
-  * @memberof DashboardService
-  */
+   * Destroy all subscriptions
+   *
+   * @memberof DashboardService
+   */
   destroySubscription() {
     this.subscriptions.forEach(element => {
       if (this.subscriptions[element] !== undefined) {

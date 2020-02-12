@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subscription, Subject } from 'rxjs';
 import * as js_joda_1 from 'js-joda';
@@ -22,7 +22,7 @@ import {
   TransactionHttp,
   MultisigTransaction,
   Transaction
-} from "nem-library";
+} from 'nem-library';
 import { PublicAccount as PublicAccountTsjs, Message } from 'tsjs-xpx-chain-sdk';
 
 import { WalletService, AccountsInterface } from '../../wallet/services/wallet.service';
@@ -58,22 +58,22 @@ export class NemProviderService {
     this.assetHttp = new AssetHttp(this.nodes);
   }
 
-
   /**
-  *
-  *
-  * @param {PlainMessage} message
-  * @param {AssetId} assetId
-  * @param {number} quantity
-  * @returns
-  * @memberof NemProviderService
-  */
+   *
+   *
+   * @param {PlainMessage} message
+   * @param {AssetId} assetId
+   * @param {number} quantity
+   * @returns
+   * @memberof NemProviderService
+   */
   async createTransaction(message: PlainMessage, assetId: AssetId, quantity: number) {
     // console.log('my quantity to send -->', quantity);
-    let resultAssets: any = await this.assetHttp.getAssetTransferableWithAbsoluteAmount(assetId, quantity).toPromise();
-    // console.log('RESULT ASSETS');
+    const resultAssets: any = await this.assetHttp.getAssetTransferableWithAbsoluteAmount(assetId, quantity).toPromise();
+    // console.log('RESULT ASSETS', resultAssets);
     const part = quantity.toString().split('.');
-    const cant = (part.length === 1) ? 6 : 6 - part[1].length;
+    const d = resultAssets.properties.divisibility;
+    const cant = (part.length === 1) ? d : d - part[1].length;
     for (let index = 0; index < cant; index++) {
       if (part.length === 1) {
         part[0] += 0;
@@ -103,25 +103,41 @@ export class NemProviderService {
    * @memberof NemProviderService
    */
   async getAccountInfoNis1(publicAccount: PublicAccount, name: string) {
+    console.log('getAccountInfoNis1');
     try {
+      const allowedMosaics = environment.swapAllowedMosaics;
       let cosignatoryOf: CosignatoryOf[] = [];
       let accountsMultisigInfo = [];
       const addressOwnedSwap = this.createAddressToString(publicAccount.address.pretty());
       const accountInfoOwnedSwap = await this.getAccountInfo(addressOwnedSwap).pipe(first()).pipe((timeout(environment.timeOutTransactionNis1))).toPromise();
-      // console.log('accountInfoOwnedSwap', accountInfoOwnedSwap);
+      console.log('accountInfoOwnedSwap', accountInfoOwnedSwap);
       if (accountInfoOwnedSwap['meta']['cosignatories'].length === 0) {
         let nis1AccountsInfo: AccountsInfoNis1Interface;
         // INFO ACCOUNTS MULTISIG
         if (accountInfoOwnedSwap['meta']['cosignatoryOf'].length > 0) {
           cosignatoryOf = accountInfoOwnedSwap['meta']['cosignatoryOf'];
-          for (let multisig of cosignatoryOf) {
+          for (const multisig of cosignatoryOf) {
             try {
               const addressMultisig = this.createAddressToString(multisig.address);
               const ownedMosaic = await this.getOwnedMosaics(addressMultisig).pipe(first()).pipe((timeout(environment.timeOutTransactionNis1))).toPromise();
-              const xpxFound = ownedMosaic.find(el => el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx');
-              if (xpxFound) {
-                multisig.balance = await this.validateBalanceAccounts(xpxFound, addressMultisig);
-                multisig.mosaic = xpxFound;
+              // const xpxFound = ownedMosaic.find(el => el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx');
+              const mosaicsFound = ownedMosaic.filter(e => allowedMosaics.find(d => d.namespaceId === e.assetId.namespaceId && d.name === e.assetId.name));
+              if (mosaicsFound && mosaicsFound.length > 0) {
+                const balances = [];
+                const unconfirmedTxn = await this.getUnconfirmedTransaction(addressOwnedSwap);
+                for (const element of mosaicsFound) {
+                  const amount = await this.validateBalanceAccounts(element, addressOwnedSwap, unconfirmedTxn);
+                  // tslint:disable-next-line: radix
+                  if (parseInt(amount) > 0) {
+                    balances.push({ assetId: element.assetId, amount });
+                  }
+                }
+                console.log('balances --->', balances);
+                multisig.balances = balances;
+                multisig.mosaics = mosaicsFound;
+                // multisig.balance = await this.validateBalanceAccounts(xpxFound, addressMultisig, element.properties.divisibility);
+                // multisig.balance = await this.validateBalanceAccounts(xpxFound, addressMultisig);
+                // multisig.mosaic = xpxFound;
                 accountsMultisigInfo.push(multisig);
               }
             } catch (error) {
@@ -134,16 +150,25 @@ export class NemProviderService {
         try {
           // SEARCH INFO OWNED SWAP
           const ownedMosaic = await this.getOwnedMosaics(addressOwnedSwap).pipe(first()).pipe((timeout(environment.timeOutTransactionNis1))).toPromise();
-          // console.log('ownedMosaic --->', ownedMosaic);
-          const xpxFound = ownedMosaic.find(el => el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx');
-          // console.log('xpxFound ---->', xpxFound);
-          if (xpxFound) {
-            const balance = await this.validateBalanceAccounts(xpxFound, addressOwnedSwap);
-            // console.log('balance ---->', balance);
-            nis1AccountsInfo = this.buildAccountInfoNIS1(publicAccount, accountsMultisigInfo, balance, cosignatoryOf, false, name, xpxFound);
+          const mosaicsFound = ownedMosaic.filter(e => allowedMosaics.find(d => d.namespaceId === e.assetId.namespaceId && d.name === e.assetId.name));
+          if (mosaicsFound && mosaicsFound.length > 0) {
+            console.log('MOSAICS FOUND ---->', mosaicsFound);
+            const balances = [];
+            const unconfirmedTxn = await this.getUnconfirmedTransaction(addressOwnedSwap);
+            for (const element of mosaicsFound) {
+              const amount = await this.validateBalanceAccounts(element, addressOwnedSwap, unconfirmedTxn);
+              console.log('#####my amount is --->', amount);
+              // tslint:disable-next-line: radix
+              if (parseInt(amount) > 0) {
+                balances.push({ assetId: element.assetId, amount });
+              }
+            }
+            console.log('balances --->', balances);
+            nis1AccountsInfo = this.buildAccountInfoNIS1(publicAccount, accountsMultisigInfo, balances, cosignatoryOf, false, name, mosaicsFound);
+            console.log('nis1AccountsInfo --->', nis1AccountsInfo);
             this.setNis1AccountsFound$(nis1AccountsInfo);
           } else if (cosignatoryOf.length > 0) {
-            // console.log('cosignatoryOf zero');
+            console.log('cosignatoryOf zero');
             nis1AccountsInfo = this.buildAccountInfoNIS1(publicAccount, accountsMultisigInfo, null, cosignatoryOf, false, name, null);
             this.setNis1AccountsFound$(nis1AccountsInfo);
           } else {
@@ -194,35 +219,45 @@ export class NemProviderService {
    * @returns
    * @memberof NemProviderService
    */
-  async validateBalanceAccounts(xpxFound: AssetTransferable, addressSigner: Address) {
-    // console.log('xpxFound --> ', xpxFound);
-    const quantityFillZeros = this.transactionService.addZeros(6, xpxFound.quantity);
-    let realQuantity: any = this.amountFormatter(quantityFillZeros, xpxFound, 6);
-    const unconfirmedTxn = await this.getUnconfirmedTransaction(addressSigner);
+  async validateBalanceAccounts(assetsFound: AssetTransferable, addressSigner: Address, unconfirmedTxn: Transaction[]) {
+    // console.log('\n\n ================ AssetsFound ================= ', assetsFound.assetId.name, '\n\n');
+    const quantityFillZeros = this.transactionService.addZeros(assetsFound.properties.divisibility, assetsFound.quantity);
+    let realQuantity: any = this.amountFormatter(quantityFillZeros, assetsFound, assetsFound.properties.divisibility);
+    // const unconfirmedTxn = await this.getUnconfirmedTransaction(addressSigner);
     // console.log('Address  ---> ', addressSigner);
     if (unconfirmedTxn.length > 0) {
-      //let quantity = realQuantity;
-      // console.log('realQuantity', realQuantity);
+      // console.log('realQuantity ---->', realQuantity);
       for (const item of unconfirmedTxn) {
         // console.log('transaction unconfirmed -->', item);
-        // console.log(item['otherTransaction']['_assets']);
-        // console.log(this.hexToAscii(item['otherTransaction'].message.payload), '\n\n');
-        let existMosaic = null;
+        // console.log('transaction unconfirmed --->', item['otherTransaction']['_assets']);
+        let mosaicUnconfirmedTxn = null;
         if (item.type === 257 && item['signer']['address']['value'] === addressSigner['value'] && item['_assets'].length > 0) {
-          existMosaic = item['_assets'].find((mosaic) => mosaic.assetId.namespaceId === 'prx' && mosaic.assetId.name === 'xpx');
-        } else if (item.type === 4100 && item['otherTransaction']['type'] === 257 && item['otherTransaction']['signer']['address']['value'] === addressSigner['value']) {
-          existMosaic = item['otherTransaction']['_assets'].find((mosaic) => mosaic.assetId.namespaceId === 'prx' && mosaic.assetId.name === 'xpx');
+          mosaicUnconfirmedTxn = item['_assets'].find((e: AssetTransferable) => environment.swapAllowedMosaics.find(d =>
+            d.namespaceId === e.assetId.namespaceId &&
+            d.name === e.assetId.name &&
+            assetsFound.assetId.namespaceId === e.assetId.namespaceId &&
+            assetsFound.assetId.name === e.assetId.name
+          ));
+        } else if (item.type === 4100 && item['otherTransaction']['type'] === 257 && item['signer']['address']['value'] === addressSigner['value']) {
+          mosaicUnconfirmedTxn = item['otherTransaction']['_assets'].find((e: AssetTransferable) => environment.swapAllowedMosaics.find(d =>
+            d.namespaceId === e.assetId.namespaceId &&
+            d.name === e.assetId.name &&
+            assetsFound.assetId.namespaceId === e.assetId.namespaceId &&
+            assetsFound.assetId.name === e.assetId.name
+          ));
         }
 
-        // console.log('existMosaic -->', existMosaic);
-        if (existMosaic) {
-          const unconfirmedFormatter = parseFloat(this.amountFormatter(existMosaic.quantity, xpxFound, 6));
+        if (mosaicUnconfirmedTxn) {
+          // console.log('mosaic have unconfirmed txn -->', mosaicUnconfirmedTxn);
+          const a = this.amountFormatter(mosaicUnconfirmedTxn.quantity, assetsFound, assetsFound.properties.divisibility);
+          const unconfirmedFormatter = parseFloat(a.split(',').join(''));
           // console.log('\n unconfirmedFormatter --->', unconfirmedFormatter);
           const quantityWhitoutFormat = realQuantity.split(',').join('');
           // console.log('\nquantityWhitoutFormat --->', quantityWhitoutFormat);
-          const residue = this.transactionService.subtractAmount(parseFloat(quantityWhitoutFormat), unconfirmedFormatter);
+          const residue = this.transactionService.subtractAmount(parseFloat(quantityWhitoutFormat), unconfirmedFormatter, assetsFound.properties.divisibility);
           // console.log('\nresidue --->', residue, '\n');
-          const quantityFormat = this.amountFormatter(parseInt((residue).toString().split('.').join('')), xpxFound, 6);
+          // tslint:disable-next-line: radix
+          const quantityFormat = this.amountFormatter(parseInt((residue).toString().split('.').join('')), assetsFound, assetsFound.properties.divisibility);
           // console.log('quantityFormat --->', quantityFormat);
           realQuantity = quantityFormat;
         }
@@ -258,9 +293,13 @@ export class NemProviderService {
    * @memberof NemProviderService
    */
   amountFormatter(amountParam: number, mosaic: AssetTransferable, manualDivisibility: number = 0) {
+    // console.log('amountParam', amountParam);
     const divisibility = (manualDivisibility === 0) ? manualDivisibility : mosaic.properties.divisibility;
+    // console.log('divisibility', divisibility);
     const amountDivisibility = Number(amountParam / Math.pow(10, divisibility));
-    const amountFormatter = amountDivisibility.toLocaleString("en-us", { minimumFractionDigits: divisibility });
+    // console.log('amountDivisibility', amountDivisibility);
+    const amountFormatter = amountDivisibility.toLocaleString('en-us', { minimumFractionDigits: divisibility });
+    // console.log('amountFormatter', amountFormatter);
     return amountFormatter;
   }
 
@@ -278,12 +317,12 @@ export class NemProviderService {
   buildAccountInfoNIS1(
     publicAccount: PublicAccount,
     accountsMultisigInfo: any[],
-    balance: any,
+    balances: any[],
     cosignersAccounts: CosignatoryOf[],
     isMultiSign: boolean,
     name: string,
-    xpxFound: AssetTransferable
-  ) {
+    mosaics: AssetTransferable[]
+  ): AccountsInfoNis1Interface {
     return {
       nameAccount: name,
       address: publicAccount.address,
@@ -291,9 +330,9 @@ export class NemProviderService {
       cosignerOf: (cosignersAccounts.length > 0) ? true : false,
       cosignerAccounts: cosignersAccounts,
       multisigAccountsInfo: accountsMultisigInfo,
-      mosaic: xpxFound,
+      mosaics,
       isMultiSig: isMultiSign,
-      balance: balance
+      balances
     };
   }
 
@@ -332,9 +371,9 @@ export class NemProviderService {
     const timeStampDateTime = js_joda_1.LocalDateTime.ofInstant(js_joda_1.Instant.ofEpochMilli(currentTimeStamp), js_joda_1.ZoneId.SYSTEM);
     const deadlineDateTime = timeStampDateTime.plus(deadline, chronoUnit);
     if (deadline <= 0) {
-      throw new Error("deadline should be greater than 0");
-    } else if (timeStampDateTime.plus(24, js_joda_1.ChronoUnit.HOURS).compareTo(deadlineDateTime) != 1) {
-      throw new Error("deadline should be less than 24 hours");
+      throw new Error('deadline should be greater than 0');
+    } else if (timeStampDateTime.plus(24, js_joda_1.ChronoUnit.HOURS).compareTo(deadlineDateTime) !== 1) {
+      throw new Error('deadline should be less than 24 hours');
     }
     return new TimeWindow(timeStampDateTime, deadlineDateTime);
   }
@@ -439,11 +478,11 @@ export class NemProviderService {
   }
 
   /**
-  * RJ
-  *
-  * @param {*} accounts
-  * @memberof WalletService
-  */
+   *
+   *
+   * @returns {Observable<AccountsInfoNis1Interface>}
+   * @memberof NemProviderService
+   */
   getNis1AccountsFound$(): Observable<AccountsInfoNis1Interface> {
     return this.nis1AccountsFound$;
   }
@@ -484,9 +523,9 @@ export class NemProviderService {
    * @memberof NemProviderService
    */
   hexToAscii(str1: string) {
-    var hex = str1.toString();
-    var str = '';
-    for (var n = 0; n < hex.length; n += 2) {
+    const hex = str1.toString();
+    let str = '';
+    for (let n = 0; n < hex.length; n += 2) {
       str += String.fromCharCode(parseInt(hex.substr(n, 2), 16));
     }
     return str;
@@ -500,8 +539,8 @@ export class NemProviderService {
    */
   removeParamNis1WalletCreated(nameWallet: string) {
     const wallet = this.walletService.getWalletStorage();
-    const otherWallets = wallet.filter(wallet => wallet.name !== nameWallet);
-    let currentWallet = wallet.find(wallet => wallet.name === nameWallet);
+    const otherWallets = wallet.filter(w => w.name !== nameWallet);
+    const currentWallet = wallet.find(w => w.name === nameWallet);
     currentWallet.accounts[0].nis1Account = null;
     otherWallets.push(currentWallet);
     this.walletService.saveWallet(otherWallets);
@@ -516,7 +555,7 @@ export class NemProviderService {
   saveAccountWalletTransNisStorage(transactionNis1: WalletTransactionsNis1Interface) {
     const othersWallet = this.getWalletTransNisStorage().filter((element: WalletTransactionsNis1Interface) => {
       const currentWallet = this.walletService.getCurrentWallet();
-      const walletName = (currentWallet) ? currentWallet.name : this.walletService.accountWalletCreated.wallet.name
+      const walletName = (currentWallet) ? currentWallet.name : this.walletService.accountWalletCreated.wallet.name;
       return element.name !== walletName;
     });
 
@@ -528,78 +567,9 @@ export class NemProviderService {
   /**
    *
    *
-   * @param {AccountsInterface[]} accounts
-   * @param {*} common
+   * @param {AccountsInfoNis1Interface} account
    * @memberof NemProviderService
    */
-  /*searchUnconfirmedSwap(accounts: AccountsInterface[], common: any) {
-    const nis1Accounts = accounts.filter(account => account.nis1Account !== null && account.encrypted !== '');
-    nis1Accounts.forEach(element => {
-      // console.log('common --->', common);
-      // console.log('Account SIRIUS --->', element);
-      const decrypt = Object.assign({}, common);
-      const isDecrypted = this.walletService.decrypt(decrypt, element);
-      if (isDecrypted) {
-        // console.log('decrypt --->', decrypt);
-        const accountNis1 = this.createAccountPrivateKey(decrypt.privateKey);
-        // console.log(accountNis1);
-        this.getUnconfirmedTransaction(accountNis1.address).then((transactions: Transaction[]) => {
-          // console.log('UNCONFIRMED TRANSACTION ----> ', transactions);
-          // console.log(transactions[0].toDTO());
-
-          // console.log(transactions[0].getTransactionInfo());
-          /*const swapTransaction = [];
-          transactions.forEach(transaction => {
-            const isSigner = transaction.signer.address.plain() === accountNis1.address.plain();
-            if (isSigner &&
-              transaction.type === 4100 &&
-              transaction['otherTransaction'].type === 257 &&
-              transaction['otherTransaction'].recipient.value === environment.nis1.burnAddress &&
-              transaction['otherTransaction'].message.payload !== '' &&
-              transaction['otherTransaction']['_assets'][0].assetId.name === 'xpx' &&
-              transaction['otherTransaction']['_assets'][0].assetId.namespaceId === 'prx' &&
-              transaction['otherTransaction']['_xem']['quantity'] === 1000000
-            ) {
-              // console.log('SI, YO FIRME ESA TRANSACCIÓN MULTIFIRMA');
-              // console.log(transaction);
-              swapTransaction.push({
-                nis1PublicKey: transaction['otherTransaction'].signer.publicKey,
-                nis1Timestamp: this.getTimeStampTimeWindow(transaction),
-                nis1TransactionHash: transaction['hashData'].data,
-                siriusAddres: this.hexToAscii(transaction['otherTransaction'].message.payload)
-              });
-            } else if (
-              isSigner &&
-              transaction.type === 257 &&
-              transaction['recipient'].value === environment.nis1.burnAddress &&
-              transaction['message'].payload !== '' &&
-              transaction['_assets'][0].assetId.name === 'xpx' &&
-              transaction['_assets'][0].assetId.namespaceId === 'prx'
-            ) {
-              //['signer']['address']['value']
-              // console.log('SI, YO FIRME ESA TRANSACCIÓN SIMPLE');
-              // console.log(transaction);
-              swapTransaction.push({
-                nis1PublicKey: transaction.signer.publicKey,
-                nis1Timestamp: this.getTimeStampTimeWindow(transaction),
-                nis1TransactionHash: transaction['hashData'].data,
-                siriusAddres: this.hexToAscii(transaction['message'].payload)
-              });
-            }
-          });
-
-          // console.log('swapTransaction', swapTransaction);*
-        });
-      }
-    });
-  }*/
-
-  /**
-  *
-  *
-  * @param {AccountsInfoNis1Interface} account
-  * @memberof WalletService
-  */
   setSelectedNis1Account(account: AccountsInfoNis1Interface) {
     this.nis1AccountSelected = account;
   }
@@ -726,22 +696,22 @@ export interface AccountsInfoNis1Interface {
   cosignerOf: boolean;
   cosignerAccounts: CosignatoryOf[];
   multisigAccountsInfo: any[];
-  mosaic: AssetTransferable;
+  mosaics: AssetTransferable[];
   isMultiSig: boolean;
-  balance: any;
+  balances: any[];
 }
 
 export interface CosignatoryOf {
   address: string;
-  mosaic: AssetTransferable;
-  balance: number;
+  mosaics: AssetTransferable[];
+  balances: any[];
   harvestedBlocks: number;
   importance: number;
   label: any;
   multisigInfo: {
     cosignatoriesCount: number;
     minCosignatories: number;
-  },
+  };
   publicKey: string;
   vestedBalance: number;
 }
@@ -755,5 +725,5 @@ export interface TransactionsNis1Interface {
 
 export interface WalletTransactionsNis1Interface {
   name: string;
-  transactions: TransactionsNis1Interface[],
+  transactions: TransactionsNis1Interface[];
 }

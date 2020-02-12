@@ -47,6 +47,8 @@
       <div class="col-11 col-md-10 col-lg-9 col-xl-8 mx-auto">
         <div class="row">
           <!-- MAIN ACCOUNT -->
+
+          <!-- {{mainAccount | json}} -->
           <div class="col-12 mx-auto box-grey">
             <div class="row">
               <div class="col-8 col-sm-9 col-md-10 word-break-all">
@@ -54,23 +56,34 @@
                   <span class="color-black">{{ mainAccount.address.pretty() }}</span>
                 </div>
                 <div>
-                  <span class="color-black fw-bold">Balance:&nbsp;</span>
-                  <!-- <span class="color-black fw-bold" *ngIf="mainAccount.balance"> {{ mainAccount.balance }} XPX</span> -->
-                  <ng-container *ngIf="mainAccount.balance; else amountZero">
-                    <span class="color-black fw-bold" [innerHTML]="getQuantity(mainAccount.balance)"></span>
+                  <span class="color-black fw-bold">NIS1 Balance: </span>
+                  <ng-container *ngIf="mainAccount.balances.length > 1"><br></ng-container>
+                  <ng-container *ngIf="mainAccount.balances.length > 0; else amountZero">
+                    <ng-container *ngFor="let balance of mainAccount.balances; let i = index">
+                      <img src="./assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20px"
+                        alt="logo">
+                      <span class="color-black fw-bold" [innerHTML]="getQuantity(balance.amount)"></span>
+                      <span class="color-black fw-bold"> {{balance.assetId.namespaceId}}:{{balance.assetId.name}}</span>
+                      <ng-container *ngIf="mainAccount.balances.length > 1"><br></ng-container>
+                    </ng-container>
                   </ng-container>
 
-                  <ng-template #amountZero>
-                    <span class="color-black fw-bold" [innerHTML]="getQuantity('0.000000')"></span>
-                  </ng-template>
+                  <!-- <span class="color-black fw-bold">Balance:&nbsp;</span> -->
+                  <!-- <span class="color-black fw-bold" *ngIf="mainAccount.balance"> {{ mainAccount.balance }} XPX</span> -->
+                  <!-- <ng-container *ngIf="mainAccount.balance; else amountZero">
+                    <span class="color-black fw-bold" [innerHTML]="getQuantity(mainAccount.balance)"></span>
+                  </ng-container> -->
 
-                  <span class="color-black fw-bold">&nbsp;XPX</span>
-                  <img src="./assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" class="ml-1rem"
-                    width="20px" alt="logo">
+                  <ng-template #amountZero>
+                    <img src="./assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20px"
+                      alt="logo">
+                    <span class="color-black fw-bold" [innerHTML]="getQuantity('0.000000')"></span>
+                    <span class="color-black fw-bold">&nbsp;prx:xpx</span>
+                  </ng-template>
                 </div>
               </div>
 
-              <ng-container *ngIf="mainAccount.balance">
+              <ng-container *ngIf="mainAccount.balances.length > 0">
                 <div
                   class="col-4 col-sm-3 col-md-2 text-center w-e-nowrap d-flex align-items-center justify-content-end">
                   <span class="color-blue-intermedio font-small cursor-p"
@@ -94,15 +107,33 @@
                     </span>
                   </div>
                   <div>
-                    <span class="color-black fw-bold">Balance:&nbsp;</span>
+                    <!-- <span class="color-black fw-bold">Balance:&nbsp;</span>
                     <span class="color-black fw-bold" [innerHTML]="getQuantity(multisigAccounts.balance)"></span>
                     <span class="color-black fw-bold">&nbsp;XPX</span>
                     <img src="./assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" class="ml-1rem"
-                      width="20px" alt="logo">
+                      width="20px" alt="logo"> -->
+                    <span class="color-black fw-bold">NIS1 Balance:&nbsp;</span>
+                    <ng-container *ngIf="multisigAccounts.balances.length > 0; else amountZero2">
+                      <ng-container *ngIf="multisigAccounts.balances.length > 1"><br></ng-container>
+                      <ng-container *ngFor="let balance of multisigAccounts.balances; let i = index">
+                        <img src="./assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20px"
+                          alt="logo">
+                        <span [innerHTML]="getQuantity(balance.amount)"></span>
+                        <span class="fw-600"> {{balance.assetId.namespaceId}}:{{balance.assetId.name}}</span>
+                        <ng-container *ngIf="multisigAccounts.balances.length > 1"><br></ng-container>
+                      </ng-container>
+                    </ng-container>
+                    <ng-template #amountZero2>
+                      <img src="./assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20px"
+                        alt="logo">
+                      <span class="color-black fw-bold" [innerHTML]="getQuantity('0.000000')"></span>
+                      <span class="color-black fw-bold">&nbsp;prx:xpx</span>
+                    </ng-template>
                   </div>
                 </div>
 
-                <div class="col-4 col-sm-3 col-md-2 text-center w-e-nowrap d-flex align-items-center justify-content-end">
+                <div *ngIf="multisigAccounts.balances.length > 0;"
+                  class="col-4 col-sm-3 col-md-2 text-center w-e-nowrap d-flex align-items-center justify-content-end">
                   <span class="color-blue-intermedio font-small cursor-p"
                     (click)="selectAccount(multisigAccounts.address, '2')">
                     Select >

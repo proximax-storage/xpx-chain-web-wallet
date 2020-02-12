@@ -23,19 +23,19 @@ export class ImportWalletComponent implements OnInit {
   description = 'Restore your existing ProximaX Sirius Wallet, import a private key from another service or create a new wallet right now!';
   errorMatchPassword: string;
   errorWalletExist: string;
-  isValid: boolean = false;
-  passwordMain = 'password'
+  isValid = false;
+  passwordMain = 'password';
   pvkMain = 'password';
-  passwordConfirm = 'password'
+  passwordConfirm = 'password';
   title = 'Create Wallet';
   typeNetwork = [{
     value: environment.typeNetwork.value,
     label: environment.typeNetwork.label
   }];
   nis1Account = null;
-  saveNis1: boolean = false;
-  foundXpx: boolean = false;
-  spinnerButton: boolean = false;
+  saveNis1 = false;
+  foundXpx = false;
+  spinnerButton = false;
   privateKey: any;
   prefix: any;
 
@@ -60,10 +60,11 @@ export class ImportWalletComponent implements OnInit {
   }
 
   /**
- *
- *
- * @memberof ImportWalletComponent
- */
+   *
+   *
+   * @returns
+   * @memberof ImportWalletComponent
+   */
   async importSimpleWallet() {
     if (this.importWalletForm.valid && this.isValid) {
       // Check if name wallet exist
@@ -73,11 +74,12 @@ export class ImportWalletComponent implements OnInit {
       if (existWallet === undefined) {
         const network = this.importWalletForm.get('network').value;
         this.privateKey = this.importWalletForm.get('privateKey').value;
-        if(this.privateKey.length > 64){
-          const newPrivateKey = this.privateKey
-          this.prefix = newPrivateKey.slice(0, -64)
-           this.privateKey = newPrivateKey.slice(2)
+        if (this.privateKey.length > 64) {
+          const newPrivateKey = this.privateKey;
+          this.prefix = newPrivateKey.slice(0, -64);
+          this.privateKey = newPrivateKey.slice(2);
         }
+
         const password = this.proximaxProvider.createPassword(this.importWalletForm.controls.passwords.get('password').value);
         const wallet = this.proximaxProvider.createAccountFromPrivateKey(walletName, password, this.privateKey, network);
         if (this.saveNis1) {
@@ -110,10 +112,10 @@ export class ImportWalletComponent implements OnInit {
    * @memberof ImportWalletComponent
    */
   changeInputType(inputType: string, isPvk: boolean) {
-    let newType = this.sharedService.changeInputType(inputType);
+    const newType = this.sharedService.changeInputType(inputType);
     if (isPvk) {
       this.pvkMain = newType;
-    }else {
+    } else {
       this.passwordMain = newType;
     }
   }
@@ -238,7 +240,7 @@ export class ImportWalletComponent implements OnInit {
    * @memberof ImportWalletComponent
    */
   switchSaveNis1() {
-    this.saveNis1 = !this.saveNis1
+    this.saveNis1 = !this.saveNis1;
   }
 
   /**
