@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef, HostListener, Inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef, HostListener, Inject, AfterViewInit } from '@angular/core';
 import { MdbTableDirective, ModalDirective } from 'ng-uikit-pro-standard';
 import * as qrcode from 'qrcode-generator';
 import { first } from 'rxjs/operators';
@@ -24,7 +24,7 @@ import { NemProviderService } from '../../../swap/services/nem-provider.service'
 })
 
 
-export class DashboardComponent implements OnInit, OnDestroy {
+export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   constructor(
     private cdRef: ChangeDetectorRef,
@@ -151,7 +151,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
    * @memberof DashboardComponent
    */
   async getRecentTransactions(reload = false) {
-    console.log('que es esto', this.dashboardService.getCantViewDashboard());
     this.iconReloadDashboard = true;
     // Validate if it is the first time the dashboard is loaded or if you click on the reload button
     if (this.dashboardService.getCantViewDashboard() === 1 || reload) {
@@ -349,7 +348,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
    */
   scrollToTop() {
     (function smoothscroll() {
-      let currentScroll = document.documentElement.scrollTop || document.body.scrollTop;
+      const currentScroll = document.documentElement.scrollTop || document.body.scrollTop;
       if (currentScroll > 0) {
         window.requestAnimationFrame(smoothscroll);
         window.scrollTo(0, currentScroll - (currentScroll / 8));

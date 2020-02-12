@@ -52,6 +52,7 @@ export class TransferTypeComponent implements OnInit, OnChanges {
     this.typeTransactionHex = `${this.transferTransaction.data['type'].toString(16).toUpperCase()}`;
     this.message = null;
     this.message = this.transferTransaction.data.message;
+    this.amountTwoPart = { part1: '', part2: '' };
     this.namespaceName = '';
     if (this.transferTransaction.data.transactionInfo) {
       const height = this.transferTransaction.data.transactionInfo.height.compact();
@@ -68,18 +69,12 @@ export class TransferTypeComponent implements OnInit, OnChanges {
             this.msg = msg['message'];
             this.nis1hash = msg['nis1Hash'];
             if (this.transferTransaction.data['mosaics'].length > 0) {
-              console.log('transferrrr ', this.transferTransaction);
-              const amount = this.transactionService.amountFormatterSimple(this.transferTransaction.data['mosaics'][0].amount.compact());
-              this.amountTwoPart = this.transactionService.getDataPart(amount.toString(), 6);
               const id = this.transferTransaction.data['mosaics'][0].id;
-              const n = await this.namesapceService.getNamespaceFromId([id]);
-              console.log('n ----> ', n);
-              const d = (n.length > 0) ? (n[0].namespaceName.name === 'prx.xpx') ? 'XPX' : n[0].namespaceName.name : id.toHex();
-              this.namespaceName = d;
-              this.simple = false;
-            } else {
-              this.simple = false;
+              this.build(id);
             }
+
+            this.simple = false;
+            return;
           } else {
             this.simple = true;
           }
@@ -93,6 +88,25 @@ export class TransferTypeComponent implements OnInit, OnChanges {
     } else {
       this.simple = true;
     }
+  }
+
+  /**
+   *
+   *
+   * @param {*} id
+   * @memberof TransferTypeComponent
+   */
+  async build(id: any) {
+    let d = 6;
+    const n = await this.namesapceService.getNamespaceFromId([id]);
+    this.namespaceName = id.toHex();
+    if ((n.length > 0)) {
+      this.namespaceName = (n[0].namespaceName.name === 'prx.xpx') ? 'XPX' : n[0].namespaceName.name;
+      const x = environment.swapAllowedMosaics.find(r => `${r.namespaceId}.${r.name}` === n[0].namespaceName.name);
+      if (x) { d = x.divisibility; }
+    }
+    const amount = this.transactionService.amountFormatterSimple(this.transferTransaction.data['mosaics'][0].amount.compact(), d);
+    this.amountTwoPart = this.transactionService.getDataPart(amount.toString(), d);
   }
 
   /**

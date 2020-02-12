@@ -77,11 +77,10 @@ export const environment = {
   swapAccount: {
     addressAccountMultisig: 'VAWOEOWTABXR7O3ZAK2XNA5GIBNE6PZIXDAFDWBU',
     addressAccountSimple: 'VCWAHAMZRKWU4T3MSBEV7CJVYN7TGX5ZCYMVTUJW'
-    // addressAccountSimple: 'VCWLIYQPQAJSYWMWL5BHUCA3VOWVOXZ3WTNJPTUJ'
   },
   swapAllowedMosaics: [
-    { namespaceId: 'zarcade', name: 'xar' },
-    { namespaceId: 'prx', name: 'xpx' }
+    { namespaceId: 'zarcade', name: 'xar', divisibility: 4 },
+    { namespaceId: 'prx', name: 'xpx', divisibility: 6 }
   ],
   typeNetwork: {
     value: NetworkType.TEST_NET,

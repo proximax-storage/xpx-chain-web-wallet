@@ -9,7 +9,7 @@ export const environment = {
   production: false,
   routeNodesJson: 'mainnet',
   itemBooksAddress: 'sw-books-mainnet',
-  version: '0.4.14',
+  version: '0.4.15',
   cacheVersion: '02-MAINNET',
   nameKeyBlockStorage: `sw-blocks`,
   nameKeyNodeSelected: `sw-selected-node-mainnet`,
@@ -79,6 +79,10 @@ export const environment = {
     addressAccountMultisig: 'XDKK47EMX4Q2NVU6TIN4RS22SZZ47UEFJ454L4NV',
     addressAccountSimple: 'XDHQTCJLDDSNOVXPGRE25YNHXV27EAKAEUGJKRLK'
   },
+  swapAllowedMosaics: [
+    { namespaceId: 'zarcade', name: 'xar', divisibility: 4 },
+    { namespaceId: 'prx', name: 'xpx', divisibility: 6 }
+  ],
   typeNetwork: {
     value: NetworkType.MAIN_NET,
     label: 'MAIN NET'

@@ -278,10 +278,10 @@ export class TransactionsService {
    * @returns
    * @memberof TransactionsService
    */
-  amountFormatterSimple(amount: Number) {
-    const amountDivisibility = Number(amount) / Math.pow(10, 6);
+  amountFormatterSimple(amount: number, d = 6) {
+    const amountDivisibility = Number(amount) / Math.pow(10, d);
     return amountDivisibility.toLocaleString('en-us', {
-      minimumFractionDigits: 6
+      minimumFractionDigits: d
     });
   }
 
