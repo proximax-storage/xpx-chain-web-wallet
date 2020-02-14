@@ -482,12 +482,12 @@ export class WalletService {
   }
 
   /**
-  *
-  *
-  * @param {*} wallet
-  * @returns
-  * @memberof WalletService
-  */
+   *
+   *
+   * @param {WalletAccountInterface} [wallet]
+   * @returns {AccountsInterface}
+   * @memberof WalletService
+   */
   getAccountDefault(wallet?: WalletAccountInterface): AccountsInterface {
     if (wallet) {
       return wallet.accounts.find(x => x.default === true);
@@ -537,11 +537,11 @@ export class WalletService {
   }
 
   /**
-  *
-  *
-  * @returns {CurrentWalletInterface}
-  * @memberof WalletService
-  */
+   *
+   *
+   * @returns {CurrentWalletInterface}
+   * @memberof WalletService
+   */
   getCurrentWallet(): CurrentWalletInterface {
     return this.currentWallet;
   }
@@ -568,11 +568,11 @@ export class WalletService {
   }
 
   /**
-     *
-     *
-     * @returns {Observable<any>}
-     * @memberof WalletService
-     */
+   *
+   *
+   * @returns {Observable<any>}
+   * @memberof WalletService
+   */
   getSwapTransactions$(): Observable<any> {
     return this.swapTransactions$;
   }
@@ -601,11 +601,12 @@ export class WalletService {
 
 
   /**
-     *
-     *@param {string} name
-     * @returns
-     * @memberof WalletService
-     */
+   *
+   *
+   * @param {string} name
+   * @returns {WalletAccountInterface[]}
+   * @memberof WalletService
+   */
   getWalletStorageByName(name: string): WalletAccountInterface[] {
     let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
     if (walletsStorage === undefined || walletsStorage === null) {
@@ -741,12 +742,11 @@ export class WalletService {
       this.validateMultisigAccount(this.currentWallet.accounts);
     }
   }
+
   /**
- *
- *
- * @param {string} name
- * @memberof WalletService
- */
+   *
+   * @param name
+   */
   removeWallet(name: string): boolean {
     let value = false;
     let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
@@ -909,11 +909,9 @@ export class WalletService {
   }
 
   /**
- *
- *
- * @param {*} currentAccount
- * @memberof WalletService
- */
+   *
+   * @param transactions
+   */
   setSwapTransactions$(transactions: TransactionsNis1Interface[]) {
     this.swapTransactions.next(transactions);
   }

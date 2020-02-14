@@ -25,13 +25,28 @@
     </div>
   </div>
 
-  <div class="row mt-05rem">
-    <div class="col-12 lh-1em">
-      <app-mosaics-info (changeSearch)="searching = false;" [mosaicsArray]="transactionBuilder.data['mosaics']"
-        [transferTransaction]="transactionBuilder.data" [simple]="false">
-      </app-mosaics-info>
+  <ng-container *ngIf="isSwap === true">
+    <div class="row mt-05rem">
+      <div class="col-12 lh-1em">
+        <!-- Amount -->
+        <span class="fw-600 fs-065rem">Amount:&nbsp;&nbsp;</span>
+        <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
+        <span class="fw-600 fs-065rem">{{amountTwoPart?.part1}}</span>
+        <span class="fs-065rem">{{amountTwoPart?.part2}}</span>
+        <span class="fw-600 fs-065rem"> {{namespaceName}} </span>
+      </div>
     </div>
-  </div>
+  </ng-container>
+
+  <ng-container *ngIf="isSwap === false">
+    <div class="row mt-05rem">
+      <div class="col-12 lh-1em">
+        <app-mosaics-info (changeSearch)="searching = false;" [mosaicsArray]="transactionBuilder.data['mosaics']"
+          [transferTransaction]="transactionBuilder.data" [simple]="false">
+        </app-mosaics-info>
+      </div>
+    </div>
+  </ng-container>
 
   <div class="row mt-05rem">
     <div class="col-12 lh-1em">
