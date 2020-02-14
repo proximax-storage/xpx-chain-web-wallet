@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import nem from "nem-sdk";
+import nem from 'nem-sdk';
 import { Router } from '@angular/router';
 import { NetworkTypes } from 'nem-library';
 import { NetworkType } from 'tsjs-xpx-chain-sdk';
@@ -28,7 +28,7 @@ export class HomeComponent implements OnInit {
   @ViewChild('file', { static: true }) myInputVariable: ElementRef;
   @ViewChild('modalAuth', { static: true }) modalAuth: ModalDirective;
 
-  eventNumber: number = 0;
+  eventNumber = 0;
   objectKeys = Object.keys;
   link = {
     createWallet: AppConfig.routes.createWallet,
@@ -37,7 +37,7 @@ export class HomeComponent implements OnInit {
   };
   servicesList: StructureService[] = [];
   boxCreateWallet: StructureService[] = [];
-  password: string = '';
+  password = '';
   subscription: Subscription[] = [];
   walletDecryp: any;
 
@@ -96,7 +96,7 @@ export class HomeComponent implements OnInit {
         'icon-wallet-import-blue.svg',
         `/${this.link.selectTypeCreationWallet}`
       )
-    ]
+    ];
   }
 
   /**
@@ -105,7 +105,7 @@ export class HomeComponent implements OnInit {
    * @memberof HomeComponent
    */
   createStructNis() {
-    const common = nem.model.objects.create("common")(this.password);
+    const common = nem.model.objects.create('common')(this.password);
     // Get the wallet account to decrypt
     const walletAccount = this.walletDecryp.accounts[0];
     // Decrypt account private key
@@ -123,8 +123,8 @@ export class HomeComponent implements OnInit {
       const accounts = [];
       const contacts = [];
       for (let index = 0; index < Object.keys(this.walletDecryp.accounts).length; index++) {
-        const walletAccount = this.walletDecryp.accounts[index];
-        nem.crypto.helpers.passwordToPrivatekey(common, walletAccount, algo);
+        const accountWallet = this.walletDecryp.accounts[index];
+        nem.crypto.helpers.passwordToPrivatekey(common, accountWallet, algo);
         const privateKey = common.privateKey;
         const wallet = this.proximaxProvider.createAccountFromPrivateKey(nameWallet, password, privateKey, network);
         const nis1Wallet = this.nemProvider.createAccountPrivateKey(privateKey);
@@ -134,14 +134,14 @@ export class HomeComponent implements OnInit {
         };
         accounts.push({
           address: wallet.address.plain(),
-          algo: "pass:bip32",
+          algo: 'pass:bip32',
           brain: true,
           default: (index === 0),
           encrypted: wallet.encryptedPrivateKey.encryptedKey,
           firstAccount: (index === 0),
           iv: wallet.encryptedPrivateKey.iv,
           name: this.walletDecryp.accounts[index].label,
-          network: network,
+          network,
           publicAccount: this.proximaxProvider.getPublicAccountFromPrivateKey(this.proximaxProvider.decryptPrivateKey(
             password,
             wallet.encryptedPrivateKey.encryptedKey,
@@ -155,13 +155,13 @@ export class HomeComponent implements OnInit {
       this.serviceModuleService.setBookAddress(contacts, nameWallet);
       const walletStorage = {
         name: nameWallet,
-        accounts: accounts,
+        accounts,
         book: []
-      }
+      };
 
       // console.log('this a wallet created----->', walletStorage);
 
-      let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
+      const walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
       walletsStorage.push(walletStorage);
       localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
 
@@ -178,9 +178,9 @@ export class HomeComponent implements OnInit {
    * @memberof HomeComponent
    */
   clearForm() {
-    this.myInputVariable.nativeElement.value = "";
+    this.myInputVariable.nativeElement.value = '';
     this.password = '';
-    this.walletDecryp = null
+    this.walletDecryp = null;
   }
 
   /**
@@ -188,9 +188,9 @@ export class HomeComponent implements OnInit {
    *
    * @memberof HomeComponent
    */
-  eventShowModal(){
+  eventShowModal() {
     this.authService.getEventShowModal().pipe(first()).subscribe(
-      next => this.authService.eventShowModalSubject.next(next+1)
+      next => this.authService.eventShowModalSubject.next(next + 1)
     );
   }
 
@@ -211,14 +211,14 @@ export class HomeComponent implements OnInit {
           const existWallet = this.walletService.getWalletStorage().find(
             (element: any) => {
               let walletName = dataDecryp.name;
-              walletName = (walletName.includes('_') === true) ? walletName.split('_').join(' ') : walletName
+              walletName = (walletName.includes('_') === true) ? walletName.split('_').join(' ') : walletName;
               return element.name === walletName;
             }
           );
-          //Wallet does not exist
+          // Wallet does not exist
           if (existWallet === undefined) {
             let walletName = dataDecryp.name;
-            walletName = (walletName.includes(' ') === true) ? walletName.split(' ').join('_') : walletName
+            walletName = (walletName.includes(' ') === true) ? walletName.split(' ').join('_') : walletName;
             const accounts = [];
             const contacs = [];
             if (dataDecryp.accounts.length !== undefined) {
@@ -237,13 +237,13 @@ export class HomeComponent implements OnInit {
 
             const wallet = {
               name: walletName,
-              accounts: accounts
-            }
+              accounts
+            };
 
             // console.log('this a wallet created----->', wallet);
             // console.log('this a wallet contacs----->', contacs);
 
-            let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
+            const walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
             walletsStorage.push(wallet);
 
             localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));

@@ -531,19 +531,27 @@ export class TransactionsService {
   getTypeTransactions() {
     return this.arraTypeTransaction;
   }
+
   /**
- *
- *
- * @returns {Observable<any>}
- * @memberof TransactionsService
- */
+   *
+   *
+   * @returns {Observable<any>}
+   * @memberof TransactionsService
+   */
   getViewNotifications$(): Observable<any> {
     return this.notifications$;
   }
 
+  /**
+   *
+   *
+   * @param {boolean} notifications
+   * @memberof TransactionsService
+   */
   setViewNotifications$(notifications: boolean) {
     this.notificationsSubject.next(notifications);
   }
+
   /**
    *
    *
@@ -810,27 +818,34 @@ export class TransactionsService {
    * @param pushed
    */
   searchAccountsInfo(accounts: AccountsInterface[]) {
-    // console.log('ACCOUNTS INTERFACE ---> ', accounts);
     this.walletService.searchAccountsInfo(accounts).then((data: { mosaicsId: MosaicId[]; accountsInfo: AccountsInfoInterface[]; }) => {
-      this.walletService.validateMultisigAccount(accounts);
       const publicsAccounts: PublicAccount[] = [];
+      this.walletService.validateMultisigAccount(accounts);
+      accounts.forEach(x => {
+        publicsAccounts.push(this.proximaxProvider.createPublicAccount(x.publicAccount.publicKey, x.network));
+      });
+
       data.accountsInfo.forEach((element: AccountsInfoInterface) => {
         if (element.accountInfo) {
           const exist = accounts.find(account => element.accountInfo.address.plain() === account.address);
           if (exist) {
-            publicsAccounts.push(
-              this.proximaxProvider.createPublicAccount(
-                exist.publicAccount.publicKey,
-                exist.publicAccount.address.networkType
-              )
-            );
+            if (!publicsAccounts.find(x => x.publicKey === exist.publicAccount.publicKey)) {
+              publicsAccounts.push(
+                this.proximaxProvider.createPublicAccount(
+                  exist.publicAccount.publicKey,
+                  exist.publicAccount.address.networkType
+                )
+              );
+            }
           } else {
-            publicsAccounts.push(
-              this.proximaxProvider.createPublicAccount(
-                element.accountInfo.publicKey,
-                element.accountInfo.publicAccount.address.networkType
-              )
-            );
+            if (!publicsAccounts.find(x => x.publicKey === element.accountInfo.publicKey)) {
+              publicsAccounts.push(
+                this.proximaxProvider.createPublicAccount(
+                  element.accountInfo.publicKey,
+                  element.accountInfo.publicAccount.address.networkType
+                )
+              );
+            }
           }
         }
       });

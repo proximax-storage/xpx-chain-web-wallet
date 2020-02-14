@@ -134,7 +134,9 @@ export class Nis1TransferAssetsComponent implements OnInit, OnDestroy {
             // const assetId = this.ownedAccountSwap.mosaic.assetId;
             const assetId = this.selectedMosaic.assetId;
             // console.log(assetId);
+            // console.log('OWNED ACCOUNT TO SWAP --->', this.ownedAccountSwap.publicAccount.publicKey);
             const msg = PlainMessage.create(this.ownedAccountSwap.publicAccount.publicKey);
+            // console.log('MESSAGE ----->', msg);
             const transaction = await this.nemProvider.createTransaction(msg, assetId, quantity);
             // console.log('\nTRANSACTION CREATED -->', transaction)
             const publicAccount = this.proximaxProvider.createPublicAccount(this.ownedAccountSwap.publicAccount.publicKey);
@@ -320,7 +322,7 @@ export class Nis1TransferAssetsComponent implements OnInit, OnDestroy {
         if (!this.isMultisig && this.accountSelected.address.plain() === account.replace(/-/g, '')) {
           // SIMPLE ACCOUNT
           this.accountToSwap = Object.assign({}, this.accountSelected);
-          console.log('account to swap', this.accountToSwap);
+          // console.log('account to swap', this.accountToSwap);
           this.mosaicSelected(this.accountToSwap.balances[0]);
           this.showCertifiedSwap = false;
           this.createFormTransfer();
@@ -330,12 +332,12 @@ export class Nis1TransferAssetsComponent implements OnInit, OnDestroy {
           // console.log('------isMultisig------');
           const multisigAccounts = this.accountSelected.multisigAccountsInfo.slice(0);
           /*console.log('------multisigAccounts------', multisigAccounts);
-          console.log('------ ACCOUNT PARAMS -----', account);*/
+          // console.log('------ ACCOUNT PARAMS -----', account);*/
           const accountFiltered = multisigAccounts.find(ac => ac.address.replace(/-/g, '') === account.replace(/-/g, ''));
           // console.log('----accountFiltered----', accountFiltered);
           if (accountFiltered) {
             this.accountToSwap = Object.assign({}, accountFiltered);
-            console.log('this.accountToSwap', this.accountToSwap);
+            // console.log('this.accountToSwap', this.accountToSwap);
             this.accountToSwap.address = this.nemProvider.createAddressToString(accountFiltered.address);
             this.accountToSwap.nameAccount = this.accountSelected.nameAccount;
             this.accountToSwap.accountCosignatory = this.proximaxProvider.createPublicAccount(this.ownedAccountSwap.publicAccount.publicKey);
@@ -417,7 +419,7 @@ export class Nis1TransferAssetsComponent implements OnInit, OnDestroy {
     this.subscription.push(
       this.formTransfer.get('amount').valueChanges.subscribe(
         next => {
-          console.log('next', next);
+          // console.log('next', next);
           if (next !== null && next !== undefined) {
             if (next > parseFloat(this.quantity.split(',').join(''))) {
               this.blockButton = true;
