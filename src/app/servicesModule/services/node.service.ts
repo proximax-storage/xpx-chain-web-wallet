@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { SharedService } from '../../shared/services/shared.service';
 import { ProximaxProvider } from '../../shared/services/proximax.provider';
 import * as testnet from '../../../assets/json/nodes.json';
-import * as mainnet from '../../../assets/json/nodes.json';
+import * as mainnet from '../../../assets/json/nodes-mainnet.json';
 
 @Injectable({
   providedIn: 'root'
@@ -32,7 +32,7 @@ export class NodeService {
    * @returns
    * @memberof NodeService
    */
-  addNode(node: string, showMsg = false, msgNodeCreated = '') {
+  addNode(node: string, showMsg: boolean = false, msgNodeCreated: string = '') {
     const dataStorage = this.getAllNodes();
     const data = { value: node, label: node };
     if (dataStorage === null) {
@@ -63,18 +63,19 @@ export class NodeService {
   }
 
   /**
-     * Init node and validations
-     *
-     * @returns
-     * @memberof NodeService
-     */
+   * Init node and validations
+   *
+   * @memberof NodeService
+   */
   initNode() {
     if (this.getAllNodes() === null) {
       this.setArrayNode([]);
     }
     // validates if a selected node exists in the storage
     const constSelectedStorage = this.getNodeSelected();
-    const nodeSelected = (constSelectedStorage === null || constSelectedStorage === '') ? this.listNodes[Math.floor(Math.random() * this.listNodes.length)] : constSelectedStorage;
+    const nodeSelected = (constSelectedStorage === null || constSelectedStorage === '') ?
+      this.listNodes[Math.floor(Math.random() * this.listNodes.length)] :
+      constSelectedStorage;
     // creates a new observable
 
     this.nodeObsSelected = new BehaviorSubject<any>(nodeSelected);
@@ -147,11 +148,11 @@ export class NodeService {
   }
 
   /**
-  * Add an array of nodes in the storage
-  *
-  * @param {any} nodes
-  * @memberof NodeService
-  */
+   * Add an array of nodes in the storage
+   *
+   * @param {*} nodes
+   * @memberof NodeService
+   */
   setArrayNode(nodes: any) {
     localStorage.setItem(this.nameItemsArrayStorage, JSON.stringify(nodes));
   }

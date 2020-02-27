@@ -16,6 +16,19 @@ export class ServicesModuleService {
     private walletService: WalletService
   ) { }
 
+  buildServiceBox(params: StructureService) {
+    return {
+      title: params.title,
+      show: params.show,
+      description: params.description,
+      image: params.image,
+      route: params.route,
+      children: params.children,
+      viewChildren: params.viewChildren,
+      className: params.className
+    };
+  }
+
   /**
    * @param {string} titleParam
    * @param {boolean} showParam
@@ -87,12 +100,12 @@ export class ServicesModuleService {
 
       if (dataStorage === null) {
         // console.log('Aquiiii lleggfaaaaaa', books);
-      // console.log('Aquiiii dataStorage', dataStorage);
+        // console.log('Aquiiii dataStorage', dataStorage);
         this.setBookAddress([books], params.nameItem);
         return true;
       }
 
-      let issetData = undefined;
+      let issetData: any;
       try {
         issetData = dataStorage.find(element =>
           element.label === params.name ||
@@ -124,13 +137,12 @@ export class ServicesModuleService {
   }
 
   /**
-     *
-     *
-     *
-     * @param {string} itemEnvironment
-     * @param {string} nameWallet
-     * @memberof ServicesModuleService
-     */
+   *
+   *
+   * @param {string} itemEnvironment
+   * @param {string} nameWallet
+   * @memberof ServicesModuleService
+   */
   removeItemStorage(itemEnvironment: string, nameWallet: string) {
     localStorage.removeItem(`${itemEnvironment}-${nameWallet}`);
   }
@@ -152,13 +164,13 @@ export class ServicesModuleService {
    */
   structureServices(icon, title, text, route, show, className) {
     return {
-      icon: icon,
-      title: title,
-      text: text,
-      route: route,
-      show: show,
-      className: className
-    }
+      icon,
+      title,
+      text,
+      route,
+      show,
+      className
+    };
   }
 
 
@@ -195,7 +207,7 @@ export class ServicesModuleService {
     const data = listContacts.slice(0);
     const bookAddress = this.getBooksAddress();
     if (bookAddress !== undefined && bookAddress !== null) {
-      for (let x of bookAddress) {
+      for (const x of bookAddress) {
         data.push(x);
       }
       listContacts = data;
@@ -226,24 +238,24 @@ export interface ContactsStorageInterface {
   dataComparate?: {
     name: string;
     address: string;
-  }
-};
+  };
+}
 
 export interface HeaderServicesInterface {
-  moduleName: string,
-  componentName: string,
-  routerBack?: string,
-  extraButton?: string,
-  routerExtraButton?: string
+  moduleName: string;
+  componentName: string;
+  routerBack?: string;
+  extraButton?: string;
+  routerExtraButton?: string;
 }
 
 export interface ResultAuditInterface {
-  filename: string,
-  owner: Address | NamespaceId | string,
-  fileHash: string,
-  result: string,
-  hash: string,
-  date?: string,
-  method?: string,
-  transaction?: TransactionsInterface
+  filename: string;
+  owner: Address | NamespaceId | string;
+  fileHash: string;
+  result: string;
+  hash: string;
+  date?: string;
+  method?: string;
+  transaction?: TransactionsInterface;
 }
