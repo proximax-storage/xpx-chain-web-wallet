@@ -9,8 +9,8 @@ export const environment = {
   production: false,
   routeNodesJson: 'mainnet',
   itemBooksAddress: 'sw-books-mainnet',
-  version: '0.4.16',
-  cacheVersion: '04-MAINNET',
+  version: '0.4.17',
+  cacheVersion: '05-MAINNET',
   nameKeyBlockStorage: `sw-blocks`,
   nameKeyNodeSelected: `sw-selected-node-mainnet`,
   nameKeyWalletStorage: `sw-mainnet`,
@@ -19,6 +19,28 @@ export const environment = {
   nameKeyMosaicStorage: `sw-mosaics-mainnet`,
   nameKeyVersion: 'sw-version-mainnet',
   nameKeyWalletTransactionsNis: 'sw-transactions-nis-mainnet',
+  activeModulesBox: {
+    voting: {
+      viewChildrenParam: true,
+      createPoll: false,
+      vote: false,
+      viewResult: false,
+      classNameParam: 'disable-module'
+    },
+    storage: {
+      viewChildrenParam: true,
+      files: false,
+      uploadFiles: false,
+      sendShare: false,
+      classNameParam: 'disable-module'
+    },
+    notarization: {
+      viewChildrenParam: true,
+      attest: false,
+      audit: false,
+      classNameParam: 'disable-module'
+    },
+  },
   protocol: `https`,
   protocolWs: `wss`,
   nodeExplorer: 'https://explorer.xpxsirius.io/#/result/hash',
@@ -80,7 +102,7 @@ export const environment = {
     addressAccountSimple: 'XDHQTCJLDDSNOVXPGRE25YNHXV27EAKAEUGJKRLK'
   },
   swapAllowedMosaics: [
-    { namespaceId: 'zarcade', name: 'xar', divisibility: 4 },
+    { namespaceId: 'xarcade', name: 'xar', divisibility: 4 },
     { namespaceId: 'prx', name: 'xpx', divisibility: 6 }
   ],
   typeNetwork: {

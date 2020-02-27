@@ -9,8 +9,8 @@ export const environment = {
   production: true,
   routeNodesJson: 'testnet',
   itemBooksAddress: 'sw-books-testnet',
-  version: '0.4.16',
-  cacheVersion: '04',
+  version: '0.4.17',
+  cacheVersion: '05',
   nameKeyBlockStorage: `sw-blocks`,
   nameKeyNodeSelected: `sw-selected-node-testnet`,
   nameKeyWalletStorage: `sw-testnet`,
@@ -19,6 +19,28 @@ export const environment = {
   nameKeyMosaicStorage: `sw-mosaics-testnet`,
   nameKeyVersion: 'sw-version-testnet',
   nameKeyWalletTransactionsNis: 'sw-transactions-nis',
+  activeModulesBox: {
+    voting: {
+      viewChildrenParam: true,
+      createPoll: false,
+      vote: false,
+      viewResult: false,
+      classNameParam: 'disable-module'
+    },
+    storage: {
+      viewChildrenParam: true,
+      files: false,
+      uploadFiles: false,
+      sendShare: false,
+      classNameParam: 'disable-module'
+    },
+    notarization: {
+      viewChildrenParam: true,
+      attest: false,
+      audit: false,
+      classNameParam: 'disable-module'
+    },
+  },
   protocol: `https`,
   protocolWs: `wss`,
   nodeExplorer: 'https://bctestnetexplorer.xpxsirius.io/#/result/hash',
