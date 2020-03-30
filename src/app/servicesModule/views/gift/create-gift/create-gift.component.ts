@@ -69,7 +69,7 @@ export class CreateGiftComponent implements OnInit {
   haveBalance: boolean;
   balanceXpx: string;
   save: boolean;
-  limit: number = 20
+  limit: number = 100
   accountList: Account[] = [];
   aggregateTransaction: Transaction;
   constructor(private fb: FormBuilder,
