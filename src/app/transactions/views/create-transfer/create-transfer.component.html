@@ -269,7 +269,7 @@
 
                 <!-- Message Error Insufficient balance-->
                 <mdb-error *ngIf="insufficientBalance">
-                  <span class="fs-08rem fw-600 color-error-message">Insufficient Balance</span>
+                  <span class="fs-08rem fw-600 color-error-message">Insufficient Balance 222</span>
                 </mdb-error>
               </div>
             </div>
@@ -310,11 +310,11 @@
                         [(ngModel)]="boxOtherMosaics[i].amount" [ngModelOptions]="{standalone: true}"
                         (ngModelChange)="amountOtherMosaicChanged($event, otherMosaic.id, i)"
                         placeholder="Enter quantity" [disabled]="disabledAllField">
-                      <span class="label-i fw-600 pl-2rem">Send</span>
+                      <span class="label-i fw-600 pl-2rem">Send 01</span>
 
                       <!-- Message Error Insufficient balance-->
                       <mdb-error *ngIf="otherMosaic.errorBalance">
-                        <span class="fs-08rem fw-600 color-error-message">Insufficient Balance</span>
+                        <span class="fs-08rem fw-600 color-error-message">Insufficient Balancesss11</span>
                       </mdb-error>
                     </div>
                   </div>
@@ -329,6 +329,10 @@
 
     <!-- Add mosaics -->
     <div class="row mt-1rem">
+      {{currentBlock}} <br>
+      {{disabledBtnAddMosaic}} <br>
+      {{selectOtherMosaics.length}} <br>
+      {{disabledAllField}}
       <div class="col-12 d-flex justify-content-center">
         <button
           [disabled]="currentBlock === 0 || disabledBtnAddMosaic || selectOtherMosaics.length === 0 || disabledAllField"

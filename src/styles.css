@@ -499,7 +499,9 @@ html, body {
 .pr-4rem {
   padding-right: 4rem;
 }
-
+.pr-5rem {
+  padding-right: 5rem;
+}
 /************************** BORDER ******************************/
 
 .bordb-2px-solid-land {
@@ -1519,12 +1521,27 @@ button.md-toast-close-button {
   font-size: .9rem !important;
   margin: .4rem 0rem .4rem 0rem;
 }
-
+.box-grey-gift {
+  border-radius: 1.5rem;
+  background: #f4f4f4;
+  /* padding: 10px 20px;
+  margin: 10px; */
+  /* padding: .5rem 1rem .5rem 1rem; */
+  color: #333333;
+  font-size: .9rem !important;
+  /* margin: .4rem 0rem .4rem 0rem; */
+}
 .box-drop {
   border-radius: 1rem;
   background: white;
   padding: 2rem;
   margin: 10px;
+  color: black;
+  border: 2px dotted #316eb5 !important;
+}
+.box-drop-gift {
+  border-radius: 1rem;
+  background: white;
   color: black;
   border: 2px dotted #316eb5 !important;
 }
