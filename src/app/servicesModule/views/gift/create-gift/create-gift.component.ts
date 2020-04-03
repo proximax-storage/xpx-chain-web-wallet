@@ -584,8 +584,11 @@ export class CreateGiftComponent implements OnInit {
   }
   deleteOurFile() {
     this.ourFile = null
+    this.showImg = true
+    this.imgBackground = this.sharedService.walletGitfCuston();
+    this.drawExample()
     // this.giftDecode = null
-    // this.resetInput()
+    this.resetInput()
   }
   /**
   * Method to take the selected file
@@ -593,6 +596,7 @@ export class CreateGiftComponent implements OnInit {
   * @param {Event} $event get the html element
   */
   fileChange(file: File, $event) {
+    // this.resetInput()
     this.fileToUpload = ''
     if (file && file[0]) {
       if (file[0].type !== 'image/jpeg')
@@ -604,12 +608,12 @@ export class CreateGiftComponent implements OnInit {
         this.fileToUpload = reader.result
         this.imgBackground = this.fileToUpload
         this.drawExample()
+        this.showImg = false
         // this.resetInput()
       };
     }
   }
   showImgFun() {
-    this.showImg = this.showImg = !this.showImg
     this.drawExample()
   }
   updateShowMosaic() {

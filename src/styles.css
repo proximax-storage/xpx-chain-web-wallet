@@ -1542,8 +1542,9 @@ button.md-toast-close-button {
 .box-drop-gift {
   border-radius: 1rem;
   background: white;
+  padding: 2rem;
+  margin: 10px;
   color: black;
-  border: 2px dotted #316eb5 !important;
 }
 
 .box-transparent-border-orange {
