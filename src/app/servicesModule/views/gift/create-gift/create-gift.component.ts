@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { AppConfig } from '../../../../config/app.config';
 import { HeaderServicesInterface } from '../../../services/services-module.service';
 import { FormGroup, FormBuilder, Validators, AbstractControl, FormControl } from '@angular/forms';
@@ -21,7 +21,7 @@ import { NodeService } from '../../../../servicesModule/services/node.service';
   templateUrl: './create-gift.component.html',
   styleUrls: ['./create-gift.component.css']
 })
-export class CreateGiftComponent implements OnInit, OnDestroy {
+export class CreateGiftComponent implements OnInit {
   @ViewChild('fileInput', { static: false }) myInputVariable: ElementRef;
   @ViewChild('fileInputtwo', { static: false }) myInputVariabletwo: ElementRef;
   accounts: any = [];
@@ -41,17 +41,17 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
   accountInfo: AccountsInfoInterface = null;
   accountValid: boolean;
   allMosaics = [];
-  showCanva = false;
-  showImg = true;
-  showImgtwo = true;
+  showCanva = false
+  showImg = true
+  showImgtwo = true
   showViewsConfirm = false;
-  checked = false;
+  checked: boolean = false;
   dataURL: any;
   dataURLTwo: any;
   imgBackground;
-  imgBackgroundtwo;
-  cantCard = 0;
-  descrip: string;
+  imgBackgroundtwo
+  cantCard: number = 0;
+  descrip: string
   selectOtherMosaics = [];
   configurationForm: ConfigurationForm;
   transactionSigned: SignedTransaction[] = [];
@@ -86,7 +86,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
   subscription: Subscription[] = [];
   fee: any = '0.053250';
   feeCosignatory: any = 10044500;
-  feeCover = 111000;
+  feeCover: number = 111000
   currentBlock: number;
   fileToUpload: any;
   ourFile: File;
@@ -96,11 +96,10 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
   haveBalance: boolean;
   balanceXpx: string;
   save: boolean;
-  limit = 100;
+  limit: number = 100
   accountList: Account[] = [];
   aggregateTransaction: Transaction;
-  constructor(
-    private fb: FormBuilder,
+  constructor(private fb: FormBuilder,
     private sharedService: SharedService,
     private walletService: WalletService,
     private mosaicServices: MosaicService,
@@ -121,19 +120,19 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
     this.isMultisig = false;
     this.haveBalance = false;
     this.save = false;
-    this.balanceXpx = '0.000000';
+    this.balanceXpx = '0.000000'
   }
 
   ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
     this.transactionHttp = new TransactionHttp(environment.protocol + '://' + `${this.nodeService.getNodeSelected()}`); // change
-    this.validateSave();
+    this.validateSave()
 
     this.subscribeValue();
     this.getAccountInfo();
     setTimeout(() => {
-      this.drawExample();
+      this.drawExample()
     }, 3000);
 
     this.imgBackground = this.sharedService.walletGitf();
@@ -167,10 +166,8 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
   }
 
   /**
-   *
-   *
-   * @memberof CreateGiftComponent
-   */
+  * @memberof CreateGiftComponent
+  */
   ngOnDestroy(): void {
     this.subscription.forEach(subscription => {
       subscription.unsubscribe();
@@ -181,7 +178,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
    * @memberof CreateGiftComponent
    */
   createForm() {
-    // Form create multisignature default
+    //Form create multisignature default
     this.createGift = this.fb.group({
       amountXpx: ['', [
         Validators.maxLength(this.configurationForm.amount.maxLength)
@@ -208,16 +205,16 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
       ]
     });
     setTimeout(() => {
-      this.createGift.get('amountXpx').reset();
+      this.createGift.get('amountXpx').reset()
     }, 10);
     // this.convertAccountMultsignForm.get('selectAccount').patchValue('ACCOUNT-2');
   }
 
   /**
-   *
-   *
-   * @memberof CreateGiftComponent
-   */
+    *
+    *
+    * @memberof CreateTransferComponent
+    */
   pushedOtherMosaics() {
     if (this.selectOtherMosaics.length > 0) {
       if (this.boxOtherMosaics.length === 0) {
@@ -232,20 +229,19 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
           selectOtherMosaics: this.selectOtherMosaics,
           config: null
         });
-        this.createGift.get('amountXpx').patchValue('', { emitEvent: false, onlySelf: false });
-        this.createGift.get('amountXpx').disable();
+        this.createGift.get('amountXpx').patchValue('', { emitEvent: false, onlySelf: false })
+        this.createGift.get('amountXpx').disable()
       }
     }
 
   }
-
   /**
-   *
-   *
-   * @param {*} mosaicSelected
-   * @param {number} position
-   * @memberof CreateGiftComponent
-   */
+  *
+  *
+  * @param {Event} $event
+  * @param {number} i
+  * @memberof CreateTransferComponent
+  */
   otherMosaicsChange(mosaicSelected: any, position: number) {
     if (mosaicSelected !== undefined) {
       if (this.boxOtherMosaics[position].beforeValue === '' || !this.boxOtherMosaics[position].beforeValue) {
@@ -263,10 +259,10 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
             });
             this.boxOtherMosaics.splice(i, 1);
           }
-          if (this.boxOtherMosaics.length === 0) {
-            this.errorOtherMosaics = false;
-            this.createGift.get('amountXpx').enable();
-            this.createGift.get('amountXpx').patchValue('', { emitEvent: false, onlySelf: false });
+          if (this.boxOtherMosaics.length == 0) {
+            this.errorOtherMosaics = false
+            this.createGift.get('amountXpx').enable()
+            this.createGift.get('amountXpx').patchValue('', { emitEvent: false, onlySelf: false })
           }
         } else {
           const currentMosaic = this.boxOtherMosaics[position].selectOtherMosaics.find(elm => elm.label === this.boxOtherMosaics[position].beforeValue);
@@ -278,19 +274,18 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
         }
       }
     } else {
-      this.createGift.get('amountXpx').enable();
-      this.createGift.get('amountXpx').patchValue('', { emitEvent: false, onlySelf: false });
+      this.createGift.get('amountXpx').enable()
+      this.createGift.get('amountXpx').patchValue('', { emitEvent: false, onlySelf: false })
       const i = this.boxOtherMosaics.indexOf(this.boxOtherMosaics[position]);
       if (i !== -1) {
         this.boxOtherMosaics.splice(i, 1);
       }
-      if (this.boxOtherMosaics.length === 0) {
-        this.createGift.get('amountXpx').enable();
-        this.createGift.get('amountXpx').patchValue('', { emitEvent: false, onlySelf: false });
+      if (this.boxOtherMosaics.length == 0) {
+        this.createGift.get('amountXpx').enable()
+        this.createGift.get('amountXpx').patchValue('', { emitEvent: false, onlySelf: false })
       }
     }
   }
-
   /**
    *
    *
@@ -375,15 +370,14 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
       }
     }
   }
-
   /**
-   *
-   *
-   * @param {string} amount
-   * @param {(string | [])} mosaicId
-   * @param {number} position
-   * @memberof CreateGiftComponent
-   */
+    *
+    *
+    * @param {string} amount
+    * @param {(string | [])} mosaicId
+    * @param {number} position
+    * @memberof CreateTransferComponent
+    */
   async amountOtherMosaicChanged(amount: string, mosaicId: string | [], position: number) {
     if (amount !== null && amount !== undefined) {
       const mosaic = await this.mosaicServices.filterMosaics([new MosaicId(mosaicId)]);
@@ -395,7 +389,6 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
       this.boxOtherMosaics[position].amountToBeSent = '0';
     }
   }
-
   /**
    *
    *
@@ -409,7 +402,6 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
       this.cosignatorie = null;
     }
   }
-
   /**
    *
    *
@@ -425,7 +417,6 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
     });
     this.boxOtherMosaics = otherMosaics;
   }
-
   /**
    *
    * @param element
@@ -487,13 +478,12 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
       }
     }
   }
-
   /**
-   *
-   *
-   * @param {AccountsInterface} accountToSend
-   * @memberof CreateGiftComponent
-   */
+ *
+ *
+ * @param {AccountsInterface} accountToSend
+ * @memberof CreateTransferComponent
+ */
   async changeSender(accountToSend: AccountsInterface) {
     if (accountToSend) {
       this.sender = accountToSend;
@@ -503,7 +493,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
       }
 
       this.clearForm();
-      console.log('lolo', accountToSend);
+      console.log('lolo', accountToSend)
       this.reset();
       this.accounts.forEach(element => {
         if (accountToSend.name === element.value.name) {
@@ -527,14 +517,8 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
       }
     }
   }
-
-  /**
-   *
-   *
-   * @memberof CreateGiftComponent
-   */
   reset() {
-    console.log('reset reset');
+    console.log('reset reset')
     this.haveBalance = false;
     this.disabledBtnAddMosaic = false;
     this.selectOtherMosaics = [];
@@ -544,7 +528,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
     this.boxOtherMosaics = [];
     this.blockSendButton = false;
     this.reloadBtn = false;
-    console.log('listo 2');
+    console.log('listo 2')
     this.charRest = this.configurationForm.message.maxLength;
     this.disabledBtnAddMosaic = false;
     this.errorOtherMosaics = false;
@@ -562,21 +546,24 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
     this.selectOtherMosaics = [];
   }
 
-  validateSave() {
-    console.log('this.giftService.typeDonwnload', this.giftService.getTypeDonwnload);
-    if (this.giftService.typeDonwnload) {
-      this.save = true;
-    } else {
-      this.save = false;
-    }
-  }
 
+  validateSave() {
+    console.log('this.giftService.typeDonwnload', this.giftService.getTypeDonwnload)
+    if (this.giftService.typeDonwnload) {
+      this.save = true
+    } else {
+      this.save = false
+    }
+
+
+
+  }
   /**
-   *
-   *
-   * @param {*} e
-   * @memberof CreateGiftComponent
-   */
+ *
+ *
+ * @param {*} e
+ * @memberof CreateNamespaceComponent
+ */
   limitDuration(e: any) {
     // tslint:disable-next-line: radix
     if (isNaN(parseInt(e.target.value))) {
@@ -586,7 +573,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
       // tslint:disable-next-line: radix
       if (parseInt(e.target.value) > this.limit) {
         e.target.value = this.limit.toString();
-        this.createGift.get('cantCard').patchValue(this.limit.toString());
+        this.createGift.get('cantCard').patchValue(this.limit.toString())
         // tslint:disable-next-line: radix
       } else if (parseInt(e.target.value) < 1) {
         e.target.value = '';
@@ -594,13 +581,6 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
       }
     }
   }
-
-  /**
-   *
-   *
-   * @param {*} value
-   * @memberof CreateGiftComponent
-   */
   resetInput(value) {
     if (value === 'one') {
       setTimeout(() => {
@@ -618,103 +598,75 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
     }
     // this.showViewsConfirm = false;
     // this.banFormImg = false;
+
+
   }
 
-  /**
-   *
-   *
-   * @param {*} value
-   * @memberof CreateGiftComponent
-   */
   deleteOurFile(value) {
     if (value === 'one') {
-      this.ourFile = null;
-      this.showImg = true;
+      this.ourFile = null
+      this.showImg = true
       this.imgBackground = this.sharedService.walletGitf();
-      this.drawExample();
+      this.drawExample()
       // this.giftDecode = null
 
     } else {
-      this.ourFiletwo = null;
-      this.showImgtwo = true;
-      this.imgBackgroundtwo = null;
+      this.ourFiletwo = null
+      this.showImgtwo = true
+      this.imgBackgroundtwo = null
     }
-    this.resetInput(value);
+    this.resetInput(value)
   }
-
   /**
-   *
-   *
-   * @param {File} file
-   * @param {*} $event
-   * @param {*} type
-   * @returns
-   * @memberof CreateGiftComponent
-   */
+  * Method to take the selected file
+  * @param {File} files file array
+  * @param {Event} $event get the html element
+  */
   fileChange(file: File, $event, type) {
-    this.fileToUpload = '';
+    this.fileToUpload = ''
     if (file && file[0]) {
-      if (file[0].type !== 'image/jpeg') {
+      if (file[0].type !== 'image/jpeg')
         return this.sharedService.showError('', 'Invalid format');
-      }
-
-      if (type === 'one') {
+      if (type == 'one') {
         this.imgBackground = this.sharedService.walletGitf();
         const reader = new FileReader();
-        this.ourFile = file[0];
+        this.ourFile = file[0]
         reader.readAsDataURL(this.ourFile);
         reader.onload = () => {
-          this.fileToUpload = reader.result;
-          this.imgBackground = this.fileToUpload;
-          this.drawExample();
-          this.drawExampletwo();
-          this.showImg = false;
+          this.fileToUpload = reader.result
+          this.imgBackground = this.fileToUpload
+          this.drawExample()
+          this.drawExampletwo()
+          this.showImg = false
         };
       } else {
-        this.imgBackgroundtwo = null;
+        this.imgBackgroundtwo = null
         const reader = new FileReader();
-        this.ourFiletwo = file[0];
+        this.ourFiletwo = file[0]
         reader.readAsDataURL(this.ourFiletwo);
         reader.onload = () => {
-          this.imgBackgroundtwo = reader.result;
-          this.drawExampletwo();
-          this.showImgtwo = false;
+          this.imgBackgroundtwo = reader.result
+          this.drawExampletwo()
+          this.showImgtwo = false
         };
       }
+
+
     }
   }
-
-  /**
-   *
-   *
-   * @memberof CreateGiftComponent
-   */
   showImgFun() {
-    this.drawExample();
-    if (!this.showImgtwo) {
-      this.drawExampletwo();
-    }
+    this.drawExample()
+    if (!this.showImgtwo)
+      this.drawExampletwo()
   }
-
-  /**
-   *
-   *
-   * @memberof CreateGiftComponent
-   */
   updateShowMosaic() {
-    console.log(this.createGift.get('showMosaic').value);
-    // this.showMosaic  =! this.showMosaic
+    console.log(this.createGift.get('showMosaic').value)
+
+    // this.showMosaic  =! this.showMosaic 
     // this.drawExample()
   }
-
-  /**
-   *
-   *
-   * @returns
-   * @memberof CreateGiftComponent
-   */
   async drawExampletwo() {
-    let imgZip: any = null;
+    let imgZip: any = null
     const qr = qrcode(10, 'H');
     qr.addData('0000000000000001942110B5FF15C06141A14322E7A3054D5B1227215B7836224F106471C1AAF2ED4FF17E357254D4513000000003B8EEEB4A');
     qr.make();
@@ -726,56 +678,38 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
       const imageObj = new Image(100, 100);
       imageObj.setAttribute('crossOrigin', 'anonymous');
       imageObj.src = imgZip;
-      imageObj.onerror = reject;
+      imageObj.onerror = reject
       imageObj.onload = (e) => {
         // context.drawImage(imageObj, 0, 0, 130, 200);
         context.drawImage(imageObj, 0, 0, 230, 330);
         // const canvas: any = document.getElementById('idCanvas');
         const dataURLTwo = canvas.toDataURL('image/jpeg', 1.0);
-        resolve(dataURLTwo);
+        resolve(dataURLTwo)
       };
-    });
-  }
+    })
 
-  /**
-   *
-   *
-   * @returns
-   * @memberof CreateGiftComponent
-   */
+  }
   async drawExample() {
-    let imgZip: any = null;
+    let imgZip: any = null
     const qr = qrcode(10, 'H');
     qr.addData('0000000000000001942110B5FF15C06141A14322E7A3054D5B1227215B7836224F106471C1AAF2ED4FF17E357254D4513000000003B8EEEB4A');
     qr.make();
-    imgZip = await this.drawIMG(qr.createDataURL(), 'descrip...', '100,000.000000', this.imgBackground, 'xpx', 'B256A6');
+    imgZip = await this.drawIMG(qr.createDataURL(), 'descrip...', '100,000.000000', this.imgBackground, 'xpx', 'B256A6')
     return new Promise((resolve, reject) => {
       const canvas: any = document.getElementById('idCanvas');
       const context = canvas.getContext('2d');
       const imageObj = new Image(100, 100);
       imageObj.setAttribute('crossOrigin', 'anonymous');
       imageObj.src = imgZip;
-      imageObj.onerror = reject;
+      imageObj.onerror = reject
       imageObj.onload = (e) => {
         context.drawImage(imageObj, 0, 0, 300, 200);
         const dataURL = canvas.toDataURL('image/jpeg', 1.0);
-        resolve(dataURL);
+        resolve(dataURL)
       };
-    });
-  }
 
-  /**
-   *
-   *
-   * @param {string} imgQR
-   * @param {string} des
-   * @param {*} amount
-   * @param {*} imageBase64
-   * @param {*} mosaic
-   * @param {*} code
-   * @returns
-   * @memberof CreateGiftComponent
-   */
+    })
+  }
   drawIMG(imgQR: string, des: string, amount: any, imageBase64, mosaic, code) {
     return new Promise((resolve, reject) => {
       const canvas: any = document.getElementById('image');
@@ -806,23 +740,18 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
         imageObj2.width = 12;
         imageObj2.height = 12;
         context.drawImage(imageObj2, 343, 77, 130, 130);
-        const c: any = document.getElementById('image');
-        const dataURL = c.toDataURL('image/jpeg', 1.0);
-        resolve(dataURL);
+        const canvas: any = document.getElementById('image');
+        const dataURL = canvas.toDataURL('image/jpeg', 1.0);
+        resolve(dataURL)
       };
-      imageObj.onerror = reject;
-    });
+      imageObj.onerror = reject
+    })
+
+
   }
 
-  /**
-   *
-   *
-   * @param {*} imageGift
-   * @param {*} imagePdf
-   * @returns
-   * @memberof CreateGiftComponent
-   */
   drawPDF(imageGift, imagePdf) {
+
     return new Promise(async (resolve, reject) => {
       const canvas: any = document.getElementById('pdf');
       const context = canvas.getContext('2d');
@@ -830,12 +759,12 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
       const imageObj = new Image();
       const imageObj2 = new Image(30, 46);
       // const img: any = await this.drawExample();
-      imageObj2.src = imageGift;
+      imageObj2.src = imageGift
 
       imageObj.setAttribute('crossOrigin', 'anonymous');
       // imageObj.src = this.imgBackgroundtwo;
-      imageObj.src = imagePdf;
-      imageObj.onerror = reject;
+      imageObj.src = imagePdf
+      imageObj.onerror = reject
 
       imageObj.onload = (e) => {
         // context.drawImage(imageObj, 0, 0, 130, 200);
@@ -843,59 +772,51 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
         imageObj2.width = 12;
         imageObj2.height = 12;
         context.drawImage(imageObj2, 537, 516, 385, 250);
-        const c: any = document.getElementById('pdf');
-        const dataURL = c.toDataURL('image/jpeg', 1.0);
-        resolve(dataURL);
+        const canvas: any = document.getElementById('pdf');
+        const dataURL = canvas.toDataURL('image/jpeg', 1.0);
+        resolve(dataURL)
       };
-    });
+    })
 
   }
 
   /**
-   *
-   *
-   * @memberof CreateGiftComponent
-   */
+    * @memberof CreateGiftComponent
+    */
   subscribeValue() {
 
-    // value CHECK custom card
+    //value CHECK custom card
     this.subscription.push(this.createGift.get('showMosaic').valueChanges.subscribe(val => {
-      if (val !== null && val !== undefined) {
-        this.showMosaic = val;
-      }
+      if (val !== null && val !== undefined)
+        this.showMosaic = val
 
     }));
     this.subscription.push(this.createGift.get('showDescrip').valueChanges.subscribe(val => {
-      if (val !== null && val !== undefined) {
-        this.showDescrip = val;
-      }
+      if (val !== null && val !== undefined)
+        this.showDescrip = val
     }));
     this.subscription.push(this.createGift.get('showSequence').valueChanges.subscribe(val => {
-      if (val !== null && val !== undefined) {
-        this.showSequence = val;
-      }
+      if (val !== null && val !== undefined)
+        this.showSequence = val
     }));
     //
     this.subscription.push(this.createGift.get('message').valueChanges.subscribe(val => {
       if (val && val !== '') {
         this.charRest = val.length;
-        this.descrip = val;
+        this.descrip = val
 
         // this.calculateFee(val.length);
       } else {
         this.charRest = 0;
-        this.descrip = '';
+        this.descrip = ''
         // this.calculateFee(0);
       }
     }));
     this.subscription.push(this.createGift.get('cantCard').valueChanges.subscribe(val => {
       setTimeout(() => {
-        // tslint:disable-next-line: radix
         if (!isNaN(parseInt(val))) {
-          // tslint:disable-next-line: radix
-          if (parseInt(val) <= this.limit && parseInt(val) >= 1) {
+          if (parseInt(val) <= this.limit && parseInt(val) >= 1)
             this.builder();
-          }
         }
       }, 100);
     }));
@@ -959,12 +880,11 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
   }
 
   /**
-   *
-   *
-   * @param {AccountInfo} accountInfo
-   * @returns
-   * @memberof CreateGiftComponent
-   */
+    * Build with mosaics
+    *
+    * @param {AccountInfo} accountInfo
+    * @memberof CreateGiftComponent
+    */
   async buildCurrentAccountInfo(accountInfo: AccountInfo) {
     const mosaicsSelect: any = [];
     if (accountInfo !== undefined && accountInfo !== null) {
@@ -1034,16 +954,15 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
   }
 
   /**
-   *
-   *
-   * @param {string} quantity
-   * @returns
-   * @memberof CreateGiftComponent
-   */
+    *
+    *
+    * @param {*} quantity
+    * @returns
+    * @memberof CreateGiftComponent
+    */
   getQuantity(quantity: string) {
     return this.sharedService.amountFormat(quantity);
   }
-
   /**
    * @param {string} [nameInput='']
    * @param {string} [nameControl='']
@@ -1144,43 +1063,32 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
   //     }).unsubscribe();
   // }
 
-
   /**
-   *
-   *
-   * @param {string} noIncluye
-   * @param {boolean} accion
-   * @memberof CreateGiftComponent
-   */
+* @memberof CreateGiftComponent
+*/
   disabledForm(noIncluye: string, accion: boolean) {
-    for (const x in this.createGift.value) {
+    for (let x in this.createGift.value) {
       if (x !== noIncluye) {
         if (accion) {
-          this.createGift.get(x).disable();
+          this.createGift.get(x).disable()
         } else {
-          this.createGift.get(x).enable();
+          this.createGift.get(x).enable()
         }
 
       }
     }
   }
 
-  /**
-   *
-   *
-   * @param {AccountsInterface} param
-   * @memberof CreateGiftComponent
-   */
   buildSelectAccount(param: AccountsInterface) {
     const accountFiltered = this.walletService.filterAccountInfo(param.name);
-    const validaBuildAccount: ValidateBuildAccount = this.validateBuildSelectAccount(accountFiltered);
+    const validateBuildAccount: validateBuildAccount = this.validateBuildSelectAccount(accountFiltered)
     if (accountFiltered) {
       if (!this.isMultisign(param)) {
         this.currentAccounts.push({
           label: param.name,
           value: param,
-          disabledItem: validaBuildAccount.disabledItem,
-          info: validaBuildAccount.info,
+          disabledItem: validateBuildAccount.disabledItem,
+          info: validateBuildAccount.info,
           default: param.default
         });
         // if (this.activateRoute.snapshot.paramMap.get('name') !== null)
@@ -1188,67 +1096,37 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
       }
     }
   }
-
   /**
-   *
-   *
-   * @param {AccountsInterface} accounts
-   * @returns {boolean}
-   * @memberof CreateGiftComponent
-   */
+     * Checks if the account is a multisig account.
+     * @returns {boolean}
+     */
   isMultisign(accounts: AccountsInterface): boolean {
-    return Boolean(
-        accounts.isMultisign !== undefined && accounts.isMultisign !== null &&
-        this.isMultisigValidate(accounts.isMultisign.minRemoval, accounts.isMultisign.minApproval
-      )
-    );
+    return Boolean(accounts.isMultisign !== undefined && accounts.isMultisign !== null && this.isMultisigValidate(accounts.isMultisign.minRemoval, accounts.isMultisign.minApproval));
   }
-
   /**
-   *
-   *
-   * @param {number} minRemoval
-   * @param {number} minApprova
-   * @returns
-   * @memberof CreateGiftComponent
-   */
+     * Checks if the account is a multisig account.
+     * @returns {boolean}
+     */
   isMultisigValidate(minRemoval: number, minApprova: number) {
     return minRemoval !== 0 && minApprova !== 0;
   }
 
-  /**
-   *
-   *
-   * @param {AccountsInfoInterface} accountFiltered
-   * @returns {ValidateBuildAccount}
-   * @memberof CreateGiftComponent
-   */
-  validateBuildSelectAccount(accountFiltered: AccountsInfoInterface): ValidateBuildAccount {
+  validateBuildSelectAccount(accountFiltered: AccountsInfoInterface): validateBuildAccount {
     const disabled: boolean = (
       accountFiltered !== null &&
-      accountFiltered !== undefined && accountFiltered.accountInfo !== null);
-    if (!disabled) {
-      return { disabledItem: true, info: 'Insufficient Balance' };
-    }
-    if (!accountFiltered.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id)) {
-      return { disabledItem: true, info: 'Insufficient Balance', };
-    }
+      accountFiltered !== undefined && accountFiltered.accountInfo !== null)
+    if (!disabled)
+      return { disabledItem: true, info: 'Insufficient Balance' }
+    if (!accountFiltered.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id))
+      return { disabledItem: true, info: 'Insufficient Balance', }
     const mosaicXPX = accountFiltered.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id).amount.compact();
-    if (!this.validateBuildSelectAccountBalance(mosaicXPX)) {
-      return { disabledItem: true, info: 'Insufficient Balance' };
-    }
-    return { disabledItem: false, info: '' };
+    if (!this.validateBuildSelectAccountBalance(mosaicXPX))
+      return { disabledItem: true, info: 'Insufficient Balance' }
+    return { disabledItem: false, info: '' }
   }
 
-  /**
-   *
-   *
-   * @param {number} balanceAccount
-   * @returns {boolean}
-   * @memberof CreateGiftComponent
-   */
   validateBuildSelectAccountBalance(balanceAccount: number): boolean {
-    return (balanceAccount >= this.fee);
+    return (balanceAccount >= this.fee)
   }
 
   /**
@@ -1258,7 +1136,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
    * @memberof CreateGiftComponent
    */
   clearForm(custom?: string | (string | number)[], formControl?: string | number) {
-    const checked = { showMosaic: true, showDescrip: true, showSequence: true, };
+    const checked = { showMosaic: true, showDescrip: true, showSequence: true, }
     if (custom !== undefined) {
       if (formControl !== undefined) {
         this.charRest = 0;
@@ -1284,12 +1162,6 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
     this.fee = '0.037250';
     return;
   }
-
-  /**
-   *
-   *
-   * @memberof CreateGiftComponent
-   */
   getAccountInfo() {
     this.subscription.push(this.walletService.getAccountsInfo$().subscribe(
       next => {
@@ -1297,7 +1169,6 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
       }
     ));
   }
-
   /**
    *
    *
@@ -1320,19 +1191,9 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
     return amount;
   }
 
-  /**
-   *
-   *
-   * @param {*} n1
-   * @param {*} n2
-   * @returns
-   * @memberof CreateGiftComponent
-   */
   sum(n1, n2) {
-    // tslint:disable-next-line: radix
     return (parseInt(n1) + parseInt(n2));
   }
-
   // /**
   //  *
   //  *
@@ -1363,8 +1224,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
   //   }
 
   //   return mosaics;
-  // }
-
+  // }v
   /**
    *
    *
@@ -1403,7 +1263,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
         let decimal;
         let realAmount;
 
-        if (element.config.precision !== undefined && element.config.precision != null && element.config.precision > 0) {
+        if (element.config.precision != undefined && element.config.precision != null && element.config.precision > 0) {
           if (arrAmount.length < 2) {
             decimal = this.addZeros(element.config.precision);
           } else {
@@ -1431,33 +1291,27 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
     return mosaics;
   }
 
-  /**
-   *
-   *
-   * @param {string} hash
-   * @memberof CreateGiftComponent
-   */
+
   getStatusTransaction(hash: string) {
 
   }
 
-
   /**
-   *
-   *
-   * @param {string} hash
-   * @memberof CreateGiftComponent
-   */
+     *
+     *
+     * @param {string} hash
+     * @memberof DataBridgeService
+     */
   setTimeOutValidateTransaction(hash: string): void {
-    console.log('hash setTimeOutValidateTransaction', hash);
+    console.log('hash setTimeOutValidateTransaction', hash)
     setTimeout(async () => {
       const exist = (this.transactionReady.find(x => x.hash === hash)) ? true : false;
       // this.subscription['transactionStatus'].unsubscribe()
       if (!exist) {
         this.proximaxProvider.getTransactionStatus(hash).subscribe(status => {
           if (status.status.split('_').join(' ') === 'Success') {
-            this.sharedService.showSuccess('', 'Transaction Confirmed');
-            this.showViewsConfirmFunc();
+            this.sharedService.showSuccess('', 'Transaction Confirmed')
+            this.showViewsConfirmFunc()
           } else {
             this.sharedService.showWarning('', status.status.split('_').join(' '));
           }
@@ -1470,61 +1324,43 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
             'An error has occurred with your transaction'
           );
           this.reloadBtn = false;
-          console.log('listo 3');
+          console.log('listo 3')
           this.blockSendButton = false;
-        });
+        })
 
       }
     }, 15000);
     // 10000
   }
 
-  /**
-   *
-   *
-   * @param {*} amount
-   * @returns {string}
-   * @memberof CreateGiftComponent
-   */
-  amountFormatterSimple(amount): string {
-    return this.transactionService.amountFormatterSimple(amount);
-  }
 
-  /**
-   *
-   *
-   * @param {*} dataURI
-   * @returns
-   * @memberof CreateGiftComponent
-   */
+  amountFormatterSimple(amount): string {
+    return this.transactionService.amountFormatterSimple(amount)
+  }
   dataURItoBlob(dataURI) {
     // Convert Base64 to raw binary data held in a string.
-    const byteString = atob(dataURI.split(',')[1]);
+    var byteString = atob(dataURI.split(',')[1]);
     // Separate the MIME component.
-    const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+    var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0]
     // Write the bytes of the string to an ArrayBuffer.
-    const ab = new ArrayBuffer(byteString.length);
-    const ia = new Uint8Array(ab);
-    for (let i = 0; i < byteString.length; i++) {
+    var ab = new ArrayBuffer(byteString.length);
+    var ia = new Uint8Array(ab);
+    for (var i = 0; i < byteString.length; i++) {
       ia[i] = byteString.charCodeAt(i);
     }
     // Write the ArrayBuffer to a BLOB and you're done.
-    const bb = new Blob([ab]);
+    var bb = new Blob([ab]);
 
     return bb;
   }
 
-  /**
-   *
-   *
-   * @memberof CreateGiftComponent
-   */
   showViewsConfirmFunc() {
-    console.log('muestro la otra vista');
-    console.log('this.showViewsConfirm', this.showViewsConfirm);
-    this.showViewsConfirm = this.showViewsConfirm ? false : true;
-    console.log('showViewsConfirmFunc', this.showViewsConfirm);
-    this.checked = false;
+    console.log('muestro la otra vista')
+    console.log('this.showViewsConfirm', this.showViewsConfirm)
+
+    this.showViewsConfirm = this.showViewsConfirm ? false : true
+    console.log('showViewsConfirmFunc', this.showViewsConfirm)
+    this.checked = false
   }
 
   mosaicsInfoSerialize(mosaic: any): { nameMosaic: string, transferable: string, divisibility: number } {
@@ -1536,12 +1372,12 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
     return data
   }
   async builGitf() {
-    this.giftService.setTypeDonwnload = null;
-    this.giftService.setImgFileData = null;
-    this.giftService.setZipFileData = null;
-    this.giftService.setPdfFileData = null;
-    this.giftService.setImgFileData = null;
-    console.log('builGitf builGitf');
+    this.giftService.setTypeDonwnload = null
+    this.giftService.setImgFileData = null
+    this.giftService.setZipFileData = null
+    this.giftService.setPdfFileData = null
+    this.giftService.setImgFileData = null
+    console.log('builGitf builGitf')
     const zipIMG = new JSZip();
     let zipPDF = new JSZip();
     let count = 0
@@ -1559,15 +1395,15 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
       saveAs(new Blob([this.dataURItoBlob(img)], { type: "image/jpeg" }), "Gitf Card Sirius.jpeg")
 
       if (this.imgBackgroundtwo) {
-        const imgPDF: any = await this.drawPDF(img, this.imgBackgroundtwo);
-        saveAs(new Blob([imgPDF], { type: 'application/pdf' }), 'Gitf Card Sirius.pdf');
+        const imgPDF: any = await this.drawPDF(img, this.imgBackgroundtwo)
+        saveAs(new Blob([imgPDF], { type: "application/pdf" }), "Gitf Card Sirius.pdf")
       }
       this.giftService.setTypeDonwnload = 'image/jpeg'
       // this.giftService.setImgFileData = this.dataURItoBlob(img);
       this.validateSave()
       return
     }
-    for (const item of this.accountList) {
+    for (let item of this.accountList) {
       count++;
       const nameImg = `Gitf_card_sirius(${count}).jpeg`;
       const namePdf = `Gitf_card_sirius(${count}).pdf`;
@@ -1599,15 +1435,15 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
     }
     if (Object.keys(zipIMG.files).length > 0) {
       zipPDF.generateAsync({
-        type: 'blob'
+        type: "blob"
       }).then(async (content: any) => {
         const fileName = `Gift_card_sirius_pdf.zip`;
         saveAs(content, fileName);
-        this.giftService.setTypeDonwnload = 'zip';
-        this.giftService.setPdfFileData = content;
+        this.giftService.setTypeDonwnload = 'zip'
+        this.giftService.setPdfFileData = content
         // content.push(content)
         // this.giftService.zipFileData.push(content);
-        this.validateSave();
+        this.validateSave()
       });
     }
 
@@ -1615,35 +1451,24 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
 
   }
 
-  /**
-   *
-   *
-   * @memberof CreateGiftComponent
-   */
   async donwnloadExample() {
-    let imgZip: any = null;
+    let imgZip: any = null
     const qr = qrcode(10, 'H');
     qr.addData('0000000000000001942110B5FF15C06141A14322E7A3054D5B1227215B7836224F106471C1AAF2ED4FF17E357254D4513000000003B8EEEB4A');
     qr.make();
-    imgZip = await this.drawIMG(qr.createDataURL(), 'hola fili', '100000', this.imgBackground, 'xpx', 'B256A6');
-    saveAs(new Blob([this.dataURItoBlob(imgZip)], { type: 'image/jpeg' }), 'Gitf Card Sirius.jpeg');
+    imgZip = await this.drawIMG(qr.createDataURL(), 'hola fili', '100000', this.imgBackground, 'xpx', 'B256A6')
+    saveAs(new Blob([this.dataURItoBlob(imgZip)], { type: "image/jpeg" }), "Gitf Card Sirius.jpeg")
   }
-
-  /**
-   *
-   *
-   * @memberof CreateGiftComponent
-   */
   async donwnloadExamplePDF() {
     const zipIMG = new JSZip();
-    const zipPDF = new JSZip();
+    let zipPDF = new JSZip();
     const qr = qrcode(10, 'H');
     qr.addData('0000000000000001942110B5FF15C06141A14322E7A3054D5B1227215B7836224F106471C1AAF2ED4FF17E357254D4513000000003B8EEEB4A');
     qr.make();
-    const img = await this.drawIMG(qr.createDataURL(), 'hola fili', '100000', this.imgBackground, 'xpx', 'B256A6');
-    const imgZipPDF: any = await this.drawPDF(img, this.imgBackgroundtwo);
-    zipPDF.file('Gitf_card_sirius.pdf', this.giftService.pdfFromImg(imgZipPDF), { comment: 'application/pdf' });
-    zipIMG.file('Gitf_card_sirius.jpeg', this.dataURItoBlob(img), { comment: 'image/jpeg' });
+    const img = await this.drawIMG(qr.createDataURL(), 'hola fili', '100000', this.imgBackground, 'xpx', 'B256A6')
+    const imgZipPDF: any = await this.drawPDF(img, this.imgBackgroundtwo)
+    zipPDF.file('Gitf_card_sirius.pdf', this.giftService.pdfFromImg(imgZipPDF), { comment: 'application/pdf' })
+    zipIMG.file('Gitf_card_sirius.jpeg', this.dataURItoBlob(img), { comment: 'image/jpeg' })
 
     // if (Object.keys(zip.files).length > 0) {
 
@@ -1666,39 +1491,34 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
 
     // if (Object.keys(zip.files).length > 0) {
     zipPDF.generateAsync({
-      type: 'blob'
+      type: "blob"
     }).then(async (content: any) => {
       const fileName = `Gift Card Sirius.zip`;
       saveAs(content, fileName);
-      console.log('content', content);
+      console.log('content', content)
     });
     // }
 
     // saveAs(new Blob([this.giftService.pdfFromImg(imgZip)], { type: "pdf" }), "Gitf Card Sirius.pdf")
   }
 
-  /**
-   *
-   *
-   * @memberof CreateGiftComponent
-   */
   donwnload() {
-    console.log('giftServicegiftService', this.giftService.getImgFileData);
+    console.log('giftServicegiftService', this.giftService.getImgFileData)
     if (this.giftService.getTypeDonwnload === 'image/jpeg') {
-      saveAs(new Blob([this.giftService.getImgFileData], { type: 'image/jpeg' }), 'Gitf Card Sirius (copy).jpeg');
+      saveAs(new Blob([this.giftService.getImgFileData], { type: "image/jpeg" }), "Gitf Card Sirius (copy).jpeg")
     } else {
       const fileName = `Gift Card Sirius (copy).zip`;
-      console.log('getPdfFileData', this.giftService.getPdfFileData);
+      console.log('getPdfFileData', this.giftService.getPdfFileData)
       saveAs(this.giftService.getPdfFileData, fileName);
     }
 
   }
 
   /**
-   *
-   *
-   * @memberof CreateGiftComponent
-   */
+  *
+  *
+  * @memberof CreateTransferComponent
+  */
   getTransactionStatus() {
     // Get transaction status
     if (!this.subscription['transactionStatus']) {
@@ -1718,15 +1538,15 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
                 this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
               } else if (statusTransaction['type'] === 'unconfirmed' && match) {
                 // this.builGitf()
-                this.showViewsConfirmFunc();
+                this.showViewsConfirmFunc()
                 this.reloadBtn = false;
                 this.blockSendButton = false;
-                this.transactionSigned = null;
+                this.transactionSigned = null
               } else if (statusTransaction['type'] === 'aggregateBondedAdded' && match) {
-                this.showViewsConfirmFunc();
+                this.showViewsConfirmFunc()
                 this.reloadBtn = false;
                 this.blockSendButton = false;
-                this.transactionSigned = null;
+                this.transactionSigned = null
               } else if (statusTransaction['type'] === 'cosignatureSignedTransaction' && match) {
                 this.reloadBtn = false;
                 this.blockSendButton = false;
@@ -1741,115 +1561,79 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
       );
     }
   }
-
-  /**
-   *
-   *
-   * @param {*} message
-   * @param {*} network
-   * @returns {InnerTransaction}
-   * @memberof CreateGiftComponent
-   */
   transferTransactionBuildMessage(message, network): InnerTransaction {
-    console.log('message:', JSON.stringify(message));
-    const account: Account = Account.generateNewAccount(network);
+    console.log('message:', JSON.stringify(message))
+    const account: Account = Account.generateNewAccount(network)
     const transferTransaction = TransferTransaction.create(
       Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
       account.address,
       [],
       PlainMessage.create(JSON.stringify(message)),
       network);
-    return transferTransaction.toAggregate(this.sender.publicAccount);
+    return transferTransaction.toAggregate(this.sender.publicAccount)
   }
-
-  /**
-   *
-   *
-   * @param {*} cant
-   * @param {*} network
-   * @param {Mosaic[]} mosaics
-   * @param {number} [corr=0]
-   * @returns {InnerTransaction[]}
-   * @memberof CreateGiftComponent
-   */
   innerTransactionBuild(cant, network, mosaics: Mosaic[], corr = 0): InnerTransaction[] {
-    const innerTransaction: InnerTransaction[] = [];
-    let indexCor = 0;
+    const innerTransaction: InnerTransaction[] = []
+    let indexCor = 0
     for (let index = 0; index < cant; index++) {
-      indexCor = index;
-      const account: Account = Account.generateNewAccount(network);
+      indexCor = index
+      const account: Account = Account.generateNewAccount(network)
       const transferTransaction = TransferTransaction.create(
         Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
         account.address,
         mosaics,
         PlainMessage.create(''),
         network);
-      console.log('this.sender.publicAccount', this.sender.publicAccount);
-      innerTransaction.push(transferTransaction.toAggregate(this.sender.publicAccount));
-      this.accountList.push(account);
+      console.log('this.sender.publicAccount', this.sender.publicAccount)
+      innerTransaction.push(transferTransaction.toAggregate(this.sender.publicAccount))
+      this.accountList.push(account)
     }
     const message = {
       type: 'giftCard',
       corr: corr + indexCor
-    };
-    innerTransaction.push(this.transferTransactionBuildMessage(message, network));
-    return innerTransaction;
-  }
+    }
+    innerTransaction.push(this.transferTransactionBuildMessage(message, network))
+    return innerTransaction
 
-  /**
-   *
-   *
-   * @returns {AggregateTransaction}
-   * @memberof CreateGiftComponent
-   */
+  }
   aggregateTransactionFunc(): AggregateTransaction {
-    let innerTransaction: InnerTransaction[] = [];
-    // tslint:disable-next-line: radix
-    this.cantCard = parseInt(this.createGift.get('cantCard').value);
-    this.accountList = [];
-    const network = (this.sender) ? this.sender.network : this.walletService.currentAccount.network;
+    let innerTransaction: InnerTransaction[] = []
+    this.cantCard = parseInt(this.createGift.get('cantCard').value)
+    this.accountList = []
+    const network = (this.sender) ? this.sender.network : this.walletService.currentAccount.network
     const mosaicsToSend: any = this.validateMosaicsToSend();
-    innerTransaction = this.innerTransactionBuild(this.cantCard, network, mosaicsToSend);
-    if (this.cosignatorie) {
+    innerTransaction = this.innerTransactionBuild(this.cantCard, network, mosaicsToSend)
+    if (this.cosignatorie)
       return AggregateTransaction.createBonded(
         Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
         innerTransaction,
         this.sender.network,
         []
-      );
-    }
+      )
     return AggregateTransaction.createComplete(
       Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
       innerTransaction,
       this.sender.network,
       []
-    );
+    )
     // }
-  }
 
-  /**
-   *
-   *
-   * @returns
-   * @memberof CreateGiftComponent
-   */
+  }
   builder() {
-    if (!this.sender) {
-      return;
-    }
-    if (!this.createGift.get('cantCard').value) {
-      return;
-    }
-    this.aggregateTransaction = this.aggregateTransactionFunc();
-    const feeAgregate = Number(this.transactionService.amountFormatterSimple(this.sum(this.aggregateTransaction.maxFee.compact(), this.feeCover)));
+    if (!this.sender)
+      return
+    if (!this.createGift.get('cantCard').value)
+      return
+    this.aggregateTransaction = this.aggregateTransactionFunc()
+    let feeAgregate = Number(this.transactionService.amountFormatterSimple(this.sum(this.aggregateTransaction.maxFee.compact(), this.feeCover)));
     this.fee = feeAgregate.toFixed(6);
   }
 
   /**
-   *
-   *
-   * @memberof CreateGiftComponent
-   */
+     *
+     *
+     * @memberof CreateTransferComponent
+     */
   sendTransfer() {
     if (this.createGift.valid && (!this.blockSendButton)) {
       this.reloadBtn = true;
@@ -1864,12 +1648,12 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
           case true:
 
             if (this.walletService.decrypt(common, this.cosignatorie)) {
-              const account: Account = Account.createFromPrivateKey(common.privateKey, this.sender.network);
+              const account: Account = Account.createFromPrivateKey(common.privateKey, this.sender.network)
 
               const aggregateSigned = account.sign(
                 this.aggregateTransaction,
                 this.dataBridge.blockInfo.generationHash
-              );
+              )
               const hashLockSigned = this.transactionService.buildHashLockTransaction(aggregateSigned, account, generationHash);
               this.clearForm();
               // this.builGitf()
@@ -1882,17 +1666,17 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
               this.blockSendButton = false;
               this.reloadBtn = false;
             }
-            break;
+            break
           case false:
             console.log('TRANSFIERE ');
             console.log('ACCOUNT SENDER ----> ', this.sender);
             console.log('COSIGNATARIO SELECCIONADO ----> ', this.cosignatorie);
             if (this.walletService.decrypt(common, this.sender)) {
-              const account: Account = Account.createFromPrivateKey(common.privateKey, this.sender.network);
+              const account: Account = Account.createFromPrivateKey(common.privateKey, this.sender.network)
               const signedTransaction = account.sign(
                 this.aggregateTransaction,
                 this.dataBridge.blockInfo.generationHash
-              );
+              )
               this.transactionSigned.push(signedTransaction);
               this.clearForm();
               // this.reloadBtn = false;
@@ -1913,7 +1697,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
               this.blockSendButton = false;
               this.reloadBtn = false;
             }
-            break;
+            break
         }
         //   this.transactionSigned = []
         //   if (this.walletService.decrypt(common, this.sender)) {
@@ -1945,7 +1729,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
         //   }
       } else {
         this.reloadBtn = false;
-        console.log('listo 10');
+        console.log('listo 10')
         this.blockSendButton = false;
         this.sharedService.showError('', 'Insufficient Balance');
       }
@@ -1953,17 +1737,14 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
     }
 
   }
-
   /**
-   *
-   *
-   * @param {SignedTransaction} signedTransactionHashLock
-   * @param {SignedTransaction} signedTransactionBonded
-   * @memberof CreateGiftComponent
-   */
+  *
+  * @param signedTransactionHashLock
+  * @param signedTransactionBonded
+  */
   getTransactionStatusHashLock(signedTransactionHashLock: SignedTransaction, signedTransactionBonded: SignedTransaction) {
     // Get transaction status
-    console.log(' Get transaction status');
+    console.log(' Get transaction status')
 
     this.subscription['getTransactionStatushashLock'] = this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
@@ -1977,7 +1758,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
           } else if (statusTransaction['type'] === 'unconfirmed' && match) {
           } else if (statusTransaction['type'] === 'status' && match) {
             this.reloadBtn = false;
-            console.log('aqui 1');
+            console.log('aqui 1')
             this.blockSendButton = false;
             this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
             signedTransactionHashLock = null;
@@ -1986,7 +1767,6 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
       }
     );
   }
-
   /**
    *
    * @param signedTransaction
@@ -1998,7 +1778,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
         this.reloadBtn = true;
         this.blockSendButton = true;
         this.transactionSigned.push(signedTransaction);
-        console.log('announceAggregateBondedk');
+        console.log('announceAggregateBondedk')
         this.getTransactionStatus();
         this.setTimeOutValidateTransaction(signedTransaction.hash);
       },
@@ -2009,8 +1789,8 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
 }
 
 
-interface ValidateBuildAccount {
-  disabledItem: boolean;
-  info: string;
+interface validateBuildAccount {
+  disabledItem: boolean,
+  info: string,
 
 }
