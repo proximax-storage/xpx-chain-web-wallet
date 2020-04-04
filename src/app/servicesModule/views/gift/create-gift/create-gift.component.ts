@@ -1643,11 +1643,14 @@ export class CreateGiftComponent implements OnInit {
         this.validateSave();
       });
     }
-
     // this.giftService.zipFileData = content
-
   }
 
+  /**
+   *
+   *
+   * @memberof CreateGiftComponent
+   */
   async donwnloadExample() {
     let imgZip: any = null;
     const qr = qrcode(10, 'H');
@@ -1656,6 +1659,12 @@ export class CreateGiftComponent implements OnInit {
     imgZip = await this.drawIMG(qr.createDataURL(), 'hola fili', '100000', this.imgBackground, 'xpx');
     saveAs(new Blob([this.dataURItoBlob(imgZip)], { type: 'image/jpeg' }), 'Gitf Card Sirius.jpeg');
   }
+
+  /**
+   *
+   *
+   * @memberof CreateGiftComponent
+   */
   async donwnloadExamplePDF() {
     const zipIMG = new JSZip();
     const zipPDF = new JSZip();
@@ -1699,6 +1708,11 @@ export class CreateGiftComponent implements OnInit {
     // saveAs(new Blob([this.giftService.pdfFromImg(imgZip)], { type: "pdf" }), "Gitf Card Sirius.pdf")
   }
 
+  /**
+   *
+   *
+   * @memberof CreateGiftComponent
+   */
   donwnload() {
     console.log('giftServicegiftService', this.giftService.getImgFileData);
     if (this.giftService.getTypeDonwnload === 'image/jpeg') {
