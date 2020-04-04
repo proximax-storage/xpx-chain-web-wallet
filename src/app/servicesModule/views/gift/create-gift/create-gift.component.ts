@@ -9,7 +9,7 @@ import { environment } from 'src/environments/environment';
 import { MosaicService, MosaicsStorage } from '../../../../servicesModule/services/mosaic.service';
 import { TransactionsService } from '../../../../transactions/services/transactions.service';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
-import { AccountInfo, UInt64, AggregateTransaction, Deadline, InnerTransaction, TransferTransaction, PlainMessage, Mosaic, MosaicId, Address, Account, SignedTransaction, Transaction, TransactionHttp } from 'tsjs-xpx-chain-sdk';
+import { AccountInfo, UInt64, AggregateTransaction, Deadline, InnerTransaction, TransferTransaction, PlainMessage, Mosaic, MosaicId, Address, Account, SignedTransaction, Transaction, TransactionHttp, MosaicInfo } from 'tsjs-xpx-chain-sdk';
 import { DataBridgeService } from '../../../../shared/services/data-bridge.service';
 import * as JSZip from 'jszip';
 import * as qrcode from 'qrcode-generator';
@@ -76,6 +76,7 @@ export class CreateGiftComponent implements OnInit {
   };
   reloadBtn: boolean;
   realAmount: number;
+  mosaicPrimary: any
   isMultisig: boolean;
   notBalance: boolean;
   passwordMain = 'password';
@@ -545,7 +546,7 @@ export class CreateGiftComponent implements OnInit {
     this.selectOtherMosaics = [];
   }
 
-  
+
   validateSave() {
     console.log('this.giftService.typeDonwnload', this.giftService.getTypeDonwnload)
     if (this.giftService.typeDonwnload) {
@@ -669,7 +670,7 @@ export class CreateGiftComponent implements OnInit {
     const qr = qrcode(10, 'H');
     qr.addData('0000000000000001942110B5FF15C06141A14322E7A3054D5B1227215B7836224F106471C1AAF2ED4FF17E357254D4513000000003B8EEEB4A');
     qr.make();
-    const img = await this.drawIMG(qr.createDataURL(), 'descrip...', '100,000.000000', this.imgBackground, 'xpx' , 'B256A6',)
+    const img = await this.drawIMG(qr.createDataURL(), 'descrip...', '100,000.000000', this.imgBackground, 'xpx', 'B256A6')
     imgZip = await this.drawPDF(img, this.imgBackgroundtwo)
     return new Promise(async (resolve, reject) => {
       const canvas: any = document.getElementById('idCanvastwo');
@@ -1252,6 +1253,8 @@ export class CreateGiftComponent implements OnInit {
         UInt64.fromUint(Number(this.sum(Number(realAmount), this.feeCover)))
       ));
       this.realAmount = Number(realAmount)
+      this.mosaicPrimary = environment.mosaicXpxInfo.id
+      console.log('this.mosaicPrimary ', this.mosaicPrimary)
     }
 
     this.boxOtherMosaics.forEach(element => {
@@ -1281,7 +1284,9 @@ export class CreateGiftComponent implements OnInit {
           UInt64.fromUint(Number(realAmount))
         ));
         this.realAmount = Number(realAmount)
+        this.mosaicPrimary = new MosaicId(element.id).toHex()
       }
+      console.log('this.mosaicPrimary ', this.mosaicPrimary)
     });
     return mosaics;
   }
@@ -1357,6 +1362,15 @@ export class CreateGiftComponent implements OnInit {
     console.log('showViewsConfirmFunc', this.showViewsConfirm)
     this.checked = false
   }
+
+  mosaicsInfoSerialize(mosaic: any): { nameMosaic: string, transferable: string, divisibility: number } {
+    let data = { nameMosaic: '', transferable: '', divisibility: 0 }
+    // const nameMosaic = (mosaic.mosaicNames.names.length > 0) ? mosaic.mosaicNames.names[0].name :
+    data.nameMosaic = (mosaic.mosaicNames.names.length > 0) ? mosaic.mosaicNames.names[0].name : this.proximaxProvider.getMosaicId(mosaic.idMosaic).toHex();
+    data.transferable = (mosaic.mosaicInfo.properties.isTransferable) ? '1' : '0'
+    data.divisibility = mosaic.mosaicInfo.properties.divisibility
+    return data
+  }
   async builGitf() {
     this.giftService.setTypeDonwnload = null
     this.giftService.setImgFileData = null
@@ -1367,23 +1381,25 @@ export class CreateGiftComponent implements OnInit {
     const zipIMG = new JSZip();
     let zipPDF = new JSZip();
     let count = 0
-
+    const mosaic = await this.mosaicServices.filterMosaics([new MosaicId(this.mosaicPrimary)]);
+    console.log('PRIMARY =', this.mosaicPrimary)
+    console.log('INFOR DE MOSAIC =', this.mosaicsInfoSerialize(mosaic[0]))
+    const infoMosaic = this.mosaicsInfoSerialize(mosaic[0])
     if (this.accountList.length == 1) {
-      const data = this.giftService.serializeData(this.realAmount, this.accountList[0].privateKey, '4ff17e357254d451', '0', 'B256A6');
+      const data = this.giftService.serializeData(this.realAmount, this.accountList[0].privateKey, this.mosaicPrimary, infoMosaic.transferable, 'B256A6');
       console.log('desceriazlizacion ', this.giftService.unSerialize(data))
       const qr = qrcode(10, 'H');
       qr.addData(data);
       qr.make();
-      const img = await this.drawIMG(qr.createDataURL(), this.descrip, this.amountFormatterSimple(this.realAmount), this.imgBackground, 'xpx', 'B256A6')
+      const img = await this.drawIMG(qr.createDataURL(), this.descrip, this.transactionService.amountFormatter(this.realAmount, null, infoMosaic.divisibility), this.imgBackground, infoMosaic.nameMosaic, 'B256A6')
       saveAs(new Blob([this.dataURItoBlob(img)], { type: "image/jpeg" }), "Gitf Card Sirius.jpeg")
 
       if (this.imgBackgroundtwo) {
         const imgPDF: any = await this.drawPDF(img, this.imgBackgroundtwo)
         saveAs(new Blob([imgPDF], { type: "application/pdf" }), "Gitf Card Sirius.pdf")
       }
-      
       this.giftService.setTypeDonwnload = 'image/jpeg'
-      this.giftService.setImgFileData = this.dataURItoBlob(img);
+      // this.giftService.setImgFileData = this.dataURItoBlob(img);
       this.validateSave()
       return
     }
@@ -1391,43 +1407,37 @@ export class CreateGiftComponent implements OnInit {
       count++;
       const nameImg = `Gitf_card_sirius(${count}).jpeg`;
       const namePdf = `Gitf_card_sirius(${count}).pdf`;
-      const data = this.giftService.serializeData(this.realAmount, item.privateKey, '4ff17e357254d451', '0', 'cx159875');
+      const data = this.giftService.serializeData(this.realAmount, this.accountList[0].privateKey, this.mosaicPrimary, infoMosaic.transferable, 'B256A6');
       console.log('desceriazlizacion ', this.giftService.unSerialize(data))
       const qr = qrcode(10, 'H');
       qr.addData(data);
       qr.make();
       //generate IMG
-      const img = await this.drawIMG(qr.createDataURL(), this.descrip, this.amountFormatterSimple(this.realAmount), this.imgBackground, 'xpx', 'B256A6')
+      const img = await this.drawIMG(qr.createDataURL(), this.descrip, this.transactionService.amountFormatter(this.realAmount, null, infoMosaic.divisibility), this.imgBackground, infoMosaic.nameMosaic, 'B256A6')
       zipIMG.file(nameImg, this.dataURItoBlob(img), { comment: 'image/jpeg' })
       //generate PDF
       if (this.imgBackgroundtwo) {
-        const img = await this.drawIMG(qr.createDataURL(), this.descrip, this.amountFormatterSimple(this.realAmount), this.imgBackground, 'xpx', 'B256A6')
         const imgZipPDF: any = await this.drawPDF(img, this.imgBackgroundtwo)
         zipPDF.file(namePdf, this.giftService.pdfFromImg(imgZipPDF), { comment: 'application/pdf' })
       }
-
-      // imgZip = await this.drawIMG(qr.createDataURL(), this.descrip, this.amountFormatterSimple(this.realAmount), this.imgBackground, 'pxp')
-      // zip.file(nameImg, this.dataURItoBlob(imgZip), { comment: 'image/jpeg' })
     }
-    // const content = []
-    // if (Object.keys(zipIMG.files).length > 0) {
-    //   zipIMG.generateAsync({
-    //     type: "blob"
-    //   }).then(async (content: any) => {
-    //     const fileName = `Gift Card Sirius.zip`;
-    //     saveAs(content, fileName);
-    //     this.giftService.setTypeDonwnload = 'zip'
-    //     // content.push(content)
-    //     this.giftService.setImgFileData = content
-    //     // this.giftService.zipFileData.push(content);
-    //     this.validateSave()
-    //   });
-    // }
+    if (Object.keys(zipIMG.files).length > 0) {
+      zipIMG.generateAsync({
+        type: "blob"
+      }).then(async (content: any) => {
+        const fileName = `Gift_card_sirius.zip`;
+        saveAs(content, fileName);
+        this.giftService.setTypeDonwnload = 'zip'
+        this.giftService.setImgFileData = content
+        // this.giftService.setImgFileData = content
+        this.validateSave()
+      });
+    }
     if (Object.keys(zipIMG.files).length > 0) {
       zipPDF.generateAsync({
         type: "blob"
       }).then(async (content: any) => {
-        const fileName = `Gift Card Sirius.zip`;
+        const fileName = `Gift_card_sirius_pdf.zip`;
         saveAs(content, fileName);
         this.giftService.setTypeDonwnload = 'zip'
         this.giftService.setPdfFileData = content
@@ -1625,10 +1635,10 @@ export class CreateGiftComponent implements OnInit {
      * @memberof CreateTransferComponent
      */
   sendTransfer() {
-    console.log('send')
     if (this.createGift.valid && (!this.blockSendButton)) {
       this.reloadBtn = true;
       this.blockSendButton = true;
+      this.transactionSigned = []
       this.aggregateTransaction = this.aggregateTransactionFunc()
       if (this.transactionService.validateBuildSelectAccountBalance(Number(this.balanceXpx.split(',').join('')), Number(this.fee), Number(this.createGift.get('amountXpx').value))) {
         const common: any = { password: this.createGift.get('password').value };
@@ -1655,7 +1665,6 @@ export class CreateGiftComponent implements OnInit {
               this.createGift.get('password').setValue('');
               this.blockSendButton = false;
               this.reloadBtn = false;
-              console.log('listo 9')
             }
             break
           case false:
