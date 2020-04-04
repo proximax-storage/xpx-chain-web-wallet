@@ -38,7 +38,6 @@ export class CreateGiftComponent implements OnInit {
   showMosaic = true;
   showDescrip = true;
   showSequence = true;
-  dataQR: string
   accountInfo: AccountsInfoInterface = null;
   accountValid: boolean;
   allMosaics = [];
@@ -124,7 +123,6 @@ export class CreateGiftComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.dataQR = `00000000000000017569AF1EAAE571B9881DA28CD18080B2FEA3DD5855EF08E495C9FC6EA1027BFB4FF17E357254D4513063783135393837353637343334353637383635`
     this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
     this.transactionHttp = new TransactionHttp(environment.protocol + '://' + `${this.nodeService.getNodeSelected()}`); // change
@@ -132,9 +130,9 @@ export class CreateGiftComponent implements OnInit {
 
     this.subscribeValue();
     this.getAccountInfo();
-    // setTimeout(() => {
-    //   this.drawExample()
-    // }, 3000);
+    setTimeout(() => {
+      this.drawExample()
+    }, 3000);
 
     this.imgBackground = this.sharedService.walletGitf();
     const amount = this.transactionService.getDataPart(this.amountFormatterSimple(this.feeCosignatory), 6);
@@ -547,14 +545,7 @@ export class CreateGiftComponent implements OnInit {
     this.selectOtherMosaics = [];
   }
 
-  getQR(value): string {
-    this.dataQR = value
-    let canvas = document.querySelector('canvas') as HTMLCanvasElement;
-    console.log('canvas', canvas)
-    const imageData = canvas.toDataURL("image/png");
-    console.log('imageData', imageData)
-    return imageData
-  }
+  
   validateSave() {
     console.log('this.giftService.typeDonwnload', this.giftService.getTypeDonwnload)
     if (this.giftService.typeDonwnload) {
@@ -643,7 +634,6 @@ export class CreateGiftComponent implements OnInit {
         reader.onload = () => {
           this.fileToUpload = reader.result
           this.imgBackground = this.fileToUpload
-          console.log('cargando')
           this.drawExample()
           this.drawExampletwo()
           this.showImg = false
@@ -679,7 +669,7 @@ export class CreateGiftComponent implements OnInit {
     const qr = qrcode(10, 'H');
     qr.addData('0000000000000001942110B5FF15C06141A14322E7A3054D5B1227215B7836224F106471C1AAF2ED4FF17E357254D4513000000003B8EEEB4A');
     qr.make();
-    const img = await this.drawIMG(qr.createDataURL(), 'descrip...', '100,000.000000', this.imgBackground, 'xpx')
+    const img = await this.drawIMG(qr.createDataURL(), 'descrip...', '100,000.000000', this.imgBackground, 'xpx' , 'B256A6',)
     imgZip = await this.drawPDF(img, this.imgBackgroundtwo)
     return new Promise(async (resolve, reject) => {
       const canvas: any = document.getElementById('idCanvastwo');
@@ -700,12 +690,10 @@ export class CreateGiftComponent implements OnInit {
   }
   async drawExample() {
     let imgZip: any = null
-    // console.log('genero qr')
-    // const qr = this.getQR('hola')
     const qr = qrcode(10, 'H');
     qr.addData('0000000000000001942110B5FF15C06141A14322E7A3054D5B1227215B7836224F106471C1AAF2ED4FF17E357254D4513000000003B8EEEB4A');
     qr.make();
-    imgZip = await this.drawIMG(qr.createDataURL(), 'descrip...', '100,000.000000', this.imgBackground, 'xpx')
+    imgZip = await this.drawIMG(qr.createDataURL(), 'descrip...', '100,000.000000', this.imgBackground, 'xpx', 'B256A6')
     return new Promise((resolve, reject) => {
       const canvas: any = document.getElementById('idCanvas');
       const context = canvas.getContext('2d');
@@ -721,7 +709,7 @@ export class CreateGiftComponent implements OnInit {
 
     })
   }
-  drawIMG(imgQR: string, des: string, amount: any, imageBase64, mosaic) {
+  drawIMG(imgQR: string, des: string, amount: any, imageBase64, mosaic, code) {
     return new Promise((resolve, reject) => {
       const canvas: any = document.getElementById('image');
       const context = canvas.getContext('2d');
@@ -734,7 +722,7 @@ export class CreateGiftComponent implements OnInit {
         context.drawImage(imageObj, 0, 0, 502, 326);
         if (this.showSequence) {
           context.font = '14px Sans';
-          context.fillText('CGLC000000123', 350, 60);
+          context.fillText(code, 380, 61);
         }
         if (this.showDescrip) {
           context.font = '16px Sans';
@@ -1376,22 +1364,26 @@ export class CreateGiftComponent implements OnInit {
     this.giftService.setPdfFileData = null
     this.giftService.setImgFileData = null
     console.log('builGitf builGitf')
-    // const zip = new JSZip();
     const zipIMG = new JSZip();
     let zipPDF = new JSZip();
-    // console.log(this.accountList)
     let count = 0
 
     if (this.accountList.length == 1) {
-      const data = this.giftService.serializeData(this.realAmount, this.accountList[0].privateKey, '4ff17e357254d451', '0', 'cx159875');
+      const data = this.giftService.serializeData(this.realAmount, this.accountList[0].privateKey, '4ff17e357254d451', '0', 'B256A6');
       console.log('desceriazlizacion ', this.giftService.unSerialize(data))
       const qr = qrcode(10, 'H');
       qr.addData(data);
       qr.make();
-      const imgZip = await this.drawIMG(qr.createDataURL(), this.descrip, this.amountFormatterSimple(this.realAmount), this.imgBackground, 'xpx')
-      saveAs(new Blob([this.dataURItoBlob(imgZip)], { type: "image/jpeg" }), "Gitf Card Sirius.jpeg")
+      const img = await this.drawIMG(qr.createDataURL(), this.descrip, this.amountFormatterSimple(this.realAmount), this.imgBackground, 'xpx', 'B256A6')
+      saveAs(new Blob([this.dataURItoBlob(img)], { type: "image/jpeg" }), "Gitf Card Sirius.jpeg")
+
+      if (this.imgBackgroundtwo) {
+        const imgPDF: any = await this.drawPDF(img, this.imgBackgroundtwo)
+        saveAs(new Blob([imgPDF], { type: "application/pdf" }), "Gitf Card Sirius.pdf")
+      }
+      
       this.giftService.setTypeDonwnload = 'image/jpeg'
-      this.giftService.setImgFileData = this.dataURItoBlob(imgZip);
+      this.giftService.setImgFileData = this.dataURItoBlob(img);
       this.validateSave()
       return
     }
@@ -1405,11 +1397,11 @@ export class CreateGiftComponent implements OnInit {
       qr.addData(data);
       qr.make();
       //generate IMG
-      const img = await this.drawIMG(qr.createDataURL(), this.descrip, this.amountFormatterSimple(this.realAmount), this.imgBackground, 'xpx')
+      const img = await this.drawIMG(qr.createDataURL(), this.descrip, this.amountFormatterSimple(this.realAmount), this.imgBackground, 'xpx', 'B256A6')
       zipIMG.file(nameImg, this.dataURItoBlob(img), { comment: 'image/jpeg' })
       //generate PDF
       if (this.imgBackgroundtwo) {
-        const img = await this.drawIMG(qr.createDataURL(), this.descrip, this.amountFormatterSimple(this.realAmount), this.imgBackground, 'xpx')
+        const img = await this.drawIMG(qr.createDataURL(), this.descrip, this.amountFormatterSimple(this.realAmount), this.imgBackground, 'xpx', 'B256A6')
         const imgZipPDF: any = await this.drawPDF(img, this.imgBackgroundtwo)
         zipPDF.file(namePdf, this.giftService.pdfFromImg(imgZipPDF), { comment: 'application/pdf' })
       }
@@ -1454,7 +1446,7 @@ export class CreateGiftComponent implements OnInit {
     const qr = qrcode(10, 'H');
     qr.addData('0000000000000001942110B5FF15C06141A14322E7A3054D5B1227215B7836224F106471C1AAF2ED4FF17E357254D4513000000003B8EEEB4A');
     qr.make();
-    imgZip = await this.drawIMG(qr.createDataURL(), 'hola fili', '100000', this.imgBackground, 'xpx')
+    imgZip = await this.drawIMG(qr.createDataURL(), 'hola fili', '100000', this.imgBackground, 'xpx', 'B256A6')
     saveAs(new Blob([this.dataURItoBlob(imgZip)], { type: "image/jpeg" }), "Gitf Card Sirius.jpeg")
   }
   async donwnloadExamplePDF() {
@@ -1463,7 +1455,7 @@ export class CreateGiftComponent implements OnInit {
     const qr = qrcode(10, 'H');
     qr.addData('0000000000000001942110B5FF15C06141A14322E7A3054D5B1227215B7836224F106471C1AAF2ED4FF17E357254D4513000000003B8EEEB4A');
     qr.make();
-    const img = await this.drawIMG(qr.createDataURL(), 'hola fili', '100000', this.imgBackground, 'xpx')
+    const img = await this.drawIMG(qr.createDataURL(), 'hola fili', '100000', this.imgBackground, 'xpx', 'B256A6')
     const imgZipPDF: any = await this.drawPDF(img, this.imgBackgroundtwo)
     zipPDF.file('Gitf_card_sirius.pdf', this.giftService.pdfFromImg(imgZipPDF), { comment: 'application/pdf' })
     zipIMG.file('Gitf_card_sirius.jpeg', this.dataURItoBlob(img), { comment: 'image/jpeg' })

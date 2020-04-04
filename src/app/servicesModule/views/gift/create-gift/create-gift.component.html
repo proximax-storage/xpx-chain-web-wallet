@@ -6,13 +6,13 @@
     <ngx-qrcode qrc-element-type="'canvas'" [qrc-value]="dataQR"></ngx-qrcode>
   </div>
 </div>
-<!-- <div class="row">
+<div class="row">
   <ngx-qrcode qrc-element-type="'canvas'" [qrc-value]="dataQR"></ngx-qrcode>
-</div> -->
+</div>
 
 <div class="container mt-3rem mb-2rem animated fadeIn">
   <div class="row" *ngIf="!showViewsConfirm">
-    <div class="col-10 mx-auto">
+    <div class="col-12 mx-auto">
       <form [formGroup]="createGift" (ngSubmit)="sendTransfer()">
         <!-- DIVIDER ROW-->
         <div class="row">
