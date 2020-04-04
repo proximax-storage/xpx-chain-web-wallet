@@ -23,6 +23,7 @@ import { NodeService } from '../../../../servicesModule/services/node.service';
 })
 export class CreateGiftComponent implements OnInit {
   @ViewChild('fileInput', { static: false }) myInputVariable: ElementRef;
+  @ViewChild('fileInputtwo', { static: false }) myInputVariabletwo: ElementRef;
   accounts: any = [];
   cosignatorie: any = null;
   listCosignatorie: any = [];
@@ -34,18 +35,22 @@ export class CreateGiftComponent implements OnInit {
   errorOtherMosaics = false;
   incrementMosaics = 0;
   transactionHttp: TransactionHttp = null;
-  // showMosaic = true;
-  // showDescrip = true;
-  // showSequence = true;
+  showMosaic = true;
+  showDescrip = true;
+  showSequence = true;
+  dataQR: string
   accountInfo: AccountsInfoInterface = null;
   accountValid: boolean;
   allMosaics = [];
   showCanva = false
   showImg = true
+  showImgtwo = true
   showViewsConfirm = false;
   checked: boolean = false;
   dataURL: any;
+  dataURLTwo: any;
   imgBackground;
+  imgBackgroundtwo
   cantCard: number = 0;
   descrip: string
   selectOtherMosaics = [];
@@ -81,10 +86,11 @@ export class CreateGiftComponent implements OnInit {
   subscription: Subscription[] = [];
   fee: any = '0.053250';
   feeCosignatory: any = 10044500;
-  feeCover: number = 41750
+  feeCover: number = 111000
   currentBlock: number;
   fileToUpload: any;
   ourFile: File;
+  ourFiletwo: File;
   // valueValidateAccount: validateBuildAccount
   blockSendButton: boolean;
   haveBalance: boolean;
@@ -118,6 +124,7 @@ export class CreateGiftComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.dataQR = `00000000000000017569AF1EAAE571B9881DA28CD18080B2FEA3DD5855EF08E495C9FC6EA1027BFB4FF17E357254D4513063783135393837353637343334353637383635`
     this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
     this.transactionHttp = new TransactionHttp(environment.protocol + '://' + `${this.nodeService.getNodeSelected()}`); // change
@@ -125,11 +132,11 @@ export class CreateGiftComponent implements OnInit {
 
     this.subscribeValue();
     this.getAccountInfo();
-    setTimeout(() => {
-      this.drawExample()
-    }, 3000);
+    // setTimeout(() => {
+    //   this.drawExample()
+    // }, 3000);
 
-    this.imgBackground = this.sharedService.walletGitfCuston();
+    this.imgBackground = this.sharedService.walletGitf();
     const amount = this.transactionService.getDataPart(this.amountFormatterSimple(this.feeCosignatory), 6);
     const formatterAmount = `<span class="fs-085rem">${amount.part1}</span><span class="fs-07rem">${amount.part2}</span>`;
     this.msgLockfungCosignatorie = `Cosignatory has sufficient balance (${formatterAmount} XPX) to cover LockFund Fee`;
@@ -540,6 +547,14 @@ export class CreateGiftComponent implements OnInit {
     this.selectOtherMosaics = [];
   }
 
+  getQR(value): string {
+    this.dataQR = value
+    let canvas = document.querySelector('canvas') as HTMLCanvasElement;
+    console.log('canvas', canvas)
+    const imageData = canvas.toDataURL("image/png");
+    console.log('imageData', imageData)
+    return imageData
+  }
   validateSave() {
     console.log('this.giftService.typeDonwnload', this.giftService.getTypeDonwnload)
     if (this.giftService.typeDonwnload) {
@@ -574,47 +589,84 @@ export class CreateGiftComponent implements OnInit {
       }
     }
   }
-  resetInput() {
+  resetInput(value) {
+    if (value === 'one') {
+      setTimeout(() => {
+        this.myInputVariable.nativeElement.value = null;
+      }, 100);
+    } else if (value === 'two') {
+      setTimeout(() => {
+        this.myInputVariabletwo.nativeElement.value = null;
+      }, 100);
+    } else {
+      setTimeout(() => {
+        this.myInputVariable.nativeElement.value = null;
+        this.myInputVariabletwo.nativeElement.value = null;
+      }, 100);
+    }
     // this.showViewsConfirm = false;
     // this.banFormImg = false;
-    setTimeout(() => {
-      this.myInputVariable.nativeElement.value = null;
-    }, 100);
+
 
   }
-  deleteOurFile() {
-    this.ourFile = null
-    this.showImg = true
-    this.imgBackground = this.sharedService.walletGitfCuston();
-    this.drawExample()
-    // this.giftDecode = null
-    this.resetInput()
+
+  deleteOurFile(value) {
+    if (value === 'one') {
+      this.ourFile = null
+      this.showImg = true
+      this.imgBackground = this.sharedService.walletGitf();
+      this.drawExample()
+      // this.giftDecode = null
+
+    } else {
+      this.ourFiletwo = null
+      this.showImgtwo = true
+      this.imgBackgroundtwo = null
+    }
+    this.resetInput(value)
   }
   /**
   * Method to take the selected file
   * @param {File} files file array
   * @param {Event} $event get the html element
   */
-  fileChange(file: File, $event) {
-    // this.resetInput()
+  fileChange(file: File, $event, type) {
     this.fileToUpload = ''
     if (file && file[0]) {
       if (file[0].type !== 'image/jpeg')
         return this.sharedService.showError('', 'Invalid format');
-      this.ourFile = file[0]
-      const reader = new FileReader();
-      reader.readAsDataURL(this.ourFile);
-      reader.onload = () => {
-        this.fileToUpload = reader.result
-        this.imgBackground = this.fileToUpload
-        this.drawExample()
-        this.showImg = false
-        // this.resetInput()
-      };
+      if (type == 'one') {
+        this.imgBackground = this.sharedService.walletGitf();
+        const reader = new FileReader();
+        this.ourFile = file[0]
+        reader.readAsDataURL(this.ourFile);
+        reader.onload = () => {
+          this.fileToUpload = reader.result
+          this.imgBackground = this.fileToUpload
+          console.log('cargando')
+          this.drawExample()
+          this.drawExampletwo()
+          this.showImg = false
+        };
+      } else {
+        this.imgBackgroundtwo = null
+        const reader = new FileReader();
+        this.ourFiletwo = file[0]
+        reader.readAsDataURL(this.ourFiletwo);
+        reader.onload = () => {
+          this.imgBackgroundtwo = reader.result
+          this.drawExampletwo()
+          this.showImgtwo = false
+        };
+      }
+
+
     }
   }
   showImgFun() {
     this.drawExample()
+    if (!this.showImgtwo)
+      this.drawExampletwo()
   }
   updateShowMosaic() {
     console.log(this.createGift.get('showMosaic').value)
@@ -622,81 +674,120 @@ export class CreateGiftComponent implements OnInit {
     // this.showMosaic  =! this.showMosaic 
     // this.drawExample()
   }
-  drawExample() {
-    console.log('drawExample', this.createGift.get('showMosaic').value)
+  async drawExampletwo() {
+    let imgZip: any = null
     const qr = qrcode(10, 'H');
     qr.addData('0000000000000001942110B5FF15C06141A14322E7A3054D5B1227215B7836224F106471C1AAF2ED4FF17E357254D4513000000003B8EEEB4A');
     qr.make();
-    const imgQR = qr.createDataURL()
+    const img = await this.drawIMG(qr.createDataURL(), 'descrip...', '100,000.000000', this.imgBackground, 'xpx')
+    imgZip = await this.drawPDF(img, this.imgBackgroundtwo)
+    return new Promise(async (resolve, reject) => {
+      const canvas: any = document.getElementById('idCanvastwo');
+      const context = canvas.getContext('2d');
+      const imageObj = new Image(100, 100);
+      imageObj.setAttribute('crossOrigin', 'anonymous');
+      imageObj.src = imgZip;
+      imageObj.onerror = reject
+      imageObj.onload = (e) => {
+        // context.drawImage(imageObj, 0, 0, 130, 200);
+        context.drawImage(imageObj, 0, 0, 230, 330);
+        // const canvas: any = document.getElementById('idCanvas');
+        const dataURLTwo = canvas.toDataURL('image/jpeg', 1.0);
+        resolve(dataURLTwo)
+      };
+    })
+
+  }
+  async drawExample() {
+    let imgZip: any = null
+    // console.log('genero qr')
+    // const qr = this.getQR('hola')
+    const qr = qrcode(10, 'H');
+    qr.addData('0000000000000001942110B5FF15C06141A14322E7A3054D5B1227215B7836224F106471C1AAF2ED4FF17E357254D4513000000003B8EEEB4A');
+    qr.make();
+    imgZip = await this.drawIMG(qr.createDataURL(), 'descrip...', '100,000.000000', this.imgBackground, 'xpx')
     return new Promise((resolve, reject) => {
       const canvas: any = document.getElementById('idCanvas');
       const context = canvas.getContext('2d');
-
       const imageObj = new Image(100, 100);
-      const imageObj2 = new Image(30, 46);
-      imageObj2.src = imgQR;
-
       imageObj.setAttribute('crossOrigin', 'anonymous');
-      imageObj.src = this.imgBackground;
+      imageObj.src = imgZip;
       imageObj.onerror = reject
-
       imageObj.onload = (e) => {
         context.drawImage(imageObj, 0, 0, 300, 200);
-        if (this.createGift.get('showSequence').value) {
-          context.font = '8px Sans';
-          context.fillText('CGLC000000123', 209, 40);
-        }
-        if (this.createGift.get('showDescrip').value) {
-          context.font = '9px Sans';
-          context.fillText('descrip...', 25, 127);
-        }
-        if (this.createGift.get('showMosaic').value) {
-          context.font = '9px Open Sans';
-          context.fillStyle = 'black';
-          context.fillText('100,000.000000' + ' XPX', 25, 168);
-        }
-        // context.putImageData(imgData, 10, 70);
-        imageObj2.width = 12;
-        imageObj2.height = 12;
-        context.drawImage(imageObj2, 208, 53, 73, 73);
-        // const canvas: any = document.getElementById('idCanvas');
-        this.dataURL = canvas.toDataURL('image/jpeg', 1.0);
-        resolve(this.dataURL)
+        const dataURL = canvas.toDataURL('image/jpeg', 1.0);
+        resolve(dataURL)
       };
+
     })
   }
-
-  draw(imgQR: string, des: string, amount: any) {
+  drawIMG(imgQR: string, des: string, amount: any, imageBase64, mosaic) {
     return new Promise((resolve, reject) => {
-      const canvas: any = document.getElementById('idCanvas');
+      const canvas: any = document.getElementById('image');
+      const context = canvas.getContext('2d');
+      const imageObj = new Image();
+      const imageObj2 = new Image(30, 46);
+      imageObj2.src = imgQR;
+      imageObj.setAttribute('crossOrigin', 'anonymous');
+      imageObj.src = imageBase64;
+      imageObj.onload = (e) => {
+        context.drawImage(imageObj, 0, 0, 502, 326);
+        if (this.showSequence) {
+          context.font = '14px Sans';
+          context.fillText('CGLC000000123', 350, 60);
+        }
+        if (this.showDescrip) {
+          context.font = '16px Sans';
+          context.fillText(des, 40, 208);
+        }
+        if (this.showMosaic) {
+          context.font = '15px Open Sans';
+          context.fillStyle = 'black';
+          context.fillText(mosaic, 78, 246);
+          context.font = '17px Open Sans';
+          context.fillStyle = 'black';
+          context.fillText(amount, 40, 276);
+        }
+        imageObj2.width = 12;
+        imageObj2.height = 12;
+        context.drawImage(imageObj2, 343, 77, 130, 130);
+        const canvas: any = document.getElementById('image');
+        const dataURL = canvas.toDataURL('image/jpeg', 1.0);
+        resolve(dataURL)
+      };
+      imageObj.onerror = reject
+    })
+
+
+  }
+
+  drawPDF(imageGift, imagePdf) {
+
+    return new Promise(async (resolve, reject) => {
+      const canvas: any = document.getElementById('pdf');
       const context = canvas.getContext('2d');
 
       const imageObj = new Image();
       const imageObj2 = new Image(30, 46);
-      imageObj2.src = imgQR;
+      // const img: any = await this.drawExample();
+      imageObj2.src = imageGift
+
+      imageObj.setAttribute('crossOrigin', 'anonymous');
+      // imageObj.src = this.imgBackgroundtwo;
+      imageObj.src = imagePdf
+      imageObj.onerror = reject
 
       imageObj.onload = (e) => {
-        context.drawImage(imageObj, 0, 0);
-        context.font = '17px Open Sans';
-        context.fillStyle = 'black';
-        context.fillText(amount + ' XPX', 40, 208);
-        // context.font = 'bold 20px Sans';
-        // context.fillText('XPX', 28 + context.measureText(amount).width, 206);
-        context.font = '16px Sans';
-        context.fillText(des, 40, 276);
-        // context.putImageData(imgData, 10, 70);
+        // context.drawImage(imageObj, 0, 0, 130, 200);
+        context.drawImage(imageObj, 0, 0, 989, 1280);
         imageObj2.width = 12;
         imageObj2.height = 12;
-        context.drawImage(imageObj2, 343, 79, 130, 130);
-        const canvas: any = document.getElementById('idCanvas');
-        this.dataURL = canvas.toDataURL('image/jpeg', 1.0);
-        resolve(this.dataURL)
+        context.drawImage(imageObj2, 537, 516, 385, 250);
+        const canvas: any = document.getElementById('pdf');
+        const dataURL = canvas.toDataURL('image/jpeg', 1.0);
+        resolve(dataURL)
       };
-      imageObj.setAttribute('crossOrigin', 'anonymous');
-      imageObj.src = this.imgBackground;
-      imageObj.onerror = reject
     })
-
 
   }
 
@@ -704,6 +795,22 @@ export class CreateGiftComponent implements OnInit {
     * @memberof CreateGiftComponent
     */
   subscribeValue() {
+
+    //value CHECK custom card
+    this.subscription.push(this.createGift.get('showMosaic').valueChanges.subscribe(val => {
+      if (val !== null && val !== undefined)
+        this.showMosaic = val
+
+    }));
+    this.subscription.push(this.createGift.get('showDescrip').valueChanges.subscribe(val => {
+      if (val !== null && val !== undefined)
+        this.showDescrip = val
+    }));
+    this.subscription.push(this.createGift.get('showSequence').valueChanges.subscribe(val => {
+      if (val !== null && val !== undefined)
+        this.showSequence = val
+    }));
+    //
     this.subscription.push(this.createGift.get('message').valueChanges.subscribe(val => {
       if (val && val !== '') {
         this.charRest = val.length;
@@ -1266,19 +1373,22 @@ export class CreateGiftComponent implements OnInit {
     this.giftService.setTypeDonwnload = null
     this.giftService.setImgFileData = null
     this.giftService.setZipFileData = null
+    this.giftService.setPdfFileData = null
+    this.giftService.setImgFileData = null
     console.log('builGitf builGitf')
-    const zip = new JSZip();
+    // const zip = new JSZip();
+    const zipIMG = new JSZip();
+    let zipPDF = new JSZip();
     // console.log(this.accountList)
     let count = 0
-    let imgZip: any = null
 
     if (this.accountList.length == 1) {
-      const data = this.giftService.serializeData(this.realAmount, this.accountList[0].privateKey, this.descrip);
+      const data = this.giftService.serializeData(this.realAmount, this.accountList[0].privateKey, '4ff17e357254d451', '0', 'cx159875');
       console.log('desceriazlizacion ', this.giftService.unSerialize(data))
       const qr = qrcode(10, 'H');
       qr.addData(data);
       qr.make();
-      imgZip = await this.draw(qr.createDataURL(), this.descrip, this.amountFormatterSimple(this.realAmount))
+      const imgZip = await this.drawIMG(qr.createDataURL(), this.descrip, this.amountFormatterSimple(this.realAmount), this.imgBackground, 'xpx')
       saveAs(new Blob([this.dataURItoBlob(imgZip)], { type: "image/jpeg" }), "Gitf Card Sirius.jpeg")
       this.giftService.setTypeDonwnload = 'image/jpeg'
       this.giftService.setImgFileData = this.dataURItoBlob(imgZip);
@@ -1287,30 +1397,107 @@ export class CreateGiftComponent implements OnInit {
     }
     for (let item of this.accountList) {
       count++;
-      const nameImg = `Gitf Card Sirius (${count}).jpeg`;
-      const data = this.giftService.serializeData(this.realAmount, item.privateKey, this.descrip);
+      const nameImg = `Gitf_card_sirius(${count}).jpeg`;
+      const namePdf = `Gitf_card_sirius(${count}).pdf`;
+      const data = this.giftService.serializeData(this.realAmount, item.privateKey, '4ff17e357254d451', '0', 'cx159875');
       console.log('desceriazlizacion ', this.giftService.unSerialize(data))
       const qr = qrcode(10, 'H');
       qr.addData(data);
       qr.make();
-      imgZip = await this.draw(qr.createDataURL(), this.descrip, this.amountFormatterSimple(this.realAmount))
-      zip.file(nameImg, this.dataURItoBlob(imgZip), { comment: 'image/jpeg' })
+      //generate IMG
+      const img = await this.drawIMG(qr.createDataURL(), this.descrip, this.amountFormatterSimple(this.realAmount), this.imgBackground, 'xpx')
+      zipIMG.file(nameImg, this.dataURItoBlob(img), { comment: 'image/jpeg' })
+      //generate PDF
+      if (this.imgBackgroundtwo) {
+        const img = await this.drawIMG(qr.createDataURL(), this.descrip, this.amountFormatterSimple(this.realAmount), this.imgBackground, 'xpx')
+        const imgZipPDF: any = await this.drawPDF(img, this.imgBackgroundtwo)
+        zipPDF.file(namePdf, this.giftService.pdfFromImg(imgZipPDF), { comment: 'application/pdf' })
+      }
+
+      // imgZip = await this.drawIMG(qr.createDataURL(), this.descrip, this.amountFormatterSimple(this.realAmount), this.imgBackground, 'pxp')
+      // zip.file(nameImg, this.dataURItoBlob(imgZip), { comment: 'image/jpeg' })
     }
-    if (Object.keys(zip.files).length > 0) {
-      zip.generateAsync({
+    // const content = []
+    // if (Object.keys(zipIMG.files).length > 0) {
+    //   zipIMG.generateAsync({
+    //     type: "blob"
+    //   }).then(async (content: any) => {
+    //     const fileName = `Gift Card Sirius.zip`;
+    //     saveAs(content, fileName);
+    //     this.giftService.setTypeDonwnload = 'zip'
+    //     // content.push(content)
+    //     this.giftService.setImgFileData = content
+    //     // this.giftService.zipFileData.push(content);
+    //     this.validateSave()
+    //   });
+    // }
+    if (Object.keys(zipIMG.files).length > 0) {
+      zipPDF.generateAsync({
         type: "blob"
       }).then(async (content: any) => {
         const fileName = `Gift Card Sirius.zip`;
         saveAs(content, fileName);
         this.giftService.setTypeDonwnload = 'zip'
-        this.giftService.setZipFileData = content;
+        this.giftService.setPdfFileData = content
+        // content.push(content)
+        // this.giftService.zipFileData.push(content);
         this.validateSave()
       });
     }
 
+    // this.giftService.zipFileData = content
 
+  }
 
+  async donwnloadExample() {
+    let imgZip: any = null
+    const qr = qrcode(10, 'H');
+    qr.addData('0000000000000001942110B5FF15C06141A14322E7A3054D5B1227215B7836224F106471C1AAF2ED4FF17E357254D4513000000003B8EEEB4A');
+    qr.make();
+    imgZip = await this.drawIMG(qr.createDataURL(), 'hola fili', '100000', this.imgBackground, 'xpx')
+    saveAs(new Blob([this.dataURItoBlob(imgZip)], { type: "image/jpeg" }), "Gitf Card Sirius.jpeg")
+  }
+  async donwnloadExamplePDF() {
+    const zipIMG = new JSZip();
+    let zipPDF = new JSZip();
+    const qr = qrcode(10, 'H');
+    qr.addData('0000000000000001942110B5FF15C06141A14322E7A3054D5B1227215B7836224F106471C1AAF2ED4FF17E357254D4513000000003B8EEEB4A');
+    qr.make();
+    const img = await this.drawIMG(qr.createDataURL(), 'hola fili', '100000', this.imgBackground, 'xpx')
+    const imgZipPDF: any = await this.drawPDF(img, this.imgBackgroundtwo)
+    zipPDF.file('Gitf_card_sirius.pdf', this.giftService.pdfFromImg(imgZipPDF), { comment: 'application/pdf' })
+    zipIMG.file('Gitf_card_sirius.jpeg', this.dataURItoBlob(img), { comment: 'image/jpeg' })
 
+    // if (Object.keys(zip.files).length > 0) {
+
+    //   for (let index = 0; index < zip.files.length; index++) {
+    //     console.log('index', index)
+    //     const element = zip.files[index];
+    //     console.log('element', element)
+
+    //   }
+    //   // for(let item in zip.files){
+    //   //   console.log('item', zip.files[item].comment)
+    //   //   if(zip.files[item].comment =='application/pdf'){
+    //   //     dataPDF.push(zip)
+    //   //   }else if (zip.files[item].comment =='application/pdf'){
+
+    //   //   }
+    //   // }
+
+    // }
+
+    // if (Object.keys(zip.files).length > 0) {
+    zipPDF.generateAsync({
+      type: "blob"
+    }).then(async (content: any) => {
+      const fileName = `Gift Card Sirius.zip`;
+      saveAs(content, fileName);
+      console.log('content', content)
+    });
+    // }
+
+    // saveAs(new Blob([this.giftService.pdfFromImg(imgZip)], { type: "pdf" }), "Gitf Card Sirius.pdf")
   }
 
   donwnload() {
@@ -1319,7 +1506,8 @@ export class CreateGiftComponent implements OnInit {
       saveAs(new Blob([this.giftService.getImgFileData], { type: "image/jpeg" }), "Gitf Card Sirius (copy).jpeg")
     } else {
       const fileName = `Gift Card Sirius (copy).zip`;
-      saveAs(this.giftService.getZipFileData, fileName);
+      console.log('getPdfFileData', this.giftService.getPdfFileData)
+      saveAs(this.giftService.getPdfFileData, fileName);
     }
 
   }

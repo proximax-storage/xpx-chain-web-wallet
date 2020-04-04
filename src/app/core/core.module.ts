@@ -12,6 +12,7 @@ import { NgxDropzoneModule } from 'ngx-dropzone';
 import { NgQRCodeReaderModule } from 'ng2-qrcode-reader';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { RouterModule } from '@angular/router';
+import { NgxQRCodeModule } from 'ngx-qrcode2'; 
 
 import { MdbModule } from '../shared/moduls/mdb/mdb.module';
 import { TransferTypeComponent } from '../dashboard/components/transfer-type/transfer-type.component';
@@ -90,7 +91,8 @@ const moduls = [
   ClipboardModule,
   NgxCurrencyModule,
   NgQRCodeReaderModule,
-  RouterModule
+  RouterModule,
+  NgxQRCodeModule
 ];
 
 

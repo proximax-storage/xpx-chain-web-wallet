@@ -1,4 +1,14 @@
 <app-header [params]="paramsHeader"></app-header>
+<div class="row" [hidden]="true">
+  <div class="col-12 d-flex justify-content-center mx-auto ">
+    <canvas id="image" width="502" height="326"></canvas>
+    <canvas id="pdf" width="989" height="1280"></canvas>
+    <ngx-qrcode qrc-element-type="'canvas'" [qrc-value]="dataQR"></ngx-qrcode>
+  </div>
+</div>
+<!-- <div class="row">
+  <ngx-qrcode qrc-element-type="'canvas'" [qrc-value]="dataQR"></ngx-qrcode>
+</div> -->
 
 <div class="container mt-3rem mb-2rem animated fadeIn">
   <div class="row" *ngIf="!showViewsConfirm">
@@ -262,7 +272,7 @@
                       </div>
                     </label>
                     <input [hidden]="true" id="fileInput" #fileInput type="file"
-                      (change)="fileChange($event.target.files,$event)">
+                      (change)="fileChange($event.target.files,$event, 'one')">
                   </div>
                 </div>
                 <div class="row" [hidden]="showImg">
@@ -270,11 +280,12 @@
                     <canvas id="idCanvas" width="300" height="200"></canvas>
                   </div>
                 </div>
+               
 
                 <div class="row" *ngIf="ourFile">
                   <div class="col-12 d-flex m-0 p-5px justify-content-center mx-auto">
                     <div class="col-12 color-black fs-075rem d-flex txt-a-center">
-                      <i class="fa fa-trash p-5px" aria-hidden="true" (click)="deleteOurFile()"></i>
+                      <i class="fa fa-trash p-5px" aria-hidden="true" (click)="deleteOurFile('one')"></i>
                       <p class="mb-0 p-5px word-break-all">{{ourFile.name}}</p>
                     </div>
                   </div>
@@ -284,41 +295,51 @@
             <!-- CHECK -->
             <div class="row pt-1rem">
               <div class="col-4 mx-auto ">
-                <mdb-checkbox formControlName="showMosaic" (click)="drawExample()"> Mosaic
+                <mdb-checkbox formControlName="showMosaic" (click)="showImgFun()"> Mosaic
                 </mdb-checkbox>
               </div>
               <div class="col-4  mx-auto ">
-                <mdb-checkbox formControlName="showDescrip" (click)="drawExample()"> description
+                <mdb-checkbox formControlName="showDescrip" (click)="showImgFun()"> description
                 </mdb-checkbox>
               </div>
               <div class="col-4  mx-auto ">
-                <mdb-checkbox formControlName="showSequence" (click)="drawExample()"> sequence
+                <mdb-checkbox formControlName="showSequence" (click)="showImgFun()"> sequence
                 </mdb-checkbox>
               </div>
             </div>
-            <!-- IMG -->
-            <!-- <div class="row">
-              <div class="col-12 mx-auto ">
-                <div [hidden]="showImg" class="row">
-                  <div class="col-11 col-md-10 col-lg-8 mx-auto">
-                    <div class="row">
-                      <div class="col-12 text-center">
-                        <canvas id="idCanvas" width="300" height="200"></canvas>
+            <!-- FILE PDF -->
+            <div class="row">
+              <div class="col-12 d-flex justify-content-center flex-column mx-auto pt-2rem  box-grey">
+                <div class="row" [hidden]="!showImgtwo">
+                  <div class="col-12 d-flex justify-content-center mx-auto ">
+                    <label class="d-flex justify-content-center mx-auto box-drop-gift  col-12" for="fileInputtwo">
+                      <div class="row txt-a-center p-05rem cursor-p">
+                        <div class="col-12">
+                          <img class="mr-1rem h2em"
+                            src="assets/images/img/icon-upload-gray-28h-proximax-sirius-wallet.svg" width="25">
+                          <span class="fs-1-2em color-grey fw-600">Upload new format gift card</span>
+                        </div>
                       </div>
+                    </label>
+                    <input [hidden]="true" id="fileInputtwo" #fileInputtwo type="file"
+                      (change)="fileChange($event.target.files,$event , 'two')">
+                  </div>
+                </div>
+                <div class="row" [hidden]="showImgtwo">
+                  <div class="col-12 d-flex justify-content-center mx-auto ">
+                    <canvas id="idCanvastwo" width="230" height="330"></canvas>
+                  </div>
+                </div>
 
+                <div class="row" *ngIf="ourFiletwo">
+                  <div class="col-12 d-flex m-0 p-5px justify-content-center mx-auto">
+                    <div class="col-12 color-black fs-075rem d-flex txt-a-center">
+                      <i class="fa fa-trash p-5px" aria-hidden="true" (click)="deleteOurFile('two')"></i>
+                      <p class="mb-0 p-5px word-break-all">{{ourFiletwo.name}}</p>
                     </div>
                   </div>
                 </div>
               </div>
-            </div> -->
-            <div class="row pt-1rem pb-1rem">
-              <div class="col-12 mx-auto d-flex justify-content-center">
-                <button class="background-btn-inverse pl-2rem pr-2rem" size="md" mdbBtn type="button" rounded="true"
-                  mdbWavesEffect (click)="showImgFun()">
-                  <span *ngIf="showImg" class="fs-1-2em text-cl-m fw-700">Show image </span>
-                  <span *ngIf="!showImg" class="fs-1-2em text-cl-m fw-700">Hidden image </span></button>
-              </div>
-
             </div>
           </div>
         </div>
