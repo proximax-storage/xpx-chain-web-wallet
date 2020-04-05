@@ -476,10 +476,10 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
         await this.buildCurrentAccountInfo(accountFiltered.accountInfo);
       }
       if (!this.haveBalance) {
-        this.insufficientBalance = true;
+        this.assetInsufficientBalance = true;
         this.createGift.controls['assetAmount'].disable();
       } else if (!this.disabledAllField) {
-        this.insufficientBalance = false;
+        this.assetInsufficientBalance = false;
         this.createGift.controls['assetAmount'].enable();
       }
     }
@@ -501,7 +501,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
     this.errorOtherMosaics = false;
     this.incrementMosaics = 0;
     // this.invalidRecipient = false;
-    this.insufficientBalance = false;
+    this.assetInsufficientBalance = false;
     // this.msgErrorUnsupported = '';
     // this.msgErrorUnsupportedContact = '';
     this.optionsXPX = {
@@ -930,7 +930,11 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
         } else {
           this.createGift.disable();
         }
+      } else {
+        this.createGift.disable();
       }
+    } else {
+      this.createGift.disable();
     }
 
     return;

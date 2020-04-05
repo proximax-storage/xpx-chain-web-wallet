@@ -358,18 +358,15 @@
               <span class="fs-1-2em color-white">Clear</span>
             </button>
           </div>
-          <!-- <div>createGift.invalid:: {{createGift.invalid}}  <br></div>
-          <div>errorOtherMosaics:: {{errorOtherMosaics}} <br></div>
-          <div>disabledAllField::{{disabledAllField}} <br></div>
-          <div></div><br>
-          <div></div><br>
-          <div></div><br>
-          {{insufficientBalance}} -->
+
+
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-            <button [disabled]=" (createGift.invalid ||
+            <button [disabled]="
+            allMosaics.length === 0
+            || (createGift.invalid ||
             errorOtherMosaics ||
             disabledAllField ||
-            insufficientBalance) ||
+            assetInsufficientBalance) ||
             (sender.isMultisign &&
             sender.isMultisign.cosignatories &&
             sender.isMultisign.cosignatories.length > 0 &&
