@@ -710,7 +710,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
       const canvas: any = document.getElementById('pdf');
       const context = canvas.getContext('2d');
 
-      const imageObj = new Image();
+      const imageObj = new Image(989, 1280);
       const imageObj2 = new Image(30, 46);
       // const img: any = await this.drawExample();
       imageObj2.src = imageGift;
