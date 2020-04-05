@@ -121,7 +121,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
   aggregateTransaction: Transaction;
 
   // --------------- Rj
-  mosaicSelected: any = [];
+  mosaicSelected: any;
   assetInsufficientBalance = false;
   assetsOptions = {
     prefix: '',
@@ -250,29 +250,6 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
       this.createGift.get('assetAmount').reset();
     }, 10);
     // this.convertAccountMultsignForm.get('selectAccount').patchValue('ACCOUNT-2');
-  }
-
-  /**
-   *
-   *
-   * @param {*} mosaicSelected
-   * @param {number} position
-   * @memberof CreateGiftComponent
-   */
-  otherMosaicsBuild(mosaicSelected: any, position: number) {
-    this.boxOtherMosaics[position].amount = '';
-    this.boxOtherMosaics[position].balance = mosaicSelected.balance;
-    this.boxOtherMosaics[position].config = mosaicSelected.config;
-    this.boxOtherMosaics[position].errorBalance = false;
-    this.boxOtherMosaics[position].id = mosaicSelected.value;
-    this.boxOtherMosaics[position].beforeValue = mosaicSelected.label;
-    const currentMosaic = this.boxOtherMosaics[position].selectOtherMosaics.find(elm => elm.label === mosaicSelected.label);
-    const otherMosaics = this.boxOtherMosaics[position].selectOtherMosaics.filter(elm => elm.label !== mosaicSelected.label);
-    currentMosaic.disabled = true;
-    otherMosaics.push(currentMosaic);
-    this.boxOtherMosaics.map(element => {
-      return element.selectOtherMosaics = otherMosaics;
-    });
   }
 
   /**
@@ -455,6 +432,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
   async changeSender(accountToSend: AccountsInterface) {
     if (accountToSend) {
       this.sender = accountToSend;
+      this.mosaicSelected = null;
       this.findCosignatories(accountToSend);
       if (this.createGift.disabled && !this.disabledAllField && this.allMosaics.length > 0) {
         this.createGift.enable();
@@ -767,7 +745,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
       if (value !== null && value !== undefined) {
         const amount = Number(value);
         let validateAmount = false;
-        if (this.sender) {
+        if (this.sender && this.mosaicSelected) {
           const accountInfo = this.walletService.filterAccountInfo(this.sender.name);
           if (accountInfo !== undefined && accountInfo !== null && Object.keys(accountInfo).length > 0) {
             if (accountInfo.accountInfo && accountInfo.accountInfo.mosaics.length > 0) {
@@ -1223,7 +1201,12 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
       let decimal;
       let realAmount;
 
-      if (this.mosaicSelected.config.precision !== undefined && this.mosaicSelected.config.precision !== null && this.mosaicSelected.config.precision > 0) {
+      if (
+        this.mosaicSelected &&
+        this.mosaicSelected.config.precision !== undefined &&
+        this.mosaicSelected.config.precision !== null &&
+        this.mosaicSelected.config.precision > 0
+      ) {
         if (arrAmount.length < 2) {
           decimal = this.addZeros(this.mosaicSelected.config.precision);
         } else {
@@ -1236,9 +1219,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
         realAmount = arrAmount[0];
       }
 
-      console.log('realAmount', realAmount);
       const mosaicID = new MosaicId([this.mosaicSelected.value[0], this.mosaicSelected.value[1]]);
-      console.log('mosaicID', mosaicID);
       if (mosaicID.toHex() === this.mosaicXpx.id) {
         mosaics.push(new Mosaic(
           new MosaicId(this.mosaicXpx.id),
@@ -1258,7 +1239,6 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
 
       this.realAmount = Number(realAmount);
       this.mosaicPrimary = new MosaicId([this.mosaicSelected.value[0], this.mosaicSelected.value[1]]).toHex();
-      console.log('this.mosaicPrimary ', this.mosaicPrimary);
     }
 
     return mosaics;
@@ -1568,9 +1548,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
       UInt64.fromUint(0)
     )]).maxFee.compact();
     this.feeCover = this.calFeeAggregateTransaction(maxFeeCover);
-    console.log('this.feeCover', this.feeCover);
     const mosaicsToSend: any = this.buildMosaicsToSend();
-    console.log('mosaicsToSend', mosaicsToSend);
     innerTransaction = this.innerTransactionBuild(this.cantCard, network, mosaicsToSend);
     if (this.cosignatorie) {
       return AggregateTransaction.createBonded(
@@ -1648,7 +1626,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
    * @memberof CreateGiftComponent
    */
   sendTransfer() {
-    if (this.createGift.valid && (!this.blockSendButton)) {
+    if (this.createGift.valid && (!this.blockSendButton) && this.mosaicSelected) {
       this.reloadBtn = true;
       this.blockSendButton = true;
       this.transactionSigned = [];
