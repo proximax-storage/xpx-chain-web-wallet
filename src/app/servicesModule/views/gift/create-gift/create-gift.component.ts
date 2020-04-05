@@ -99,6 +99,17 @@ export class CreateGiftComponent implements OnInit {
   limit: number = 100
   accountList: Account[] = [];
   aggregateTransaction: Transaction;
+
+  // --------------- Rj
+  mosaicSelected: any = [];
+  assetInsufficientBalance = false;
+  assetsOptions = {
+    prefix: '',
+    thousands: ',',
+    decimal: '.',
+    precision: '6'
+  };
+
   constructor(private fb: FormBuilder,
     private sharedService: SharedService,
     private walletService: WalletService,
@@ -174,13 +185,23 @@ export class CreateGiftComponent implements OnInit {
     });
   }
 
+  changeMosaic(event) {
+    console.log('CHange mosaic', event);
+    this.mosaicSelected = event;
+    this.assetsOptions = event.config;
+  }
+
   /**
    * @memberof CreateGiftComponent
    */
   createForm() {
-    //Form create multisignature default
+    // Form create multisignature default
     this.createGift = this.fb.group({
       amountXpx: ['', [
+        Validators.maxLength(this.configurationForm.amount.maxLength)
+      ]],
+
+      assetAmount: ['', [
         Validators.maxLength(this.configurationForm.amount.maxLength)
       ]],
 
@@ -662,7 +683,7 @@ export class CreateGiftComponent implements OnInit {
   updateShowMosaic() {
     console.log(this.createGift.get('showMosaic').value)
 
-    // this.showMosaic  =! this.showMosaic 
+    // this.showMosaic  =! this.showMosaic
     // this.drawExample()
   }
   async drawExampletwo() {
@@ -781,9 +802,69 @@ export class CreateGiftComponent implements OnInit {
   }
 
   /**
-    * @memberof CreateGiftComponent
-    */
+   *
+   *
+   * @memberof CreateGiftComponent
+   */
   subscribeValue() {
+    // ------ Rj
+    this.subscription.push(this.createGift.get('assetAmount').valueChanges.subscribe(value => {
+      console.log('assetAmount value ---->', value);
+      if (value !== null && value !== undefined) {
+        const amount = Number(value);
+        let validateAmount = false;
+        if (this.sender) {
+          const accountInfo = this.walletService.filterAccountInfo(this.sender.name);
+          if (accountInfo !== undefined && accountInfo !== null && Object.keys(accountInfo).length > 0) {
+            if (accountInfo.accountInfo.mosaics.length > 0) {
+              const filtered = accountInfo.accountInfo.mosaics.find(element => {
+                return element.id.toHex() === new MosaicId([this.mosaicSelected.value[0], this.mosaicSelected.value[1]]).toHex();
+              });
+
+              console.log('filtered mosaic', filtered)
+              const arrAmount = value.toString().replace(/,/g, '').split('.');
+              let decimal;
+              let realAmount;
+
+              if (arrAmount.length < 2) {
+                decimal = this.addZeros(this.mosaicSelected.config.precision);
+              } else {
+                const arrDecimals = arrAmount[1].split('');
+                decimal = this.addZeros(this.mosaicSelected.config.precision - arrDecimals.length, arrAmount[1]);
+              }
+
+              realAmount = `${arrAmount[0]}${decimal}`;
+              if (filtered !== undefined && filtered !== null) {
+                const invalidBalance = filtered.amount.compact() < Number(realAmount);
+                if (invalidBalance && !this.assetInsufficientBalance) {
+                  this.assetInsufficientBalance = true;
+                  this.blockSendButton = true;
+                } else if (!invalidBalance && this.assetInsufficientBalance) {
+                  this.assetInsufficientBalance = false;
+                  this.blockSendButton = false;
+                }
+              } else {
+                validateAmount = true;
+              }
+            } else {
+              validateAmount = true;
+            }
+          } else {
+            validateAmount = true;
+          }
+        }
+
+        if (validateAmount) {
+          if (Number(value) > 0) {
+            this.assetInsufficientBalance = true;
+            this.blockSendButton = true;
+          } else if ((Number(value) === 0 || value === '') && this.assetInsufficientBalance) {
+            this.assetInsufficientBalance = false;
+          }
+        }
+      }
+    }));
+
 
     //value CHECK custom card
     this.subscription.push(this.createGift.get('showMosaic').valueChanges.subscribe(val => {

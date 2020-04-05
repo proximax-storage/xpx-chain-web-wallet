@@ -88,6 +88,7 @@
                 </ng-container>
               </div>
             </ng-container>
+
             <!-- MSG ERROR - ACCOUNT NOT ALLOWED -->
             <ng-container *ngIf="disabledAllField">
               <div class="row">
@@ -98,6 +99,7 @@
                 </div>
               </div>
             </ng-container>
+
             <!-- COSIGNATORIES -->
             <ng-container *ngIf="listCosignatorie.length > 1">
               <div class="row mt-1rem">
@@ -117,9 +119,45 @@
                 </div>
               </div>
             </ng-container>
+
+            <!-- Mosaics RJ -->
+            <ng-container>
+              <div class="row mt-2rem">
+                <div class="col-12">
+                  <ng-select class="custom" mdbInputDirective mdbValidate class="selectWrapper" [items]="allMosaics"
+                    bindLabel="label" (change)="changeMosaic($event)" bindValue="value" placeholder="Select Mosaic">
+                  </ng-select>
+
+                  <!-- Amount Input -->
+                  <div class="col-12 mx-auto">
+                    <div class="md-form form-sm mt-1rem mb-0rem">
+                      <img class="form-control-feedback"
+                        src="assets/images/img/icon-amount-green-16h-proximax-sirius-wallet.svg" alt="">
+                      <input pattern="^[+]?([0-9]*[.])?[0-9]+$" currencyMask [options]="assetsOptions" mdbInputDirective
+                        mdbValidate [validateSuccess]="true" [maxlength]="configurationForm.amount.maxLength"
+                        [validateError]="true" type="text"
+                        class="form-control form-control-sm input-border input-amount"
+                        placeholder="Amount per Gift Cards" formControlName="assetAmount">
+                      <span class="label-i-icon pl-2rem"></span>
+
+                      <mdb-error
+                        *ngIf="validateInput('assetAmount').invalid && (validateInput('assetAmount').dirty || validateInput('assetAmount').touched)">
+                        <span class="fs-08rem fw-600 color-error-message">Invalid Amount</span>
+                      </mdb-error>
+                      <!-- Message Error Insufficient balance-->
+                      <mdb-error *ngIf="assetInsufficientBalance">
+                        <span class="fs-08rem fw-600 color-error-message">Insufficient Balance</span>
+                      </mdb-error>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+            <!-- Fin Mosaics RJ -->
+
             <!-- AMOUNT & TO BE SENT -->
             <div class="row">
-              <!-- Card -->
+              <!-- Card Quantity -->
               <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6  mx-auto">
                 <div class="md-form form-sm mt-1rem mb-0rem">
                   <img class="form-control-feedback"
@@ -135,10 +173,9 @@
                     *ngIf="validateInput('cantCard', '').invalid && (validateInput('cantCard', '').dirty || validateInput('cantCard', '').touched)">
                     <span>Number Required</span>
                   </mdb-error>
-
-
                 </div>
               </div>
+
               <!-- Amount Input -->
               <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6  mx-auto">
                 <div class="md-form form-sm mt-1rem mb-0rem">
@@ -158,7 +195,6 @@
                   <mdb-error *ngIf="insufficientBalance">
                     <span class="fs-08rem fw-600 color-error-message">Insufficient Balance</span>
                   </mdb-error>
-
                 </div>
               </div>
             </div>
@@ -280,7 +316,7 @@
                     <canvas id="idCanvas" width="300" height="200"></canvas>
                   </div>
                 </div>
-               
+
 
                 <div class="row" *ngIf="ourFile">
                   <div class="col-12 d-flex m-0 p-5px justify-content-center mx-auto">
