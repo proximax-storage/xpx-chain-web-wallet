@@ -1798,7 +1798,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
     }
     const message = {
       type: 'giftCard',
-      corr: corr + indexCor
+      number: corr + indexCor
     };
     innerTransaction.push(this.transferTransactionBuildMessage(message, network));
     return innerTransaction;
