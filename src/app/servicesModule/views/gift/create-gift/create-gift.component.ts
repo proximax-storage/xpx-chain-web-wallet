@@ -1008,22 +1008,22 @@ export class CreateGiftComponent implements OnInit {
               expired = true;
             }
 
-            const x = this.proximaxProvider.getMosaicId(mosaic.idMosaic).id.toHex() !== environment.mosaicXpxInfo.id;
-            if (x) {
-              const nameMosaic = (mosaic.mosaicNames.names.length > 0) ? mosaic.mosaicNames.names[0].name : this.proximaxProvider.getMosaicId(mosaic.idMosaic).toHex();
-              mosaicsSelect.push({
-                label: `${nameMosaic}${nameExpired} > Balance: ${amount}`,
-                value: mosaic.idMosaic,
-                balance: amount,
-                expired: false,
-                selected: false,
-                disabled: expired,
-                config: configInput
-              });
-            } else {
+            // const x = this.proximaxProvider.getMosaicId(mosaic.idMosaic).id.toHex() !== environment.mosaicXpxInfo.id;
+            // if (x) {
+            const nameMosaic = (mosaic.mosaicNames.names.length > 0) ? mosaic.mosaicNames.names[0].name : this.proximaxProvider.getMosaicId(mosaic.idMosaic).toHex();
+            mosaicsSelect.push({
+              label: `${nameMosaic}${nameExpired} > Balance: ${amount}`,
+              value: mosaic.idMosaic,
+              balance: amount,
+              expired: false,
+              selected: false,
+              disabled: expired,
+              config: configInput
+            });
+           /* } else {
               this.haveBalance = true;
               this.balanceXpx = amount;
-            }
+            } */
           }
           this.allMosaics = mosaicsSelect;
           this.selectOtherMosaics = mosaicsSelect;
