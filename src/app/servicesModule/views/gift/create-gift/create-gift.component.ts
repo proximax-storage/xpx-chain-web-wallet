@@ -1059,6 +1059,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
             const nameMosaic = (mosaic.mosaicNames.names.length > 0) ? mosaic.mosaicNames.names[0].name : this.proximaxProvider.getMosaicId(mosaic.idMosaic).toHex();
             mosaicsSelect.push({
               label: `${nameMosaic}${nameExpired} > Balance: ${amount}`,
+              name: nameMosaic,
               value: mosaic.idMosaic,
               balance: amount,
               expired: false,
@@ -1550,8 +1551,8 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
    * @returns {string}
    * @memberof CreateGiftComponent
    */
-  amountFormatterSimple(amount): string {
-    return this.transactionService.amountFormatterSimple(amount);
+  amountFormatterSimple(amount, d = 6): string {
+    return this.transactionService.amountFormatterSimple(amount, d);
   }
 
   /**
