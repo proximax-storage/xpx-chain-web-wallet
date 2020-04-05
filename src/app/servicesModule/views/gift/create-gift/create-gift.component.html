@@ -124,7 +124,7 @@
             <ng-container>
               <div class="row mt-2rem">
                 <div class="col-12">
-                  <ng-select class="custom" mdbInputDirective mdbValidate class="selectWrapper" [items]="allMosaics"
+                  <ng-select formControlName="mosaicSelected" class="custom" mdbInputDirective mdbValidate class="selectWrapper" [items]="allMosaics"
                     bindLabel="label" (change)="changeMosaic($event)" bindValue="value" placeholder="Select Mosaic">
                   </ng-select>
                 </div>
@@ -403,7 +403,7 @@
             </div>
             <div class="col-12 txt-a-center">
               <span class="fs-1-1rem">
-                {{amountFormatterSimple(realAmount, mosaicSelected.config.precision)}} &nbsp;
+                {{amountFormatterSimple(realAmount, mosaicSelected.config.precision)}}
               </span>
 
               <span class="fs-085rem fw-600">

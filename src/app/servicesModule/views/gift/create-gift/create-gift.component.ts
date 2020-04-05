@@ -229,6 +229,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
         Validators.maxLength(this.configurationForm.amount.maxLength)
       ]],
 
+      mosaicSelected: [true, [Validators.required]],
       showMosaic: [true, [Validators.requiredTrue]],
       showDescrip: [true, [Validators.requiredTrue]],
       showSequence: [true, [Validators.requiredTrue]],
