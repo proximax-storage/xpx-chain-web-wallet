@@ -1383,7 +1383,6 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
    */
   buildMosaicsToSend() {
     const mosaics = [];
-    this.realAmount = 0;
     const assetAmount = this.createGift.get('assetAmount').value;
     if (assetAmount !== '' && assetAmount !== null && Number(assetAmount) !== 0) {
       // console.log(assetAmount);
