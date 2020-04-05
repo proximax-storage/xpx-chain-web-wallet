@@ -1948,7 +1948,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
       if (this.transactionService.validateBuildSelectAccountBalance(
         Number(this.balanceXpx.split(',').join('')),
         Number(this.fee),
-        Number(this.createGift.get('amountXpx').value)
+        0
       )) {
         const common: any = { password: this.createGift.get('password').value };
         const type = (this.cosignatorie) ? true : false;
