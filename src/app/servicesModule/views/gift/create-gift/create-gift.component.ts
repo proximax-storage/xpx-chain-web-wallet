@@ -1373,6 +1373,57 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
 
   //   return mosaics;
   // }v
+
+
+  /**
+   * Rj
+   *
+   * @returns
+   * @memberof CreateGiftComponent
+   */
+  buildMosaicsToSend() {
+    const mosaics = [];
+    this.realAmount = 0;
+    const assetAmount = this.createGift.get('assetAmount').value;
+    if (assetAmount !== '' && assetAmount !== null && Number(assetAmount) !== 0) {
+      // console.log(assetAmount);
+      const arrAmount = assetAmount.toString().replace(/,/g, '').split('.');
+      let decimal;
+      let realAmount;
+
+      if (this.mosaicSelected.config.precision !== undefined && this.mosaicSelected.config.precision !== null && this.mosaicSelected.config.precision > 0) {
+        if (arrAmount.length < 2) {
+          decimal = this.addZeros(this.mosaicSelected.config.precision);
+        } else {
+          const arrDecimals = arrAmount[1].split('');
+          decimal = this.addZeros(this.mosaicSelected.config.precision - arrDecimals.length, arrAmount[1]);
+        }
+
+        realAmount = `${arrAmount[0]}${decimal}`;
+      } else {
+        realAmount = arrAmount[0];
+      }
+
+      realAmount = `${arrAmount[0]}${decimal}`;
+      const mosaicID = new MosaicId([this.mosaicSelected.value[0], this.mosaicSelected.value[1]]);
+      mosaics.push(new Mosaic(
+        new MosaicId(this.mosaicXpx.id),
+        UInt64.fromUint(Number(this.feeCover))
+      ));
+
+      mosaics.push(new Mosaic(
+        mosaicID,
+        UInt64.fromUint(Number(realAmount))
+      ));
+
+      this.realAmount = Number(realAmount);
+      this.mosaicPrimary = new MosaicId([this.mosaicSelected.value[0], this.mosaicSelected.value[1]]).toHex();
+      console.log('this.mosaicPrimary ', this.mosaicPrimary);
+    }
+
+    return mosaics;
+  }
+
   // ------ Je
   /**
    *
@@ -1806,7 +1857,8 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
     )]).maxFee.compact();
     this.feeCover = this.calFeeAggregateTransaction(maxFeeCover);
     console.log('this.feeCover', this.feeCover);
-    const mosaicsToSend: any = this.validateMosaicsToSend();
+    const mosaicsToSend: any = this.buildMosaicsToSend();
+    console.log('mosaicsToSend', mosaicsToSend);
     innerTransaction = this.innerTransactionBuild(this.cantCard, network, mosaicsToSend);
     if (this.cosignatorie) {
       return AggregateTransaction.createBonded(
