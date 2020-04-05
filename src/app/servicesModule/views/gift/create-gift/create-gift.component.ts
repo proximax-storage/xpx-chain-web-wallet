@@ -1072,6 +1072,8 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
                this.balanceXpx = amount;
              } */
           }
+
+          this.allMosaics = null;
           this.allMosaics = mosaicsSelect;
           this.selectOtherMosaics = mosaicsSelect;
         }

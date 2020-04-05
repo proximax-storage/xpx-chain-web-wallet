@@ -17,7 +17,7 @@
         <!-- DIVIDER ROW-->
         <div class="row">
           <!-- DIVIDER -->
-          <div class="col-8 mx-auto">
+          <div class="col-12 col-md-6 col-lg-7 mx-auto">
             <!-- Accounts -->
             <ng-container *ngIf="accounts.length > 1">
               <div class="row  mb-1rem">
@@ -127,29 +127,6 @@
                   <ng-select class="custom" mdbInputDirective mdbValidate class="selectWrapper" [items]="allMosaics"
                     bindLabel="label" (change)="changeMosaic($event)" bindValue="value" placeholder="Select Mosaic">
                   </ng-select>
-
-                  <!-- Amount Input -->
-                  <div class="col-12 mx-auto">
-                    <div class="md-form form-sm mt-1rem mb-0rem">
-                      <img class="form-control-feedback"
-                        src="assets/images/img/icon-amount-green-16h-proximax-sirius-wallet.svg" alt="">
-                      <input pattern="^[+]?([0-9]*[.])?[0-9]+$" currencyMask [options]="assetsOptions" mdbInputDirective
-                        mdbValidate [validateSuccess]="true" [maxlength]="configurationForm.amount.maxLength"
-                        [validateError]="true" type="text"
-                        class="form-control form-control-sm input-border input-amount"
-                        placeholder="Amount per Gift Cards" formControlName="assetAmount">
-                      <span class="label-i-icon pl-2rem"></span>
-
-                      <mdb-error
-                        *ngIf="validateInput('assetAmount').invalid && (validateInput('assetAmount').dirty || validateInput('assetAmount').touched)">
-                        <span class="fs-08rem fw-600 color-error-message">Invalid Amount</span>
-                      </mdb-error>
-                      <!-- Message Error Insufficient balance-->
-                      <mdb-error *ngIf="assetInsufficientBalance">
-                        <span class="fs-08rem fw-600 color-error-message">Insufficient Balance</span>
-                      </mdb-error>
-                    </div>
-                  </div>
                 </div>
               </div>
             </ng-container>
@@ -181,97 +158,25 @@
                 <div class="md-form form-sm mt-1rem mb-0rem">
                   <img class="form-control-feedback"
                     src="assets/images/img/icon-amount-green-16h-proximax-sirius-wallet.svg" alt="">
-                  <input pattern="^[+]?([0-9]*[.])?[0-9]+$" currencyMask [options]="optionsXPX" mdbInputDirective
+                  <input pattern="^[+]?([0-9]*[.])?[0-9]+$" currencyMask [options]="assetsOptions" mdbInputDirective
                     mdbValidate [validateSuccess]="true" [maxlength]="configurationForm.amount.maxLength"
-                    [validateError]="true" type="text" class="form-control form-control-sm input-border input-amount"
-                    placeholder="Amount per Gift Cards" formControlName="amountXpx">
+                    [validateError]="true" type="text"
+                    class="form-control form-control-sm input-border input-amount"
+                    placeholder="Amount per Gift Cards" formControlName="assetAmount">
                   <span class="label-i-icon pl-2rem"></span>
 
                   <mdb-error
-                    *ngIf="validateInput('amountXpx').invalid && (validateInput('amountXpx').dirty || validateInput('amountXpx').touched)">
+                    *ngIf="validateInput('assetAmount').invalid && (validateInput('assetAmount').dirty || validateInput('assetAmount').touched)">
                     <span class="fs-08rem fw-600 color-error-message">Invalid Amount</span>
                   </mdb-error>
                   <!-- Message Error Insufficient balance-->
-                  <mdb-error *ngIf="insufficientBalance">
+                  <mdb-error *ngIf="assetInsufficientBalance">
                     <span class="fs-08rem fw-600 color-error-message">Insufficient Balance</span>
                   </mdb-error>
                 </div>
               </div>
             </div>
-            <!-- MOSAIC XPX -->
-            <div class="box-grey m-0 mt-2rem">
-              <div class="row">
-                <div class="col-12 d-flex align-items-center">
-                  <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" alt="">
-                  <span class="fw-500">{{mosaicXpx.name | uppercase}} > Balance:&nbsp;</span>
-                  <span class="" [innerHTML]="getQuantity(balanceXpx)"></span>
-                </div>
-              </div>
-            </div>
-            <!--  OTHER MOSAICS -->
-            <ng-container *ngIf="boxOtherMosaics.length > 0">
-              <ng-container *ngFor="let otherMosaic of boxOtherMosaics; let i = index">
-                <!-- MOSAIC & AMOUNT -->
-                <div class="row mt-2rem">
-                  <div class="col-12 mx-auto">
-                    <div class="border-separator">
-                      <div class="row">
-                        <div class="col-12">
-                          <ng-select class="custom" mdbInputDirective mdbValidate class="selectWrapper"
-                            [items]="otherMosaic.selectOtherMosaics" bindLabel="label" bindValue="value"
-                            placeholder="Select Mosaic" (change)="otherMosaicsChange($event, i)" clearAllText="Clean"
-                            [disabled]="disabledAllField">
-                          </ng-select>
 
-                        </div>
-                        <!-- <div class="col-1 ">
-                      <button  mdbBtn type="button" rounded="true" mdbWavesEffect class="background-btn-inverse pl-2rem pr-2rem"
-                      size="md" (click)="deleteMoreMosaic(i)" > x</button>
-                    </div> -->
-                      </div>
-
-                      <ng-container *ngIf="otherMosaic.balance !== ''">
-                        <div class="row d-flex align-items-center">
-                          <!-- Amount Input -->
-                          <div class="col-12 mx-auto">
-                            <div class="md-form form-sm mt-0 mb-0rem">
-                              <img class="form-control-feedback"
-                                src="assets/images/img/icon-amount-green-16h-proximax-sirius-wallet.svg" alt="">
-                              <input currencyMask [options]="boxOtherMosaics[i].config" mdbInputDirective mdbValidate
-                                [maxlength]="configurationForm.amount.maxLength" type="text"
-                                class="form-control form-control-sm input-border input-amount"
-                                [(ngModel)]="boxOtherMosaics[i].amount" [ngModelOptions]="{standalone: true}"
-                                (ngModelChange)="amountOtherMosaicChanged($event, otherMosaic.id, i)"
-                                placeholder="Enter quantity" [disabled]="disabledAllField">
-                              <span class="label-i fw-600 pl-2rem">Send</span>
-
-                              <!-- Message Error Insufficient balance-->
-                              <mdb-error *ngIf="otherMosaic.errorBalance">
-                                <span class="fs-08rem fw-600 color-error-message">Insufficient Balancesss11</span>
-                              </mdb-error>
-                            </div>
-                          </div>
-                        </div>
-                      </ng-container>
-                    </div>
-                  </div>
-                </div>
-              </ng-container>
-            </ng-container>
-            <!--  FIN MOSAICS -->
-            <div class="row mt-1rem">
-              <div class="col-12 d-flex justify-content-center">
-                <button
-                  [disabled]="currentBlock === 0 || disabledBtnAddMosaic || selectOtherMosaics.length === 0 || disabledAllField"
-                  mdbBtn type="button" rounded="true" mdbWavesEffect class="background-btn-inverse pl-2rem pr-2rem"
-                  size="md" (click)="pushedOtherMosaics()">
-                  <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
-                    *ngIf="currentBlock === 0 && !disabledBtnAddMosaic"></span>
-                  <span class="fs-1-2em text-cl-m fw-700">(+) Add Mosaics </span>
-                </button>
-              </div>
-
-            </div>
             <!-- MESSAGE -->
             <div class="row">
               <div class="col-12 mx-auto">
@@ -292,7 +197,7 @@
             </div>
           </div>
           <!-- DIVIDER -->
-          <div class="col-4 mx-auto">
+          <div class="col-12 col-md-6 col-lg-5 mx-auto">
             <!-- FILE IMG -->
             <div class="row">
               <div class="col-12 d-flex justify-content-center flex-column mx-auto pt-2rem  box-grey">
@@ -498,7 +403,11 @@
             </div>
             <div class="col-12 txt-a-center">
               <span class="fs-1-1rem">
-                {{amountFormatterSimple(realAmount, mosaicSelected.config.precision)}} {{mosaicSelected.name}}
+                {{amountFormatterSimple(realAmount, mosaicSelected.config.precision)}} &nbsp;
+              </span>
+
+              <span class="fs-085rem fw-600">
+                {{mosaicSelected.name}}
               </span>
             </div>
             <div class="col-12 txt-a-center">
