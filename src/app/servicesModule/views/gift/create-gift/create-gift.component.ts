@@ -1011,6 +1011,7 @@ export class CreateGiftComponent implements OnInit {
             // const x = this.proximaxProvider.getMosaicId(mosaic.idMosaic).id.toHex() !== environment.mosaicXpxInfo.id;
             // if (x) {
             this.haveBalance = true;
+            this.balanceXpx = amount;
             const nameMosaic = (mosaic.mosaicNames.names.length > 0) ? mosaic.mosaicNames.names[0].name : this.proximaxProvider.getMosaicId(mosaic.idMosaic).toHex();
             mosaicsSelect.push({
               label: `${nameMosaic}${nameExpired} > Balance: ${amount}`,
