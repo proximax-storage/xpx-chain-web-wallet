@@ -38,6 +38,10 @@ export class CreateGiftComponent implements OnInit {
   showMosaic = true;
   showDescrip = true;
   showSequence = true;
+
+  // --------------- Je
+  porcent: number = 20
+
   accountInfo: AccountsInfoInterface = null;
   accountValid: boolean;
   allMosaics = [];
@@ -86,7 +90,7 @@ export class CreateGiftComponent implements OnInit {
   subscription: Subscription[] = [];
   fee: any = '0.053250';
   feeCosignatory: any = 10044500;
-  feeCover: number = 111000
+  feeCover: number = 0
   currentBlock: number;
   fileToUpload: any;
   ourFile: File;
@@ -135,6 +139,7 @@ export class CreateGiftComponent implements OnInit {
   }
 
   ngOnInit() {
+    // --------------- Je
     this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
     this.transactionHttp = new TransactionHttp(environment.protocol + '://' + `${this.nodeService.getNodeSelected()}`); // change
@@ -1022,10 +1027,10 @@ export class CreateGiftComponent implements OnInit {
               disabled: expired,
               config: configInput
             });
-           /* } else {
-              this.haveBalance = true;
-              this.balanceXpx = amount;
-            } */
+            /* } else {
+               this.haveBalance = true;
+               this.balanceXpx = amount;
+             } */
           }
           this.allMosaics = mosaicsSelect;
           this.selectOtherMosaics = mosaicsSelect;
@@ -1308,6 +1313,7 @@ export class CreateGiftComponent implements OnInit {
 
   //   return mosaics;
   // }v
+  // ------ Je 
   /**
    *
    *
@@ -1315,6 +1321,7 @@ export class CreateGiftComponent implements OnInit {
    * @memberof CreateTransferComponent
    */
   validateMosaicsToSend() {
+    console.log('VALDIATE MONTOI')
     const mosaics = [];
     const amountXpx = this.createGift.get('amountXpx').value;
 
@@ -1331,6 +1338,7 @@ export class CreateGiftComponent implements OnInit {
         decimal = this.addZeros(environment.mosaicXpxInfo.divisibility - arrDecimals.length, arrAmount[1]);
       }
       realAmount = `${arrAmount[0]}${decimal}`;
+     
       mosaics.push(new Mosaic(
         new MosaicId(this.mosaicXpx.id),
         UInt64.fromUint(Number(this.sum(Number(realAmount), this.feeCover)))
@@ -1449,18 +1457,24 @@ export class CreateGiftComponent implements OnInit {
   mosaicsInfoSerialize(mosaic: any): { nameMosaic: string, transferable: string, divisibility: number } {
     let data = { nameMosaic: '', transferable: '', divisibility: 0 }
     // const nameMosaic = (mosaic.mosaicNames.names.length > 0) ? mosaic.mosaicNames.names[0].name :
-    data.nameMosaic = (mosaic.mosaicNames.names.length > 0) ? mosaic.mosaicNames.names[0].name : this.proximaxProvider.getMosaicId(mosaic.idMosaic).toHex();
-    data.transferable = (mosaic.mosaicInfo.properties.isTransferable) ? '1' : '0'
+    data.nameMosaic = (mosaic.mosaicNames.names.length > 0) ? mosaic.mosaicNames.names[0].name : 
+    this.proximaxProvider.getMosaicId(mosaic.idMosaic).toHex();
+    console.log('mosaice)', mosaic)
+    console.log('mosaic.mosaicInfo)', mosaic.mosaicInfo)
+    console.log('mosaic.mosaicInfo.properties)', mosaic.mosaicInfo.properties)
+    data.transferable = (mosaic.mosaicInfo.properties.transferable) ? '1' : '0'
     data.divisibility = mosaic.mosaicInfo.properties.divisibility
     return data
   }
   async builGitf() {
+
     this.giftService.setTypeDonwnload = null
     this.giftService.setImgFileData = null
     this.giftService.setZipFileData = null
     this.giftService.setPdfFileData = null
     this.giftService.setImgFileData = null
     console.log('builGitf builGitf')
+    console.log('privateKey::',this.accountList[0].privateKey)
     const zipIMG = new JSZip();
     let zipPDF = new JSZip();
     let count = 0
@@ -1679,11 +1693,19 @@ export class CreateGiftComponent implements OnInit {
     return innerTransaction
 
   }
-  aggregateTransactionFunc(): AggregateTransaction {
+  // ------ Je 
+  aggregateTransactionFunc(maxFee: number): AggregateTransaction {
+    const maxFeeValue = (maxFee > 0) ? UInt64.fromUint(maxFee) : null
     let innerTransaction: InnerTransaction[] = []
     this.cantCard = parseInt(this.createGift.get('cantCard').value)
     this.accountList = []
     const network = (this.sender) ? this.sender.network : this.walletService.currentAccount.network
+    const maxFeeCover = this.calFeeInnerTransactionFunc([new Mosaic(
+      new MosaicId(this.mosaicXpx.id),
+      UInt64.fromUint(0)
+    )]).maxFee.compact()
+    this.feeCover = this.calFeeAggregateTransaction(maxFeeCover)
+    console.log('this.feeCover', this.feeCover)
     const mosaicsToSend: any = this.validateMosaicsToSend();
     innerTransaction = this.innerTransactionBuild(this.cantCard, network, mosaicsToSend)
     if (this.cosignatorie)
@@ -1691,26 +1713,67 @@ export class CreateGiftComponent implements OnInit {
         Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
         innerTransaction,
         this.sender.network,
-        []
+        [],
+        maxFeeValue
       )
     return AggregateTransaction.createComplete(
       Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
       innerTransaction,
       this.sender.network,
-      []
+      [],
+      maxFeeValue
     )
     // }
 
   }
+  // ------ Je 
+  calFeeInnerTransactionFunc(mosaics: Mosaic[]): AggregateTransaction {
+    const network = (this.sender) ? this.sender.network : this.walletService.currentAccount.network
+    const account: Account = Account.generateNewAccount(network)
+    const transferTransactionOne = TransferTransaction.create(
+      Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
+      account.address,
+      mosaics,
+      PlainMessage.create(JSON.stringify({ "type": "gift", "msg": "4746445459480000000049C51C6D" })),
+      network);
+    const transferTransactionTwo = TransferTransaction.create(
+      Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
+      account.address,
+      [],
+      PlainMessage.create(JSON.stringify({ "type": "gift", "msg": "4746445459480000000049C51C6D" })),
+      network);
+    console.log(AggregateTransaction.createComplete(
+      Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
+      [transferTransactionOne.toAggregate(account.publicAccount), transferTransactionTwo.toAggregate(account.publicAccount)],
+      this.sender.network,
+      [],
+    ))
+    return AggregateTransaction.createComplete(
+      Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
+      [transferTransactionOne.toAggregate(account.publicAccount), transferTransactionTwo.toAggregate(account.publicAccount)],
+      this.sender.network,
+      [],
+    )
+
+  }
+  // ------ Je 
   builder() {
     if (!this.sender)
       return
     if (!this.createGift.get('cantCard').value)
       return
-    this.aggregateTransaction = this.aggregateTransactionFunc()
+    this.aggregateTransaction = this.aggregateTransactionFunc(0)
     let feeAgregate = Number(this.transactionService.amountFormatterSimple(this.sum(this.aggregateTransaction.maxFee.compact(), this.feeCover)));
     this.fee = feeAgregate.toFixed(6);
   }
+  // ------ Je 
+  calFeeAggregateTransaction(maxFee: number) {
+    console.log('feee que estoy calculando:', maxFee)
+    let valor = 0
+    valor = maxFee * this.porcent / 100
+    return valor + maxFee
+  }
+
 
   /**
      *
@@ -1722,10 +1785,15 @@ export class CreateGiftComponent implements OnInit {
       this.reloadBtn = true;
       this.blockSendButton = true;
       this.transactionSigned = []
-      this.aggregateTransaction = this.aggregateTransactionFunc()
+      const maxFeeCal = this.calFeeAggregateTransaction(this.aggregateTransaction.maxFee.compact())
+      this.aggregateTransaction = this.aggregateTransactionFunc(maxFeeCal)
+      console.log('aggregateTransaction:::', this.aggregateTransaction)
+      console.log('accountList', this.accountList[0].privateKey)
+      console.log('accountList length', this.accountList.length)
       if (this.transactionService.validateBuildSelectAccountBalance(Number(this.balanceXpx.split(',').join('')), Number(this.fee), Number(this.createGift.get('amountXpx').value))) {
         const common: any = { password: this.createGift.get('password').value };
         const type = (this.cosignatorie) ? true : false;
+        //  const type = null
         const generationHash = this.dataBridge.blockInfo.generationHash;
         switch (type) {
           case true:
