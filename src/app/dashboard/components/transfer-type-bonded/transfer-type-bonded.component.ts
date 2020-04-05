@@ -65,24 +65,26 @@ export class TransferTypeBondedComponent implements OnInit, OnChanges {
    * @memberof TransferTypeBondedComponent
    */
   async verifyRecipientInfo() {
-    const address = this.proximaxProvider.createFromRawAddress(this.transactionBuilder.recipient['address']);
-    this.senderPublicAccount = this.signer.sender;
-    try {
-      const accountInfo = await this.proximaxProvider.getAccountInfo(address).toPromise();
-      this.recipientPublicAccount = accountInfo.publicAccount;
-    } catch (e) {
-      console.warn(e);
-    }
+    if (this.signer) {
+      const address = this.proximaxProvider.createFromRawAddress(this.transactionBuilder.recipient['address']);
+      this.senderPublicAccount = this.signer.sender;
+      try {
+        const accountInfo = await this.proximaxProvider.getAccountInfo(address).toPromise();
+        this.recipientPublicAccount = accountInfo.publicAccount;
+      } catch (e) {
+        console.warn(e);
+      }
 
-    if (this.recipientPublicAccount) {
-      const firstAccount = this.walletService.currentAccount;
-      const availableAddress = [
-        this.recipientPublicAccount.address.address,
-        this.senderPublicAccount.address.address
-      ];
+      if (this.recipientPublicAccount) {
+        const firstAccount = this.walletService.currentAccount;
+        const availableAddress = [
+          this.recipientPublicAccount.address.address,
+          this.senderPublicAccount.address.address
+        ];
 
-      if (availableAddress.includes(firstAccount.address)) {
-        this.showEncryptedMessage = true;
+        if (availableAddress.includes(firstAccount.address)) {
+          this.showEncryptedMessage = true;
+        }
       }
     }
   }
