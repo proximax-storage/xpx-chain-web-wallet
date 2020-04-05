@@ -121,12 +121,27 @@
             </ng-container>
 
             <!-- Mosaics RJ -->
-            <ng-container>
+            <ng-container *ngIf="allMosaics.length > 0">
               <div class="row mt-2rem">
                 <div class="col-12">
                   <ng-select formControlName="mosaicSelected" class="custom" mdbInputDirective mdbValidate class="selectWrapper" [items]="allMosaics"
                     bindLabel="label" (change)="changeMosaic($event)" bindValue="value" placeholder="Select Mosaic">
                   </ng-select>
+                </div>
+              </div>
+            </ng-container>
+
+            <ng-container *ngIf="allMosaics.length === 0">
+              <div class="row mt-2rem">
+                <div class="col-12">
+                  <div class="box-transparent-border-red m-0">
+                    <div class="txt-a-center">
+                      <img src="assets/images/img/icon-restriction-white.svg" style="filter: invert(50%)" alt="" width="30">
+                    </div>
+                    <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
+                      Insufficient balance.
+                    </p>
+                  </div>
                 </div>
               </div>
             </ng-container>
