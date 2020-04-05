@@ -1713,17 +1713,21 @@ export class CreateGiftComponent implements OnInit {
   }
 
   /**
-     *
-     *
-     * @memberof CreateTransferComponent
-     */
+   *
+   *
+   * @memberof CreateGiftComponent
+   */
   sendTransfer() {
     if (this.createGift.valid && (!this.blockSendButton)) {
       this.reloadBtn = true;
       this.blockSendButton = true;
       this.transactionSigned = []
-      this.aggregateTransaction = this.aggregateTransactionFunc()
-      if (this.transactionService.validateBuildSelectAccountBalance(Number(this.balanceXpx.split(',').join('')), Number(this.fee), Number(this.createGift.get('amountXpx').value))) {
+      this.aggregateTransaction = this.aggregateTransactionFunc();
+      if (this.transactionService.validateBuildSelectAccountBalance(
+        Number(this.balanceXpx.split(',').join('')),
+        Number(this.fee),
+        Number(this.createGift.get('amountXpx').value)
+      )) {
         const common: any = { password: this.createGift.get('password').value };
         const type = (this.cosignatorie) ? true : false;
         const generationHash = this.dataBridge.blockInfo.generationHash;
