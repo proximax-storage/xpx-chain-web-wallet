@@ -210,9 +210,9 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
   }
 
   changeMosaic(event) {
-    console.log('CHange mosaic', event);
     this.mosaicSelected = event;
     this.assetsOptions = event.config;
+    this.createGift.get('assetAmount').reset();
   }
 
   /**
