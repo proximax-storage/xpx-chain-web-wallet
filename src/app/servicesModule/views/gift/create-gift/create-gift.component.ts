@@ -1403,8 +1403,9 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
         realAmount = arrAmount[0];
       }
 
-      realAmount = `${arrAmount[0]}${decimal}`;
+      console.log('realAmount', realAmount)
       const mosaicID = new MosaicId([this.mosaicSelected.value[0], this.mosaicSelected.value[1]]);
+      console.log('mosaicID', mosaicID);
       if (mosaicID.toHex() === this.mosaicXpx.id) {
         mosaics.push(new Mosaic(
           new MosaicId(this.mosaicXpx.id),
