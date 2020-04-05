@@ -432,7 +432,6 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
   async changeSender(accountToSend: AccountsInterface) {
     if (accountToSend) {
       this.sender = accountToSend;
-      this.mosaicSelected = null;
       this.findCosignatories(accountToSend);
       if (this.createGift.disabled && !this.disabledAllField && this.allMosaics.length > 0) {
         this.createGift.enable();
