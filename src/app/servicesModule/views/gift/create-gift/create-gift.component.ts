@@ -1166,6 +1166,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
       emitEvent: false
     });
     this.fee = '0.037250';
+    this.assetInsufficientBalance = false;
     return;
   }
   getAccountInfo() {
