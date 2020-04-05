@@ -73,7 +73,7 @@ export class AccountDeleteConfirmComponent implements OnInit {
         Validators.minLength(this.configurationForm.passwordWallet.minLength),
         Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
       ]],
-      checked: [true, [Validators.requiredTrue]],
+      checked: [false, [Validators.requiredTrue]],
       showMosaic: [true, [Validators.requiredTrue]]
     });
   }
