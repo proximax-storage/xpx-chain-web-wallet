@@ -838,10 +838,10 @@ export class CreateGiftComponent implements OnInit {
                 const invalidBalance = filtered.amount.compact() < Number(realAmount);
                 if (invalidBalance && !this.assetInsufficientBalance) {
                   this.assetInsufficientBalance = true;
-                  this.blockSendButton = true;
+                  // this.blockSendButton = true;
                 } else if (!invalidBalance && this.assetInsufficientBalance) {
                   this.assetInsufficientBalance = false;
-                  this.blockSendButton = false;
+                  // this.blockSendButton = false;
                 }
               } else {
                 validateAmount = true;
@@ -1010,6 +1010,7 @@ export class CreateGiftComponent implements OnInit {
 
             // const x = this.proximaxProvider.getMosaicId(mosaic.idMosaic).id.toHex() !== environment.mosaicXpxInfo.id;
             // if (x) {
+            this.haveBalance = true;
             const nameMosaic = (mosaic.mosaicNames.names.length > 0) ? mosaic.mosaicNames.names[0].name : this.proximaxProvider.getMosaicId(mosaic.idMosaic).toHex();
             mosaicsSelect.push({
               label: `${nameMosaic}${nameExpired} > Balance: ${amount}`,
