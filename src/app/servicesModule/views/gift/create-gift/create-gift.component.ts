@@ -71,7 +71,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
   imgBackground;
   imgBackgroundtwo;
   cantCard = 0;
-  descrip: string;
+  descrip: any;
   selectOtherMosaics = [];
   configurationForm: ConfigurationForm;
   transactionSigned: SignedTransaction[] = [];
@@ -224,11 +224,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
       assetAmount: ['', [
         Validators.maxLength(this.configurationForm.amount.maxLength)
       ]],
-
       mosaicSelected: [true, [Validators.required]],
-      showMosaic: [true, [Validators.requiredTrue]],
-      showDescrip: [true, [Validators.requiredTrue]],
-      showSequence: [true, [Validators.requiredTrue]],
       cosignatorie: [null],
       message: ['', [Validators.required,
       Validators.maxLength(10)
@@ -664,11 +660,13 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
     });
   }
   drawIMG(imgQR: string, des: string, amount: any, imageBase64, mosaic, code) {
+    console.log('desdesdesdesdesdes::', des)
     return new Promise((resolve, reject) => {
       const canvas: any = document.getElementById('image');
       const context = canvas.getContext('2d');
       const imageObj = new Image();
       const imageObj2 = new Image(30, 46);
+      console.log('showDescrip', this.showDescrip)
       imageObj2.src = imgQR;
       imageObj.setAttribute('crossOrigin', 'anonymous');
       imageObj.src = imageBase64;
@@ -796,34 +794,16 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
       }
     }));
 
-
-    // value CHECK custom card
-    this.subscription.push(this.createGift.get('showMosaic').valueChanges.subscribe(val => {
-      if (val !== null && val !== undefined) {
-        this.showMosaic = val;
-      }
-
-    }));
-    this.subscription.push(this.createGift.get('showDescrip').valueChanges.subscribe(val => {
-      if (val !== null && val !== undefined) {
-        this.showDescrip = val;
-      }
-    }));
-    this.subscription.push(this.createGift.get('showSequence').valueChanges.subscribe(val => {
-      if (val !== null && val !== undefined) {
-        this.showSequence = val;
-      }
-    }));
     //
     this.subscription.push(this.createGift.get('message').valueChanges.subscribe(val => {
       if (val && val !== '') {
         this.charRest = val.length;
-        this.descrip = val;
+        // this.descrip = val;
 
         // this.calculateFee(val.length);
       } else {
         this.charRest = 0;
-        this.descrip = '';
+        // this.descrip = '';
         // this.calculateFee(0);
       }
     }));
@@ -1119,11 +1099,10 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
    * @memberof CreateGiftComponent
    */
   clearForm(custom?: string | (string | number)[], formControl?: string | number) {
-    const checked = { showMosaic: true, showDescrip: true, showSequence: true, };
     if (custom !== undefined) {
       if (formControl !== undefined) {
         this.charRest = 0;
-        this.createGift.controls[formControl].get(custom).reset(checked, {
+        this.createGift.controls[formControl].get(custom).reset( {
           emitEvent: false
         });
         this.fee = '0.037250';
@@ -1131,7 +1110,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
       }
 
       this.charRest = 0;
-      this.createGift.get(custom).reset(checked, {
+      this.createGift.get(custom).reset( {
         emitEvent: false
       });
       this.fee = '0.037250';
@@ -1139,7 +1118,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
     }
 
     this.charRest = 0;
-    this.createGift.reset(checked, {
+    this.createGift.reset({
       emitEvent: false
     });
     this.fee = '0.037250';
@@ -1629,6 +1608,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
       this.reloadBtn = true;
       this.blockSendButton = true;
       this.transactionSigned = [];
+      this.descrip = this.createGift.get('message').value
       const maxFeeCal = this.calFeeAggregateTransaction(this.aggregateTransaction.maxFee.compact());
       this.aggregateTransaction = this.aggregateTransactionFunc(maxFeeCal);
       console.log('aggregateTransaction:::', this.aggregateTransaction);

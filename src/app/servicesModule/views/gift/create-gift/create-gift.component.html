@@ -124,8 +124,9 @@
             <ng-container *ngIf="allMosaics.length > 0">
               <div class="row mt-2rem">
                 <div class="col-12">
-                  <ng-select formControlName="mosaicSelected" class="custom" mdbInputDirective mdbValidate class="selectWrapper" [items]="allMosaics"
-                    bindLabel="label" (change)="changeMosaic($event)" bindValue="value" placeholder="Select Mosaic">
+                  <ng-select formControlName="mosaicSelected" class="custom" mdbInputDirective mdbValidate
+                    class="selectWrapper" [items]="allMosaics" bindLabel="label" (change)="changeMosaic($event)"
+                    bindValue="value" placeholder="Select Mosaic">
                   </ng-select>
                 </div>
               </div>
@@ -136,7 +137,8 @@
                 <div class="col-12">
                   <div class="box-transparent-border-red m-0">
                     <div class="txt-a-center">
-                      <img src="assets/images/img/icon-restriction-white.svg" style="filter: invert(50%)" alt="" width="30">
+                      <img src="assets/images/img/icon-restriction-white.svg" style="filter: invert(50%)" alt=""
+                        width="30">
                     </div>
                     <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
                       Insufficient balance.
@@ -175,8 +177,7 @@
                     src="assets/images/img/icon-amount-green-16h-proximax-sirius-wallet.svg" alt="">
                   <input pattern="^[+]?([0-9]*[.])?[0-9]+$" currencyMask [options]="assetsOptions" mdbInputDirective
                     mdbValidate [validateSuccess]="true" [maxlength]="configurationForm.amount.maxLength"
-                    [validateError]="true" type="text"
-                    class="form-control form-control-sm input-border input-amount"
+                    [validateError]="true" type="text" class="form-control form-control-sm input-border input-amount"
                     placeholder="Amount per Gift Cards" formControlName="assetAmount">
                   <span class="label-i-icon pl-2rem"></span>
 
@@ -251,15 +252,18 @@
             <!-- CHECK -->
             <div class="row pt-1rem">
               <div class="col-4 mx-auto ">
-                <mdb-checkbox formControlName="showMosaic" (click)="showImgFun()"> Mosaic
+                <mdb-checkbox [(ngModel)]="showMosaic" [ngModelOptions]="{standalone: true}" (click)="showImgFun()">
+                  Mosaic
                 </mdb-checkbox>
               </div>
               <div class="col-4  mx-auto ">
-                <mdb-checkbox formControlName="showDescrip" (click)="showImgFun()"> description
+                <mdb-checkbox [(ngModel)]="showDescrip" [ngModelOptions]="{standalone: true}" (click)="showImgFun()">
+                  description
                 </mdb-checkbox>
               </div>
               <div class="col-4  mx-auto ">
-                <mdb-checkbox formControlName="showSequence" (click)="showImgFun()"> sequence
+                <mdb-checkbox [(ngModel)]="showSequence" [ngModelOptions]="{standalone: true}" (click)="showImgFun()">
+                  sequence
                 </mdb-checkbox>
               </div>
             </div>
