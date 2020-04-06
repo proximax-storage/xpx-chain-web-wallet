@@ -54,6 +54,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
   showMosaic = true;
   showDescrip = true;
   showSequence = true;
+  dataQR = null;
 
   // --------------- Je
   porcent = 20;
@@ -755,7 +756,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
                 decimal = this.addZeros(this.mosaicSelected.config.precision - arrDecimals.length, arrAmount[1]);
               }
 
-              realAmount = `${arrAmount[0]}${decimal}`; 
+              realAmount = `${arrAmount[0]}${decimal}`;
               if(realAmount > 0){
                 this.validateRealAmount = true
               }else{
@@ -789,7 +790,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
             this.assetInsufficientBalance = false;
           }
         }
-        
+
       }
     }));
 
