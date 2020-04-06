@@ -329,10 +329,6 @@
 
     <!-- Add mosaics -->
     <div class="row mt-1rem">
-      {{currentBlock}} <br>
-      {{disabledBtnAddMosaic}} <br>
-      {{selectOtherMosaics.length}} <br>
-      {{disabledAllField}}
       <div class="col-12 d-flex justify-content-center">
         <button
           [disabled]="currentBlock === 0 || disabledBtnAddMosaic || selectOtherMosaics.length === 0 || disabledAllField"

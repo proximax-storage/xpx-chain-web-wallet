@@ -95,6 +95,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
     precision: '6'
   };
   reloadBtn: boolean;
+  reloadBtnCont: boolean
   realAmount: number;
   mosaicPrimary: any;
   isMultisig: boolean;
@@ -146,6 +147,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
     this.currentBlock = 0;
     this.messageMaxLength = 10;
     this.reloadBtn = false;
+    this.reloadBtnCont= false
     this.blockSendButton = false;
     this.accountValid = false;
     this.notBalance = false;
@@ -458,7 +460,6 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
     }
   }
   reset() {
-    console.log('reset reset');
     this.haveBalance = false;
     this.disabledBtnAddMosaic = false;
     this.selectOtherMosaics = [];
@@ -468,7 +469,6 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
     this.boxOtherMosaics = [];
     this.blockSendButton = false;
     this.reloadBtn = false;
-    console.log('listo 2');
     this.charRest = this.configurationForm.message.maxLength;
     this.disabledBtnAddMosaic = false;
     this.errorOtherMosaics = false;
@@ -488,7 +488,6 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
 
 
   validateSave() {
-    console.log('this.giftService.typeDonwnload', this.giftService.getTypeDonwnload);
     if (this.giftService.typeDonwnload) {
       this.save = true;
     } else {
@@ -609,10 +608,6 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
     }
   }
   updateShowMosaic() {
-    console.log(this.createGift.get('showMosaic').value);
-
-    // this.showMosaic  =! this.showMosaic
-    // this.drawExample()
   }
   async drawExampletwo() {
     let imgZip: any = null;
@@ -660,13 +655,11 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
     });
   }
   drawIMG(imgQR: string, des: string, amount: any, imageBase64, mosaic, code) {
-    console.log('desdesdesdesdesdes::', des)
     return new Promise((resolve, reject) => {
       const canvas: any = document.getElementById('image');
       const context = canvas.getContext('2d');
       const imageObj = new Image();
       const imageObj2 = new Image(30, 46);
-      console.log('showDescrip', this.showDescrip)
       imageObj2.src = imgQR;
       imageObj.setAttribute('crossOrigin', 'anonymous');
       imageObj.src = imageBase64;
@@ -749,8 +742,6 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
               const filtered = accountInfo.accountInfo.mosaics.find(element => {
                 return element.id.toHex() === new MosaicId([this.mosaicSelected.value[0], this.mosaicSelected.value[1]]).toHex();
               });
-
-              console.log('filtered mosaic', filtered);
               const arrAmount = value.toString().replace(/,/g, '').split('.');
               let decimal;
               let realAmount;
@@ -926,37 +917,6 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
     return validation;
   }
 
-  // validateAccount(name: string, account: AccountsInterface) {
-  //   this.accountInfo = this.walletService.filterAccountInfo(name);
-  //   this.sender = null
-  //   if (this.valueValidateAccount.disabledItem) {
-  //     this.disabledForm('selectAccount', true);
-  //     return
-  //   }
-  //   this.accountValid = (
-  //     this.accountInfo !== null &&
-  //     this.accountInfo !== undefined && this.accountInfo.accountInfo !== null);
-  //   if (this.subscribeAccount) {
-  //     this.subscribeAccount.unsubscribe();
-  //   }
-  //   //Validate Account
-  //   if (!this.accountValid)
-  //     return this.sharedService.showError('', 'Account to convert is not valid');
-  //   this.buildCurrentAccountInfo(this.accountInfo.accountInfo);
-  //   //Validate Multisign
-  //   this.isMultisig = (this.accountInfo.multisigInfo !== null && this.accountInfo.multisigInfo !== undefined && this.accountInfo.multisigInfo.isMultisig());
-  //   if (this.isMultisig)
-  //     return this.sharedService.showError('', 'Is Multisig');
-  //   //Validate Balance
-  //   if (!this.accountInfo.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id)) {
-  //     this.notBalance = true;
-  //     return this.sharedService.showError('', 'Insufficient balance');
-  //   } else {
-  //     this.notBalance = false;
-  //   }
-  //   this.sender = account
-  //   this.builder()
-  // }
 
   /**
    * @param {*} inputType
@@ -966,47 +926,6 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
     const newType = this.sharedService.changeInputType(inputType);
     this.passwordMain = newType;
   }
-
-  // /**
-  // *
-  // * Get accounts wallet
-  // * @memberof CreateGiftComponent
-  // */
-  // getAccounts() {
-  //   if (this.walletService.currentWallet)
-  //     if (this.walletService.currentWallet.accounts.length > 0) {
-  //       this.currentAccounts = [];
-  //       for (let element of this.walletService.currentWallet.accounts) {
-  //         this.buildSelectAccount(element)
-  //       }
-  //       // if (this.currentAccounts) {
-  //       //   const currentAccountDef = this.currentAccounts.find(item => item.default)
-  //       //   if (currentAccountDef) {
-  //       //     this.createGift.get('selectAccount').setValue(currentAccountDef)
-  //       //   } else {
-  //       //     this.createGift.get('selectAccount').setValue(this.currentAccounts[0])
-  //       //   }
-  //       // }
-  //     }
-  // }
-  // selectAccount($event: Event) {
-  //   const event: any = $event;
-  //   this.createGift.enable({ emitEvent: false, onlySelf: true });
-  //   if (event !== null) {
-  //     this.valueValidateAccount = {
-  //       disabledItem: event.disabledItem,
-  //       info: event.info
-  //     }
-  //   }
-  //   this.subscribeAccount = this.walletService.getAccountsInfo$().subscribe(
-  //     async accountInfo => {
-  //       console.log('this.walletService.currentAccount', this.walletService.currentAccount)
-  //       // this.validateAccount(event.value.name, event.value)
-  //       this.searching = false;
-  //       this.changeSender(this.walletService.currentAccount);
-  //     }).unsubscribe();
-  // }
-
 
   /**
    *
@@ -1174,7 +1093,6 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
     const mosaics = [];
     const assetAmount = this.createGift.get('assetAmount').value;
     if (assetAmount !== '' && assetAmount !== null && Number(assetAmount) !== 0) {
-      // console.log(assetAmount);
       const arrAmount = assetAmount.toString().replace(/,/g, '').split('.');
       let decimal;
       let realAmount;
@@ -1229,7 +1147,6 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
    * @memberof CreateGiftComponent
    */
   setTimeOutValidateTransaction(hash: string): void {
-    console.log('hash setTimeOutValidateTransaction', hash);
     setTimeout(async () => {
       const exist = (this.transactionReady.find(x => x.hash === hash)) ? true : false;
       // this.subscription['transactionStatus'].unsubscribe()
@@ -1250,7 +1167,6 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
             'An error has occurred with your transaction'
           );
           this.reloadBtn = false;
-          console.log('listo 3');
           this.blockSendButton = false;
         });
 
@@ -1296,11 +1212,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
   }
 
   showViewsConfirmFunc() {
-    console.log('muestro la otra vista');
-    console.log('this.showViewsConfirm', this.showViewsConfirm);
-
     this.showViewsConfirm = this.showViewsConfirm ? false : true;
-    console.log('showViewsConfirmFunc', this.showViewsConfirm);
     this.checked = false;
   }
 
@@ -1309,9 +1221,6 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
     // const nameMosaic = (mosaic.mosaicNames.names.length > 0) ? mosaic.mosaicNames.names[0].name :
     data.nameMosaic = (mosaic.mosaicNames.names.length > 0) ? mosaic.mosaicNames.names[0].name :
       this.proximaxProvider.getMosaicId(mosaic.idMosaic).toHex();
-    console.log('mosaice)', mosaic);
-    console.log('mosaic.mosaicInfo)', mosaic.mosaicInfo);
-    console.log('mosaic.mosaicInfo.properties)', mosaic.mosaicInfo.properties);
     data.transferable = (mosaic.mosaicInfo.properties.transferable) ? '1' : '0';
     data.divisibility = mosaic.mosaicInfo.properties.divisibility;
     return data;
@@ -1324,25 +1233,20 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
    * @memberof CreateGiftComponent
    */
   async builGitf() {
+    this.reloadBtnCont = true
     this.giftService.setTypeDonwnload = null;
     this.giftService.setImgFileData = null;
     this.giftService.setZipFileData = null;
     this.giftService.setPdfFileData = null;
     this.giftService.setImgFileData = null;
-    console.log('builGitf builGitf');
-    console.log('privateKey::', this.accountList[0].privateKey);
     const zipIMG = new JSZip();
     const zipPDF = new JSZip();
     let count = 0;
     const mosaic = await this.mosaicServices.filterMosaics([new MosaicId(this.mosaicPrimary)]);
-    // console.log('PRIMARY =', this.mosaicPrimary);
-    // console.log('INFOR DE MOSAIC =', this.mosaicsInfoSerialize(mosaic[0]));
     const infoMosaic = this.mosaicsInfoSerialize(mosaic[0]);
     if (this.accountList.length === 1) {
-      console.log('PUBLIC KEY::', this.accountList[0].publicKey);
-      // substrFuc
       const data = this.giftService.serializeData(this.realAmount, this.accountList[0].privateKey, this.mosaicPrimary, infoMosaic.transferable, this.substrFuc(this.accountList[0].publicKey, 6));
-      // console.log('desceriazlizacion ', this.giftService.unSerialize(data));
+
       const qr = qrcode(10, 'H');
       qr.addData(data);
       qr.make();
@@ -1357,11 +1261,12 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
       saveAs(new Blob([this.dataURItoBlob(img)], { type: 'image/jpeg' }), 'Gitf Card Sirius.jpeg');
       if (this.imgBackgroundtwo) {
         const imgPDF: any = await this.drawPDF(img, this.imgBackgroundtwo);
-        saveAs(new Blob([imgPDF], { type: 'application/pdf' }), 'Gitf Card Sirius.pdf');
+        saveAs(new Blob([this.giftService.pdfFromImg(imgPDF)], { type: 'application/pdf' }), 'Gitf Card Sirius.pdf');
       }
       this.giftService.setTypeDonwnload = 'image/jpeg';
       // this.giftService.setImgFileData = this.dataURItoBlob(img);
       this.validateSave();
+      this.reloadBtnCont = false
       return;
     }
     for (const item of this.accountList) {
@@ -1397,10 +1302,11 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
         this.giftService.setTypeDonwnload = 'zip';
         this.giftService.setImgFileData = content;
         // this.giftService.setImgFileData = content
+        this.reloadBtnCont = false
         this.validateSave();
       });
     }
-    if (Object.keys(zipIMG.files).length > 0) {
+    if (Object.keys(zipPDF.files).length > 0) {
       zipPDF.generateAsync({
         type: 'blob'
       }).then(async (content: any) => {
@@ -1408,6 +1314,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
         saveAs(content, fileName);
         this.giftService.setTypeDonwnload = 'zip';
         this.giftService.setPdfFileData = content;
+        this.reloadBtnCont = false
         this.validateSave();
       });
     }
@@ -1420,12 +1327,10 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
    * @memberof CreateGiftComponent
    */
   donwnload() {
-    console.log('giftServicegiftService', this.giftService.getImgFileData);
     if (this.giftService.getTypeDonwnload === 'image/jpeg') {
       saveAs(new Blob([this.giftService.getImgFileData], { type: 'image/jpeg' }), 'Gitf Card Sirius (copy).jpeg');
     } else {
       const fileName = `Gift Card Sirius (copy).zip`;
-      console.log('getPdfFileData', this.giftService.getPdfFileData);
       saveAs(this.giftService.getPdfFileData, fileName);
     }
 
@@ -1479,7 +1384,6 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
     }
   }
   transferTransactionBuildMessage(message, network): InnerTransaction {
-    console.log('message:', JSON.stringify(message));
     const account: Account = Account.generateNewAccount(network);
     const transferTransaction = TransferTransaction.create(
       Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
@@ -1501,7 +1405,6 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
         mosaics,
         PlainMessage.create(''),
         network);
-      console.log('this.sender.publicAccount', this.sender.publicAccount);
       innerTransaction.push(transferTransaction.toAggregate(this.sender.publicAccount));
       this.accountList.push(account);
     }
@@ -1563,12 +1466,6 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
       [],
       PlainMessage.create(JSON.stringify({ type: 'gift', msg: '4746445459480000000049C51C6D' })),
       network);
-    console.log(AggregateTransaction.createComplete(
-      Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
-      [transferTransactionOne.toAggregate(account.publicAccount), transferTransactionTwo.toAggregate(account.publicAccount)],
-      this.sender.network,
-      [],
-    ));
     return AggregateTransaction.createComplete(
       Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
       [transferTransactionOne.toAggregate(account.publicAccount), transferTransactionTwo.toAggregate(account.publicAccount)],
@@ -1591,7 +1488,6 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
   }
   // ------ Je
   calFeeAggregateTransaction(maxFee: number) {
-    console.log('feee que estoy calculando:', maxFee);
     let valor = 0;
     valor = maxFee * this.porcent / 100;
     return valor + maxFee;
@@ -1647,9 +1543,6 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
             }
             break;
           case false:
-            console.log('TRANSFIERE ');
-            console.log('ACCOUNT SENDER ----> ', this.sender);
-            console.log('COSIGNATARIO SELECCIONADO ----> ', this.cosignatorie);
             if (this.walletService.decrypt(common, this.sender)) {
               const account: Account = Account.createFromPrivateKey(common.privateKey, this.sender.network);
               const signedTransaction = account.sign(
@@ -1678,37 +1571,8 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
             }
             break;
         }
-        //   this.transactionSigned = []
-        //   if (this.walletService.decrypt(common, this.sender)) {
-        //     const account: Account = Account.createFromPrivateKey(common.privateKey, this.sender.network)
-
-        //     const signedTransaction = account.sign(
-        //       this.aggregateTransaction,
-        //       this.dataBridge.blockInfo.generationHash
-        //     )
-        //     this.transactionSigned.push(signedTransaction);
-        //     this.clearForm();
-        //     // this.reloadBtn = false;
-        //     // this.blockSendButton = false;
-        //     // this.builGitf()
-        //     this.transactionService.buildTransactionHttp().announce(signedTransaction).subscribe(
-        //       async () => {
-        //         this.getTransactionStatus();
-        //         this.setTimeOutValidateTransaction(signedTransaction.hash);
-        //       }, err => {
-        //         this.reloadBtn = false;
-        //         this.blockSendButton = false;
-        //         this.sharedService.showError('', err);
-        //       }
-        //     );
-        //   } else {
-        //     this.createGift.get('password').setValue('');
-        //     this.blockSendButton = false;
-        //     this.reloadBtn = false;
-        //   }
       } else {
         this.reloadBtn = false;
-        console.log('listo 10');
         this.blockSendButton = false;
         this.sharedService.showError('', 'Insufficient Balance');
       }
@@ -1726,8 +1590,6 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
    */
   getTransactionStatusHashLock(signedTransactionHashLock: SignedTransaction, signedTransactionBonded: SignedTransaction) {
     // Get transaction status
-    console.log(' Get transaction status');
-
     this.subscription['getTransactionStatushashLock'] = this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
         if (statusTransaction !== null && statusTransaction !== undefined && signedTransactionHashLock !== null) {
@@ -1740,7 +1602,6 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
           } else if (statusTransaction['type'] === 'unconfirmed' && match) {
           } else if (statusTransaction['type'] === 'status' && match) {
             this.reloadBtn = false;
-            console.log('aqui 1');
             this.blockSendButton = false;
             this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
             signedTransactionHashLock = null;
@@ -1760,7 +1621,6 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
         this.reloadBtn = true;
         this.blockSendButton = true;
         this.transactionSigned.push(signedTransaction);
-        console.log('announceAggregateBondedk');
         this.getTransactionStatus();
         this.setTimeOutValidateTransaction(signedTransaction.hash);
       },
