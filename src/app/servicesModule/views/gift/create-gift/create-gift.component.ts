@@ -112,6 +112,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
   fileToUpload: any;
   ourFile: File;
   ourFiletwo: File;
+  validateRealAmount: boolean = false
   // valueValidateAccount: ValidateBuildAccount
   blockSendButton: boolean;
   haveBalance: boolean;
@@ -674,9 +675,9 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
           context.fillText(des, 40, 208);
         }
         if (this.showMosaic) {
-          context.font = '15px Open Sans';
-          context.fillStyle = 'black';
-          context.fillText(mosaic, 78, 246);
+          // context.font = '15px Open Sans';
+          // context.fillStyle = 'black';
+          // context.fillText(mosaic, 78, 246);
           context.font = '17px Open Sans';
           context.fillStyle = 'black';
           context.fillText(amount, 40, 276);
@@ -732,6 +733,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
   subscribeValue() {
     // ------ Rj
     this.subscription.push(this.createGift.get('assetAmount').valueChanges.subscribe(value => {
+      this.validateRealAmount = false
       if (value !== null && value !== undefined) {
         const amount = Number(value);
         let validateAmount = false;
@@ -753,7 +755,12 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
                 decimal = this.addZeros(this.mosaicSelected.config.precision - arrDecimals.length, arrAmount[1]);
               }
 
-              realAmount = `${arrAmount[0]}${decimal}`;
+              realAmount = `${arrAmount[0]}${decimal}`; 
+              if(realAmount > 0){
+                this.validateRealAmount = true
+              }else{
+                this.validateRealAmount = false
+              }
               if (filtered !== undefined && filtered !== null) {
                 const invalidBalance = filtered.amount.compact() < Number(realAmount);
                 if (invalidBalance && !this.assetInsufficientBalance) {
@@ -782,6 +789,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
             this.assetInsufficientBalance = false;
           }
         }
+        
       }
     }));
 
@@ -1273,7 +1281,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
       count++;
       const nameImg = `Gitf_card_sirius(${count}).jpeg`;
       const namePdf = `Gitf_card_sirius(${count}).pdf`;
-      const data = this.giftService.serializeData(this.realAmount, item.privateKey, this.mosaicPrimary, infoMosaic.transferable, this.substrFuc(this.accountList[0].publicKey, 6));
+      const data = this.giftService.serializeData(this.realAmount, item.privateKey, this.mosaicPrimary, infoMosaic.transferable, this.substrFuc(item.publicKey, 6));
       const qr = qrcode(10, 'H');
       qr.addData(data);
       qr.make();

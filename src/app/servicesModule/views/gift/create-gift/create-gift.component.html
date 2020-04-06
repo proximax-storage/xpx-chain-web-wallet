@@ -370,7 +370,7 @@
             || (createGift.invalid ||
             errorOtherMosaics ||
             disabledAllField ||
-            assetInsufficientBalance) ||
+            assetInsufficientBalance || !validateRealAmount) ||
             (sender.isMultisign &&
             sender.isMultisign.cosignatories &&
             sender.isMultisign.cosignatories.length > 0 &&
