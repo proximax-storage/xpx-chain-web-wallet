@@ -119,7 +119,7 @@ export class GiftService {
       const pkUin8 = new Uint8Array(32);
       const mosaicId = new Uint8Array(8);
       const typeUin8 = new Uint8Array(1);
-      const codeUin8 = new Uint8Array(20);
+      const codeUin8 = new Uint8Array(3);
       amountUin8.set(new Uint8Array(dataUin8.subarray(0, 8)), 0);
       pkUin8.set(new Uint8Array(dataUin8.subarray(8, 40)), 0);
       mosaicId.set(new Uint8Array(dataUin8.subarray(40, 48)), 0);
@@ -130,7 +130,8 @@ export class GiftService {
       const privatekey = Convert.uint8ToHex(pkUin8);
       const mosac = Convert.uint8ToHex(mosaicId);
       const type = this.hexToString(Convert.uint8ToHex(typeUin8));
-      const codeCard = this.hexToString(Convert.uint8ToHex(codeUin8));
+      const codeCard = Convert.uint8ToHex(codeUin8)
+      // const codeCard = this.hexToString(Convert.uint8ToHex(codeUin8));
 
       return { amount, privatekey, mosac, type, codeCard };
     } catch (error) {
@@ -155,7 +156,7 @@ export class GiftService {
     const pkUin8 = Convert.hexToUint8(pk);
     const mosaicId = Convert.hexToUint8(mosaic);
     const typeUin8 = Convert.hexToUint8(Convert.utf8ToHex(Convert.rstr2utf8(type)));
-    const codeUin8 = Convert.hexToUint8(Convert.utf8ToHex(Convert.rstr2utf8(des)));
+    const codeUin8 = Convert.hexToUint8(des);
     return this.concatUniArray(amountUin8, pkUin8, mosaicId, typeUin8, codeUin8);
   }
 

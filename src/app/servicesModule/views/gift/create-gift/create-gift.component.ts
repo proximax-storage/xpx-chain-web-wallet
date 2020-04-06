@@ -1259,7 +1259,6 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
     const infoMosaic = this.mosaicsInfoSerialize(mosaic[0]);
     if (this.accountList.length === 1) {
       const data = this.giftService.serializeData(this.realAmount, this.accountList[0].privateKey, this.mosaicPrimary, infoMosaic.transferable, this.substrFuc(this.accountList[0].publicKey, 6));
-
       const qr = qrcode(10, 'H');
       qr.addData(data);
       qr.make();
@@ -1472,13 +1471,13 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
       Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
       account.address,
       mosaics,
-      PlainMessage.create(JSON.stringify({ type: 'gift', msg: '4746445459480000000049C51C6D' })),
+      PlainMessage.create(JSON.stringify({"type":"gift","msg":"CBFA6831323334353637383938"})),
       network);
     const transferTransactionTwo = TransferTransaction.create(
       Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
       account.address,
       [],
-      PlainMessage.create(JSON.stringify({ type: 'gift', msg: '4746445459480000000049C51C6D' })),
+      PlainMessage.create(JSON.stringify({"type":"gift","msg":"CBFA6831323334353637383938"})),
       network);
     return AggregateTransaction.createComplete(
       Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
@@ -1486,6 +1485,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
       this.sender.network,
       [],
     );
+    
 
   }
   // ------ Je
@@ -1521,9 +1521,6 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
       this.descrip = this.createGift.get('message').value
       const maxFeeCal = this.calFeeAggregateTransaction(this.aggregateTransaction.maxFee.compact());
       this.aggregateTransaction = this.aggregateTransactionFunc(maxFeeCal);
-      console.log('aggregateTransaction:::', this.aggregateTransaction);
-      console.log('accountList', this.accountList[0].privateKey);
-      console.log('accountList length', this.accountList.length);
       if (this.transactionService.validateBuildSelectAccountBalance(
         Number(this.balanceXpx.split(',').join('')),
         Number(this.fee),
