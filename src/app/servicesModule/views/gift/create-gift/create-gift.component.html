@@ -250,7 +250,7 @@
               </div>
             </div>
             <!-- CHECK -->
-            <div class="row pt-1rem">
+            <div class="row pb-1rem">
               <div class="col-4 mx-auto ">
                 <mdb-checkbox [(ngModel)]="showMosaic" [ngModelOptions]="{standalone: true}" (click)="showImgFun()">
                   Mosaic
@@ -470,7 +470,7 @@
         </div>
 
         <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-          <button mdbBtn rounded="true" mdbWavesEffect [disabled]="!checked" (click)="showViewsConfirmFunc()"
+          <button mdbBtn rounded="true" mdbWavesEffect [disabled]="!checked" (click)="showViewsConfirmFunc(true)"
             class="btn-proximax" size="md">
             
             <span class="color-white">Continue</span>
@@ -482,5 +482,4 @@
     </div>
 
   </div>
-
 </div>

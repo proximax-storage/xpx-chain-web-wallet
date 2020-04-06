@@ -149,7 +149,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
     this.currentBlock = 0;
     this.messageMaxLength = 10;
     this.reloadBtn = false;
-    this.reloadBtnCont= false
+    this.reloadBtnCont = false
     this.blockSendButton = false;
     this.accountValid = false;
     this.notBalance = false;
@@ -757,9 +757,9 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
               }
 
               realAmount = `${arrAmount[0]}${decimal}`;
-              if(realAmount > 0){
+              if (realAmount > 0) {
                 this.validateRealAmount = true
-              }else{
+              } else {
                 this.validateRealAmount = false
               }
               if (filtered !== undefined && filtered !== null) {
@@ -1030,7 +1030,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
     if (custom !== undefined) {
       if (formControl !== undefined) {
         this.charRest = 0;
-        this.createGift.controls[formControl].get(custom).reset( {
+        this.createGift.controls[formControl].get(custom).reset({
           emitEvent: false
         });
         this.fee = '0.037250';
@@ -1038,7 +1038,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
       }
 
       this.charRest = 0;
-      this.createGift.get(custom).reset( {
+      this.createGift.get(custom).reset({
         emitEvent: false
       });
       this.fee = '0.037250';
@@ -1220,9 +1220,13 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
     return bb;
   }
 
-  showViewsConfirmFunc() {
+  showViewsConfirmFunc(validate = false) {
     this.showViewsConfirm = this.showViewsConfirm ? false : true;
     this.checked = false;
+    if(validate){
+      this.drawExample()
+      this.drawExampletwo()
+    }
   }
 
   mosaicsInfoSerialize(mosaic: any): { nameMosaic: string, transferable: string, divisibility: number } {
