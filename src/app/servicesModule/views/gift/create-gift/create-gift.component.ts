@@ -1223,7 +1223,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
   showViewsConfirmFunc(validate = false) {
     this.showViewsConfirm = this.showViewsConfirm ? false : true;
     this.checked = false;
-    if(validate){
+    if (validate) {
       this.drawExample()
       this.drawExampletwo()
     }
@@ -1271,10 +1271,11 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
         infoMosaic.nameMosaic,
         this.substrFuc(this.accountList[0].publicKey, 6)
       );
-      saveAs(new Blob([this.dataURItoBlob(img)], { type: 'image/jpeg' }), 'Gitf Card Sirius.jpeg');
       if (this.imgBackgroundtwo) {
         const imgPDF: any = await this.drawPDF(img, this.imgBackgroundtwo);
         saveAs(new Blob([this.giftService.pdfFromImg(imgPDF)], { type: 'application/pdf' }), 'Gitf Card Sirius.pdf');
+      } else {
+        saveAs(new Blob([this.dataURItoBlob(img)], { type: 'image/jpeg' }), 'Gitf Card Sirius.jpeg');
       }
       this.giftService.setTypeDonwnload = 'image/jpeg';
       // this.giftService.setImgFileData = this.dataURItoBlob(img);
@@ -1306,19 +1307,6 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
         zipPDF.file(namePdf, this.giftService.pdfFromImg(imgZipPDF), { comment: 'application/pdf' });
       }
     }
-    if (Object.keys(zipIMG.files).length > 0) {
-      zipIMG.generateAsync({
-        type: 'blob'
-      }).then(async (content: any) => {
-        const fileName = `Gift_card_sirius.zip`;
-        saveAs(content, fileName);
-        this.giftService.setTypeDonwnload = 'zip';
-        this.giftService.setImgFileData = content;
-        // this.giftService.setImgFileData = content
-        this.reloadBtnCont = false
-        this.validateSave();
-      });
-    }
     if (Object.keys(zipPDF.files).length > 0) {
       zipPDF.generateAsync({
         type: 'blob'
@@ -1327,6 +1315,19 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
         saveAs(content, fileName);
         this.giftService.setTypeDonwnload = 'zip';
         this.giftService.setPdfFileData = content;
+        this.reloadBtnCont = false
+        this.validateSave();
+      });
+
+    } else if (Object.keys(zipIMG.files).length > 0) {
+      zipIMG.generateAsync({
+        type: 'blob'
+      }).then(async (content: any) => {
+        const fileName = `Gift_card_sirius.zip`;
+        saveAs(content, fileName);
+        this.giftService.setTypeDonwnload = 'zip';
+        this.giftService.setImgFileData = content;
+        // this.giftService.setImgFileData = content
         this.reloadBtnCont = false
         this.validateSave();
       });
