@@ -1258,6 +1258,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
     const mosaic = await this.mosaicServices.filterMosaics([new MosaicId(this.mosaicPrimary)]);
     const infoMosaic = this.mosaicsInfoSerialize(mosaic[0]);
     if (this.accountList.length === 1) {
+      // console.log('account List :::', this.accountList[0].privateKey)
       const data = this.giftService.serializeData(this.realAmount, this.accountList[0].privateKey, this.mosaicPrimary, infoMosaic.transferable, this.substrFuc(this.accountList[0].publicKey, 6));
       const qr = qrcode(10, 'H');
       qr.addData(data);
@@ -1416,7 +1417,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
         Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
         account.address,
         mosaics,
-        PlainMessage.create(''),
+        PlainMessage.create(this.substrFuc(account.publicKey, 6)),
         network);
       innerTransaction.push(transferTransaction.toAggregate(this.sender.publicAccount));
       this.accountList.push(account);
@@ -1471,13 +1472,13 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
       Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
       account.address,
       mosaics,
-      PlainMessage.create(JSON.stringify({"type":"gift","msg":"CBFA6831323334353637383938"})),
+      PlainMessage.create(JSON.stringify({ "type": "gift", "msg": "CBFA6831323334353637383938" })),
       network);
     const transferTransactionTwo = TransferTransaction.create(
       Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
       account.address,
       [],
-      PlainMessage.create(JSON.stringify({"type":"gift","msg":"CBFA6831323334353637383938"})),
+      PlainMessage.create(JSON.stringify({ "type": "gift", "msg": "CBFA6831323334353637383938" })),
       network);
     return AggregateTransaction.createComplete(
       Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
@@ -1485,7 +1486,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
       this.sender.network,
       [],
     );
-    
+
 
   }
   // ------ Je
