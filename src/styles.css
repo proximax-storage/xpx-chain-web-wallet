@@ -1314,10 +1314,17 @@ input[type="text"] {
 
 .dropdown-default .dropdown-content li a,
 .dropdown-default .dropdown-content li span:hover,
+.dropdown-default .dropdown-content li span:focus,
 .dropdown-default .dropdown-content li.active {
   background-color: #7d1416 !important;
 }
-
+mdb-select-dropdown .dropdown-content li > a,
+mdb-select-dropdown .dropdown-content li > span {
+  color: #7d1416 !important;
+}
+.dropdown-default .dropdown-content li a, .dropdown-default .dropdown-content li span:hover, .dropdown-default .dropdown-content li.active {
+  background-color: #7d1416!important;
+}
 .dropdown-default.colorful-select .dropdown-content li.active span,
 .dropdown-default.colorful-select .dropdown-content li.selected span {
   background-color: #7d1416 !important;
@@ -2096,6 +2103,7 @@ label.btn input[type="checkbox"]:checked + label:before {
 }
 .form-control:focus {
   border-color: #7d1416 !important;
+  box-shadow: 0 0 0 0.2rem rgba(133, 20, 22, 0.2) !important;
 }
 
 .isPrimary {
