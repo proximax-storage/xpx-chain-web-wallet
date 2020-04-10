@@ -1,6 +1,6 @@
 .topnav {
   overflow: hidden;
-  background: -webkit-linear-gradient(top, #298CD2, #215590);
+  background: -webkit-linear-gradient(top, #7D1416 , #400000);
   /* background: Vertical gradient #298CD2 to #215590; */
 }
 
@@ -43,7 +43,7 @@
 @media screen and (max-width: 768px) {
   .topnav.responsive {position: relative;}
   .topnav.responsive .icon {
-    color: #0f7084;
+    color: #7D1416;
     position: absolute;
     right: 0;
     top: 0;
@@ -57,11 +57,11 @@
   .topnav a:hover {
     border-bottom: 0;
     background: white;
-    color: #0f7084;
+    color: #7D1416;
   }
   .topnav a.active {
     border-bottom: 0;
     background: white;
-    color: #0f7084;
+    color: #7D1416;
   }
 }

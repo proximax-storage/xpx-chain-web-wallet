@@ -43,7 +43,7 @@ import { RegisterNamespaceTypeBondedComponent } from '../dashboard/components/re
 
 
 const ngxUiLoaderConfig: NgxUiLoaderConfig = {
-  bgsColor: '#306eb5',
+  bgsColor: '#7D1416',
   bgsPosition: POSITION.bottomCenter,
   bgsSize: 40,
   bgsType: SPINNER.rectangleBounce, // background spinner type

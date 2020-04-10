@@ -1,6 +1,6 @@
 .style {
   border-radius: 1rem;
-  background-color: #306eb5;
+  background-color: #7D1416;
 }
 
 .dropdown-toggle:empty::after {
@@ -14,7 +14,7 @@
 }
 
 .box-tag-account {
-  background: #3490df;
+  background: #7D1416;
   color: white !important;
   padding-left: 1rem !important;
   padding-right: 1rem !important;
