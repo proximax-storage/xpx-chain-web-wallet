@@ -10,7 +10,7 @@
   <ngx-qrcode qrc-element-type="'canvas'" [qrc-value]="dataQR"></ngx-qrcode>
 </div>
 
-<div class="container mt-3rem mb-2rem animated fadeIn">
+<div class="container mt-1rem mb-2rem animated fadeIn">
   <div class="row" *ngIf="!showViewsConfirm">
     <div class="col-12 mx-auto">
       <form [formGroup]="createGift" (ngSubmit)="sendTransfer()">
@@ -152,7 +152,7 @@
             <!-- AMOUNT & TO BE SENT -->
             <div class="row">
               <!-- Card Quantity -->
-              <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6  mx-auto">
+              <div class="col-12  mx-auto">
                 <div class="md-form form-sm mt-1rem mb-0rem">
                   <img class="form-control-feedback"
                     src="assets/images/img/icon-card-green-16h-proximax-sirius-wallet.svg" alt="">
@@ -171,7 +171,7 @@
               </div>
 
               <!-- Amount Input -->
-              <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6  mx-auto">
+              <div class="col-12 mx-auto">
                 <div class="md-form form-sm mt-1rem mb-0rem">
                   <img class="form-control-feedback"
                     src="assets/images/img/icon-amount-green-16h-proximax-sirius-wallet.svg" alt="">
@@ -180,7 +180,7 @@
                     [validateError]="true" type="text" class="form-control form-control-sm input-border input-amount"
                     placeholder="Amount per Gift Cards" formControlName="assetAmount">
                   <span class="label-i-icon pl-2rem"></span>
-
+                  <span class="label-i fw-600 pl-2rem">Enter Amount</span>
                   <mdb-error
                     *ngIf="validateInput('assetAmount').invalid && (validateInput('assetAmount').dirty || validateInput('assetAmount').touched)">
                     <span class="fs-08rem fw-600 color-error-message">Invalid Amount</span>
@@ -211,6 +211,23 @@
                 </div>
               </div>
             </div>
+            <!-- FEE -->
+            <div class="row">
+              <div class="col-12 mx-auto">
+                <div class="box-grey d-flex justify-content-center pt-09rem pb-09rem">
+                  <div class="row">
+                    <div class="col-12 text-center">
+                      <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
+                        width="20" alt="">
+                      <span class="fs-08rem">
+                        Unconfirmed/Recommended Fee:&nbsp;
+                        <a [innerHTML]="getQuantity(fee)"></a> XPX
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
           <!-- DIVIDER -->
           <div class="col-12 col-md-6 col-lg-5 mx-auto">
@@ -234,17 +251,17 @@
                 </div>
                 <div class="row" [hidden]="showImg">
                   <div class="col-12 d-flex justify-content-center mx-auto ">
-                    <canvas id="idCanvas" width="300" height="200"></canvas>
+                    <canvas id="idCanvas" width="250" height="150"></canvas>
                   </div>
                 </div>
 
 
                 <div class="row" *ngIf="ourFile">
-                  <div class="col-12 d-flex m-0 p-5px justify-content-center mx-auto">
-                    <div class="col-12 color-black fs-075rem d-flex txt-a-center">
-                      <i class="fa fa-trash p-5px" aria-hidden="true" (click)="deleteOurFile('one')"></i>
-                      <p class="mb-0 p-5px word-break-all">{{ourFile.name}}</p>
-                    </div>
+                  <div class="col-12 d-flex m-0 fs-075rem  justify-content-center mx-auto  txt-a-center">
+                    <!-- <div class="col-12 color-black fs-075rem d-flex txt-a-center"> -->
+                      
+                      <p class="mb-0 p-5px word-break-all"> <i style="cursor: pointer;"  class="fa fa-trash p-5px" aria-hidden="true" (click)="deleteOurFile('one')"></i> {{ourFile.name}}</p>
+                    <!-- </div> -->
                   </div>
                 </div>
               </div>
@@ -287,44 +304,17 @@
                 </div>
                 <div class="row" [hidden]="showImgtwo">
                   <div class="col-12 d-flex justify-content-center mx-auto ">
-                    <canvas id="idCanvastwo" width="230" height="330"></canvas>
+                    <canvas id="idCanvastwo" width="150" height="200"></canvas>
                   </div>
                 </div>
 
                 <div class="row" *ngIf="ourFiletwo">
-                  <div class="col-12 d-flex m-0 p-5px justify-content-center mx-auto">
-                    <div class="col-12 color-black fs-075rem d-flex txt-a-center">
-                      <i class="fa fa-trash p-5px" aria-hidden="true" (click)="deleteOurFile('two')"></i>
-                      <p class="mb-0 p-5px word-break-all">{{ourFiletwo.name}}</p>
-                    </div>
+                  <div class="col-12 d-flex m-0 fs-075rem  justify-content-center mx-auto  txt-a-center">
+                    <!-- <div class="col-12 color-black fs-075rem d-flex txt-a-center"> -->
+                 
+                      <p class="mb-0 p-5px word-break-all"> <i style="cursor: pointer;" class="fa fa-trash p-5px" aria-hidden="true" (click)="deleteOurFile('two')"></i>{{ourFiletwo.name}}</p>
+                    <!-- </div> -->
                   </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-
-
-
-
-
-
-
-
-
-        <!-- FEE -->
-        <div class="row">
-          <div class="col-12 mx-auto">
-            <div class="box-grey d-flex justify-content-center pt-09rem pb-09rem">
-              <div class="row">
-                <div class="col-12 text-center">
-                  <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
-                    width="20" alt="">
-                  <span class="fs-08rem">
-                    Unconfirmed/Recommended Fee:&nbsp;
-                    <a [innerHTML]="getQuantity(fee)"></a> XPX
-                  </span>
                 </div>
               </div>
             </div>

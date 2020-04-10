@@ -406,7 +406,7 @@ export class ServicesBoxComponent implements OnInit {
         ),
         redeem: this.services.buildStructureService(
           'Redeem',
-          true,
+          false,
           '',
           '',
           AppConfig.routes.redeemGiftCard
@@ -568,6 +568,7 @@ export class ServicesBoxComponent implements OnInit {
       this.services.buildServiceBox(accounts),
       this.services.buildServiceBox(namespaces),
       this.services.buildServiceBox(mosaics),
+      this.services.buildServiceBox(gift),
       this.services.buildServiceBox(swapProcess),
       this.services.buildServiceBox(addressBook),
       this.services.buildServiceBox(exportWallet),
@@ -577,7 +578,6 @@ export class ServicesBoxComponent implements OnInit {
       this.services.buildServiceBox(notifications),
       this.services.buildServiceBox(voting),
       this.services.buildServiceBox(storage),
-      this.services.buildServiceBox(gift),
       this.services.buildServiceBox(aggregateTxn),
       this.services.buildServiceBox(crossChainSwaps),
       this.services.buildServiceBox(invoice),

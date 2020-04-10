@@ -627,7 +627,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
       imageObj.onerror = reject;
       imageObj.onload = (e) => {
         // context.drawImage(imageObj, 0, 0, 130, 200);
-        context.drawImage(imageObj, 0, 0, 230, 330);
+        context.drawImage(imageObj, 0, 0, 150, 200);
         // const canvas: any = document.getElementById('idCanvas');
         const dataURLTwo = canvas.toDataURL('image/jpeg', 1.0);
         resolve(dataURLTwo);
@@ -649,7 +649,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
       imageObj.src = imgZip;
       imageObj.onerror = reject;
       imageObj.onload = (e) => {
-        context.drawImage(imageObj, 0, 0, 300, 200);
+        context.drawImage(imageObj, 0, 0, 250, 150);
         const dataURL = canvas.toDataURL('image/jpeg', 1.0);
         resolve(dataURL);
       };
