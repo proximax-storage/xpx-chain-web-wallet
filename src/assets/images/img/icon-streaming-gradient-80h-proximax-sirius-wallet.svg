@@ -1,11 +1,13 @@
-<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 44 80">
-  <defs>
-    <style>.cls-1{fill:url(#linear-gradient);}</style>
-    <linearGradient id="linear-gradient" x1="50.02" y1="68.33" x2="-6.64" y2="11.67" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#306eb5" />
-      <stop offset="1" stop-color="#306EB5" />
-    </linearGradient>
-  </defs>
-  <title>icon-streaming-gradient-80h-proximax-sirius-wallet</title>
-  <path class="cls-1" d="M40,61.38A2.63,2.63,0,0,0,37.34,64v1.21H6V15h31.3V37.34a2.63,2.63,0,1,0,5.25,0V7.24A7.24,7.24,0,0,0,35.36,0H8A7.24,7.24,0,0,0,.79,7.24V72.77A7.23,7.23,0,0,0,8,80H35.36a7.23,7.23,0,0,0,7.23-7.23V64A2.63,2.63,0,0,0,40,61.38ZM37.34,72.77a2,2,0,0,1-2,2H8a2,2,0,0,1-2-2v-2.3h31.3ZM6,7.24a2,2,0,0,1,2-2H35.36a2,2,0,0,1,2,2V9.77H6Zm19.68.27A1.13,1.13,0,0,1,24.6,8.64H18.78a1.13,1.13,0,1,1,0-2.25H24.6A1.12,1.12,0,0,1,25.72,7.51ZM23.24,36.1l20,11.54-20,11.53Z" />
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 24.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 44 80" style="enable-background:new 0 0 44 80;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#7D1416;}
+</style>
+<path class="st0" d="M40,61.4c-1.5,0-2.6,1.1-2.7,2.6c0,0,0,0,0,0v1.2H6V15h31.3v22.3c-0.1,1.4,1,2.7,2.5,2.8s2.7-1,2.8-2.5
+	c0-0.1,0-0.2,0-0.3V7.2c0-4-3.2-7.2-7.2-7.2H8C4,0,0.8,3.3,0.8,7.2v65.5C0.8,76.8,4,80,8,80h27.4c4,0,7.2-3.2,7.2-7.2l0,0V64
+	C42.6,62.6,41.4,61.4,40,61.4z M37.3,72.8c0,1.1-0.9,2-2,2H8c-1.1,0-2-0.9-2-2v-2.3h31.3L37.3,72.8z M6,7.2c0-1.1,0.9-2,2-2h27.4
+	c1.1,0,2,0.9,2,2v2.5H6V7.2z M25.7,7.5c0,0.6-0.5,1.1-1.1,1.1h-5.8c-0.6,0.1-1.2-0.4-1.2-1s0.4-1.2,1-1.2c0.1,0,0.1,0,0.2,0h5.8
+	C25.2,6.4,25.7,6.9,25.7,7.5L25.7,7.5z M23.2,36.1l20,11.5l-20,11.5L23.2,36.1z"/>
 </svg>
