@@ -16,10 +16,10 @@ function createWindow() {
       backgroundColor: '#ffffff', 
       frame: true,
       // icon: '../src/favicon.ico'
-       icon: path.join(__dirname, 'dist/proximax-sirius-wallet/assets/images/ProximaX-Favicon.png')
+       icon: path.join(__dirname, 'dist/two4one-wallet/assets/images/ProximaX-Favicon.png')
    })
 
-   win.loadFile(`dist/proximax-sirius-wallet/index.html`);
+   win.loadFile(`dist/two4one-wallet/index.html`);
    //win.loadURL('http://localhost:4200/');
    //win.loadFile(`index.html`);
    //// uncomment below to open the DevTools.

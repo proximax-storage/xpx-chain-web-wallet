@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "proximax-sirius-wallet": {
+    "two4one-wallet": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/proximax-sirius-wallet",
+            "outputPath": "dist/two4one-wallet",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -90,21 +90,21 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "proximax-sirius-wallet:build"
+            "browserTarget": "two4one-wallet:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "proximax-sirius-wallet:build:production"
+              "browserTarget": "two4one-wallet:build:production"
             },
             "main": {
-              "browserTarget": "proximax-sirius-wallet:build:main"
+              "browserTarget": "two4one-wallet:build:main"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "proximax-sirius-wallet:build"
+            "browserTarget": "two4one-wallet:build"
           }
         },
         "test": {
@@ -141,11 +141,11 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "proximax-sirius-wallet:serve"
+            "devServerTarget": "two4one-wallet:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "proximax-sirius-wallet:serve:production"
+              "devServerTarget": "two4one-wallet:serve:production"
             }
           }
         },
@@ -175,5 +175,5 @@
       }
     }
   },
-  "defaultProject": "proximax-sirius-wallet"
+  "defaultProject": "two4one-wallet"
 }
