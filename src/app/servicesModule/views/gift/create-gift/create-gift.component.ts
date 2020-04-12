@@ -618,7 +618,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
     qr.addData('0000000000000001942110B5FF15C06141A14322E7A3054D5B1227215B7836224F106471C1AAF2ED4FF17E357254D4513000000003B8EEEB4A');
     qr.make();
     const img = await this.drawIMG(qr.createDataURL(), 'descrip...', '100,000.000000', this.imgBackground, 'xpx', 'B256A6');
-    imgZip = await this.drawPDF(img, this.imgBackgroundtwo);
+    imgZip = await this.drawPDF(img, this.imgBackgroundtwo, 'B256A6');
     return new Promise(async (resolve, reject) => {
       const canvas: any = document.getElementById('idCanvastwo');
       const context = canvas.getContext('2d');
@@ -629,6 +629,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
       imageObj.onload = (e) => {
         // context.drawImage(imageObj, 0, 0, 130, 200);
         context.drawImage(imageObj, 0, 0, 150, 200);
+        // context.drawImage(imageObj, 0, 0, 400, 450);
         // const canvas: any = document.getElementById('idCanvas');
         const dataURLTwo = canvas.toDataURL('image/jpeg', 1.0);
         resolve(dataURLTwo);
@@ -697,7 +698,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
 
   }
 
-  drawPDF(imageGift, imagePdf) {
+  drawPDF(imageGift, imagePdf, code) {
 
     return new Promise(async (resolve, reject) => {
       const canvas: any = document.getElementById('pdf');
@@ -714,10 +715,13 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
       imageObj.onerror = reject;
 
       imageObj.onload = (e) => {
-        // context.drawImage(imageObj, 0, 0, 130, 200);
         context.drawImage(imageObj, 0, 0, 989, 1280);
         imageObj2.width = 12;
         imageObj2.height = 12;
+        if (this.showSequence) {
+          context.font = '18px Sans';
+          context.fillText(code, 843, 358);
+        }
         context.drawImage(imageObj2, 537, 516, 385, 250);
         const C: any = document.getElementById('pdf');
         const dataURL = C.toDataURL('image/jpeg', 1.0);
@@ -1289,7 +1293,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
         this.substrFuc(this.accountList[0].publicKey, 6)
       );
       if (this.imgBackgroundtwo) {
-        const imgPDF: any = await this.drawPDF(img, this.imgBackgroundtwo);
+        const imgPDF: any = await this.drawPDF(img, this.imgBackgroundtwo, this.substrFuc(this.accountList[0].publicKey, 6));
         saveAs(new Blob([this.giftService.pdfFromImg(imgPDF)], { type: 'application/pdf' }), 'Gitf Card Sirius.pdf');
       } else {
         saveAs(new Blob([this.dataURItoBlob(img)], { type: 'image/jpeg' }), 'Gitf Card Sirius.jpeg');
@@ -1320,7 +1324,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
       zipIMG.file(nameImg, this.dataURItoBlob(img), { comment: 'image/jpeg' });
       // generate PDF
       if (this.imgBackgroundtwo) {
-        const imgZipPDF: any = await this.drawPDF(img, this.imgBackgroundtwo);
+        const imgZipPDF: any = await this.drawPDF(img, this.imgBackgroundtwo, this.substrFuc(item.publicKey, 6));
         zipPDF.file(namePdf, this.giftService.pdfFromImg(imgZipPDF), { comment: 'application/pdf' });
       }
     }
