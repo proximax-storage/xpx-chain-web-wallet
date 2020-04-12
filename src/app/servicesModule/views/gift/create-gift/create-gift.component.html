@@ -159,7 +159,7 @@
                   <input mask="0*" formControlName="cantCard" required mdbInputDirective mdbValidate
                     [validateSuccess]="true" [validateError]="true" type="text" id="cantCard"
                     class="form-control form-control-sm input-border txt-a-right input-amount"
-                    placeholder="Number of Gift Card" (keyup)="limitDuration($event)">
+                    placeholder="Number of Gift Cards" (keyup)="limitDuration($event)">
                   <span class="label-i-icon pl-2rem"></span>
 
                   <!-- VALIDATION -->
@@ -178,7 +178,7 @@
                   <input pattern="^[+]?([0-9]*[.])?[0-9]+$" currencyMask [options]="assetsOptions" mdbInputDirective
                     mdbValidate [validateSuccess]="true" [maxlength]="configurationForm.amount.maxLength"
                     [validateError]="true" type="text" class="form-control form-control-sm input-border input-amount"
-                    placeholder="Amount per Gift Cards" formControlName="assetAmount">
+                    placeholder="Amount per Gift Card" formControlName="assetAmount">
                   <span class="label-i-icon pl-2rem"></span>
                   <span class="label-i fw-600 pl-2rem">Enter Amount</span>
                   <mdb-error
