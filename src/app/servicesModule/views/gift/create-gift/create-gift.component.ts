@@ -24,7 +24,8 @@ import {
   SignedTransaction,
   Transaction,
   TransactionHttp,
-  MosaicInfo
+  MosaicInfo,
+  NamespaceId
 } from 'tsjs-xpx-chain-sdk';
 import { DataBridgeService } from '../../../../shared/services/data-bridge.service';
 import * as JSZip from 'jszip';
@@ -55,7 +56,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
   showDescrip = true;
   showSequence = true;
   dataQR = null;
-
+  typeIdSend = null
   // --------------- Je
   porcent = 20;
 
@@ -743,7 +744,7 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
           if (accountInfo !== undefined && accountInfo !== null && Object.keys(accountInfo).length > 0) {
             if (accountInfo.accountInfo && accountInfo.accountInfo.mosaics.length > 0) {
               const filtered = accountInfo.accountInfo.mosaics.find(element => {
-                return element.id.toHex() === new MosaicId([this.mosaicSelected.value[0], this.mosaicSelected.value[1]]).toHex();
+                return element.id.toHex() === new MosaicId([this.mosaicSelected.mosaic[0], this.mosaicSelected.mosaic[1]]).toHex();
               });
               const arrAmount = value.toString().replace(/,/g, '').split('.');
               let decimal;
@@ -870,15 +871,19 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
             this.haveBalance = true;
             this.balanceXpx = amount;
             const nameMosaic = (mosaic.mosaicNames.names.length > 0) ? mosaic.mosaicNames.names[0].name : this.proximaxProvider.getMosaicId(mosaic.idMosaic).toHex();
+            const valueID = (mosaic.isNamespace) ? mosaic.isNamespace : mosaic.idMosaic
+            const typeIdSend = (mosaic.isNamespace) ? 'idNamespace' : 'idMosaic'
             mosaicsSelect.push({
               label: `${nameMosaic}${nameExpired} > Balance: ${amount}`,
               name: nameMosaic,
-              value: mosaic.idMosaic,
+              value: valueID,
+              typeIdSend: typeIdSend,
               balance: amount,
               expired: false,
               selected: false,
               disabled: expired,
-              config: configInput
+              config: configInput,
+              mosaic: mosaic.idMosaic
             });
           }
 
@@ -1124,7 +1129,8 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
         realAmount = arrAmount[0];
       }
 
-      const mosaicID = new MosaicId([this.mosaicSelected.value[0], this.mosaicSelected.value[1]]);
+      const mosaicID = new MosaicId([this.mosaicSelected.mosaic[0], this.mosaicSelected.mosaic[1]]);
+      const iD = this.buildMosaic(this.mosaicSelected.value, this.mosaicSelected.typeIdSend)
       if (mosaicID.toHex() === this.mosaicXpx.id) {
         mosaics.push(new Mosaic(
           new MosaicId(this.mosaicXpx.id),
@@ -1137,16 +1143,28 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
         ));
 
         mosaics.push(new Mosaic(
-          mosaicID,
+          iD,
           UInt64.fromUint(Number(realAmount))
         ));
       }
 
       this.realAmount = Number(realAmount);
-      this.mosaicPrimary = new MosaicId([this.mosaicSelected.value[0], this.mosaicSelected.value[1]]).toHex();
+      this.mosaicPrimary = this.buildMosaic(this.mosaicSelected.value, this.mosaicSelected.typeIdSend).toHex()
+      // this.mosaicPrimary = new MosaicId([this.mosaicSelected.value[0], this.mosaicSelected.value[1]]).toHex();
     }
 
     return mosaics;
+  }
+
+  buildMosaic(idValue: MosaicId | NamespaceId, type): MosaicId | NamespaceId {
+    let iD: MosaicId | NamespaceId = null
+    if (type === 'idNamespace') {
+      iD = new NamespaceId([idValue[0], idValue[1]])
+    } else if (type === 'idMosaic') {
+      iD = new MosaicId([idValue[0], idValue[1]])
+    }
+
+    return iD
   }
 
   /**
@@ -1258,7 +1276,6 @@ export class CreateGiftComponent implements OnInit, OnDestroy {
     const mosaic = await this.mosaicServices.filterMosaics([new MosaicId(this.mosaicPrimary)]);
     const infoMosaic = this.mosaicsInfoSerialize(mosaic[0]);
     if (this.accountList.length === 1) {
-      // console.log('account List :::', this.accountList[0].privateKey)
       const data = this.giftService.serializeData(this.realAmount, this.accountList[0].privateKey, this.mosaicPrimary, infoMosaic.transferable, this.substrFuc(this.accountList[0].publicKey, 6));
       const qr = qrcode(10, 'H');
       qr.addData(data);

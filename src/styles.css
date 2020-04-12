@@ -441,7 +441,12 @@ body {
 .pl-0px {
   padding-left: 0px;
 }
-
+.pl-01rem {
+  padding-left: 0.1rem;
+}
+.pl-03rem {
+  padding-left: 0.3rem;
+}
 .pl-05rem {
   padding-left: 0.5rem;
 }
@@ -467,7 +472,9 @@ body {
 }
 
 /** RIGHT **/
-
+.pr-0rem {
+  padding-right: 0rem;
+}
 .pr-03rem {
   padding-right: 0.3rem;
 }
@@ -536,7 +543,7 @@ body {
 }
 
 .lh-1-4em {
-  line-height: 1.4em;
+  line-height: pl1.4em;
 }
 
 .lh-01em {
