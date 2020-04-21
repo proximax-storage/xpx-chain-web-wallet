@@ -17,7 +17,7 @@ pipeline {
     stage('Build') {
       steps {
         echo 'Starting Docker Container'
-        withDockerContainer(image: 'node:12') {
+        withDockerContainer(image: 'node:10') {
           echo 'Installing dependencies'
           sh 'npm install'
 
@@ -28,7 +28,7 @@ pipeline {
 
           echo 'Building for eDLX Web Wallet'
           sh 'npm run build:optimizer-testnet'
-          sh "tar cJfv proximax-web-wallet-${env.GIT_BRANCH}.tar.xz dist"
+          sh "tar cJfv edlx-web-wallet-${env.BUILD_NUMBER}.tar.xz dist"
         }
         echo 'Leaving Container'
       }
@@ -45,7 +45,7 @@ pipeline {
     stage('Archive Artifact') {
       steps {
         echo 'Archiving Artifact'
-        archiveArtifacts "proximax-web-wallet-${env.GIT_BRANCH}.tar.xz"
+        archiveArtifacts "edlx-web-wallet-${env.BUILD_NUMBER}.tar.xz"
       }
       post {
         success {

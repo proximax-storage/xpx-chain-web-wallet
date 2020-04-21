@@ -48,7 +48,7 @@ export const environment = {
     name: 'prx.xpx',
     coin: 'XPX',
     id: '7933B82E31F53311',
-    mosaicIdUint64: [3825551831, 331334936],
+    mosaicIdUint64: [838152977, 2033432622],
     namespaceIdUint64: [2434186742, 3220914849],
     namespaceId: 'bffb42a19116bdf6',
     divisibility: 6
@@ -59,7 +59,7 @@ export const environment = {
   },
   timeOutTransactionNis1: 20000,
   blockchainConnection: {
-    host: '3.0.175.230',
+    host: '3.0.175.230:3000',
     port: 3000,
     protocol: 'http',
     useSecureMessage: false
@@ -72,12 +72,12 @@ export const environment = {
     }
   },
   namespaceRentalFeeSink: {
-    public_key: '984AD9C41FD0728202B994E50DAFE1635D95B78BB0939B6F076606CCE05ADB2B',
-    address_public_test: 'VBQUQ6-WKGJE7-DYELEB-SBGN6C-5FMDMF-HTMCJ5-TJ43'
+    public_key: '2EDCA63D9F8E706C12433713CACEF6D036BC3ADC9BDEFA7FF1664A24BE3C7B49',
+    address_public_test: 'WABUVR-BXZDWZ-J53BJJ-OITCBJ-4WTBTN-TQTP4A-OO4M'
   },
   mosaicRentalFeeSink: {
-    public_key: '97D888229129F7AE0DCC361A92963FC869F5AE508B714C72CA7B81E9C4AEBCA6',
-    address_public_test: 'VCLJME-KF2PGW-N52XFB-ABROWV-ZC2VNZ-PIB35H-C4LJ'
+    public_key: '7E7AF5CC1CF0D58D5B0294F7F522F3C9B40632A71DEE2DF6FB0CA986EB627859',
+    address_public_test: 'WDV3JH-VPOKV7-4B3VQL-7PMOX3-LYZR7Q-XPYLSJ-URGU'
   },
   pollsContent: {
     public_key: '',
