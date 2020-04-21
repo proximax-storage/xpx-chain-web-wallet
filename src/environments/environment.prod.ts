@@ -59,7 +59,7 @@ export const environment = {
   },
   timeOutTransactionNis1: 20000,
   blockchainConnection: {
-    host: '3.0.175.230:3000',
+    host: '3.0.175.230',
     port: 3000,
     protocol: 'http',
     useSecureMessage: false
