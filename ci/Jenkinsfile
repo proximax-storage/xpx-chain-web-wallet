@@ -17,7 +17,7 @@ pipeline {
     stage('Build') {
       steps {
         echo 'Starting Docker Container'
-        withDockerContainer(image: 'node:10.16') {
+        withDockerContainer(image: 'node:12') {
           echo 'Installing dependencies'
           sh 'npm install'
 
@@ -26,13 +26,8 @@ pipeline {
           echo 'Patching dependency'
           sh 'sed -i "/node:/c\\\\node: { crypto: true, stream: true, fs: \\\'empty\\\', net: \\\'empty\\\', tls: \\\'empty\\\'}" ./node_modules/@angular-devkit/build-angular/src/angular-cli-files/models/webpack-configs/browser.js'
 
-          echo 'Building for Testnet'
+          echo 'Building for eDLX Web Wallet'
           sh 'npm run build:optimizer-testnet'
-          sh 'mv dist/proximax-sirius-wallet/ dist/proximax-testnet-sirius-wallet'
-          
-          echo 'Building for Mainnet'
-          sh 'npm run build:optimizer-mainnet'
-          sh 'mv dist/proximax-sirius-wallet/ dist/proximax-mainnet-sirius-wallet'
           sh "tar cJfv proximax-web-wallet-${env.GIT_BRANCH}.tar.xz dist"
         }
         echo 'Leaving Container'
@@ -57,121 +52,6 @@ pipeline {
           slackSend channel: '#devops',
             color: 'good',
             message:  "Branch *${env.GIT_BRANCH}* build of *${currentBuild.fullDisplayName}* completed successfully :100:\nArtifact stored in S3"
-        }
-      }
-    }
-
-    stage('Promotion to Testnet') {
-      when {
-        tag 'release-v*'
-      }
-      steps {
-        slackSend channel: '#devops',
-             color: 'bad',
-             message: "*${currentBuild.fullDisplayName}* is awaiting user input confirmation for testnet deployment"
-        script {
-          timeout(time: 1, unit: 'HOURS') {
-          env.DEPLOY_TO_TESTNET = input message: "User Input Required",
-            parameters: [choice(name: 'Deploy to Testnet', choices: 'no\nyes', description: 'Choose yes if you want to deploy to Testnet')]
-          }
-        }
-      }
-    }
-
-    stage('Deploy to Testnet') {
-      when {
-        environment name: 'DEPLOY_TO_TESTNET', value: 'yes'
-      }
-
-      steps {
-        echo 'Deploying'
-
-        echo 'Managing S3'
-
-        // AWS Plugin cannot sync. It must clear the bucket then reupload
-        withAWS(credentials: 'jenkins-ecr', region: 'ap-southeast-2') {
-          echo 'Deleting old files'
-          s3Delete bucket: 'bctestnetwallet.xpxsirius.io', path: './'
-
-          echo 'Uploading new files'
-          s3Upload bucket: 'bctestnetwallet.xpxsirius.io', acl: 'PublicRead', file: 'dist/proximax-testnet-sirius-wallet/', sseAlgorithm: 'AES256'
-        }
-
-        echo 'Managing CloudFront'
-
-        withAWS(credentials: 'jenkins-ecr') {
-          echo 'Invalidating CloudFront'
-          cfInvalidate distribution: 'ENNTQPS404UV3', paths: ['/*']
-        }
-      }
-    
-      post {
-        success {
-          slackSend channel: '#devops',
-            color: 'good',
-            message: "Branch *${env.GIT_BRANCH}* build of *${currentBuild.fullDisplayName}* completed successfully :100:\nDeployed to http://bctestnetwallet.xpxsirius.io"
-        }
-        failure {
-          slackSend channel: '#devops',
-            color: 'bad',
-            message: "Branch *${env.GIT_BRANCH}* of *${currentBuild.fullDisplayName}* FAILED :scream:"
-        }
-      }
-    }
-
-    stage('Promotion to Mainnet') {
-      when {
-        tag 'release-v*'
-      }
-      steps {
-        slackSend channel: '#devops',
-             color: 'bad',
-             message: "*${currentBuild.fullDisplayName}* is awaiting user input confirmation for mainnet deployment"
-        script {
-          timeout(time: 1, unit: 'HOURS') {
-          env.DEPLOY_TO_MAINNET = input message: "User Input Required",
-            parameters: [choice(name: 'Deploy to Mainnet', choices: 'no\nyes', description: 'Choose yes if you want to deploy to Mainnet')]
-          }
-        }
-      }
-    }
-
-    stage('Deploy to Mainnet') {
-      when {
-        environment name: 'DEPLOY_TO_MAINNET', value: 'yes'
-      }
-
-      steps {
-
-        echo 'Managing S3'
-
-        // AWS Plugin cannot sync. It must clear the bucket then reupload
-        withAWS(credentials: 'jenkins-ecr', region: 'ap-southeast-2') {
-          echo 'Deleting old files'
-          s3Delete bucket: 'bcmainnetwallet.xpxsirius.io', path: './'
-
-          echo 'Uploading new files'
-          s3Upload bucket: 'bcmainnetwallet.xpxsirius.io', acl: 'PublicRead', file: 'dist/proximax-mainnet-sirius-wallet/', sseAlgorithm: 'AES256'
-        }
-
-        echo 'Managing CloudFront'
-
-        withAWS(credentials: 'jenkins-ecr') {
-          echo 'Invalidating CloudFront'
-          cfInvalidate distribution: 'EB05IZSH5L7L5', paths: ['/*']
-        }
-      }
-    
-      post {
-        success {
-          slackSend channel: '#devops',
-            color: 'good',
-            message: "Branch *${env.GIT_BRANCH}* build of *${currentBuild.fullDisplayName}* completed successfully :100:\nDeployed to https://wallet.xpxsirius.io"
-        }
-        failure {
-          slackSend channel: '#devops',
-            color: 'bad',
-            message: "Branch *${env.GIT_BRANCH}* of *${currentBuild.fullDisplayName}* FAILED :scream:"
         }
       }
     }

@@ -21,33 +21,33 @@ export const environment = {
   nameKeyWalletTransactionsNis: 'sw-transactions-nis',
   activeModulesBox: {
     voting: {
-      viewChildrenParam: true,
+      viewChildrenParam: false,
       createPoll: false,
       vote: false,
       viewResult: false,
       classNameParam: 'disable-module'
     },
     storage: {
-      viewChildrenParam: true,
+      viewChildrenParam: false,
       files: false,
       uploadFiles: false,
       sendShare: false,
       classNameParam: 'disable-module'
     },
     notarization: {
-      viewChildrenParam: true,
+      viewChildrenParam: false,
       attest: false,
       audit: false,
       classNameParam: 'disable-module'
     },
   },
-  protocol: `https`,
-  protocolWs: `wss`,
-  nodeExplorer: 'https://bctestnetexplorer.xpxsirius.io/#/result/hash',
+  protocol: `http`,
+  protocolWs: `ws`,
+  nodeExplorer: 'http://demo-explorer.edlx.io/#/result/hash',
   mosaicXpxInfo: {
     name: 'prx.xpx',
     coin: 'XPX',
-    id: '13bfc518e40549d7',
+    id: '7933B82E31F53311',
     mosaicIdUint64: [3825551831, 331334936],
     namespaceIdUint64: [2434186742, 3220914849],
     namespaceId: 'bffb42a19116bdf6',
@@ -59,9 +59,9 @@ export const environment = {
   },
   timeOutTransactionNis1: 20000,
   blockchainConnection: {
-    host: 'bctestnet1.brimstone.xpxsirius.io',
-    port: 443,
-    protocol: 'https',
+    host: '3.0.175.230',
+    port: 3000,
+    protocol: 'http',
     useSecureMessage: false
   },
   storageConnection: {
@@ -72,44 +72,41 @@ export const environment = {
     }
   },
   namespaceRentalFeeSink: {
-    public_key: 'F3B8194C36CC55500DCB8CD3734DFA07FE8B649219BE315C8DFAE1DAC59F3595',
-    address_public_test: 'VBH4NR-KUNINP-7HW6ZB-OECMIN-X3BCB4-ZDXKDM-KIWG'
+    public_key: '984AD9C41FD0728202B994E50DAFE1635D95B78BB0939B6F076606CCE05ADB2B',
+    address_public_test: 'VBQUQ6-WKGJE7-DYELEB-SBGN6C-5FMDMF-HTMCJ5-TJ43'
   },
   mosaicRentalFeeSink: {
-    public_key: '640A0DA89F6F57E43C526520AD05C59E185D19ADC95788D8611EBAEC94DEBBA1',
-    address_public_test: 'VD6AXC-3QBCFT-SLKHT6-2UPGTN-V5Z63I-YZKJI3-YGMD'
+    public_key: '97D888229129F7AE0DCC361A92963FC869F5AE508B714C72CA7B81E9C4AEBCA6',
+    address_public_test: 'VCLJME-KF2PGW-N52XFB-ABROWV-ZC2VNZ-PIB35H-C4LJ'
   },
   pollsContent: {
-    public_key: '945215E9D664D60E5A4FD54982C09B1F79D421EA0436FA307112A0DF74C89622',
-    address_public_test: 'VBPCBA-VFP7OG-REVIGD-TGRIKJ-PXSM4E-K446VF-SMFJ'
+    public_key: '',
+    address_public_test: ''
   },
   attestation: {
-    address_public_test: 'VDYN53-XXEGKK-3XHQYE-K6ZBMN-JPXN57-ZBHXA3-AW55'
+    address_public_test: ''
   },
   nis1: {
-    url: 'https://bctestnetswap.xpxsirius.io:7890',
-    // url: 'http://192.168.2.196:7890',
-    urlExplorer: 'http://testnet-explorer.nemtool.com/#/s_tx?hash=',
+    url: '',
+    urlExplorer: '',
     networkType: NetworkTypes.TEST_NET,
-    burnAddress: 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN',
+    burnAddress: '',
     nodes: [
-      { protocol: 'https', domain: 'bctestnetswap.xpxsirius.io', port: 7890 } as ServerConfig
+      { protocol: 'http', domain: '', port: 7890 } as ServerConfig
     ],
   },
   swapAccount: {
-    addressAccountMultisig: 'VAWOEOWTABXR7O3ZAK2XNA5GIBNE6PZIXDAFDWBU',
-    addressAccountSimple: 'VCWAHAMZRKWU4T3MSBEV7CJVYN7TGX5ZCYMVTUJW'
+    addressAccountMultisig: '',
+    addressAccountSimple: ''
   },
   swapAllowedMosaics: [
-    { namespaceId: 'zarcade', name: 'xar', divisibility: 4 },
-    { namespaceId: 'prx', name: 'xpx', divisibility: 6 }
   ],
   typeNetwork: {
-    value: NetworkType.TEST_NET,
-    label: 'PUBLIC TEST'
+    value: NetworkType.PRIVATE_TEST,
+    label: 'PRIVATE TEST'
   },
   coingecko: {
-    url: 'https://api.coingecko.com/api/v3/coins/',
+    url: '',
   },
   blockHeightMax: {
     heightMax: 172800
