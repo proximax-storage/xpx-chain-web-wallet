@@ -47,7 +47,7 @@ export const environment = {
   mosaicXpxInfo: {
     name: 'prx.xpx',
     coin: 'XPX',
-    id: '7933B82E31F53311',
+    id: '7933b82e31f53311',
     mosaicIdUint64: [838152977, 2033432622],
     namespaceIdUint64: [2434186742, 3220914849],
     namespaceId: 'bffb42a19116bdf6',
