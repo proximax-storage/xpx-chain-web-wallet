@@ -61,9 +61,10 @@ pipeline {
         branch '241wallet'
       }
       steps {
-        echo 'Deploying to S3'
-         withCredentials([string(credentialsId: 'ExternalId', variable: 'external_id')]) {
-           docker.image('amazon/aws-cli:latest').inside("--entrypoint '' -u 0") {
+        script {
+          echo 'Deploying to S3'
+          withCredentials([string(credentialsId: 'ExternalId', variable: 'external_id')]) {
+            docker.image('amazon/aws-cli:latest').inside("--entrypoint '' -u 0") {
               sh """
                 aws --version
                 aws configure set region sa-east-1
@@ -76,7 +77,8 @@ pipeline {
                 aws s3 cp dist/ s3://gift.two4one.proximax.ltd --acl public-read --sse AES256 --recursive
                 aws cloudfront create-invalidation --distribution-id E3HN7DX43GCX02 --path /*
               """
-         }
+            }
+          }
         }
       }
     
