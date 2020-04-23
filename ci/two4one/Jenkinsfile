@@ -73,9 +73,9 @@ pipeline {
                 aws configure set external_id $external_id
                 aws configure set duration_seconds 900
                 aws configure set role_session_name jenkins-slave
-                aws s3 rm s3://gift.two4one.proximax.ltd --recursive
-                aws s3 cp dist/ s3://gift.two4one.proximax.ltd --acl public-read --sse AES256 --recursive
-                aws cloudfront create-invalidation --distribution-id E3HN7DX43GCX02 --path /*
+                aws s3 rm s3://wallet.two4one.proximax.ltd --recursive
+                aws s3 cp dist/ s3://wallet.two4one.proximax.ltd --acl public-read --sse AES256 --recursive
+                aws cloudfront create-invalidation --distribution-id E12LXPREL2UNWF --path /*
               """
             }
           }
@@ -86,7 +86,7 @@ pipeline {
         success {
           slackSend channel: '#devops',
             color: 'good',
-            message: "Branch *${env.GIT_BRANCH}* build of *${currentBuild.fullDisplayName}* completed successfully :100:\nDeployed to https://wallet.xpxsirius.io"
+            message: "Branch *${env.GIT_BRANCH}* build of *${currentBuild.fullDisplayName}* completed successfully :100:\nDeployed to https://wallet.two4one.proximax.ltd"
         }
         failure {
           slackSend channel: '#devops',
