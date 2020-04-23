@@ -1,0 +1,97 @@
+pipeline {
+  agent {
+    node {
+      label 'docker-c5-xlarge'
+    }
+  }
+
+  environment {
+    npm_config_cache = "npm-cache"
+  }
+
+  options {
+    timestamps()
+  }
+
+  stages {
+    stage('Build') {
+      steps {
+        echo 'Starting Docker Container'
+        withDockerContainer(image: 'node:10.16') {
+          echo 'Installing dependencies'
+          sh 'npm install'
+
+          // Required dependency patch to build
+          // Jenkins requires the escape character to be escaped to escape a character
+          echo 'Patching dependency'
+          sh 'sed -i "/node:/c\\\\node: { crypto: true, stream: true, fs: \\\'empty\\\', net: \\\'empty\\\', tls: \\\'empty\\\'}" ./node_modules/@angular-devkit/build-angular/src/angular-cli-files/models/webpack-configs/browser.js'
+          
+          echo 'Building for two4one Mainnet'
+          sh 'npm run build:optimizer-mainnet'
+          sh "tar cJfv two4one-wallet-${env.BUILD_NUMBER}.tar.xz dist/two4one-wallet"
+        }
+        echo 'Leaving Container'
+      }
+
+      post {
+        failure {
+          slackSend channel: '#devops',
+            color: 'bad',
+            message: "Branch *${env.GIT_BRANCH}* build of *${currentBuild.fullDisplayName}* FAILED :scream:"
+        }
+      }
+    }
+
+    stage('Archive Artifact') {
+      steps {
+        echo 'Archiving Artifact'
+        archiveArtifacts "two4one-wallet-${env.BUILD_NUMBER}.tar.xz"
+      }
+      post {
+        success {
+          slackSend channel: '#devops',
+            color: 'good',
+            message:  "Branch *${env.GIT_BRANCH}* build of *${currentBuild.fullDisplayName}* completed successfully :100:\nArtifact stored in S3"
+        }
+      }
+    }
+
+    stage('Deploy to Production') {
+      when {
+        branch '241wallet'
+      }
+      steps {
+        echo 'Deploying to S3'
+         withCredentials([string(credentialsId: 'ExternalId', variable: 'external_id')]) {
+           docker.image('amazon/aws-cli:latest').inside("--entrypoint '' -u 0") {
+              sh """
+                aws --version
+                aws configure set region sa-east-1
+                aws configure set role_arn arn:aws:iam::350344958869:role/AWSRoleForJenkinsSlave
+                aws configure set credential_source Ec2InstanceMetadata
+                aws configure set external_id $external_id
+                aws configure set duration_seconds 900
+                aws configure set role_session_name jenkins-slave
+                aws s3 rm s3://gift.two4one.proximax.ltd --recursive
+                aws s3 cp dist/ s3://gift.two4one.proximax.ltd --acl public-read --sse AES256 --recursive
+                aws cloudfront create-invalidation --distribution-id E3HN7DX43GCX02 --path /*
+              """
+         }
+        }
+      }
+    
+      post {
+        success {
+          slackSend channel: '#devops',
+            color: 'good',
+            message: "Branch *${env.GIT_BRANCH}* build of *${currentBuild.fullDisplayName}* completed successfully :100:\nDeployed to https://wallet.xpxsirius.io"
+        }
+        failure {
+          slackSend channel: '#devops',
+            color: 'bad',
+            message: "Branch *${env.GIT_BRANCH}* of *${currentBuild.fullDisplayName}* FAILED :scream:"
+        }
+      }
+    }
+  }
+}
