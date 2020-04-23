@@ -74,7 +74,7 @@ pipeline {
                 aws configure set duration_seconds 900
                 aws configure set role_session_name jenkins-slave
                 aws s3 rm s3://wallet.two4one.proximax.ltd --recursive
-                aws s3 cp dist/ s3://wallet.two4one.proximax.ltd --acl public-read --sse AES256 --recursive
+                aws s3 cp dist/two4one-wallet s3://wallet.two4one.proximax.ltd --acl public-read --sse AES256 --recursive
                 aws cloudfront create-invalidation --distribution-id E12LXPREL2UNWF --path /*
               """
             }
