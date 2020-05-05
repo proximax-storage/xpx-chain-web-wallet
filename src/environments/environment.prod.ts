@@ -9,7 +9,7 @@ export const environment = {
   production: true,
   routeNodesJson: 'testnet',
   itemBooksAddress: 'sw-books-testnet',
-  version: '0.4.17',
+  version: '0.4.18',
   cacheVersion: '05',
   nameKeyBlockStorage: `sw-blocks`,
   nameKeyNodeSelected: `sw-selected-node-testnet`,
