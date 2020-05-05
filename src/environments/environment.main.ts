@@ -36,9 +36,9 @@ export const environment = {
     },
     notarization: {
       viewChildrenParam: true,
-      attest: false,
-      audit: false,
-      classNameParam: 'disable-module'
+      attest: true,
+      audit: true,
+      classNameParam: ''
     },
   },
   protocol: `https`,

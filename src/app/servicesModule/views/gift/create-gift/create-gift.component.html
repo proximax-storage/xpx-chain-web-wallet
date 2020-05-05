@@ -70,7 +70,7 @@
                      <input pattern="^[+]?([0-9]*[.])?[0-9]+$" currencyMask [options]="optionsXPX" mdbInputDirective
                         mdbValidate [validateSuccess]="true" [maxlength]="configurationForm.amount.maxLength"
                         [validateError]="true" type="text" class="form-control form-control-sm input-border input-amount"
-                        placeholder="Amount per Gift Cards" formControlName="amountXpx">
+                        placeholder="Amount per Gift Card" formControlName="amountXpx">
                      <span class="label-i-icon pl-2rem"></span>
 
                      <mdb-error *ngIf="validateInput('amountXpx').invalid && (validateInput('amountXpx').dirty || validateInput('amountXpx').touched)">
@@ -175,7 +175,7 @@
                   <div class="col-12 txt-a-center">
                      <span class="fs-1-7rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">Congratulations!</span>
                      <br>
-                     <span>GiftCard ready.</span>
+                     <span>Gift card(s) ready.</span>
                   </div>
 
                   <div class="col-11 col-md-10 mx-auto">
