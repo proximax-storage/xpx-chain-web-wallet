@@ -312,7 +312,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
         parseFloat(this.transactionService.addZeros(this.divisibility, value)),
         this.mosaicsInfoSelected[0].mosaicInfo
       );
-      if (Number(this.supply) + val > 9000000000) {
+      if (Number(this.supply) + val > this.configurationForm.mosaicWallet.maxSupply) {
         this.errSupply = true;
       } else {
         this.errSupply = false;
