@@ -62,7 +62,7 @@ export class SharedService {
       maxLength: 240
     },
     mosaicWallet: {
-      maxSupply: 9000000000
+      maxSupply: 999999999999999
     }
   };
 

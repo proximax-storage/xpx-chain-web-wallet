@@ -39,7 +39,7 @@
                     src="assets/images/img/icon-namespaces-green-16h-proximax-sirius-wallet.svg" alt="">
                   <input formControlName="divisibility" mdbInputDirective mdbValidate [validateSuccess]="true"
                     [validateError]="true" type="text" id="divisibility" minlength="0" maxlength="1"
-                    id="divisibility{{errorDivisibility}}" class="form-control form-control-sm input-border txt-a-right"
+                    id="divisibility{{errorDivisibility}}" class="form-control form-control-sm input-amount txt-a-right"
                     placeholder="" (keyup)="limitLength($event)">
                   <span class="label-i-icon pl-2rem">Divisibility</span>
 
@@ -180,8 +180,8 @@
 
               <div class="col-11 col-sm-6 d-flex justify-content-center justify-content-sm-start">
                 <button mdbBtn type="submit" rounded="true"
-                  [disabled]="!mosaicForm.valid || blockButton || invalidSupply || insufficientBalanceCosignatory" mdbWavesEffect class="btn-proximax"
-                  size="md">
+                  [disabled]="!mosaicForm.valid || blockButton || invalidSupply || insufficientBalanceCosignatory"
+                  mdbWavesEffect class="btn-proximax" size="md">
                   <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
                     *ngIf="blockSend"></span>
                   <span class="fs-1-2em color-white">Create</span>
@@ -198,9 +198,10 @@
           </div>
 
           <div class="mt-08rem">
-            <span class="fs-08rem"> Maximum supply is 9B.<br></span>
-            <span class="fw-600 fs-08rem">Example: 9,000,000,000</span>
+            <span class="fs-08rem"> Maximum supply is 900T.<br></span>
+            <span class="fw-600 fs-08rem">Example: 900,000,000,000,000</span>
           </div>
+
 
           <div class="mt-08rem">
             <span class="fs-08rem"> If you tick "Transferable", mosaic can be transferred.</span>
