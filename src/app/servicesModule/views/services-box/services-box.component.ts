@@ -220,12 +220,12 @@ export class ServicesBoxComponent implements OnInit {
     const transactionExplorer = {
       title: 'Transactions',
       show: true,
-      description: 'Explore all transactions',
+      description: 'Explorer all transactions',
       image: 'icon-transaction-explorer-full-color-80h-proximax-sirius-wallet.svg',
       route: '',
       children: {
         explorer: this.services.buildStructureService(
-          'Explor',
+          'Explorer',
           true,
           '',
           '',
