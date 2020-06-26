@@ -604,10 +604,6 @@ export class TransactionsService {
     return null;
   }
 
-  // viewPartial(partial){
-  //   this.lengthParcial = partial.length;
-  //   this.viewParcial = (partial && partial.length > 0) ? true : false
-  // }
   /**
    *
    *

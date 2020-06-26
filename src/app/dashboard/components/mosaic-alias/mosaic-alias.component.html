@@ -25,7 +25,7 @@
         </ng-container>
 
         <!-- Height -->
-        <ng-container *ngIf="mosaicAlias?.data.transactionInfo.height">
+        <ng-container *ngIf="mosaicAlias?.data.transactionInfo.height && mosaicAlias?.data.transactionInfo.height.compact() > 0">
           <div class="col-12 lh-1em mt-1rem">
             <span class="fw-600 fs-08rem">Height:&nbsp;&nbsp;</span>
             <span class="fs-07rem">{{mosaicAlias?.data.transactionInfo.height.compact()}}</span>
