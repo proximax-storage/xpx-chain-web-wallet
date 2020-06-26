@@ -223,10 +223,12 @@
         </div>
 
         <!-- Height -->
-        <div class="col-12 lh-1em mt-1rem">
-          <span class="fw-600 fs-075rem">Height:&nbsp;</span>
-          <span class="fs-075rem"> {{transferTransaction.data['transactionInfo'].height.compact()}} </span>
-        </div>
+        <ng-container *ngIf="transferTransaction.data['transactionInfo'].height.compact() > 0">
+          <div class="col-12 lh-1em mt-1rem">
+            <span class="fw-600 fs-075rem">Height:&nbsp;</span>
+            <span class="fs-075rem"> {{transferTransaction.data['transactionInfo'].height.compact()}} </span>
+          </div>
+        </ng-container>
 
         <!-- Type -->
         <div class="col-12 lh-1em">
