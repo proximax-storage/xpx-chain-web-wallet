@@ -9,8 +9,8 @@ export const environment = {
   production: true,
   routeNodesJson: 'testnet',
   itemBooksAddress: 'sw-books-testnet',
-  version: '0.4.20',
-  cacheVersion: '09',
+  version: '0.4.21',
+  cacheVersion: '01',
   nameKeyBlockStorage: `sw-blocks`,
   nameKeyNodeSelected: `sw-selected-node-testnet`,
   nameKeyWalletStorage: `sw-testnet`,
@@ -22,23 +22,23 @@ export const environment = {
   activeModulesBox: {
     voting: {
       viewChildrenParam: true,
-      createPoll: false,
-      vote: false,
+      createPoll: true,
+      vote: true,
       viewResult: false,
-      classNameParam: 'disable-module'
+      classNameParam: ''
     },
     storage: {
       viewChildrenParam: true,
-      files: false,
-      uploadFiles: false,
+      files: true,
+      uploadFiles: true,
       sendShare: false,
-      classNameParam: 'disable-module'
+      classNameParam: ''
     },
     notarization: {
       viewChildrenParam: true,
-      attest: false,
-      audit: false,
-      classNameParam: 'disable-module'
+      attest: true,
+      audit: true,
+      classNameParam: ''
     },
   },
   protocol: `https`,
@@ -88,7 +88,7 @@ export const environment = {
   },
   nis1: {
     url: 'https://bctestnetswap.xpxsirius.io:7890',
-    // url: 'http://192.168.2.196:7890',
+    // url: 'http://192.168.3.217:7890',
     urlExplorer: 'http://testnet-explorer.nemtool.com/#/s_tx?hash=',
     networkType: NetworkTypes.TEST_NET,
     burnAddress: 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN',
