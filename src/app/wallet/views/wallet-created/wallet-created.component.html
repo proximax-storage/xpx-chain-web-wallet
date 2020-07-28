@@ -27,6 +27,20 @@
     </div>
   </div>
 
+  <!-- Public key -->
+  <div class="row" v-if="walletData?.dataAccount?.publicAccount?.publicKey">
+    <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto d-flex align-items-center box-grey">
+      <div class="col-10">
+        <span class="fw-bold">Public key: </span><br>
+        <span class="font-small d-flex">{{walletData.dataAccount.publicAccount.publicKey}}</span>
+      </div>
+      <div class="col-2 text-right">
+        <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p" alt="Copy"
+          width="20" (click)="copyMessage('Address')" ngxClipboard [cbContent]="address">
+      </div>
+    </div>
+  </div>
+
   <div class="row">
     <div class="col-11 col-sm-12 col-md-10 col-lg-8 mb-1rem mx-auto box-transparent-border-orange">
       <div class="txt-a-center">

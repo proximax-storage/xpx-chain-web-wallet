@@ -32,7 +32,7 @@ export class AccountCreatedComponent implements OnInit {
   publicKey: any;
   routeContinue = `/${AppConfig.routes.viewAllAccount}`;
   viewPrivateKey = false;
-  viewPublicKey = false;
+  viewPublicKey = true;
   disabledContinue = true;
   subscription: Subscription[] = [];
 
@@ -71,7 +71,7 @@ export class AccountCreatedComponent implements OnInit {
         this.routeContinue = `/${AppConfig.routes.viewAllAccount}`;
       }
 
-      this.viewPublicKey = this.algo.data.fromPrivateKey;
+      // this.viewPublicKey = this.algo.data.fromPrivateKey;
       this.algo = null;
     } else {
       this.router.navigate([`/${AppConfig.routes.home}`]);
