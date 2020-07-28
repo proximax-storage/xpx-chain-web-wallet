@@ -49,7 +49,7 @@
         </div>
 
         <!-- public key -->
-        <ng-container *ngIf="accountValid">
+        <!-- <ng-container *ngIf="accountValid"> -->
             <div class="row">
                 <div class="col-12 mx-auto d-flex align-items-center box-grey p-1rem">
                     <div class="col-10 lh-1-1em">
@@ -67,10 +67,10 @@
                     </div>
                 </div>
             </div>
-        </ng-container>
+        <!-- </ng-container> -->
 
         <!-- public key -->
-        <ng-container *ngIf="!accountValid">
+        <!-- <ng-container *ngIf="!accountValid">
             <div class="row">
                 <div class="col-12  mx-auto box-transparent-border-orange">
                     <div class="txt-a-center">
@@ -83,7 +83,7 @@
                     </p>
                 </div>
             </div>
-        </ng-container>
+        </ng-container> -->
 
         <!-- DECRYPT ACCOUNT -->
         <ng-container *ngIf="currenAccount.encrypted !== ''">
@@ -178,7 +178,7 @@
                                             [validateSuccess]="true" [validateError]="true" [type]="passwordMain"
                                             id="password" class="form-control form-control-sm input-border"
                                             placeholder="Enter Wallet Password" style="background: #ffffff;">
-           
+
                                         <mdb-error
                                             *ngIf="
                                           validateInput('password', '').invalid &&
@@ -249,7 +249,7 @@
                                                         [type]="passwordMain" id="password"
                                                         class="form-control form-control-sm input-border"
                                                         placeholder="Enter Wallet Password" style="background: #ffffff;">
-    
+
                                                     <mdb-error
                                                         *ngIf="
                                                                   validateInput('password', '').invalid &&
@@ -348,7 +348,7 @@
                                                         [type]="passwordMain" id="password"
                                                         class="form-control form-control-sm input-border"
                                                         placeholder="Enter Wallet Password" style="background: #ffffff;">
-    
+
                                                     <mdb-error
                                                         *ngIf="
                                                                   validateInput('password', '').invalid &&
@@ -360,7 +360,7 @@
                                         </div>
                                     </form>
                                 </ng-container>
-                                
+
                             <!-- <div class="row pt-05rem" *ngIf="actionBtnSavePaperWallet">
                                 <div class="col-12">
                                     <div class="md-form form-sm m-0">
