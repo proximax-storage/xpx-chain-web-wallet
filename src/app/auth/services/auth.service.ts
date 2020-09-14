@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { NetworkType, UInt64, Address, BlockInfo } from 'tsjs-xpx-chain-sdk';
+import { NetworkType, UInt64, Address, BlockInfo, Account, Password } from 'tsjs-xpx-chain-sdk';
 
 import { AppConfig } from '../../config/app.config';
 import { WalletService, CurrentWalletInterface } from '../../wallet/services/wallet.service';
@@ -15,6 +15,8 @@ import { ProximaxProvider } from '../../shared/services/proximax.provider';
 import { MosaicService } from '../../servicesModule/services/mosaic.service';
 import { NemProviderService } from '../../swap/services/nem-provider.service';
 import { environment } from '../../../environments/environment';
+import Peer from 'peerjs';
+import {InvitationRequestMessage, InvitationResponseMessage} from 'siriusid-sdk';
 
 @Injectable({
   providedIn: 'root'
@@ -29,6 +31,12 @@ export class AuthService {
   isLoggedSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(this.logged);
   isLogged$: Observable<boolean> = this.isLoggedSubject.asObservable();
 
+  qrInvitation;
+  peer: Peer;
+  withSiriusID = false;
+  wallet;
+  commonValue;
+  canLogin = false;
 
   constructor(
     private walletService: WalletService,
@@ -122,6 +130,7 @@ export class AuthService {
     this.dataBridgeService.searchBlockInfo(true);
 
     this.route.navigate([`/${AppConfig.routes.dashboard}`]);
+    console.log('end of auth');
     return true;
   }
 
@@ -189,5 +198,103 @@ export class AuthService {
       r.push({ value: item, label: item.name });
     });
     return r;
+  }
+
+
+  /**
+   * Create QR Code for Login by SiriusID
+   */
+  createInvitationRequestMessage(){
+    let networkType = environment.typeNetwork.value;
+      let nodeUrl = environment.blockchainConnection.protocol + '://' + environment.blockchainConnection.host;
+      let account = Account.generateNewAccount(networkType);
+      let mess = InvitationRequestMessage.create("Login request from Sirius web wallet", account.publicKey, nodeUrl);
+      this.qrInvitation = mess.generateQR();
+  
+      //console.log('channel: ' + mess.getSessionId());
+      this.peer = new Peer(mess.getSessionId()); 
+      this.peer.on('connection', (conn) => {
+        conn.on('data', async (data) => {
+          let resMess = InvitationResponseMessage.createFromPayload(data,account.privateKey);
+          await this.importWalletAndLogin(resMess.getWltBase64(),resMess.getSecretKey());
+
+        });
+        conn.on('open', () => {
+          conn.send('Received');
+        });
+        conn.on('close', () => {
+          console.log('connection close');
+        })
+      });
+  
+      this.peer.on('error', () => {
+        console.log("Connection has an error");
+      })
+  
+      this.peer.on('close', () => {
+        console.log("peer close");
+      })
+    
+    //this.loginModal.show();
+  }
+
+  async importWalletAndLogin(wlt: any, secretKey: string) {
+    if (wlt) {
+      const existWallet = this.walletService.getWalletStorage().find(
+        (element: any) => {
+          let walletName = wlt.name;
+          walletName = (walletName.includes(' ') === true) ? walletName.split(' ').join('_') : walletName
+          return element.name === walletName;
+        }
+      );
+      if (existWallet === undefined) {
+        if (wlt.accounts[0].network === environment.typeNetwork.value) {
+          let walletName = wlt.name;
+          walletName = (walletName.includes(' ') === true) ? walletName.split(' ').join('_') : walletName
+          const accounts = [];
+          const contacs = [];
+          if (wlt.accounts.length !== undefined) {
+            for (const element of wlt.accounts) {
+              accounts.push(element);
+              contacs.push({ label: element.name, value: element.address.split('-').join(''), walletContact: true });
+            }
+            this.serviceModuleService.setBookAddress(contacs, walletName);
+          }
+          const wallet = {
+            name: walletName,
+            accounts: accounts
+          }
+          let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
+          walletsStorage.push(wallet);
+          localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
+
+          let pass = new Password(secretKey);
+
+          let privateKey = this.proximaxProvider.decryptPrivateKey(pass,wallet.accounts[0]['encrypted'],wallet.accounts[0]['iv']);
+         
+          let commonValue = {
+            password: secretKey,
+            privateKey: privateKey
+          }
+          //await this.login(commonValue, wallet);
+          this.wallet = existWallet;
+          this.commonValue = commonValue;
+          this.canLogin = true;
+        } else {
+          this.sharedService.showError('', 'Invalid network type');
+        }
+      } else {
+        let pass = new Password(secretKey);
+        let privateKey = this.proximaxProvider.decryptPrivateKey(pass,existWallet.accounts[0]['encrypted'],existWallet.accounts[0]['iv']);
+        let commonValue = {
+          password: secretKey,
+          privateKey: privateKey
+        }
+        this.wallet = existWallet;
+        this.commonValue = commonValue;
+        this.canLogin = true;
+
+      }
+    }
   }
 }

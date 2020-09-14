@@ -1,4 +1,4 @@
-<div class="container mt-1rem mb-2rem animated fadeIn">
+<div *ngIf="!authService.withSiriusID" class="container mt-1rem mb-2rem animated fadeIn">
   <div class="row">
     <div class="col-12 d-flex justify-content-center">
       <span class="fs-1-4rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">{{title}}</span>
@@ -65,4 +65,30 @@
       </div>
     </div>
   </form>
+</div>
+
+<!-- Add -->
+<div *ngIf="authService.withSiriusID" class="container mt-1rem mb-2rem animated fadeIn">
+  <div class="row">
+    <div class="col-12 col-md-10 mx-auto">
+      <p style="text-align:center;color: #306EB5;font-size: 1.4rem;margin-bottom: 30px;">
+        Sign In with Sirius ID
+      </p>
+      <div style="text-align:center;">
+        <img [src]="authService.qrInvitation">
+      </div>
+      <p style="text-align:center;margin-top: 30px;">
+        Scan QR code with your SiriusID 
+      </p>
+    </div>
+  </div>
+
+  <div style="text-align: center;margin-top: 30px;" >
+    <button *ngIf="authService.canLogin" class="btn-proximax btn btn-rounded btn-sm" (click)="authWithSiriusID()">
+      <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+            *ngIf="spinnerButton"></span>
+      <span class="color-white" >Sign In</span>
+    </button>
+  </div>
+  
 </div>

@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import nem from 'nem-sdk';
 import { Router } from '@angular/router';
 import { NetworkTypes } from 'nem-library';
-import { NetworkType } from 'tsjs-xpx-chain-sdk';
+import { NetworkType, Account, Password } from 'tsjs-xpx-chain-sdk';
 import { ModalDirective } from 'ng-uikit-pro-standard';
 import * as CryptoJS from 'crypto-js';
 import { first } from 'rxjs/operators';
@@ -15,7 +15,8 @@ import { environment } from '../../../../environments/environment';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { AuthService } from '../../../auth/services/auth.service';
 import { NemProviderService } from '../../../swap/services/nem-provider.service';
-
+import Peer from 'peerjs';
+import {InvitationRequestMessage, InvitationResponseMessage} from 'siriusid-sdk';
 
 @Component({
   selector: 'app-home',
@@ -27,6 +28,7 @@ export class HomeComponent implements OnInit {
   @ViewChild('basicModal', { static: true }) basicModal: ModalDirective;
   @ViewChild('file', { static: true }) myInputVariable: ElementRef;
   @ViewChild('modalAuth', { static: true }) modalAuth: ModalDirective;
+  @ViewChild('loginModal', { static: true }) loginModal: ModalDirective;
 
   eventNumber = 0;
   objectKeys = Object.keys;
@@ -40,6 +42,7 @@ export class HomeComponent implements OnInit {
   password = '';
   subscription: Subscription[] = [];
   walletDecryp: any;
+  qrInvitation;
 
   constructor(
     private authService: AuthService,
@@ -89,7 +92,13 @@ export class HomeComponent implements OnInit {
         '',
         'icon-add-new-blue.svg',
         `/${this.link.createWallet}`
-      ), this.services.buildStructureService(
+      ),this.services.buildStructureService(
+        'Sign In With SiriusID',
+        true,
+        '',
+        'icon-add-new-blue.svg',
+        `/${this.link.createWallet}`
+      ),this.services.buildStructureService(
         'Create',
         true,
         '',
@@ -283,7 +292,14 @@ export class HomeComponent implements OnInit {
    * @memberof SidebarAuthComponent
    */
   showModal() {
+    this.authService.withSiriusID = false;
     this.eventNumber = this.eventNumber + 1;
     this.modalAuth.show();
+  }
+
+  showLoginModal(){
+    this.authService.createInvitationRequestMessage();
+    this.authService.withSiriusID = true;
+    this.loginModal.show();
   }
 }

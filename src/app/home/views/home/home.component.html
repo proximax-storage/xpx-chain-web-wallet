@@ -36,16 +36,22 @@
   <div class="row mt-3rem pb-2rem">
     <div class="col-12 col-md-10 col-lg-8 mx-auto">
       <div class="row">
-        <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+        <div class="col-12 col-sm-4 d-flex justify-content-center justify-content-sm-end">
           <button (click)="showModal()" mdbBtn type="button" rounded="true" mdbWavesEffect
             class="btn-proximax" size="sm">
             <span class="color-white">{{ boxCreateWallet[0].title }}</span>
           </button>
         </div>
-        <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-          <button [routerLink]="['/'+boxCreateWallet[1].route]" mdbBtn type="button" rounded="true" mdbWavesEffect
+        <div class="col-12 col-sm-4 d-flex justify-content-center justify-content-sm-end">
+          <button (click)="showLoginModal()" mdbBtn type="button" rounded="true" mdbWavesEffect
             class="btn-proximax" size="sm">
             <span class="color-white">{{ boxCreateWallet[1].title }}</span>
+          </button>
+        </div>
+        <div class="col-12 col-sm-4 d-flex justify-content-center justify-content-sm-start">
+          <button [routerLink]="['/'+boxCreateWallet[1].route]" mdbBtn type="button" rounded="true" mdbWavesEffect
+            class="btn-proximax" size="sm">
+            <span class="color-white">{{ boxCreateWallet[2].title }}</span>
           </button>
         </div>
       </div>
@@ -123,6 +129,42 @@
               <app-auth [eventNumber]="eventNumber"></app-auth>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL LOGIN WITH SIRIUSID -->
+<div class="d-flex align-items-center">
+  <div mdbModal #loginModal="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLoginModal"
+    aria-hidden="true">
+    <div class="modal-dialog modal-md d-flex align-items-center" role="document">
+      <div class="modal-content form-elegant bord-rad-1-5rem">
+        <div class="row">
+          <div class="col-12">
+            <div class="col-12">
+              <span class="cursor-p d-flex justify-content-end fw-600 fs-1rem pt-04rem"
+                (click)="loginModal.hide()">x</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-body">
+          <!-- <div class="row">
+            <div class="col-12 col-md-10 mx-auto">
+              <p style="text-align:center;color: #306EB5;font-size: 1.4rem;margin-bottom: 30px;">
+                Sign In with Sirius ID
+              </p>
+              <div style="text-align:center;">
+                <img [src]="authService.qrInvitation">
+              </div>
+              <p style="text-align:center;margin-top: 30px;">
+                Scan QR code with your SiriusID 
+              </p>
+            </div>
+          </div> -->
+          <app-auth [eventNumber]="eventNumber"></app-auth>
         </div>
       </div>
     </div>

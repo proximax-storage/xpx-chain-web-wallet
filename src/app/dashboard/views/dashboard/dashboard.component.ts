@@ -15,6 +15,7 @@ import { AppConfig } from '../../../config/app.config';
 import { NamespacesService } from '../../../servicesModule/services/namespaces.service';
 import { DataBridgeService } from '../../../shared/services/data-bridge.service';
 import { NemProviderService } from '../../../swap/services/nem-provider.service';
+import { AuthService } from 'src/app/auth/services/auth.service';
 
 
 @Component({
@@ -35,7 +36,8 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     private transactionService: TransactionsService,
     private sharedService: SharedService,
     private proximaxProvider: ProximaxProvider,
-    private walletService: WalletService
+    private walletService: WalletService,
+    private authService: AuthService
   ) { }
 
   @ViewChild(MdbTableDirective, { static: true }) mdbTable: MdbTableDirective;
@@ -96,12 +98,22 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
   ngOnInit() {
+    if (this.authService.peer){
+      this.authService.peer.destroy();
+    }
+    
+    console.log("1111111111111111");
     this.dashboardService.incrementViewDashboard();
+    console.log("222222222222222");
     this.dashboardService.subscribeLogged();
+    console.log("3333333333333333");
     this.currentAccount = Object.assign({}, this.walletService.getCurrentAccount());
 
     this.currentAccount.address = this.proximaxProvider.createFromRawAddress(this.currentAccount.address).pretty();
     this.currentAccount.name = (this.currentAccount.name === 'Primary') ? `${this.currentAccount.name}_Account` : this.currentAccount.name;
+    console.log("------------------------------------");
+    console.log("current account");
+    console.log(this.currentAccount);
     const qr = qrcode(10, 'H');
     qr.addData(this.currentAccount.address);
     qr.make();
