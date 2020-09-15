@@ -66,23 +66,6 @@ export class AuthComponent implements OnInit {
   /**
    *
    *
-   * @memberof AuthComponent
-   */
-  async authWithSiriusID() {
-    this.spinnerButton = true;
-    let wallet = this.authService.wallet;
-    let commonValue = this.authService.commonValue;
-    let login = await this.authService.login(commonValue, wallet);
-    if (login){
-      this.authService.canLogin = false;
-      this.spinnerButton = false;
-    }
-    
-  }
-
-  /**
-   *
-   *
    * @param {*} inputType
    * @memberof AuthComponent
    */

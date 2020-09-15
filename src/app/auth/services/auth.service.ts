@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { NetworkType, UInt64, Address, BlockInfo, Account, Password } from 'tsjs-xpx-chain-sdk';
@@ -34,9 +34,6 @@ export class AuthService {
   qrInvitation;
   peer: Peer;
   withSiriusID = false;
-  wallet;
-  commonValue;
-  canLogin = false;
 
   constructor(
     private walletService: WalletService,
@@ -49,7 +46,8 @@ export class AuthService {
     private serviceModuleService: ServicesModuleService,
     private sharedService: SharedService,
     private proximaxProvider: ProximaxProvider,
-    private mosaicService: MosaicService
+    private mosaicService: MosaicService,
+    private ngZone: NgZone
   ) {
     this.setLogged(false);
   }
@@ -129,7 +127,8 @@ export class AuthService {
     this.dataBridgeService.searchBlockInfo();
     this.dataBridgeService.searchBlockInfo(true);
 
-    this.route.navigate([`/${AppConfig.routes.dashboard}`]);
+    //this.route.navigate([`/${AppConfig.routes.dashboard}`]);
+    this.ngZone.run(() => this.route.navigate([`/${AppConfig.routes.dashboard}`])).then();
     console.log('end of auth');
     return true;
   }
@@ -234,8 +233,6 @@ export class AuthService {
       this.peer.on('close', () => {
         console.log("peer close");
       })
-    
-    //this.loginModal.show();
   }
 
   async importWalletAndLogin(wlt: any, secretKey: string) {
@@ -276,10 +273,7 @@ export class AuthService {
             password: secretKey,
             privateKey: privateKey
           }
-          //await this.login(commonValue, wallet);
-          this.wallet = existWallet;
-          this.commonValue = commonValue;
-          this.canLogin = true;
+          await this.login(commonValue, wallet);
         } else {
           this.sharedService.showError('', 'Invalid network type');
         }
@@ -290,10 +284,7 @@ export class AuthService {
           password: secretKey,
           privateKey: privateKey
         }
-        this.wallet = existWallet;
-        this.commonValue = commonValue;
-        this.canLogin = true;
-
+        await this.login(commonValue,existWallet);
       }
     }
   }

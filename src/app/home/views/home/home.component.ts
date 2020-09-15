@@ -299,7 +299,6 @@ export class HomeComponent implements OnInit {
 
   showLoginModal(){
     this.authService.createInvitationRequestMessage();
-    this.authService.withSiriusID = true;
     this.loginModal.show();
   }
 }
