@@ -51,10 +51,18 @@ export class CreatePollStorageService {
     const connectionConfig = ConnectionConfig.createWithLocalIpfsConnection(
       new BlockchainNetworkConnection(blockChainNetworkType, blockChainHost, blockChainPort, blockChainProtocol),
       new IpfsConnection(storageHost, storagePort, storageOptions));
-
-    this.uploader = new Uploader(connectionConfig);
+    const storageHostUploader = environment.storageConnectionUnload.host;
+    const storagePortUploader = environment.storageConnectionUnload.port;
+    const storageOptionsUploader = environment.storageConnectionUnload.options;
+    const connectionConfigUploader = ConnectionConfig.createWithLocalIpfsConnection(
+      new BlockchainNetworkConnection(blockChainNetworkType, blockChainHost, blockChainPort, blockChainProtocol),
+      new IpfsConnection(storageHostUploader, storagePortUploader, storageOptionsUploader));
+    this.uploader = new Uploader(connectionConfigUploader);
     this.searcher = new Searcher(connectionConfig);
     this.downloader = new Downloader(connectionConfig);
+
+    console.log('downloader', this.downloader)
+    console.log('uploader', this.uploader)
   }
 
 
@@ -142,6 +150,7 @@ export class CreatePollStorageService {
         // console.log('searchParam',searchParam)
         // searchParam.withResultSize(100);
         const searchResult = await this.searcher.search(searchParam.build());
+        console.log('searchResult', searchResult)
         if (searchResult.results.length > 0) {
           for (const resultItem of searchResult.results.reverse()) {
             const encrypted = resultItem.messagePayload.privacyType !== PrivacyType.PLAIN;
