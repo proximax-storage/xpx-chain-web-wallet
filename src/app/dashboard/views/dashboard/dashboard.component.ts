@@ -101,19 +101,12 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.authService.peer){
       this.authService.peer.destroy();
     }
-    
-    console.log("1111111111111111");
     this.dashboardService.incrementViewDashboard();
-    console.log("222222222222222");
     this.dashboardService.subscribeLogged();
-    console.log("3333333333333333");
     this.currentAccount = Object.assign({}, this.walletService.getCurrentAccount());
 
     this.currentAccount.address = this.proximaxProvider.createFromRawAddress(this.currentAccount.address).pretty();
     this.currentAccount.name = (this.currentAccount.name === 'Primary') ? `${this.currentAccount.name}_Account` : this.currentAccount.name;
-    console.log("------------------------------------");
-    console.log("current account");
-    console.log(this.currentAccount);
     const qr = qrcode(10, 'H');
     qr.addData(this.currentAccount.address);
     qr.make();
@@ -142,6 +135,11 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     ));
 
     this.currentWallet = Object.assign({}, this.walletService.currentWallet);
+
+    if(this.authService.walletNameSID){
+      this.walletService.removeWallet(this.authService.walletNameSID);
+      this.authService.walletNameSID = null;
+    }
   }
 
   ngOnDestroy(): void {

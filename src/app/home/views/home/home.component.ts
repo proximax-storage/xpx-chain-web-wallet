@@ -15,8 +15,6 @@ import { environment } from '../../../../environments/environment';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { AuthService } from '../../../auth/services/auth.service';
 import { NemProviderService } from '../../../swap/services/nem-provider.service';
-import Peer from 'peerjs';
-import {InvitationRequestMessage, InvitationResponseMessage} from 'siriusid-sdk';
 
 @Component({
   selector: 'app-home',
@@ -298,6 +296,7 @@ export class HomeComponent implements OnInit {
   }
 
   showLoginModal(){
+    this.authService.walletNameSID = null;
     this.authService.createInvitationRequestMessage();
     this.loginModal.show();
   }

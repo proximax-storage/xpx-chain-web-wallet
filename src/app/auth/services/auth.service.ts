@@ -17,6 +17,7 @@ import { NemProviderService } from '../../swap/services/nem-provider.service';
 import { environment } from '../../../environments/environment';
 import Peer from 'peerjs';
 import {InvitationRequestMessage, InvitationResponseMessage} from 'siriusid-sdk';
+import { setTimeout } from 'timers';
 
 @Injectable({
   providedIn: 'root'
@@ -34,6 +35,7 @@ export class AuthService {
   qrInvitation;
   peer: Peer;
   withSiriusID = false;
+  walletNameSID = null;
 
   constructor(
     private walletService: WalletService,
@@ -85,7 +87,6 @@ export class AuthService {
       } else if (!this.nodeService.getNodeSelected()) {
         this.nodeService.initNode();
       }
-
       const decrypted = this.walletService.decrypt(common, currentAccount);
       if (!decrypted) {
         return false;
@@ -123,13 +124,15 @@ export class AuthService {
 
     this.mosaicService.getMosaicXPX();
     this.namespaces.searchNamespacesFromAccounts(address);
+    // if (!this.walletNameSID){
+    //   this.transactionService.searchAccountsInfo(this.walletService.currentWallet.accounts);
+    // }
     this.transactionService.searchAccountsInfo(this.walletService.currentWallet.accounts);
     this.dataBridgeService.searchBlockInfo();
     this.dataBridgeService.searchBlockInfo(true);
 
     //this.route.navigate([`/${AppConfig.routes.dashboard}`]);
     this.ngZone.run(() => this.route.navigate([`/${AppConfig.routes.dashboard}`])).then();
-    console.log('end of auth');
     return true;
   }
 
@@ -239,52 +242,48 @@ export class AuthService {
     if (wlt) {
       const existWallet = this.walletService.getWalletStorage().find(
         (element: any) => {
-          let walletName = wlt.name;
-          walletName = (walletName.includes(' ') === true) ? walletName.split(' ').join('_') : walletName
-          return element.name === walletName;
+          let publicKey = wlt.accounts[0].publicAccount.publicKey;
+          return element.accounts[0].publicAccount.publicKey === publicKey;
         }
       );
-      if (existWallet === undefined) {
-        if (wlt.accounts[0].network === environment.typeNetwork.value) {
-          let walletName = wlt.name;
-          walletName = (walletName.includes(' ') === true) ? walletName.split(' ').join('_') : walletName
-          const accounts = [];
-          const contacs = [];
-          if (wlt.accounts.length !== undefined) {
-            for (const element of wlt.accounts) {
-              accounts.push(element);
-              contacs.push({ label: element.name, value: element.address.split('-').join(''), walletContact: true });
-            }
-            this.serviceModuleService.setBookAddress(contacs, walletName);
+      if (existWallet !== undefined) {
+        this.walletService.removeWallet(existWallet.name);
+      }
+      if (wlt.accounts[0].network === environment.typeNetwork.value) {
+        let walletName = wlt.name;
+        this.walletNameSID = walletName;
+        walletName = (walletName.includes(' ') === true) ? walletName.split(' ').join('_') : walletName
+        const accounts = [];
+        const contacs = [];
+        if (wlt.accounts.length !== undefined) {
+          for (const element of wlt.accounts) {
+            accounts.push(element);
+            contacs.push({ label: element.name, value: element.address.split('-').join(''), walletContact: true });
           }
-          const wallet = {
-            name: walletName,
-            accounts: accounts
-          }
-          let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
-          walletsStorage.push(wallet);
-          localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
-
-          let pass = new Password(secretKey);
-
-          let privateKey = this.proximaxProvider.decryptPrivateKey(pass,wallet.accounts[0]['encrypted'],wallet.accounts[0]['iv']);
-         
-          let commonValue = {
-            password: secretKey,
-            privateKey: privateKey
-          }
-          await this.login(commonValue, wallet);
-        } else {
-          this.sharedService.showError('', 'Invalid network type');
+          this.serviceModuleService.setBookAddress(contacs, walletName);
         }
-      } else {
+        const wallet = {
+          name: walletName,
+          accounts: accounts
+        }
+        let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
+        walletsStorage.push(wallet);
+        localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
+
         let pass = new Password(secretKey);
-        let privateKey = this.proximaxProvider.decryptPrivateKey(pass,existWallet.accounts[0]['encrypted'],existWallet.accounts[0]['iv']);
+        
+        let privateKey = this.proximaxProvider.decryptPrivateKey(pass,wallet.accounts[0]['encrypted'],wallet.accounts[0]['iv']);
+        
         let commonValue = {
           password: secretKey,
           privateKey: privateKey
         }
-        await this.login(commonValue,existWallet);
+        
+        setTimeout(() => {
+          this.login(commonValue, wallet);
+        },10000)
+      } else {
+        this.sharedService.showError('', 'Invalid network type');
       }
     }
   }

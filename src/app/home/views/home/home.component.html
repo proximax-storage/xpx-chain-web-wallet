@@ -157,7 +157,8 @@
                 Sign In with Sirius ID
               </p>
               <div style="text-align:center;">
-                <img [src]="authService.qrInvitation">
+                <img *ngIf="!authService.walletNameSID" [src]="authService.qrInvitation">
+                <span *ngIf="authService.walletNameSID" class="spinner-border spinner-border-sm text-light" style="width: 5rem;height: 5rem;border-width: 0.25rem;margin: 3rem 0;" ></span>
               </div>
               <p style="text-align:center;margin-top: 30px;">
                 Scan QR code with your SiriusID 

@@ -760,6 +760,7 @@ export class WalletService {
           (element: any) => {
             return element.name !== name;
           });
+        console.log(walletsStorageNew);
         localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorageNew));
       }
     }
