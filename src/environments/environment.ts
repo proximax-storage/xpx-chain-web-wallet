@@ -9,7 +9,7 @@ export const environment = {
   production: false,
   routeNodesJson: 'testnet',
   itemBooksAddress: 'sw-books-testnet',
-  version: '0.4.22',
+  version: '0.4.23',
   cacheVersion: '01',
   nameKeyBlockStorage: `sw-blocks`,
   nameKeyNodeSelected: `sw-selected-node-testnet`,
@@ -43,7 +43,7 @@ export const environment = {
   },
   protocol: `https`,
   protocolWs: `wss`,
-  nodeExplorer: 'https://bctestnetexplorer.xpxsirius.io/#/result/hash',
+  nodeExplorer: 'http://bctestnetexplorer.xpxsirius.io/#/result/hash',
   mosaicXpxInfo: {
     name: 'prx.xpx',
     coin: 'XPX',
@@ -66,10 +66,19 @@ export const environment = {
   },
   storageConnection: {
     host: 'ipfs1-dev.xpxsirius.io',
-    port: 443,
+    port: 80,
+    options: {
+      protocol: 'http'
+    }
+    
+  },
+  storageConnectionUnload: {
+    host: 'ipfs1-dev.xpxsirius.io',
+    port: 5443,
     options: {
       protocol: 'https'
     }
+
   },
   namespaceRentalFeeSink: {
     public_key: 'F3B8194C36CC55500DCB8CD3734DFA07FE8B649219BE315C8DFAE1DAC59F3595',
@@ -80,8 +89,8 @@ export const environment = {
     address_public_test: 'VD6AXC-3QBCFT-SLKHT6-2UPGTN-V5Z63I-YZKJI3-YGMD'
   },
   pollsContent: {
-    public_key: '945215E9D664D60E5A4FD54982C09B1F79D421EA0436FA307112A0DF74C89622',
-    address_public_test: 'VBPCBA-VFP7OG-REVIGD-TGRIKJ-PXSM4E-K446VF-SMFJ'
+    public_key: 'A32CC719A9C4524B952F8A357E8103015EB9CA12B08A31497464398D53206669',
+    address_public_test: 'VDB52J-IIE4SA-CUNOOP-N44H66-47O42B-XTPWJH-LPGW'
   },
   attestation: {
     address_public_test: 'VDYN53-XXEGKK-3XHQYE-K6ZBMN-JPXN57-ZBHXA3-AW55'

@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { PublicAccount, Address, InnerTransaction, UInt64, Account, AggregateTransaction, Deadline, TransactionHttp, SignedTransaction, Transaction } from 'tsjs-xpx-chain-sdk';
+import { PublicAccount, Address, InnerTransaction, UInt64, Account, AggregateTransaction, Deadline, TransactionHttp, SignedTransaction, Transaction, PlainMessage } from 'tsjs-xpx-chain-sdk';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import * as qrcode from 'qrcode-generator';
 import { Subscription } from 'rxjs';
@@ -517,7 +517,7 @@ export class VoteInPollComponent implements OnInit {
       const optionData = this.pollSelected.options.find(e => e.name === this.optionsSelected[i].field);
       message.nameOption = optionData.name;
       const recipient = Address.createFromPublicKey(optionData.publicAccount.publicKey, optionData.publicAccount.address.networkType);
-      let transferTransaction: any = this.proximaxProvider.buildTransferTransaction(this.walletService.currentAccount.network, recipient, JSON.stringify(message));
+      let transferTransaction: any = this.proximaxProvider.buildTransferTransaction(this.walletService.currentAccount.network, recipient, PlainMessage.create(JSON.stringify(message)));
       transferTransaction.fee = UInt64.fromUint(0);
       innerTransaction.push(transferTransaction.toAggregate(publicAccount))
     }
