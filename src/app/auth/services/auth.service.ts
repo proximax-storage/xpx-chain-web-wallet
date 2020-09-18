@@ -293,7 +293,7 @@ export class AuthService {
         },1500)
         setTimeout(() => {
           this.peer.destroy();
-        },2000)
+        },3000)
       } else {
         this.sharedService.showError('', 'Invalid network type');
       }
