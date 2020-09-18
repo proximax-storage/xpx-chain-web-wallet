@@ -98,9 +98,6 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
   ngOnInit() {
-    if (this.authService.peer){
-      this.authService.peer.destroy();
-    }
     this.dashboardService.incrementViewDashboard();
     this.dashboardService.subscribeLogged();
     this.currentAccount = Object.assign({}, this.walletService.getCurrentAccount());

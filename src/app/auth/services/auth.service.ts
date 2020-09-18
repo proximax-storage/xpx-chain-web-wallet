@@ -210,27 +210,35 @@ export class AuthService {
     let networkType = environment.typeNetwork.value;
       let nodeUrl = environment.blockchainConnection.protocol + '://' + environment.blockchainConnection.host;
       let account = Account.generateNewAccount(networkType);
-      let mess = InvitationRequestMessage.create("Login request from Sirius web wallet", account.publicKey, nodeUrl);
+      let mess = InvitationRequestMessage.create("Login request from Proximax Sirius Wallet", account.publicKey, nodeUrl);
       this.qrInvitation = mess.generateQR();
   
       //console.log('channel: ' + mess.getSessionId());
       this.peer = new Peer(mess.getSessionId()); 
       this.peer.on('connection', (conn) => {
         conn.on('data', async (data) => {
-          let resMess = InvitationResponseMessage.createFromPayload(data,account.privateKey);
+          let resMess = InvitationResponseMessage.createFromPayload(data,account.privateKey);  
           await this.importWalletAndLogin(resMess.getWltBase64(),resMess.getSecretKey());
-
         });
         conn.on('open', () => {
-          conn.send('Received');
+          let interval = setInterval(() => {
+            if (this.withSiriusID){
+              console.log("response message to SiriusID");
+              conn.send('Received');
+              this.withSiriusID = false;
+              clearInterval(interval);
+            }
+          },100)
+          
         });
         conn.on('close', () => {
           console.log('connection close');
         })
       });
   
-      this.peer.on('error', () => {
-        console.log("Connection has an error");
+      this.peer.on('error', (error) => {
+        console.log("connection has an error");
+        console.log(error);
       })
   
       this.peer.on('close', () => {
@@ -278,10 +286,14 @@ export class AuthService {
           password: secretKey,
           privateKey: privateKey
         }
+        await this.login(commonValue, wallet);
         
         setTimeout(() => {
-          this.login(commonValue, wallet);
-        },10000)
+          this.withSiriusID = true;
+        },1500)
+        setTimeout(() => {
+          this.peer.destroy();
+        },2000)
       } else {
         this.sharedService.showError('', 'Invalid network type');
       }

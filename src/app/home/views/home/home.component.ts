@@ -1,8 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import nem from 'nem-sdk';
 import { Router } from '@angular/router';
-import { NetworkTypes } from 'nem-library';
-import { NetworkType, Account, Password } from 'tsjs-xpx-chain-sdk';
 import { ModalDirective } from 'ng-uikit-pro-standard';
 import * as CryptoJS from 'crypto-js';
 import { first } from 'rxjs/operators';
@@ -43,7 +41,7 @@ export class HomeComponent implements OnInit {
   qrInvitation;
 
   constructor(
-    private authService: AuthService,
+    public authService: AuthService,
     private services: ServicesModuleService,
     private sharedService: SharedService,
     private walletService: WalletService,
