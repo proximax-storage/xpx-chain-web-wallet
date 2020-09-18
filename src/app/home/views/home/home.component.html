@@ -153,8 +153,11 @@
         <div class="modal-body">
           <div class="row">
             <div class="col-12 col-md-10 mx-auto">
-              <p style="text-align:center;color: #306EB5;font-size: 1.4rem;margin-bottom: 30px;">
-                To login scan the QR code with the SiriusID app
+              <p style="text-align:center;color: #306EB5;font-size: 1.4rem">
+                Sign in your wallet by scanning this QR Code using your SiriusID app.
+              </p>
+              <p style="text-align:center;margin-bottom: 30px;">
+                This popup will close automatically when your sign in from the SiriusID app.
               </p>
               <div style="text-align:center;">
                 <img *ngIf="!authService.walletNameSID" [src]="authService.qrInvitation">
