@@ -223,7 +223,7 @@ export class AuthService {
         conn.on('open', () => {
           let interval = setInterval(() => {
             if (this.withSiriusID){
-              console.log("response message to SiriusID");
+              console.debug("response message to SiriusID");
               conn.send('Received');
               this.withSiriusID = false;
               clearInterval(interval);
@@ -232,17 +232,16 @@ export class AuthService {
           
         });
         conn.on('close', () => {
-          console.log('connection close');
+          console.debug('connection close');
         })
       });
   
       this.peer.on('error', (error) => {
-        console.log("connection has an error");
-        console.log(error);
+        console.error("connection has an error", error.message);
       })
   
       this.peer.on('close', () => {
-        console.log("peer close");
+        console.debug("peer close");
       })
   }
 

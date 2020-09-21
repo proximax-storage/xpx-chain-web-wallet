@@ -98,7 +98,7 @@ export class Nis1TransferAssetsComponent implements OnInit, OnDestroy {
    * @memberof Nis1TransferAssetsComponent
    */
   async createTransaction() {
-    console.log(this.selectedMosaic);
+    console.debug(this.selectedMosaic);
     if (!this.processing) {
       this.processing = true;
       const common = { password: this.formTransfer.get('password').value };
