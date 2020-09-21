@@ -9,7 +9,7 @@ export const environment = {
   production: false,
   routeNodesJson: 'mainnet',
   itemBooksAddress: 'sw-books-mainnet',
-  version: '0.4.22',
+  version: '0.4.23',
   cacheVersion: '01-MAINNET',
   nameKeyBlockStorage: `sw-blocks`,
   nameKeyNodeSelected: `sw-selected-node-mainnet`,
@@ -70,6 +70,14 @@ export const environment = {
     options: {
       protocol: 'https'
     }
+  },
+  storageConnectionUnload: {
+    host: 'ipfs1-dev.xpxsirius.io',
+    port: 5443,
+    options: {
+      protocol: 'https'
+    }
+
   },
   namespaceRentalFeeSink: {
     public_key: '9FF38184F03950C09FFFF4A90C171E4C3C566985EEACA486A59CC8B607C10BF6',
