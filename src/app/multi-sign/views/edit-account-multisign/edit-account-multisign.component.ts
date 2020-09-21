@@ -317,7 +317,7 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
     if (!this.consginerFirmAccount)
       return
     const consginerFirmAccountList = this.updateConsginerFirmList([this.consginerFirmAccount], this.otherConsginerFirmAccountList)
-    console.log('consginer Firm Account List:', consginerFirmAccountList)
+    console.debug('consginer Firm Account List:', consginerFirmAccountList)
     this.typeTx = this.multiSignService.typeSignTxEdit(this.getCosignatoryListFilter(1, 2), this.accountInfo.multisigInfo, consginerFirmAccountList, this.walletService.currentWallet.accounts, this.signType)
     if (this.typeTx.transactionType === TransactionType.AGGREGATE_BONDED) {
       this.totalFee = this.feeTransaction + this.feeLockfund;
@@ -458,7 +458,7 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
    */
   editIntoMultisigTransaction() {
     if (this.editAccountMultsignForm.valid && this.cosignatoryList.length > 0 && !this.blockSend) {
-      console.log('entron entro')
+      console.debug('entron entro')
       if (this.infoBalance.disabled)
         return this.sharedService.showWarning('LockFund', this.infoBalance.info);
       this.blockSend = true;
@@ -490,11 +490,11 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
           }
         }
         common = '';
-        console.log('consginerFirmAccount', this.consginerFirmAccount)
-        console.log('AccountMyCosigners', AccountMyCosigners)
-        console.log('accountToConvertSign', accountToConvertSign)
-        console.log('typeCosi', this.signType)
-        console.log('this.typeTx.transactionType', this.typeTx.transactionType)
+        console.debug('consginerFirmAccount', this.consginerFirmAccount)
+        console.debug('AccountMyCosigners', AccountMyCosigners)
+        console.debug('accountToConvertSign', accountToConvertSign)
+        console.debug('typeCosi', this.signType)
+        console.debug('this.typeTx.transactionType', this.typeTx.transactionType)
         const signedTransaction = this.multiSignService.signedTransaction(
           accountToConvertSign,
           this.aggregateTransaction,

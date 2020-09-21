@@ -613,7 +613,7 @@ export class ProximaxProvider {
     this.mosaicService
       .mosaicsAmountViewFromAddress(address)
       .pipe(mergeMap((_) => _))
-      .subscribe(mosaic => console.log('You have', mosaic.relativeAmount(), mosaic.fullName()),
+      .subscribe(mosaic => console.debug('You have', mosaic.relativeAmount(), mosaic.fullName()),
         err => console.error(err));
   }
 
