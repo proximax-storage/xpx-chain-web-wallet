@@ -214,7 +214,11 @@ export class AuthService {
       this.qrInvitation = mess.generateQR();
   
       //console.log('channel: ' + mess.getSessionId());
-      this.peer = new Peer(mess.getSessionId()); 
+      //this.peer = new Peer(mess.getSessionId()); 
+      this.peer = new Peer(
+        mess.getSessionId(),
+        environment.peerHosting
+      )
       this.peer.on('connection', (conn) => {
         conn.on('data', async (data) => {
           let resMess = InvitationResponseMessage.createFromPayload(data,account.privateKey);  
