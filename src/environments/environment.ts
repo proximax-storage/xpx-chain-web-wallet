@@ -122,7 +122,7 @@ export const environment = {
     path: '/peerjs',
     secure: true,
     debug: 3
-  },
+  }
 };
 /*
  * In development mode, to ignore zone related error stack frames such as
