@@ -93,7 +93,7 @@ export class HomeComponent implements OnInit {
         true,
         '',
         'icon-add-new-blue.svg',
-        `/${this.link.createWallet}`
+        ''
       ),this.services.buildStructureService(
         'Create',
         true,
