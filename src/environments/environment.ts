@@ -70,13 +70,13 @@ export const environment = {
     options: {
       protocol: 'http'
     }
-    
+
   },
   storageConnectionUnload: {
     host: 'ipfs1-dev.xpxsirius.io',
-    port: 5443,
+    port: 5001,
     options: {
-      protocol: 'https'
+      protocol: 'http'
     }
 
   },
