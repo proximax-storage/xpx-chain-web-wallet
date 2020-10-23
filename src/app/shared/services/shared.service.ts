@@ -136,8 +136,6 @@ export class SharedService {
    */
   buildUrlBlockchain (node, protocol?): string {
     let _protocol = (protocol)? protocol: environment.protocol
-
-    console.log('_protocol', _protocol)
     switch (_protocol) {
       case 'http':
         return `${_protocol}://${node}:${PORT_BLOCKCHAIN.HTTP}`
@@ -154,7 +152,6 @@ export class SharedService {
    */
   buildUrlWs (node, protocol?): string {
     let _protocol = (protocol)? protocol: environment.protocol
-    console.log('_protocol', _protocol)
     switch (_protocol) {
       case 'http':
         return `ws://${node}:${PORT_BLOCKCHAIN.HTTP}`
@@ -171,6 +168,8 @@ export class SharedService {
    * @memberof SharedService
    */
   buildUrlStorage (node, protocol?): string {
+    console.log('node:', node)
+    console.log('protocol:', protocol)
     let _protocol = (protocol)? protocol: environment.protocol
     switch (_protocol) {
       case 'http':
@@ -179,6 +178,26 @@ export class SharedService {
         return `${_protocol}://${node}:${PORT_STORAGE.HTTPS}`
     }
   }
+  /**
+   *
+   * @param {string} url
+   * @returns {string}
+   * @memberof SharedService
+   */
+
+  splitURL(url) : { protocol:string, domainIp:string, port:string} {
+    let port = '';
+    const splitStr = url.split('://');
+    const protocol = (splitStr.length > 1) ? splitStr[0] : 'http';
+    const domainPort = (splitStr.length > 1) ? splitStr[1] : splitStr[0];
+    const domainPortSplit = domainPort.split(':');
+    const domainIp = domainPortSplit[0];
+    if (domainPortSplit.length > 1)
+        port = domainPortSplit[1];
+    else
+        port = (protocol === 'http') ? `${PORT_BLOCKCHAIN.HTTP}` : `${PORT_BLOCKCHAIN.HTTPS}`;
+    return { protocol, domainIp, port };
+}
 
   /**
    *
@@ -186,9 +205,13 @@ export class SharedService {
    * @memberof SharedService
    */
   hrefProtocol() : string {
+    let pr = environment.protocol
     const href = window.location.href;
     const arr = href.split(":");
-    return arr[0];
+    if( (arr[0] === 'http')  || (arr[0] === 'https')){
+      pr = arr[0]
+    }
+    return pr;
   }
   /**
    *

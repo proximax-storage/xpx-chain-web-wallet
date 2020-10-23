@@ -22,7 +22,7 @@ import { SharedService, ConfigurationForm } from '../../../shared/services/share
 import { environment } from '../../../../environments/environment';
 import { SearchResultInterface } from '../services/storage.service';
 import { HeaderServicesInterface } from '../../../servicesModule/services/services-module.service';
-
+import { NodeService } from '../../../servicesModule/services/node.service';
 
 @Component({
   selector: 'app-my-file',
@@ -74,7 +74,8 @@ export class MyFileComponent implements OnInit, AfterViewInit {
     private walletService: WalletService,
     private proximaxProvider: ProximaxProvider,
     private sharedService: SharedService,
-    private transactionsService: TransactionsService
+    private transactionsService: TransactionsService,
+    private nodeService: NodeService
   ) { }
 
   @HostListener('input') oninput() {
@@ -134,21 +135,22 @@ export class MyFileComponent implements OnInit, AfterViewInit {
   onDownloadFormOpen(event: any) {
     this.downloadForm.get('encryptionPassword').setValue('');
   }
-
+  // update protocol
   initialiseStorage() {
     const blockChainNetworkType = this.proximaxProvider.getBlockchainNetworkType(this.walletService.currentAccount.network);
-    const blockChainHost = environment.blockchainConnection.host;
-    const blockChainPort = environment.blockchainConnection.port;
-    const blockChainProtocol = environment.blockchainConnection.protocol === 'https' ? Protocol.HTTPS : Protocol.HTTP;
-
-    const storageHost = environment.storageConnection.host;
-    const storagePort = environment.storageConnection.port;
-    const storageOptions = environment.storageConnection.options;
+    const blockchainConnection = this.sharedService.splitURL(
+      this.sharedService.buildUrlBlockchain(`${this.nodeService.getNodeSelected()}`, this.sharedService.hrefProtocol())
+      )
+    let blockChainProtocol = blockchainConnection.protocol === 'https' ? Protocol.HTTPS : Protocol.HTTP;
+    const storageConnection = this.sharedService.splitURL(
+      this.sharedService.buildUrlStorage(`${environment.storageConnection.host}`, this.sharedService.hrefProtocol())
+      )
+    const options =  environment.storageConnection.options
+    options.protocol = storageConnection.protocol
     const connectionConfig = ConnectionConfig.createWithLocalIpfsConnection(
-      new BlockchainNetworkConnection(blockChainNetworkType, blockChainHost, blockChainPort, blockChainProtocol),
-      new IpfsConnection(storageHost, storagePort, storageOptions)
+      new BlockchainNetworkConnection(blockChainNetworkType, blockchainConnection.domainIp, Number(blockchainConnection.port), blockChainProtocol),
+      new IpfsConnection(storageConnection.domainIp, Number(storageConnection.port), options)
     );
-
     this.searcher = new Searcher(connectionConfig);
     this.downloader = new Downloader(connectionConfig);
   }

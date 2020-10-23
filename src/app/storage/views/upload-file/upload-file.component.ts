@@ -22,7 +22,7 @@ import { WalletService } from '../../../wallet/services/wallet.service';
 import { environment } from '../../../../environments/environment';
 import { TransactionsService } from '../../../transactions/services/transactions.service';
 import { HeaderServicesInterface } from '../../../servicesModule/services/services-module.service';
-
+import { NodeService } from '../../../servicesModule/services/node.service';
 @Component({
   selector: 'app-upload-file',
   templateUrl: './upload-file.component.html',
@@ -68,6 +68,7 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
     private proximaxProvider: ProximaxProvider,
     private sharedService: SharedService,
     private transactionService: TransactionsService,
+    private nodeService: NodeService
   ) {
     this.files = [];
     this.uploadInput = new EventEmitter<UploadInput>();
@@ -398,21 +399,23 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
    *
    * @memberof UploadFileComponent
    */
+  // update protocol
   initialiseStorage() {
-
     const blockChainNetworkType = this.proximaxProvider.getBlockchainNetworkType(this.walletService.currentAccount.network);
-    const blockChainHost = environment.blockchainConnection.host;
-    const blockChainPort = environment.blockchainConnection.port;
-    const blockChainProtocol = environment.blockchainConnection.protocol === 'https' ? Protocol.HTTPS : Protocol.HTTP;
-
-    const storageHost = environment.storageConnectionUnload.host;
-    const storagePort = environment.storageConnectionUnload.port;
-    const storageOptions = environment.storageConnectionUnload.options;
+    const blockchainConnection = this.sharedService.splitURL(
+      this.sharedService.buildUrlBlockchain(`${this.nodeService.getNodeSelected()}`, this.sharedService.hrefProtocol())
+      )
+    let blockChainProtocol = blockchainConnection.protocol === 'https' ? Protocol.HTTPS : Protocol.HTTP;
+    const storageConnection = this.sharedService.splitURL(
+      this.sharedService.buildUrlStorage(`${environment.storageConnection.host}`, this.sharedService.hrefProtocol())
+      )
+    const options =  environment.storageConnection.options
+    options.protocol = storageConnection.protocol
+    const storageOptions = environment.storageConnection.options;
     const connectionConfig = ConnectionConfig.createWithLocalIpfsConnection(
-      new BlockchainNetworkConnection(blockChainNetworkType, blockChainHost, blockChainPort, blockChainProtocol),
-      new IpfsConnection(storageHost, storagePort, storageOptions)
+      new BlockchainNetworkConnection(blockChainNetworkType, blockchainConnection.domainIp, Number(blockchainConnection.port), blockChainProtocol),
+      new IpfsConnection(storageConnection.domainIp, Number(storageConnection.port), options)
     );
-
     // set the default network mosaic
     this.mosaics = [];
     this.uploader = new Uploader(connectionConfig);
