@@ -72,7 +72,8 @@ export class VoteInPollComponent implements OnInit {
     private transactionService: TransactionsService
 
   ) {
-    this.transactionHttp = new TransactionHttp(environment.protocol + "://" + `${this.nodeService.getNodeSelected()}`);
+    // update protocol
+    this.transactionHttp = new TransactionHttp(this.sharedService.buildUrlBlockchain(`${this.nodeService.getNodeSelected()}`, this.sharedService.hrefProtocol()));
     this.configurationForm = this.sharedService.configurationForm;
     this.isMultipe = false;
     this.searching = false;

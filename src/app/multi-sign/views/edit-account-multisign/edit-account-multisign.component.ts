@@ -131,7 +131,8 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
     this.showLockfund = true;
     this.showSignCosignatory = false
     this.totalFee = this.feeTransaction;
-    this.transactionHttp = new TransactionHttp(environment.protocol + '://' + `${this.nodeService.getNodeSelected()}`);
+    // update protocol
+    this.transactionHttp = new TransactionHttp(this.sharedService.buildUrlBlockchain(`${this.nodeService.getNodeSelected()}`, this.sharedService.hrefProtocol()));
     this.typeTx = { type: 1, transactionType: TransactionType.AGGREGATE_BONDED };
   }
 
@@ -194,7 +195,7 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
   /**
    *
    * @memberof EditAccountMultisignComponent
-   *  @param {String} amount  - 
+   *  @param {String} amount  -
    */
   amountFormatterSimple(amount): string {
     return this.transactionService.amountFormatterSimple(amount);
@@ -267,7 +268,7 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
 
   /**
    *
-   * @param {AccountsInterface[]} accounts  - 
+   * @param {AccountsInterface[]} accounts  -
    * @returns {ConsginerFirmList[]}
    * @memberof EditAccountMultisignComponent
    */
@@ -340,7 +341,7 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
   /**
    *
    * @memberof EditAccountMultisignComponent
-   *  @param {any} value  - 
+   *  @param {any} value  -
    */
   cleanArray(value: any) {
     const newArray = new Array();
@@ -389,7 +390,7 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
 
   /**
    * Clean select content - defined empty by default
-   * @param {any} item 
+   * @param {any} item
    * @memberof EditAccountMultisignComponent
    */
   clearItemSelect(item: any) {
@@ -431,7 +432,7 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
   * @memberof CreateMultiSignatureComponent
   * @param {Address} id  - Address in cosignatory.
   * @param {Boolean} disableItem
-  * @param {number} type 
+  * @param {number} type
   */
   deleteCosignatory(id: Address, disableItem: boolean, type: number) {
     if (!disableItem) {
@@ -521,8 +522,8 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
    * Array of duplicated filters
    * @memberof CreateMultiSignatureComponent
    * @param {Array<object>} value1  - Address in cosignatory.
-   * @param {Array<object>} value2 
-   * @param {string} key 
+   * @param {Array<object>} value2
+   * @param {string} key
    */
   filterArrayUnic(value1: any, value2: any, key: string) {
     let newArray = new Array();
@@ -880,7 +881,7 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * 
+   *
    * @memberof EditAccountMultisignComponent
    */
   selectCosignatorieSign() {
@@ -903,7 +904,7 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * 
+   *
    * @memberof EditAccountMultisignComponent
    */
   selectOtherCosignatorieSign() {

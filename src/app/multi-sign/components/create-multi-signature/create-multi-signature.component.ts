@@ -95,8 +95,8 @@ export class CreateMultiSignatureComponent implements OnInit {
     this.isMultisig = false;
     this.showCurrentAccountToConvert = false
     this.currentAccounts = []
-    this.transactionHttp = new TransactionHttp(environment.protocol + "://" + `${this.nodeService.getNodeSelected()}`
-    );
+    // update protocol
+    this.transactionHttp = new TransactionHttp(this.sharedService.buildUrlBlockchain(`${this.nodeService.getNodeSelected()}`, this.sharedService.hrefProtocol()));
   }
 
 

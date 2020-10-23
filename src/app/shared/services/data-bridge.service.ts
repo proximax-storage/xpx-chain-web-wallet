@@ -82,7 +82,8 @@ export class DataBridgeService {
   connectnWs(node?: string) {
     this.connector = [];
     const route = (node === undefined) ? this.nodeService.getNodeSelected() : node;
-    this.url = `${environment.protocolWs}://${route}`;
+    // update protocol
+    this.url = this.sharedService.buildUrlWs(route, this.sharedService.hrefProtocol())
     this.currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
     this.currentWallet.accounts.forEach(element => {
       const ad = this.proximaxProvider.createFromRawAddress(element.address);

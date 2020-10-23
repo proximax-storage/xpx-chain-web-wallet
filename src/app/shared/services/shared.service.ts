@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { ToastService } from 'ng-uikit-pro-standard';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -126,6 +127,69 @@ export class SharedService {
     return result;
   }
 
+  /**
+   *
+   * @param {string} protocol
+   * @param {string} node
+   * @returns {string}
+   * @memberof SharedService
+   */
+  buildUrlBlockchain (node, protocol?): string {
+    let _protocol = (protocol)? protocol: environment.protocol
+
+    console.log('_protocol', _protocol)
+    switch (_protocol) {
+      case 'http':
+        return `${_protocol}://${node}:${PORT_BLOCKCHAIN.HTTP}`
+      case 'https':
+        return `${_protocol}://${node}:${PORT_BLOCKCHAIN.HTTPS}`
+    }
+  }
+    /**
+   *
+   * @param {string} protocol
+   * @param {string} node
+   * @returns {string}
+   * @memberof SharedService
+   */
+  buildUrlWs (node, protocol?): string {
+    let _protocol = (protocol)? protocol: environment.protocol
+    console.log('_protocol', _protocol)
+    switch (_protocol) {
+      case 'http':
+        return `ws://${node}:${PORT_BLOCKCHAIN.HTTP}`
+      case 'https':
+        return `wss://${node}:${PORT_BLOCKCHAIN.HTTPS}`
+    }
+  }
+
+  /**
+   *
+   * @param {string} protocol
+   * @param {string} node
+   * @returns {string}
+   * @memberof SharedService
+   */
+  buildUrlStorage (node, protocol?): string {
+    let _protocol = (protocol)? protocol: environment.protocol
+    switch (_protocol) {
+      case 'http':
+        return `${_protocol}://${node}:${PORT_STORAGE.HTTP}`
+      case 'https':
+        return `${_protocol}://${node}:${PORT_STORAGE.HTTPS}`
+    }
+  }
+
+  /**
+   *
+   * @returns {string} protocol window  location
+   * @memberof SharedService
+   */
+  hrefProtocol() : string {
+    const href = window.location.href;
+    const arr = href.split(":");
+    return arr[0];
+  }
   /**
    *
    *
@@ -376,4 +440,12 @@ export interface StructureHeader {
   show: boolean;
   submenu: object;
   selected: boolean;
+}
+export enum PORT_BLOCKCHAIN {
+  HTTP = 3000,
+  HTTPS = 443,
+}
+export enum PORT_STORAGE {
+  HTTP = 5001,
+  HTTPS = 5443,
 }
