@@ -66,9 +66,9 @@ export const environment = {
   },
   storageConnection: {
     host: 'ipfs1-dev.xpxsirius.io',
-    port: 80,
+    port: 443,
     options: {
-      protocol: 'http'
+      protocol: 'https'
     }
 
   },
