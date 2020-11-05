@@ -26,9 +26,9 @@ pipeline {
           echo 'Patching dependency'
           sh 'sed -i "/node:/c\\\\node: { crypto: true, stream: true, fs: \\\'empty\\\', net: \\\'empty\\\', tls: \\\'empty\\\'}" ./node_modules/@angular-devkit/build-angular/src/angular-cli-files/models/webpack-configs/browser.js'
 
-          echo 'Building for eDLX Web Wallet'
+          echo 'Building for Doc-On-Chain Dev Web Wallet'
           sh 'npm run build:optimizer-testnet'
-          sh "tar cJfv edlx-web-wallet-${env.BUILD_NUMBER}.tar.xz dist"
+          sh "tar cJfv doc-dev-web-wallet-${env.BUILD_NUMBER}.tar.xz dist"
         }
         echo 'Leaving Container'
       }
@@ -45,7 +45,7 @@ pipeline {
     stage('Archive Artifact') {
       steps {
         echo 'Archiving Artifact'
-        archiveArtifacts "edlx-web-wallet-${env.BUILD_NUMBER}.tar.xz"
+        archiveArtifacts "doc-dev-web-wallet-${env.BUILD_NUMBER}.tar.xz"
       }
       post {
         success {

@@ -28,11 +28,11 @@ export const environment = {
       classNameParam: 'disable-module'
     },
     storage: {
-      viewChildrenParam: false,
-      files: false,
-      uploadFiles: false,
+      viewChildrenParam: true,
+      files: true,
+      uploadFiles: true,
       sendShare: false,
-      classNameParam: 'disable-module'
+      classNameParam: ''
     },
     notarization: {
       viewChildrenParam: false,
@@ -43,12 +43,12 @@ export const environment = {
   },
   protocol: `http`,
   protocolWs: `ws`,
-  nodeExplorer: 'http://demo-explorer.edlx.io/#/result/hash',
+  nodeExplorer: 'http://45.77.104.17/#/result/hash',
   mosaicXpxInfo: {
     name: 'prx.xpx',
     coin: 'XPX',
-    id: '7933b82e31f53311',
-    mosaicIdUint64: [838152977, 2033432622],
+    id: '4165347496069e2a',
+    mosaicIdUint64: [2517016106, 1097151604],
     namespaceIdUint64: [2434186742, 3220914849],
     namespaceId: 'bffb42a19116bdf6',
     divisibility: 6
@@ -59,25 +59,25 @@ export const environment = {
   },
   timeOutTransactionNis1: 20000,
   blockchainConnection: {
-    host: '3.0.175.230',
+    host: '45.77.104.17',
     port: 3000,
     protocol: 'http',
     useSecureMessage: false
   },
   storageConnection: {
-    host: 'ipfs1-dev.xpxsirius.io',
-    port: 443,
+    host: '45.32.103.21',
+    port: 80,
     options: {
-      protocol: 'https'
+      protocol: 'http'
     }
   },
   namespaceRentalFeeSink: {
-    public_key: '2EDCA63D9F8E706C12433713CACEF6D036BC3ADC9BDEFA7FF1664A24BE3C7B49',
-    address_public_test: 'WABUVR-BXZDWZ-J53BJJ-OITCBJ-4WTBTN-TQTP4A-OO4M'
+    public_key: '6F4416CA9AE06AF4DDDE4A30132C55B47740C0262568BEE99D59CF3A92BD04D1',
+    address_public_test: 'WAKM6I-RABAPP-N4ONV7-WV37ID-PZLRSJ-3HDZT2-ZC6E'
   },
   mosaicRentalFeeSink: {
-    public_key: '7E7AF5CC1CF0D58D5B0294F7F522F3C9B40632A71DEE2DF6FB0CA986EB627859',
-    address_public_test: 'WDV3JH-VPOKV7-4B3VQL-7PMOX3-LYZR7Q-XPYLSJ-URGU'
+    public_key: 'BBE28FA114AD72618A864D0D8156A2CBC495B9E4B57385E09485A4B2ECB1FC7A',
+    address_public_test: 'WCQW2A-RIT6S2-KVLVKJ-ZZOSPW-7GOTHG-TX3RHH-3BYY'
   },
   pollsContent: {
     public_key: '',
