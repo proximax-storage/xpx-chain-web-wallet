@@ -10,6 +10,7 @@ import { AccountDeleteConfirmComponent } from './views/account-delete-confirm/ac
 import { CoreModule } from '../core/core.module';
 import { CreateAccountComponent } from './views/create-account/create-account.component';
 import { DetailAccountComponent } from './views/detail-account/detail-account.component';
+import { DelegateComponent } from './views/delegate/delegate.component';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { DetailAccountComponent } from './views/detail-account/detail-account.co
     SelectionAccountTypeComponent,
     AccountDeleteComponent,
     AccountDeleteConfirmComponent,
+    DelegateComponent
   ],
   imports: [
     CoreModule,
