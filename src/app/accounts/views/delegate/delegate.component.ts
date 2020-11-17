@@ -24,7 +24,7 @@ export class DelegateComponent implements OnInit, OnDestroy {
     componentName: 'Delegate'
   };
   backToService = `/${AppConfig.routes.service}`;
-  isLinked = false;
+  isLinked: boolean = null;
   blockSend = false;
   configurationForm: ConfigurationForm = {};
   delegateForm: FormGroup;

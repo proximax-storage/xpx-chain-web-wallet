@@ -14,7 +14,7 @@
         <div class="col-12 col-md-12 col-lg-7 mx-auto" *ngSwitchCase="true">
           <div class="d-flex flex-column">
             <div class="d-flex justify-content-center">
-              <span class="fs-2rem fw-600">You have linked account
+              <span class="fs-2rem fw-600">Your account is linked to a delegated account already
               </span>
             </div>
           </div>
@@ -24,8 +24,12 @@
               <span class="fs-1rem fw-600">Please copy the private key below to the node config to enable delegated validating 
               </span>
             </div>
+            <div class="d-flex pb-1rem justify-content-center">
+              <span class="fs-1rem fw-600">Make sure you store this private key in a safe place as well.
+              </span>
+            </div>
             <div class="d-flex justify-content-center">
-              <span class="fs-1rem fw-600">Linked Account Private Key
+              <span class="fs-1rem fw-600">Private key of the delegated account
               </span>
             </div>
             <div class="d-flex justify-content-center">
@@ -33,6 +37,7 @@
               </span>
             </div>
           </div>
+          <hr style="border-top: 3px solid rgba(0, 0, 0, 0.1)" class="mt-03rem mb-05rem" *ngIf="linkedAccountPrivateKey">
           <div class="d-flex flex-column">
             <div class="d-flex justify-content-center">
               <span class="fs-1rem fw-600">Linked Account Key
@@ -50,7 +55,7 @@
           <div class="d-flex flex-column">
             <div class="d-flex justify-content-center">
               <span class="fs-2rem fw-600">
-                You are not linked to any account
+                Your account is not linked to a delegated account
               </span>
             </div>
           </div>
