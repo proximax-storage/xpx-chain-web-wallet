@@ -83,6 +83,10 @@ export class DelegateComponent implements OnInit, OnDestroy {
     });
   }
 
+  copyMessage(message: string) {
+    this.sharedService.showSuccess('', `${message} copied`);
+  }
+
   linkDelegate(){
 
     if (this.delegateForm.valid) {
@@ -145,7 +149,7 @@ export class DelegateComponent implements OnInit, OnDestroy {
     var xpxAmount = this.walletService.getAmountAccount(this.walletService.currentAccount.address);
 
     if(txFee > xpxAmount){
-      this.sharedService.showError('', "Insufficient XPX Token");
+      this.sharedService.showError('', "Insufficient balance on this account");
     }
 
     const generationHash = this.dataBridge.blockInfo.generationHash;
