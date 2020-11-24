@@ -1,4 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { ModalDirective } from 'ng-uikit-pro-standard';
 import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
 import { Address, SignedTransaction, TransactionHttp, Account, LinkAction, AccountLinkTransaction } from 'tsjs-xpx-chain-sdk';
 import { Router } from '@angular/router';
@@ -28,6 +29,7 @@ export class DelegateComponent implements OnInit, OnDestroy {
   blockSend = false;
   configurationForm: ConfigurationForm = {};
   delegateForm: FormGroup;
+  privateKeyForm: FormGroup;
   loading = false;
   isValidBlockchain = false;
   validFormat = false;
@@ -51,7 +53,13 @@ export class DelegateComponent implements OnInit, OnDestroy {
   isMultisigAccount = false;
   transactionHttp: TransactionHttp = null;
   apiUrl: string = "";
+  linkingAccountType: string = "";
+  linkingAccountKey = '';
+  isAccountSelect = false;
+  isInputPrivateKey = false;
+  pvkMain: string = "password"; 
 
+  @ViewChild('modalAccountSelect', { static: true }) modalAccountSelect: ModalDirective;
 
   constructor(
     private fb: FormBuilder,
@@ -74,6 +82,7 @@ export class DelegateComponent implements OnInit, OnDestroy {
     this.checkLinkedAccountKey();
     this.createForm();
     this.delegateForm.enable();
+    this.privateKeyForm.enable();
   }
 
   ngOnDestroy(): void {
@@ -87,7 +96,60 @@ export class DelegateComponent implements OnInit, OnDestroy {
     this.sharedService.showSuccess('', `${message} copied`);
   }
 
+  selectNewAccount(){
+
+    var newAccount = this.proximaxProvider.generateNewAccount(this.walletService.currentAccount.network);
+
+    this.linkingAccountKey = newAccount.publicKey;
+    this.linkedAccountPrivateKey = newAccount.privateKey;
+
+    this.modalAccountSelect.hide();
+    this.linkingAccountType = "New Account";
+  }
+
+  async selectFromPrivateKey(){
+
+    var privateKey = this.privateKeyForm.get('privateKey').value;
+
+    var linkingAccount = this.proximaxProvider.getAccountFromPrivateKey(privateKey, this.walletService.currentAccount.network);
+
+    try {
+      //var accountInfo = await this.proximaxProvider.getAccountInfo(linkingAccount.address).toPromise();
+      const accountInfo = await this.directGetAccountInfo(linkingAccount.address.plain());
+
+      if(accountInfo.account.accountType !== 3){
+        this.sharedService.showError('', `You must use a clean account`);
+        return;
+      }
+
+    } catch (error) {
+      
+    }
+
+    this.linkingAccountKey = linkingAccount.publicKey;
+    this.linkedAccountPrivateKey = linkingAccount.privateKey;
+
+    this.linkingAccountType = "From Private Key";
+    this.modalAccountSelect.hide();
+  }
+
+  displayAccountSelect(){
+    this.isAccountSelect = true;
+    this.isInputPrivateKey = false;
+    this.modalAccountSelect.show();
+  }
+
+  displayAccountPrivateKeySelect(){
+    this.isAccountSelect = false;
+    this.isInputPrivateKey = true;
+  }
+
   linkDelegate(){
+
+    if(this.linkingAccountKey === ""){
+      this.sharedService.showError('', `Please select linking account`);
+      return;
+    }
 
     if (this.delegateForm.valid) {
       const common = {
@@ -126,6 +188,7 @@ export class DelegateComponent implements OnInit, OnDestroy {
 
   sendAccountLinkTransaction(common: any, linkAction: LinkAction) {
     this.clearForm();
+    this.clearPrivateKeyForm();
     this.blockSend = true;
     this.btnDisabled = true;
     this.isSendingTx = true;
@@ -135,12 +198,7 @@ export class DelegateComponent implements OnInit, OnDestroy {
 
     if(linkAction === LinkAction.Link){
 
-      var newAccount = this.proximaxProvider.generateNewAccount(this.walletService.currentAccount.network);
-
-      accountLinkTransaction = this.proximaxProvider.buildAccountLinkTransaction(this.walletService.currentAccount.network, newAccount.publicKey, LinkAction.Link);
-
-      this.linkedAccountPrivateKey = newAccount.privateKey;
-      this.linkedAccountKey = newAccount.publicKey
+      accountLinkTransaction = this.proximaxProvider.buildAccountLinkTransaction(this.walletService.currentAccount.network, this.linkingAccountKey, LinkAction.Link);
     }else{
       accountLinkTransaction = this.proximaxProvider.buildAccountLinkTransaction(this.walletService.currentAccount.network, this.linkedAccountKey, LinkAction.Unlink);
     }
@@ -183,7 +241,6 @@ export class DelegateComponent implements OnInit, OnDestroy {
     // Get transaction status
     this.subscribe['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
-        console.log(statusTransaction);
         if (statusTransaction !== null && statusTransaction !== undefined && signedTransaction !== null) {
           const match = statusTransaction['hash'] === signedTransaction.hash;
           if (statusTransaction['type'] === 'confirmed' && match) {
@@ -214,10 +271,22 @@ export class DelegateComponent implements OnInit, OnDestroy {
     if(this.currentLinkAction === LinkAction.Unlink){
       this.linkedAccountPrivateKey = "";
       this.linkedAccountKey = "";
+      this.linkingAccountType = "None selected";
+    }
+    else{
+      this.linkedAccountKey = this.linkingAccountKey;
+      this.linkingAccountKey = "";
+      this.linkingAccountType = "None selected";
     }
     
     this.btnDisabled = false;
     this.blockSend = false;
+  }
+
+  changeInputType(inputType: string) {
+    const newType = this.sharedService.changeInputType(inputType);
+
+    this.pvkMain = newType;
   }
 
 
@@ -237,6 +306,7 @@ export class DelegateComponent implements OnInit, OnDestroy {
       
       if(this.linkedAccountKey == "0".repeat(64)){
         this.isLinked = false;
+        this.linkingAccountType = "None selected";
       }
       else{
         this.isLinked = true;
@@ -244,6 +314,7 @@ export class DelegateComponent implements OnInit, OnDestroy {
 
     } catch (e) { 
       this.isLinked = false;
+      this.linkingAccountType = "None selected";
     }
   }
 
@@ -284,6 +355,16 @@ export class DelegateComponent implements OnInit, OnDestroy {
         Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
       ]]
     });
+
+    this.privateKeyForm = this.fb.group({
+      privateKey: ['', [
+        Validators.required,
+        Validators.minLength(this.configurationForm.privateKey.minLength),
+        Validators.maxLength(this.configurationForm.privateKey.maxLength),
+        Validators.pattern('^(0x|0X)?[a-fA-F0-9]+$')
+      ]]
+    });
+  
   }
 
 
@@ -296,6 +377,20 @@ export class DelegateComponent implements OnInit, OnDestroy {
     this.delegateForm.get('password').enable();
     this.delegateForm.reset({
       password: ''
+    }, {
+      emitEvent: false
+    });
+  }
+
+  /**
+   *
+   *
+   * @memberof DelegateComponent
+   */
+  clearPrivateKeyForm() {
+    this.privateKeyForm.get('privateKey').enable();
+    this.privateKeyForm.reset({
+      privateKey: ''
     }, {
       emitEvent: false
     });
@@ -318,6 +413,27 @@ export class DelegateComponent implements OnInit, OnDestroy {
       validation = this.delegateForm.controls[nameControl].getError(nameValidation);
     } else if (nameInput !== '') {
       validation = this.delegateForm.get(nameInput);
+    }
+    return validation;
+  }
+
+  /**
+   *
+   *
+   * @param {string} [nameInput='']
+   * @param {string} [nameControl='']
+   * @param {string} [nameValidation='']
+   * @returns
+   * @memberof CreateNamespaceComponent
+   */
+  validatePrivateKeyInput(nameInput: string = '', nameControl: string = '', nameValidation: string = '') {
+    let validation: AbstractControl = null;
+    if (nameInput !== '' && nameControl !== '') {
+      validation = this.privateKeyForm.controls[nameControl].get(nameInput);
+    } else if (nameInput === '' && nameControl !== '' && nameValidation !== '') {
+      validation = this.privateKeyForm.controls[nameControl].getError(nameValidation);
+    } else if (nameInput !== '') {
+      validation = this.privateKeyForm.get(nameInput);
     }
     return validation;
   }

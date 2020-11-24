@@ -84,6 +84,20 @@
             </div>
           </div>
 
+          <div class="row">
+            <div class="col-12 mx-auto d-flex align-items-center box-grey p-1rem">
+                <div class="col-10 lh-1-1em">
+                    <span class="fw-600">Linking Account: </span>
+                    <span class="font-small d-flex">{{linkingAccountType}}</span>
+
+                </div>
+                <div class="col-2 text-right">
+                  <i mdbWavesEffect (click)="displayAccountSelect()"
+                    class="fa fa-pencil-square-o cursor-p" title="Select Link Account"></i>
+                </div>
+            </div>
+          </div>
+
         </div>
 
       </div>
@@ -161,6 +175,138 @@
             </p>
         </div>
 
+    </div>
+  </div>
+</div>
+
+<div class="d-flex align-items-center">
+  <div mdbModal #modalAccountSelect="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="modalAccountSelect" aria-hidden="true">
+    <div class="modal-dialog modal-lg d-flex align-items-center" role="document">
+      <div class="modal-content form-elegant bord-rad-1-5rem">
+        <div class="row">
+          <div class="col-12">
+            <div class="col-12">
+              <span class="cursor-p d-flex justify-content-end fw-600 fs-1rem pt-04rem"
+                (click)="modalAccountSelect.hide()">x</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-body">
+          <ng-container *ngIf="isAccountSelect">
+            <div class="container mt-3rem mb-2rem animated fadeIn">
+              <div class="row">
+                <div class="col-12 d-flex justify-content-center">
+                  <span class="fs-1-7rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">Select Account Type</span>
+                </div>
+                <div class="col-11 col-md-10 mx-auto">
+                  <hr class="mt-05rem mb-06rem">
+                </div>
+              </div>
+            
+              <div class="row mt-3rem pb-2rem">
+                <div class="col-12 col-md-10 col-lg-8 mx-auto">
+                  <div class="row">
+                    <div class="col-12 col-sm-6 d-flex justify-content-center">
+                      <div class="row">
+                        <div class="col-12 txt-a-center">
+                          <div>
+                            <img class="h-50px pb-10px" src="assets/images/img/icon-add-new-blue.svg" alt="">
+                          </div>
+                          <div class="txt-a-center">
+                            <span>New Account</span>
+                          </div>
+                          <button (click)="selectNewAccount()" mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
+                            size="md">
+                            <span class="color-white">Select</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+            
+                    <div class="col-12 col-sm-6 d-flex justify-content-center">
+                      <div class="row">
+                        <div class="col-12 txt-a-center">
+                          <div>
+                            <img class="h-50px pb-10px" src="assets/images/img/icon-private-key-blue.svg" alt="">
+                          </div>
+                          <div>
+                            <span>From a Private Key</span>
+                          </div>
+                          <button (click)="displayAccountPrivateKeySelect()" mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
+                            size="md">
+                            <span class="color-white">Select</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+            
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+          </ng-container>
+          <ng-container *ngIf="isInputPrivateKey">
+            <div class="container mt-3rem mb-2rem animated fadeIn">
+              <div class="row">
+                <div class="col-12 d-flex justify-content-center">
+                  <span class="fs-1-7rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">From Private Key</span>
+                </div>
+                <div class="col-11 col-md-10 mx-auto">
+                  <hr class="mt-05rem mb-06rem">
+                </div>
+                <div class="col-12 d-flex justify-content-center">
+                  <span class="fs-1rem txt-a-center line-h-1-2em">Please fill in the private key of the linking account.</span>
+                </div>
+              </div>
+            
+            
+              <form [formGroup]="privateKeyForm" >
+            
+                <div class="row mt-1-5rem">
+                  <div class="col-11 col-sm-10 col-md-8 col-lg-6 mx-auto">
+                    <div class="md-form form-sm mt-1rem mb-0rem">
+                      <img class="form-control-feedback"
+                          src="assets/images/img/icon-private-key-green-16h-proximax-sirius-wallet.svg" alt="">
+                      <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(pvkMain)"
+                          src="assets/images/img/icon-show-hide-password.svg" *ngIf="pvkMain === 'password'">
+                      <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(pvkMain)"
+                          src="assets/images/img/icon-show-hide-password-grey.svg" *ngIf="pvkMain === 'text'">
+                      <input [type]="pvkMain" mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
+                          [minlength]="configurationForm.privateKey.minLength" [maxlength]="configurationForm.privateKey.maxLength"
+                          id="privateKey" class="form-control form-control-sm input-border" placeholder="Private Key"
+                          formControlName="privateKey">
+                      <mdb-error
+                          *ngIf="validatePrivateKeyInput('privateKey').invalid && (validatePrivateKeyInput('privateKey').dirty || validatePrivateKeyInput('privateKey').touched)">
+                        <span>Invalid private key</span>
+                      </mdb-error>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="row mt-2rem">
+                  <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+                    <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="md" (click)="clearPrivateKeyForm()">
+                      <span class="color-white">Clear</span>
+                    </button>
+                  </div>
+            
+                  <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+                    <button mdbBtn type="button" (click)="selectFromPrivateKey()" rounded="true" mdbWavesEffect class="btn-proximax" size="md"
+                      [disabled]="privateKeyForm.invalid">
+                      <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+                        *ngIf="spinnerButton"></span>
+                      <span class="color-white">Confirm</span>
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>            
+          </ng-container>
+        </div>
+      </div>
     </div>
   </div>
 </div>
