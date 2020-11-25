@@ -25,7 +25,7 @@ export class ConvertAccountMultisigComponent implements OnInit {
   @ViewChild('modalContact', { static: true }) modalContact: ModalDirective;
   // accountToConvertMultisig: Account;
   // aggregateTransaction: AggregateTransaction;
-  // blockSend: boolean;
+  blockSend: boolean;
   currentAccounts: CurrentAccountInterface[] = [];
   configurationForm: ConfigurationForm = {};
   cosignatoryList: CosignatoryList[] = [];
@@ -40,6 +40,7 @@ export class ConvertAccountMultisigComponent implements OnInit {
   currentIteratorCosignatory: number;
   // typeTx: TypeTx;
   // transactionHttp: TransactionHttp;
+  passwordMain = 'password';
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Accounts > Multisign',
     componentName: 'Convert to Multisig Account'
@@ -132,6 +133,18 @@ export class ConvertAccountMultisigComponent implements OnInit {
       ]],
       cosignatories: this.fb.array([])
     });
+  }
+
+  /**
+   *
+   *
+   * @param {*} inputType
+   * @returns
+   * @memberof ConvertAccountMultisigComponent
+   */
+  changeInputType(inputType: string) {
+    this.passwordMain = this.sharedService.changeInputType(inputType);
+    return this.passwordMain;
   }
 
   /**
@@ -237,6 +250,7 @@ export class ConvertAccountMultisigComponent implements OnInit {
     this.unsubscribe(this.subscribeContact);
     console.log('Contact selected', data);
     this.modalContact.hide();
+    this.cosignatories.controls[this.currentIteratorCosignatory].get('cosignatory').patchValue('', { emitEvent: true });
     if (data.publicKey) {
       this.cosignatories.controls[this.currentIteratorCosignatory].get('cosignatory').patchValue(data.publicKey, { emitEvent: true });
       this.formConvertAccountMultsig.get('contact').patchValue('', { emitEvent: false, onlySelf: true });

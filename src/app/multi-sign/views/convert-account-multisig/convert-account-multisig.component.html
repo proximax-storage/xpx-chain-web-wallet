@@ -140,11 +140,83 @@
 
         <!-- ADD COSIGNATORY -->
         <div class="row mt-1-5rem">
-          <div class="col-11 col-md-10 col-lg-9 col-xl-8 mx-auto d-flex justify-content-center">
+          <div class="col-12 d-flex justify-content-center">
             <button mdbBtn type="button" rounded="true" [disabled]="!currentAccountToConvert || cosignatories.status === 'INVALID'" mdbWavesEffect class="background-btn-inverse pl-2rem pr-2rem"
               size="sm" (click)="addCosignatory()">
               <span class="fs-1-2em color-blue-intermedio fw-700">(+) Add Cosignatory</span>
             </button>
+          </div>
+        </div>
+
+        <!-- FEE -->
+        <div class="row mt-1-5rem">
+          <div class="col-11 col-md-10 col-lg-8 mx-auto">
+            <div class="row">
+              <div class="col-12 col-md-6 mx-auto">
+                <div class="box-grey d-flex justify-content-center pt-08rem pb-08rem">
+                  <div class="row">
+                    <div class="col-12 text-center">
+                      <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20"
+                        alt="">
+                      <span class="fs-07rem">Unconfirmed/Recommended Fee: {{fee}} XPX <br></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- LOCKFUND -->
+              <div class="col-12 col-md-6 mx-auto">
+                <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
+                  <div class="row">
+                    <div class="col-12 d-flex align-items-center">
+                      <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20"
+                        alt="">
+                      <span class="fs-07rem">LockFund: 10.000000 XPX <br> Unconfirmed/Recommended Fee: 0.044500 XPX</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Passowrd -->
+        <div class="row mt-1-5rem">
+          <div class="col-12">
+            <div class="md-form form-sm">
+              <img class="form-control-feedback" src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg"
+                alt="">
+              <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)" src="assets/images/img/icon-show-hide-password.svg"
+                *ngIf="passwordMain === 'password'">
+              <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)" src="assets/images/img/icon-show-hide-password-grey.svg"
+                *ngIf="passwordMain === 'text'">
+              <input [maxlength]="configurationForm.passwordWallet.maxLength" [minlength]="configurationForm.passwordWallet.minLength"
+                formControlName="password" required mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
+                [type]="passwordMain" id="password" class="form-control form-control-sm input-border" placeholder="Enter Wallet Password">
+              <mdb-error *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
+                <span>Password Required </span>
+              </mdb-error>
+            </div>
+          </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="row mt-1-5rem">
+          <div class="col-12">
+            <div class="row">
+              <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+                <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="md" (click)="clearForm()">
+                  <span class="fs-1-2em color-white">Clear</span>
+                </button>
+              </div>
+              <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+                <button [disabled]="formConvertAccountMultsig.invalid || cosignatories.status === 'INVALID'" mdbBtn type="submit"
+                  rounded="true" mdbWavesEffect class="btn-proximax" size="md">
+                  <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true" *ngIf="blockSend"></span>
+                  <span class="fs-1-2em color-white">Send</span>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
