@@ -2,6 +2,7 @@
   "name": "proximax-sirius-wallet",
   "version": "0.0.0",
   "scripts": {
+    "ng-high-memory": "node --max_old_space_size=8000 ./node_modules/@angular/cli/bin/ng",
     "ng": "ng",
     "start": "node patch.js && ng serve",
     "start:mainnet": "node patch.js && ng serve --configuration=main",
@@ -74,7 +75,9 @@
     "tsjs-chain-xipfs-sdk": "^0.2.7",
     "tsjs-xpx-chain-sdk": "^0.7.0",
     "tslib": "^1.9.0",
-    "zone.js": "~0.9.1"
+    "zone.js": "~0.9.1",
+    "peerjs": "^1.3.1",
+    "siriusid-sdk": "0.0.56"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.800.0",

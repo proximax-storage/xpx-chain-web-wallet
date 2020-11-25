@@ -212,7 +212,7 @@ export class CreateMosaicComponent implements OnInit, OnDestroy {
    * @memberof CreateMosaicComponent
    */
   buildMosaicDefinition(publicAccount: PublicAccount, params: any) {
-    console.log(this.deltaSupply);
+    console.debug(this.deltaSupply);
     const mosaicDefinitionTransaction = this.proximaxProvider.buildMosaicDefinition(params);
     const mosaicSupplyChangeTransaction = this.proximaxProvider.buildMosaicSupplyChange(
       mosaicDefinitionTransaction.mosaicId,
@@ -390,8 +390,8 @@ export class CreateMosaicComponent implements OnInit, OnDestroy {
     });
 
     this.mosaicForm.get('deltaSupply').valueChanges.subscribe(next => {
-      console.log('maxSupply', this.configurationForm.mosaicWallet.maxSupply);
-      console.log('deltaSupply', parseFloat(next.toString().replace(/./g, '')));
+      console.debug('maxSupply', this.configurationForm.mosaicWallet.maxSupply);
+      console.debug('deltaSupply', parseFloat(next.toString().replace(/./g, '')));
       if (parseFloat(next) <= this.configurationForm.mosaicWallet.maxSupply) {
         if (next === 0) {
           this.invalidSupply = true;

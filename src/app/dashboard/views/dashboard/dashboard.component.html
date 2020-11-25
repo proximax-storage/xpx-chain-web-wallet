@@ -406,6 +406,24 @@
                 </div>
               </div>
             </ng-container>
+
+            <ng-container *ngIf="dataSelected.data.type === typeTransactions.accountLink.id">
+              <div class="row">
+                <div class="col-11 mx-auto">
+                  <div class="row">
+                    <!-- TYPE REGISTER NAMESPACE TRANSACTION -->
+                    <div class="col-12 col-md-6 col-lg-7">
+                      <app-account-link-type [accountLink]="dataSelected">
+                      </app-account-link-type>
+                    </div>
+                    <!-- BOX DATA SIGNER HASH -->
+                    <div class="col-12 col-md-6 col-lg-5 box-modal-grey pt-01rem">
+                      <app-box-data-signer-hash [dataSelected]="dataSelected"></app-box-data-signer-hash>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
             <!-- TYPE MODIFY MULTISIG ACCOUNT TRANSACTION
                         <app-modify-multisig-account-type
                             *ngIf="dataSelected.data.type === typeTransactions.modifyMultisigAccount.id">

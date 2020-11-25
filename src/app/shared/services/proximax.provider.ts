@@ -43,7 +43,9 @@ import {
   BlockInfo,
   MosaicAliasTransaction,
   Convert,
-  RawAddress
+  RawAddress,
+  AccountLinkTransaction,
+  LinkAction
 } from 'tsjs-xpx-chain-sdk';
 import { BlockchainNetworkType } from 'tsjs-chain-xipfs-sdk';
 import { Observable } from 'rxjs/internal/Observable';
@@ -165,6 +167,25 @@ export class ProximaxProvider {
       params.network
     );
     return mosaicDefinitionTransaction;
+  }
+
+  /**
+   *
+   *
+   * @param {NetworkType} network
+   * @param {remoteAccountKey} linked account public key
+   * @param {linkAction} linkAction 
+   * @returns {AccountLinkTransaction}
+   * @memberof ProximaxProvider
+   */
+  buildAccountLinkTransaction(network: NetworkType, remoteAccountKey: string, linkAction: LinkAction): AccountLinkTransaction {
+
+    return AccountLinkTransaction.create(
+      Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
+      remoteAccountKey,
+      linkAction,
+      network
+    );
   }
 
   /**
@@ -613,7 +634,7 @@ export class ProximaxProvider {
     this.mosaicService
       .mosaicsAmountViewFromAddress(address)
       .pipe(mergeMap((_) => _))
-      .subscribe(mosaic => console.log('You have', mosaic.relativeAmount(), mosaic.fullName()),
+      .subscribe(mosaic => console.debug('You have', mosaic.relativeAmount(), mosaic.fullName()),
         err => console.error(err));
   }
 

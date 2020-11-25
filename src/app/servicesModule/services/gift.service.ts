@@ -53,14 +53,14 @@ export class GiftService {
   }
 
   serializeData(amount, pk, des) {
-    console.log('amount', amount)
-    console.log('pk', pk)
-    console.log('des', des)
+    console.debug('amount', amount)
+    console.debug('pk', pk)
+    console.debug('des', des)
     const ammountUin64 = UInt64.fromUint(amount)
     const amountUin8 = Convert.hexToUint8(ammountUin64.toHex())
     const pkUin8 = Convert.hexToUint8(pk)
     const desUin8 = Convert.hexToUint8(Convert.utf8ToHex(Convert.rstr2utf8(des)))
-    console.log('HEX:', this.concatUniArray(amountUin8, pkUin8, desUin8))
+    console.debug('HEX:', this.concatUniArray(amountUin8, pkUin8, desUin8))
     return this.concatUniArray(amountUin8, pkUin8, desUin8)
   }
   concatUniArray(buffer1, buffer2, buffer3) {

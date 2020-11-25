@@ -101,6 +101,10 @@ export class TransactionsService {
     lock: {
       id: TransactionType.LOCK,
       name: 'LockFund'
+    },
+    accountLink:{
+      id: TransactionType.LINK_ACCOUNT,
+      name: 'Account Link'
     }
     /*secretLock: {
        id: TransactionType.SECRET_LOCK,
@@ -146,11 +150,11 @@ export class TransactionsService {
         const arrAmount = amount.toString().replace(/,/g, '').split('.');
         if (arrAmount.length < 2) {
           decimal = this.addDecimals(cant);
-          console.log('decimal 1', decimal);
+          console.debug('decimal 1', decimal);
         } else {
           const arrDecimals = arrAmount[1].split('');
           decimal = this.addDecimals(cant - arrDecimals.length, arrAmount[1]);
-          console.log('decimal 2', decimal);
+          console.debug('decimal 2', decimal);
         }
         realAmount = `${arrAmount[0]}${decimal}`;
       }
@@ -158,7 +162,7 @@ export class TransactionsService {
       realAmount = amount;
     }
 
-    console.log('realAmount', realAmount);
+    console.debug('realAmount', realAmount);
     return realAmount;
   }
 
@@ -169,7 +173,7 @@ export class TransactionsService {
    * @param amount Amount to add zeros
    */
   addDecimals(cant: any, amount = '0') {
-    console.log('cant', cant)
+    console.debug('cant', cant)
     const x = '0';
     if (amount === '0') {
       for (let index = 0; index < cant - 1; index++) {
@@ -181,7 +185,7 @@ export class TransactionsService {
       }
     }
 
-    console.log(amount)
+    console.debug(amount)
     return amount;
   }
 
@@ -866,7 +870,7 @@ export class TransactionsService {
       if (data.mosaicsId && data.mosaicsId.length > 0) {
         this.mosaicServices.searchInfoMosaics(data.mosaicsId);
       }
-    }).catch(error => console.log(error));
+    }).catch(error => console.error(error));
   }
 
   /**

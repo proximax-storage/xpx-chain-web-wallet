@@ -177,7 +177,7 @@ export class CreatePollComponent implements OnInit {
     this.desciption = this.firstFormGroup.get('message').value;
     this.isPrivate = this.firstFormGroup.get('isPrivate').value;
     this.endDate = new Date(this.firstFormGroup.get('PollEndDate').value);
-    if (this.isPrivate){
+    if (!this.isPrivate){
       this.account = PublicAccount.createFromPublicKey(environment.pollsContent.public_key, this.walletService.currentAccount.network);
     }else {
       this.account = Account.generateNewAccount(this.walletService.currentAccount.network).publicAccount;

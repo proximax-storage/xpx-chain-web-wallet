@@ -103,14 +103,14 @@ export class NemProviderService {
    * @memberof NemProviderService
    */
   async getAccountInfoNis1(publicAccount: PublicAccount, name: string) {
-    console.log('getAccountInfoNis1');
+    console.debug('getAccountInfoNis1');
     try {
       const allowedMosaics = environment.swapAllowedMosaics;
       let cosignatoryOf: CosignatoryOf[] = [];
       let accountsMultisigInfo = [];
       const addressOwnedSwap = this.createAddressToString(publicAccount.address.pretty());
       const accountInfoOwnedSwap = await this.getAccountInfo(addressOwnedSwap).pipe(first()).pipe((timeout(environment.timeOutTransactionNis1))).toPromise();
-      console.log('accountInfoOwnedSwap', accountInfoOwnedSwap);
+      console.debug('accountInfoOwnedSwap', accountInfoOwnedSwap);
       if (accountInfoOwnedSwap['meta']['cosignatories'].length === 0) {
         let nis1AccountsInfo: AccountsInfoNis1Interface;
         // INFO ACCOUNTS MULTISIG
@@ -132,7 +132,7 @@ export class NemProviderService {
                     balances.push({ assetId: element.assetId, amount });
                   }
                 }
-                console.log('balances --->', balances);
+                console.debug('balances --->', balances);
                 multisig.balances = balances;
                 multisig.mosaics = mosaicsFound;
                 // multisig.balance = await this.validateBalanceAccounts(xpxFound, addressMultisig, element.properties.divisibility);
@@ -152,23 +152,23 @@ export class NemProviderService {
           const ownedMosaic = await this.getOwnedMosaics(addressOwnedSwap).pipe(first()).pipe((timeout(environment.timeOutTransactionNis1))).toPromise();
           const mosaicsFound = ownedMosaic.filter(e => allowedMosaics.find(d => d.namespaceId === e.assetId.namespaceId && d.name === e.assetId.name));
           if (mosaicsFound && mosaicsFound.length > 0) {
-            console.log('MOSAICS FOUND ---->', mosaicsFound);
+            console.debug('MOSAICS FOUND ---->', mosaicsFound);
             const balances = [];
             const unconfirmedTxn = await this.getUnconfirmedTransaction(addressOwnedSwap);
             for (const element of mosaicsFound) {
               const amount = await this.validateBalanceAccounts(element, addressOwnedSwap, unconfirmedTxn);
-              console.log('#####my amount is --->', amount);
+              console.debug('#####my amount is --->', amount);
               // tslint:disable-next-line: radix
               if (parseInt(amount) > 0) {
                 balances.push({ assetId: element.assetId, amount });
               }
             }
-            console.log('balances --->', balances);
+            console.debug('balances --->', balances);
             nis1AccountsInfo = this.buildAccountInfoNIS1(publicAccount, accountsMultisigInfo, balances, cosignatoryOf, false, name, mosaicsFound);
-            console.log('nis1AccountsInfo --->', nis1AccountsInfo);
+            console.debug('nis1AccountsInfo --->', nis1AccountsInfo);
             this.setNis1AccountsFound$(nis1AccountsInfo);
           } else if (cosignatoryOf.length > 0) {
-            console.log('cosignatoryOf zero');
+            console.debug('cosignatoryOf zero');
             nis1AccountsInfo = this.buildAccountInfoNIS1(publicAccount, accountsMultisigInfo, null, cosignatoryOf, false, name, null);
             this.setNis1AccountsFound$(nis1AccountsInfo);
           } else {

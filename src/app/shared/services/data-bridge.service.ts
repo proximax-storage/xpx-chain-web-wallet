@@ -87,7 +87,6 @@ export class DataBridgeService {
     this.currentWallet.accounts.forEach(element => {
       const ad = this.proximaxProvider.createFromRawAddress(element.address);
       const b = new Listener(this.url, WebSocket);
-      console.log('bbbbbb', b)
       this.connector.push(b);
       b.open().then(() => {
         this.audio = new Audio('assets/audio/ding.ogg');
