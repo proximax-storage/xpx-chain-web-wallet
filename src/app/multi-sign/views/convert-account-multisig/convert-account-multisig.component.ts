@@ -8,6 +8,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { StringProtocolResponse } from 'electron';
 import { ModalDirective } from 'ng-uikit-pro-standard';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { NodeService } from 'src/app/servicesModule/services/node.service';
@@ -80,6 +81,7 @@ export class ConvertAccountMultisigComponent implements OnInit {
     moduleName: 'Accounts > Multisign',
     componentName: 'Convert to Multisig Account',
   };
+  snapshot = false;
   searchContact = [];
   showContacts = false;
   subscribe: Subscription[] = [];
@@ -91,6 +93,7 @@ export class ConvertAccountMultisigComponent implements OnInit {
     feeTransaction: number,
     totalFee: number,
   };
+  validateAccountAlert: ValidateAccountAlert = null
   constructor(
     private activateRoute: ActivatedRoute,
     private fb: FormBuilder,
@@ -103,13 +106,18 @@ export class ConvertAccountMultisigComponent implements OnInit {
     private proximaxProvider: ProximaxProvider,
     private sharedService: SharedService
   ) {
-    console.log('load component...');
+    this.validateAccountAlert = {
+      show: false,
+      info: '',
+      subInfo: ''
+    };
     this.feeConfig = {
       fee: '0.000000',
       feeLockfund: 10000000,
       feeTransaction: 44500,
       totalFee: 0
     };
+    this.feeConfig.totalFee = this.feeConfig.feeTransaction + this.feeConfig.feeLockfund;
     this.configurationForm = this.sharedService.configurationForm;
     this.currentAccounts = [];
     this.transactionHttp = new TransactionHttp(environment.protocol + '://' + `${this.nodeService.getNodeSelected()}`);
@@ -122,8 +130,21 @@ export class ConvertAccountMultisigComponent implements OnInit {
    */
   ngOnInit () {
     this.createForm();
-    this.getAccounts();
+    // this.getAccounts();
     this.subscribeValueChange();
+    this.validateSnapshot();
+    //
+  }
+
+  validateSnapshot () {
+    console.log('name snapshot', this.activateRoute.snapshot.paramMap.get('name'));
+    if (this.activateRoute.snapshot.paramMap.get('name') !== null) {
+      this.getAccount(this.activateRoute.snapshot.paramMap.get('name'));
+      this.snapshot = true;
+    } else {
+      this.snapshot = false;
+      this.getAccounts();
+    }
   }
 
   /**
@@ -171,7 +192,7 @@ export class ConvertAccountMultisigComponent implements OnInit {
       },
       err => {
         this.sharedService.showError('', err);
-        // this.clearForm();
+        this.clearForm();
         this.blockSend = false;
       });
 
@@ -180,19 +201,19 @@ export class ConvertAccountMultisigComponent implements OnInit {
    * @memberof CreateMultiSignatureComponent
    *  @param {SignedTransaction} signedTransaction  - Signed transaction.
    */
- announceAggregateComplete(signedTransaction: SignedTransaction) {
-  this.formConvertAccountMultsig.get('selectAccount').patchValue('', { emitEvent: false, onlySelf: true });
-  this.transactionHttp.announce(signedTransaction).subscribe(
-    async () => {
-      this.getTransactionStatus(signedTransaction)
-    },
-    err => {
-      this.sharedService.showError('', err);
-      // this.clearForm();
-      this.blockSend = false;
-    });
+  announceAggregateComplete (signedTransaction: SignedTransaction) {
+    this.formConvertAccountMultsig.get('selectAccount').patchValue('', { emitEvent: false, onlySelf: true });
+    this.transactionHttp.announce(signedTransaction).subscribe(
+      async () => {
+        this.getTransactionStatus(signedTransaction)
+      },
+      err => {
+        this.sharedService.showError('', err);
+        this.clearForm();
+        this.blockSend = false;
+      });
 
-}
+  }
 
   /**
    * Get aggregateTransaction
@@ -283,6 +304,29 @@ export class ConvertAccountMultisigComponent implements OnInit {
     }
 
   }
+
+/**
+ * @memberof CreateMultiSignatureComponent
+ */
+  clearForm () {
+    // this.cosignatories.value.forEach((element, index) => {
+    //   this.removeCosignatory(index);
+    // });
+    this.currentAccountToConvert = undefined;
+    this.showContacts = false;
+    this.formConvertAccountMultsig.reset({
+      selectAccount: '',
+      cosignatory: '',
+      contact: '',
+      minApprovalDelta: 1,
+      minRemovalDelta: 1,
+      password: '',
+      cosignatories: this.fb.array([]),
+    }, {
+      emitEvent: false
+    }
+    );
+  }
   /**
    *
    *
@@ -307,6 +351,21 @@ export class ConvertAccountMultisigComponent implements OnInit {
         .patchValue('', { emitEvent: false, onlySelf: true });
     });
   }
+  /**
+* @memberof CreateMultiSignatureComponent
+*/
+  disabledForm (noIncluye: string, accion: boolean) {
+    for (let x in this.formConvertAccountMultsig.value) {
+      if (x !== noIncluye) {
+        if (accion) {
+          this.formConvertAccountMultsig.get(x).disable();
+        } else {
+          this.formConvertAccountMultsig.get(x).enable();
+        }
+
+      }
+    }
+  }
 
   /**
    *
@@ -316,7 +375,7 @@ export class ConvertAccountMultisigComponent implements OnInit {
   getAccounts () {
     const currentWallet = Object.assign({}, this.walletService.currentWallet);
     if (currentWallet && Object.keys(currentWallet).length > 0) {
-      console.log('currentWallet', currentWallet);
+      // console.log('currentWallet', currentWallet);
       // validar que la transacción no esté en parcial
       this.subscribe.push(
         this.transactionService
@@ -330,7 +389,6 @@ export class ConvertAccountMultisigComponent implements OnInit {
 
       currentWallet.accounts.forEach((element) => {
         const accountInfo = this.walletService.filterAccountInfo(element.name);
-        console.log('accountInfo', accountInfo);
         if (accountInfo) {
           if (!this.multisigService.checkIsMultisig(element)) {
             console.log('is not multisig');
@@ -346,13 +404,42 @@ export class ConvertAccountMultisigComponent implements OnInit {
       });
     }
   }
+  /**
+   *
+   *
+   * @memberof ConvertAccountMultisigComponent
+   */
+  getAccount (name) {
+    this.subscribe.push(
+      this.transactionService
+        .getAggregateBondedTransactions$()
+        .subscribe((transactions: TransactionsInterface[]) => {
+          if (transactions.length > 0) {
+            console.log('ESTAS SON MIS TRANSACCIONES', transactions);
+          }
+        })
+    );
+    const currentAccount = this.walletService.filterAccountWallet(name);
+    this.currentAccounts.push({
+      label: currentAccount.name,
+      value: currentAccount.publicAccount,
+      data: currentAccount,
+      isPartial: false,
+      isMultisig: this.multisigService.checkIsMultisig(currentAccount),
+    });
+    this.selectAccount(this.currentAccounts[0]);
+    console.log('currentAccount', this.currentAccounts);
+    this.formConvertAccountMultsig.controls['selectAccount'].setValidators([]);
+    this.formConvertAccountMultsig.controls['selectAccount'].updateValueAndValidity({ emitEvent: false, onlySelf: true });
+  }
 
-/**
- *
- *
- * @memberof CreateMultiSignatureComponent
- *  @param {SignedTransaction} signedTransaction  - Signed transaction.
- */
+
+  /**
+   *
+   *
+   * @memberof CreateMultiSignatureComponent
+   *  @param {SignedTransaction} signedTransaction  - Signed transaction.
+   */
   getTransactionStatushashLock (signedTransactionHashLock: SignedTransaction, signedTransactionBonded: SignedTransaction) {
     // Get transaction status
     this.dataBridge.getTransactionStatus().subscribe(
@@ -367,7 +454,7 @@ export class ConvertAccountMultisigComponent implements OnInit {
           } else if (statusTransaction['type'] === 'unconfirmed' && match) {
             // signedTransactionHashLock = null;
           } else if (match) {
-            // this.clearForm()
+            this.clearForm()
             this.blockSend = false;
             signedTransactionHashLock = null;
           }
@@ -375,38 +462,38 @@ export class ConvertAccountMultisigComponent implements OnInit {
       }
     );
   }
-/**
- *
- *
- * @memberof CreateMultiSignatureComponent
- *  @param {SignedTransaction} signedTransaction  - Signed transaction.
- */
- getTransactionStatus(signedTransaction: SignedTransaction) {
-  // Get transaction status
-  this.subscribe['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
-    statusTransaction => {
-      if (statusTransaction !== null && statusTransaction !== undefined && signedTransaction !== null) {
-        const match = statusTransaction['hash'] === signedTransaction.hash;
-        if (match) {
-          // this.clearForm();
-          this.blockSend = false;
-        }
-        if (statusTransaction['type'] === 'confirmed' && match) {
-          signedTransaction = null;
-        } else if (statusTransaction['type'] === 'unconfirmed' && match) {
-          this.transactionService.searchAccountsInfo([this.currentAccountToConvert]);
-          signedTransaction = null;
-        } else if (statusTransaction['type'] === 'aggregateBondedAdded' && match) {
-          signedTransaction = null;
-        } else if (match) {
-          // this.clearForm();
-          this.blockSend = false;
-          signedTransaction = null;
+  /**
+   *
+   *
+   * @memberof CreateMultiSignatureComponent
+   *  @param {SignedTransaction} signedTransaction  - Signed transaction.
+   */
+  getTransactionStatus (signedTransaction: SignedTransaction) {
+    // Get transaction status
+    this.subscribe['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
+      statusTransaction => {
+        if (statusTransaction !== null && statusTransaction !== undefined && signedTransaction !== null) {
+          const match = statusTransaction['hash'] === signedTransaction.hash;
+          if (match) {
+            this.clearForm();
+            this.blockSend = false;
+          }
+          if (statusTransaction['type'] === 'confirmed' && match) {
+            signedTransaction = null;
+          } else if (statusTransaction['type'] === 'unconfirmed' && match) {
+            this.transactionService.searchAccountsInfo([this.currentAccountToConvert]);
+            signedTransaction = null;
+          } else if (statusTransaction['type'] === 'aggregateBondedAdded' && match) {
+            signedTransaction = null;
+          } else if (match) {
+            this.clearForm();
+            this.blockSend = false;
+            signedTransaction = null;
+          }
         }
       }
-    }
-  );
-}
+    );
+  }
   /**
    * Before sending an aggregate bonded transaction, the future
    * multisig account needs to lock at least 10 cat.currency.
@@ -422,7 +509,7 @@ export class ConvertAccountMultisigComponent implements OnInit {
     this.transactionHttp.announce(hashLockTransactionSigned).subscribe(async () => {
       this.getTransactionStatushashLock(hashLockTransactionSigned, signedTransaction);
     }, err => {
-      // this.clearForm();
+      this.clearForm();
       this.blockSend = false;
       // this.sharedService.showError('', err);
     });
@@ -471,11 +558,42 @@ export class ConvertAccountMultisigComponent implements OnInit {
       this.contactList = this.multisigService.validateAccountListContact(
         account.label
       );
+      this.validateAccountAlert = this.validAccountAlert(account.data);
+      console.log('this.validateAccountAlert', this.validateAccountAlert);
+      if (this.validateAccountAlert.show) {
+
+        this.disabledForm('selectAccount', true);
+      } else {
+        this.disabledForm('selectAccount', false);
+      }
     } else {
       this.contactList = [];
     }
   }
+  /**
+   *
+   * @param account
+   */
+  validAccountAlert (account: AccountsInterface): ValidateAccountAlert {
+    const accountFiltered = this.walletService.filterAccountInfo(account.name);
+    const disabled: boolean = (
+      accountFiltered !== null &&
+      accountFiltered !== undefined && accountFiltered.accountInfo !== null);
+    const insufficientBalanceSub = `${this.transactionService.amountFormatterSimple(this.feeConfig.totalFee)} XPX required to cover LockFund.`;
+    const value: ValidateAccountAlert = { show: true, info: 'Insufficient Balance', subInfo: insufficientBalanceSub };
+    if (!disabled) {
+      return value;
+    }
+    const balanceAccount = accountFiltered.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id).amount.compact();
+    if (!balanceAccount) {
+      return value;
+    }
+    if (balanceAccount < this.feeConfig.totalFee) {
+      return value;
+    }
 
+    return { show: false, info: '', subInfo: '' };
+  }
   /**
    *
    *
@@ -711,4 +829,10 @@ interface CurrentAccountInterface {
   isPartial: boolean;
   data: AccountsInterface;
   isMultisig: boolean;
+}
+
+interface ValidateAccountAlert {
+  show: boolean;
+  info: string;
+  subInfo: string;
 }

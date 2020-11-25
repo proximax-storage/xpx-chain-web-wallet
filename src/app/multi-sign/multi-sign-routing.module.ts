@@ -20,6 +20,17 @@ const routes: Routes = [
     }
   },
   {
+    path: `${AppConfig.routes.convertToAccountMultisign}/:name`,
+    component: ConvertAccountMultisigComponent,
+    data: {
+      meta: {
+        title: 'ConvertAccountMultisigComponent.title',
+        description: 'ConvertAccountMultisigComponent.text',
+        override: true,
+      }
+    }
+  },
+  {
     path: AppConfig.routes.convertToAccountMultisign,
     component: ConvertAccountMultisigComponent,
     data: {
