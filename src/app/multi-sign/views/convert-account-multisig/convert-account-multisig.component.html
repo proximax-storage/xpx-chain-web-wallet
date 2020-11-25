@@ -90,30 +90,38 @@
               <div class="col-12">
                 <div class="row">
                   <!-- COSIGNATORY INPUT-->
-                  <div class="col-9 col-sm-10 col-lg-11">
-                    <!--SHOW CONTACT-->
-                    <ng-container>
-                      <button (click)="removeCosignatory(i)">Remove</button>
-                    </ng-container>
-                    <div class="md-form form-sm mt-1rem mb-0rem">
-                      <img class="form-control-feedback"
-                        src="assets/images/img/icon-public-key-green-16h-proximax-sirius-wallet.svg" width="43"
-                        height="43">
-                      <input [maxlength]="configurationForm.publicKey.maxLength"
-                        [minlength]="configurationForm.publicKey.minLength" formControlName="cosignatory" required
-                        mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
-                        id="cosignatory" class="form-control form-control-sm input-border"
-                        placeholder="Cosignatory Account Public Key "
-                        onkeyup="javascript:this.value=this.value.toLowerCase();">
-                      <!-- VALIDATION -->
-                      <!-- <mdb-error
-                        *ngIf="validateInput('cosignatory', '').invalid && (validateInput('cosignatory', '').dirty || validateInput('cosignatory', '').touched)">
-                        <span>Invalid Key</span>
-                      </mdb-error> -->
+                  <div class="col-8 col-sm-9 col-lg-10">
+                    <!-- Remove user -->
+                    <div class="d-flex justify-content-center">
+                      <div class="pt-2">
+                        <i (click)="removeCosignatory(i)" class="cursor-p fa fa-trash fs-1rem"></i>
+                      </div>
+                      <!-- Input Public Key -->
+                      <div class="md-form form-sm mt-1rem mb-0rem flex-fill">
+                        <img class="form-control-feedback"
+                          src="assets/images/img/icon-public-key-green-16h-proximax-sirius-wallet.svg" width="43"
+                          height="43">
+                        <input [maxlength]="configurationForm.publicKey.maxLength"
+                          [minlength]="configurationForm.publicKey.minLength" formControlName="cosignatory" required
+                          mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
+                          id="cosignatory" class="form-control form-control-sm input-border"
+                          placeholder="Cosignatory Account Public Key "
+                          onkeyup="javascript:this.value=this.value.toLowerCase();">
+                        <!-- VALIDATION -->
+                        <!-- <mdb-error
+                          *ngIf="validateInput('cosignatory', '').invalid && (validateInput('cosignatory', '').dirty || validateInput('cosignatory', '').touched)">
+                          <span>Invalid Key</span>
+                        </mdb-error> -->
+                      </div>
+                      <div [attr.disabled]="contactList.length === 0" class="cursor-p" (click)="showContact()"
+                        [title]="(!showContacts) ? 'Show contacts': 'Hide contacts'">
+                        <img class="w-25px"
+                          [src]="(!showContacts && contactList.length === 0) ? imageActiveBook : imageInactiveBook">
+                      </div>
                     </div>
                   </div>
                   <!--SHOW CONTACT-->
-                  <ng-container>
+                  <!-- <ng-container>
                     <div class="col-3 col-sm-2 col-lg-1 d-flex justify-content-center align-items-center pt-12px">
                       <div [attr.disabled]="contactList.length === 0"
                         class="background-gray-icons p-12px bord-rad-25px cursor-p" (click)="showContact()"
@@ -122,7 +130,7 @@
                           [src]="(!showContacts && contactList.length === 0) ? imageActiveBook : imageInactiveBook">
                       </div>
                     </div>
-                  </ng-container>
+                  </ng-container> -->
                 </div>
                 <div class="row">
                   <!-- Progress -->
