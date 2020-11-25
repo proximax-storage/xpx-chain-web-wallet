@@ -37,13 +37,14 @@ export class ConvertAccountMultisigComponent implements OnInit {
   minApprovaMinLength = 1;
   minApprovaMaxLength = 1;
   contactList: ContactsListInterface[] = [];
+  currentIteratorCosignatory: number;
   // typeTx: TypeTx;
   // transactionHttp: TransactionHttp;
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Accounts > Multisign',
     componentName: 'Convert to Multisig Account'
   };
-  searchContact = false;
+  searchContact = [];
   showContacts = false;
   subscribe: Subscription[] = [];
   subscribeContact: Subscription[] = [];
@@ -97,19 +98,9 @@ export class ConvertAccountMultisigComponent implements OnInit {
   addCosignatory() {
     console.log('addCosignatory', this.cosignatories);
     if (this.cosignatories.status === 'VALID') {
+      this.searchContact.push(false);
       this.cosignatories.push(this.newCosignatory());
     }
-  }
-
-  /**
-   *
-   *
-   * @param {number} i
-   * @memberof ConvertAccountMultisigComponent
-   */
-  removeCosignatory(i: number) {
-    this.cosignatories.removeAt(i);
-    console.log('cosignatories --->', this.cosignatories);
   }
 
   /**
@@ -206,18 +197,30 @@ export class ConvertAccountMultisigComponent implements OnInit {
   /**
    *
    *
+   * @param {number} i
+   * @memberof ConvertAccountMultisigComponent
+   */
+  removeCosignatory(i: number) {
+    this.cosignatories.removeAt(i);
+    this.searchContact.pop();
+    console.log('cosignatories --->', this.cosignatories);
+  }
+
+  /**
+   *
+   *
    * @param {*} account
    * @memberof ConvertAccountMultisigComponent
    */
   selectAccount(account: CurrentAccountInterface) {
+    this.cosignatoryList = [];
+    this.formConvertAccountMultsig.enable({ emitEvent: false, onlySelf: true });
+    this.formConvertAccountMultsig.get('cosignatory').patchValue('', { emitEvent: false, onlySelf: false });
     if (account) {
       console.log('Account selected --->', account);
-      this.cosignatoryList = [];
       this.minApprovaMaxLength = 1;
       this.currentAccountToConvert = account.data;
       this.contactList = this.multisigService.validateAccountListContact(account.label);
-      this.formConvertAccountMultsig.enable({ emitEvent: false, onlySelf: true });
-      this.formConvertAccountMultsig.get('cosignatory').patchValue('', { emitEvent: false, onlySelf: false });
       console.log('Contact list --->', this.contactList);
     } else {
       this.contactList = [];
@@ -235,25 +238,25 @@ export class ConvertAccountMultisigComponent implements OnInit {
     console.log('Contact selected', data);
     this.modalContact.hide();
     if (data.publicKey) {
-      this.formConvertAccountMultsig.get('cosignatory').patchValue(data.publicKey, { emitEvent: true });
+      this.cosignatories.controls[this.currentIteratorCosignatory].get('cosignatory').patchValue(data.publicKey, { emitEvent: true });
       this.formConvertAccountMultsig.get('contact').patchValue('', { emitEvent: false, onlySelf: true });
     } else {
       console.log('consultar public key');
-      this.searchContact = true;
-      this.subscribeContact.push(this.proximaxProvider.getAccountInfo(Address.createFromRawAddress(data.value)).subscribe(async (res: AccountInfo) => {
+      this.searchContact[this.currentIteratorCosignatory] = true;
+      this.subscribeContact.push(this.proximaxProvider.getAccountInfo(Address.createFromRawAddress(data.value)).subscribe(async (response: AccountInfo) => {
         this.unsubscribe(this.subscribeContact);
-        this.searchContact = false;
-        if (res.publicKeyHeight.toHex() === '0000000000000000') {
+        this.searchContact[this.currentIteratorCosignatory] = false;
+        if (response.publicKeyHeight.toHex() === '0000000000000000') {
           this.sharedService.showWarning('', 'Cosignatory does not have a public key');
           this.formConvertAccountMultsig.get('cosignatory').patchValue('', { emitEvent: false, onlySelf: true });
           this.formConvertAccountMultsig.get('contact').patchValue('', { emitEvent: false, onlySelf: true });
         } else {
-          this.formConvertAccountMultsig.get('cosignatory').patchValue(res.publicKey, { emitEvent: true });
+          this.cosignatories.controls[this.currentIteratorCosignatory].get('cosignatory').patchValue(response.publicKey, { emitEvent: true });
           this.formConvertAccountMultsig.get('contact').patchValue('', { emitEvent: false, onlySelf: true });
         }
       }, err => {
         this.formConvertAccountMultsig.get('contact').patchValue('', { emitEvent: false, onlySelf: true });
-        this.searchContact = false;
+        this.searchContact[this.currentIteratorCosignatory] = false;
         this.sharedService.showWarning('', 'Address is not valid');
       }));
     }
@@ -276,8 +279,9 @@ export class ConvertAccountMultisigComponent implements OnInit {
    *
    * @memberof ConvertAccountMultisigComponent
    */
-  showContact() {
+  showContact(iterator: number) {
     if (this.contactList.length > 0) {
+      this.currentIteratorCosignatory = iterator;
       this.showContacts = !this.showContacts;
       this.modalContact.show();
     }

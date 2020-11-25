@@ -7,12 +7,13 @@
         <!-- SELECT ACCOUNT -->
         <div class="row mt-2rem">
           <div class="col-12">
-            <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [searchable]="false" [clearable]="true"
+            <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [searchable]="false" [clearable]="false"
               [validateError]="true" class="selectWrapper" [items]="currentAccounts" formControlName="selectAccount"
-              bindLabel="label" placeholder="Select an account" (change)="selectAccount($event)">
+              bindLabel="label" placeholder="Select an account"  (change)="selectAccount($event)">
             </ng-select>
           </div>
         </div>
+
         <!-- SCHEME NODE -->
         <div class="row mt-2rem">
           <div class="col-12">
@@ -76,6 +77,7 @@
             </div>
           </div>
         </div>
+
         <!-- LINE SEPARATOR -->
         <div class="row">
           <v-col>
@@ -83,7 +85,7 @@
           </v-col>
         </div>
 
-        <!-- Dynamic Form -->
+        <!-- DYNAMIC FORM -->
         <div formArrayName="cosignatories">
           <div *ngFor="let cosignatory of cosignatories.controls; let i=index">
             <!-- COSIGNATORY -->
@@ -115,23 +117,20 @@
                         </mdb-error> -->
                       </div>
                       <!--SHOW CONTACT-->
-                      <div [attr.disabled]="contactList.length === 0" class="ml-2 cursor-p" (click)="showContact()"
+                      <div [attr.disabled]="contactList.length === 0" class="ml-2 cursor-p" (click)="showContact(i)"
                         [title]="(!showContacts) ? 'Show contacts': 'Hide contacts'">
                         <img class="w-25px"
                           [src]="(!showContacts && contactList.length === 0) ? imageActiveBook : imageInactiveBook">
                       </div>
                     </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <!-- Progress -->
-                  <div class="col-9 col-sm-10 col-lg-11">
-                    <ng-container *ngIf="searchContact">
+
+                    <!-- Progress -->
+                    <div *ngIf="searchContact[i]" class="d-flex justify-content-center align-items-center">
                       <div class="col-12">
                         <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate">
                         </mdb-progress-bar>
                       </div>
-                    </ng-container>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -139,16 +138,16 @@
           </div>
         </div>
 
-
         <!-- ADD COSIGNATORY -->
         <div class="row mt-1-5rem">
           <div class="col-11 col-md-10 col-lg-9 col-xl-8 mx-auto d-flex justify-content-center">
-            <button mdbBtn type="button" rounded="true" mdbWavesEffect class="background-btn-inverse pl-2rem pr-2rem"
+            <button mdbBtn type="button" rounded="true" [disabled]="!currentAccountToConvert || cosignatories.status === 'INVALID'" mdbWavesEffect class="background-btn-inverse pl-2rem pr-2rem"
               size="sm" (click)="addCosignatory()">
               <span class="fs-1-2em color-blue-intermedio fw-700">(+) Add Cosignatory</span>
             </button>
           </div>
         </div>
+
         <!-- MODAL SELECT CONTACT -->
         <div class="d-flex align-items-center">
           <div mdbModal #modalContact="mdbModal" class="modal fade" tabindex="-1" role="dialog"
