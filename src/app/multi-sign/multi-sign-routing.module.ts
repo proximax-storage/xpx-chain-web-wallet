@@ -1,12 +1,36 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AppConfig } from '../config/app.config';
-import { ConvertAccountMultisignComponent } from './views/convert-account-multisign/convert-account-multisign.component';
+import { ContractMultisigComponent } from './views/contract-multisig/contract-multisig.component';
+import { ConvertAccountMultisigComponent } from './views/convert-account-multisig/convert-account-multisig.component';
+// import { ConvertAccountMultisignComponent } from './views/convert-account-multisign/convert-account-multisign.component';
 import { EditAccountMultisignComponent } from './views/edit-account-multisign/edit-account-multisign.component';
 import { MultiSignatureContractComponent } from './views/multi-signature-contract/multi-signature-contract.component';
 
 const routes: Routes = [
   {
+    path: AppConfig.routes.MultisigMultiLevel,
+    component: ContractMultisigComponent,
+    data: {
+      meta: {
+        title: 'multisig.title',
+        description: 'multisig.text',
+        override: true,
+      }
+    }
+  },
+  {
+    path: AppConfig.routes.convertToAccountMultisign,
+    component: ConvertAccountMultisigComponent,
+    data: {
+      meta: {
+        title: 'ConvertAccountMultisigComponent.title',
+        description: 'ConvertAccountMultisigComponent.text',
+        override: true,
+      }
+    }
+  },
+  /* {
     path: AppConfig.routes.convertToAccountMultisign,
     component: ConvertAccountMultisignComponent,
     data: {
@@ -16,7 +40,7 @@ const routes: Routes = [
         override: true,
       }
     }
-  }, {
+  },*//* {
     path: `${AppConfig.routes.convertToAccountMultisign}/:name`,
     component: ConvertAccountMultisignComponent,
     data: {
@@ -26,7 +50,7 @@ const routes: Routes = [
         override: true,
       }
     }
-  }, {
+  }, */ {
     path: `${AppConfig.routes.editAccountMultisign}/:name`,
     component: EditAccountMultisignComponent,
     data: {
@@ -36,7 +60,7 @@ const routes: Routes = [
         override: true,
       },
     }
-  }, {
+  }/*, {
     path: AppConfig.routes.MultiSign,
     component: MultiSignatureContractComponent,
     data: {
@@ -46,7 +70,7 @@ const routes: Routes = [
         override: true,
       }
     }
-  },
+  } */
 ];
 
 @NgModule({
