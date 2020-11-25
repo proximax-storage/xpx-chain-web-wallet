@@ -69,10 +69,10 @@ export class ServicesBoxComponent implements OnInit {
           ''
         ), delegate: this.services.buildStructureService(
           'Delegate',
-          false,
+          true,
           '',
           '',
-          ''
+          AppConfig.routes.delegate
         ), aliasToNamespace: this.services.buildStructureService(
           'Link to Namespace',
           true,

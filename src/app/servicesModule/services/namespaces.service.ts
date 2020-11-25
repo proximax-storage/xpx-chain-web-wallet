@@ -111,13 +111,13 @@ export class NamespacesService {
    * @memberof NamespacesService
    */
   async getNamespacesName(namespaceIds: NamespaceId[]) {
-    console.log('namespaceIds ---> ', namespaceIds);
+    console.debug('namespaceIds ---> ', namespaceIds);
     try {
       // Gets array of NamespaceName for an account
       const namespaceName = await this.proximaxProvider.namespaceHttp.getNamespacesName(namespaceIds).toPromise();
       return namespaceName;
     } catch (error) {
-      console.log(error);
+      console.error(error);
       // Nothing!
       return [];
     }

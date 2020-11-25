@@ -27,11 +27,11 @@ pipeline {
           sh 'sed -i "/node:/c\\\\node: { crypto: true, stream: true, fs: \\\'empty\\\', net: \\\'empty\\\', tls: \\\'empty\\\'}" ./node_modules/@angular-devkit/build-angular/src/angular-cli-files/models/webpack-configs/browser.js'
 
           echo 'Building for Testnet'
-          sh 'npm run build:optimizer-testnet'
+          sh 'node --max_old_space_size=5048 ./node_modules/@angular/cli/bin/ng build --aot --prod --build-optimizer=true --vendor-chunk=true'
           sh 'mv dist/proximax-sirius-wallet/ dist/proximax-testnet-sirius-wallet'
           
           echo 'Building for Mainnet'
-          sh 'npm run build:optimizer-mainnet'
+          sh 'node --max_old_space_size=5048 ./node_modules/@angular/cli/bin/ng build --aot --prod --build-optimizer=true --vendor-chunk=true --configuration=main'
           sh 'mv dist/proximax-sirius-wallet/ dist/proximax-mainnet-sirius-wallet'
           sh "tar cJfv proximax-web-wallet-${env.GIT_BRANCH}.tar.xz dist"
         }

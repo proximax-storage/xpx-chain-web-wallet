@@ -8,6 +8,7 @@ import { AccountDeleteComponent } from './views/account-delete/account-delete/ac
 import { AccountDeleteConfirmComponent } from './views/account-delete-confirm/account-delete-confirm.component';
 import { SelectionAccountTypeComponent } from './views/selection-account-creation-type/selection-account-creation-type.component';
 import { AliasAddressToNamespaceComponent } from './views/alias-address-to-namespace/alias-address-to-namespace.component';
+import { DelegateComponent } from './views/delegate/delegate.component';
 import { ViewAllAccountsComponent } from './views/view-all-accounts/view-all-accounts.component';
 
 const routes: Routes = [
@@ -100,6 +101,16 @@ const routes: Routes = [
       meta: {
         title: 'aliasAddressToNamespace.title',
         description: 'aliasAddressToNamespace.text',
+        override: true,
+      }
+    }
+  }, {
+    path: AppConfig.routes.delegate,
+    component: DelegateComponent,
+    data: {
+      meta: {
+        title: 'delegate.title',
+        description: 'delegate.text',
         override: true,
       }
     }
