@@ -130,7 +130,7 @@ export class PartialComponent implements OnInit, OnDestroy {
    */
   cosignAggregateBondedTransaction(transaction: AggregateTransaction, account: Account) {
     this.proximaxProvider.cosignAggregateBondedTransaction(transaction, account).subscribe(
-      announcedTransaction => console.log(announcedTransaction),
+      announcedTransaction => console.debug(announcedTransaction),
       err => console.error(err)
     );
   }

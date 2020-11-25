@@ -20,10 +20,10 @@ export class MultiSignService {
       innerTxn.push(element.tx.toAggregate(element.signer));
     });
     let aggregateTransaction: AggregateTransaction = null
-    console.log('type:', transactionType.transactionType)
+    console.debug('type:', transactionType.transactionType)
     switch (transactionType.transactionType) {
       case TransactionType.AGGREGATE_BONDED:
-        console.log('AGGREGATE_BONDED  AggregateTransaction')
+        console.debug('AGGREGATE_BONDED  AggregateTransaction')
         aggregateTransaction = AggregateTransaction.createBonded(
           Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
           innerTxn,
@@ -31,7 +31,7 @@ export class MultiSignService {
         );
         break
       case TransactionType.AGGREGATE_COMPLETE:
-        console.log('AGGREGATE_COMPLETE  AggregateTransaction')
+        console.debug('AGGREGATE_COMPLETE  AggregateTransaction')
         aggregateTransaction = AggregateTransaction.createComplete(
           Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
           innerTxn,
@@ -97,23 +97,23 @@ export class MultiSignService {
     cantFirm = (cantFirm > 0) ? cantFirm : 1;
     let getcosignatory = this.getvalidateCosignatoryList(cosignatoryList, accounts)
     let typeTx: TypeTx = { type: null, transactionType: null }
-    console.log('minRemoval', multisigAccountInfo.minRemoval)
-    console.log('minApproval', multisigAccountInfo.minApproval)
-    console.log('cantFirm', cantFirm)
-    console.log('Getcosignatory', getcosignatory)
+    console.debug('minRemoval', multisigAccountInfo.minRemoval)
+    console.debug('minApproval', multisigAccountInfo.minApproval)
+    console.debug('cantFirm', cantFirm)
+    console.debug('Getcosignatory', getcosignatory)
 
     if (getcosignatory) {
       let cantAdd = this.countArray('type', 1, cosignatoryList)
       let cabtRemove = this.countArray('type', 2, cosignatoryList)
       if (cantAdd > 0 && cabtRemove > 0) {
-        console.log('ADD Y REMOVE')
+        console.debug('ADD Y REMOVE')
         if (cantFirm >= multisigAccountInfo.minRemoval && cantFirm >= multisigAccountInfo.minApproval) {
           typeTx = { type: 2, transactionType: TransactionType.AGGREGATE_COMPLETE }
         } else {
           typeTx = { type: 1, transactionType: TransactionType.AGGREGATE_BONDED }
         }
       } else if (cantAdd == 0 && cabtRemove == 0) {
-        console.log('NEVER')
+        console.debug('NEVER')
         if (cantFirm >= multisigAccountInfo.minRemoval && cantFirm >= multisigAccountInfo.minApproval) {
           typeTx = { type: 2, transactionType: TransactionType.AGGREGATE_COMPLETE }
         } else {
@@ -121,14 +121,14 @@ export class MultiSignService {
         }
 
       } else if (cantAdd > 0) {
-        console.log('ADD')
+        console.debug('ADD')
         if (cantFirm >= multisigAccountInfo.minApproval) {
           typeTx = { type: 2, transactionType: TransactionType.AGGREGATE_COMPLETE }
         } else {
           typeTx = { type: 1, transactionType: TransactionType.AGGREGATE_BONDED }
         }
       } else if (cabtRemove > 0) {
-        console.log('REMOVE')
+        console.debug('REMOVE')
         if (cantFirm >= multisigAccountInfo.minRemoval) {
           typeTx = { type: 2, transactionType: TransactionType.AGGREGATE_COMPLETE }
         } else {
@@ -136,7 +136,7 @@ export class MultiSignService {
         }
       }
     } else {
-      console.log('FORSE')
+      console.debug('FORSE')
       typeTx = { type: 1, transactionType: TransactionType.AGGREGATE_BONDED }
     }
     return typeTx
