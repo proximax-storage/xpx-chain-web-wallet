@@ -83,6 +83,7 @@
           </v-col>
         </div>
 
+        <!-- Dynamic Form -->
         <div formArrayName="cosignatories">
           <div *ngFor="let cosignatory of cosignatories.controls; let i=index">
             <!-- COSIGNATORY -->
@@ -90,7 +91,7 @@
               <div class="col-12">
                 <div class="row">
                   <!-- COSIGNATORY INPUT-->
-                  <div class="col-8 col-sm-9 col-lg-10">
+                  <div class="col-12">
                     <!-- Remove user -->
                     <div class="d-flex justify-content-center">
                       <div class="pt-2">
@@ -108,11 +109,12 @@
                           placeholder="Cosignatory Account Public Key "
                           onkeyup="javascript:this.value=this.value.toLowerCase();">
                         <!-- VALIDATION -->
-                        <!-- <mdb-error
+                          <!-- <mdb-error
                           *ngIf="validateInput('cosignatory', '').invalid && (validateInput('cosignatory', '').dirty || validateInput('cosignatory', '').touched)">
                           <span>Invalid Key</span>
                         </mdb-error> -->
                       </div>
+                      <!--SHOW CONTACT-->
                       <div [attr.disabled]="contactList.length === 0" class="cursor-p" (click)="showContact()"
                         [title]="(!showContacts) ? 'Show contacts': 'Hide contacts'">
                         <img class="w-25px"
@@ -120,17 +122,6 @@
                       </div>
                     </div>
                   </div>
-                  <!--SHOW CONTACT-->
-                  <!-- <ng-container>
-                    <div class="col-3 col-sm-2 col-lg-1 d-flex justify-content-center align-items-center pt-12px">
-                      <div [attr.disabled]="contactList.length === 0"
-                        class="background-gray-icons p-12px bord-rad-25px cursor-p" (click)="showContact()"
-                        [title]="(!showContacts) ? 'Show contacts': 'Hide contacts'">
-                        <img class="w-30px"
-                          [src]="(!showContacts && contactList.length === 0) ? imageActiveBook : imageInactiveBook">
-                      </div>
-                    </div>
-                  </ng-container> -->
                 </div>
                 <div class="row">
                   <!-- Progress -->
@@ -145,12 +136,6 @@
                 </div>
               </div>
             </div>
-            <!-- <div [formGroupName]="i">
-              {{i}}
-              cosignatory:
-              <input type="text" formControlName="cosignatory">
-              <button (click)="removeCosignatory(i)">Remove</button>
-            </div> -->
           </div>
         </div>
 
