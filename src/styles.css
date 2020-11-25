@@ -2021,3 +2021,9 @@ ul.stepper.horizontal .step-title {
 .ls-002rem {
   letter-spacing: .02rem !important;
 }
+
+.trash-button{
+  color: #6d6d6d!important;
+  font-size: 1.3rem !important;
+  cursor: pointer;
+}
