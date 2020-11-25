@@ -19,7 +19,7 @@
           <div class="col-12">
             <div class="d-flex align-items-center flex-wrap">
               <!-- SCHEME -->
-              <div class="mr-1">
+              <div class="mr-1 mt-08rem">
                 <h5 class="h5-responsive">
                   Scheme for
                   <span class="ml-2">></span>
@@ -27,13 +27,13 @@
               </div>
 
               <!-- MIN APROVE -->
-              <div class="d-flex align-items-center justify-content-center flex-fill">
+              <div class="d-flex align-items-center justify-content-center flex-fill ">
                 <div>
                   <span class="fw-bold">Approve transactions: &nbsp;</span>
                 </div>
                 <div class="md-form form-sm mt-03rem mb-0rem">
-                  <input (keypress)="preventNumbers($event)" onkeydown="return false" max="{{minApprovaMaxLength}}"
-                    min="{{minApprovaMinLength}}" formControlName="minApprovalDelta" required mdbInputDirective
+                  <input (keypress)="preventNumbers($event)" onkeydown="return false" max="{{maxDelta}}"
+                    min="{{minDelta}}" formControlName="minApprovalDelta" required mdbInputDirective
                     mdbValidate [validateSuccess]="true" [validateError]="true" type="number" id="minApprovalDelta"
                     class="form-control form-control-sm input-border text-center" placeholder="Min approval"
                     onkeyup="javascript:this.value=this.value.toLowerCase();">
@@ -44,12 +44,13 @@
                   </mdb-error>
                 </div>
                 <div class="ml-2">
-                  <span>of 0 cosignatories</span>
+                  <span></span>
+                  <span>of {{cosignatoriesList.length}} cosignatories</span>
                 </div>
               </div>
 
               <!-- SEPARATOR -->
-              <div class="d-none d-sm-flex justify-content-center flex-fill">
+              <div class=" d-sm-flex justify-content-center flex-fill mr-0rem">
                 <span>|</span>
               </div>
 
@@ -59,8 +60,8 @@
                   <span class="fw-bold">Delete users: &nbsp;</span>
                 </div>
                 <div class="md-form form-sm mt-03rem mb-0rem">
-                  <input (keypress)="preventNumbers($event)" onkeydown="return false" max="{{minApprovaMaxLength}}"
-                    min="{{minApprovaMinLength}}" formControlName="minRemovalDelta" required mdbInputDirective
+                  <input (keypress)="preventNumbers($event)" onkeydown="return false" max="{{maxDelta}}"
+                    min="{{minDelta}}" formControlName="minRemovalDelta" required mdbInputDirective
                     mdbValidate [validateSuccess]="true" [validateError]="true" type="number" id="minRemovalDelta"
                     class="form-control form-control-sm input-border text-center" placeholder="Min removal"
                     onkeyup="javascript:this.value=this.value.toLowerCase();">
@@ -71,7 +72,7 @@
                   </mdb-error>
                 </div>
                 <div class="ml-2">
-                  <span>of 0 cosignatories</span>
+                  <span>of {{cosignatoriesList.length}} cosignatories</span>
                 </div>
               </div>
             </div>
@@ -83,6 +84,12 @@
           <v-col>
             <hr>
           </v-col>
+        </div>
+        <!-- TITLE MSG -->
+        <div class="row mt-1-5rem" *ngIf="cosignatoriesList.length === 0">
+          <div class="col-12 d-flex justify-content-center">
+             <h3>Add at least 1 consignatories</h3>
+          </div>
         </div>
 
         <!-- DYNAMIC FORM -->
@@ -109,12 +116,12 @@
                           mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
                           id="cosignatory" class="form-control form-control-sm input-border"
                           placeholder="Cosignatory Account Public Key "
-                          onkeyup="javascript:this.value=this.value.toLowerCase();">
+                          onkeyup="javascript:this.value=this.value.toUpperCase();">
                         <!-- VALIDATION -->
-                          <!-- <mdb-error
+                          <mdb-error
                           *ngIf="validateInput('cosignatory', '').invalid && (validateInput('cosignatory', '').dirty || validateInput('cosignatory', '').touched)">
                           <span>Invalid Key</span>
-                        </mdb-error> -->
+                        </mdb-error>
                       </div>
                       <!--SHOW CONTACT-->
                       <div [attr.disabled]="contactList.length === 0" class="ml-2 cursor-p" (click)="showContact(i)"
@@ -158,7 +165,7 @@
                     <div class="col-12 text-center">
                       <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20"
                         alt="">
-                      <span class="fs-07rem">Unconfirmed/Recommended Fee: {{fee}} XPX <br></span>
+                      <span class="fs-07rem">Unconfirmed/Recommended Fee: {{feeConfig.fee}} XPX <br></span>
                     </div>
                   </div>
                 </div>
@@ -209,8 +216,9 @@
                   <span class="fs-1-2em color-white">Clear</span>
                 </button>
               </div>
+              <!-- {{blockSend}} -->
               <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-                <button [disabled]="formConvertAccountMultsig.invalid || cosignatories.status === 'INVALID'" mdbBtn type="submit"
+                <button [disabled]="formConvertAccountMultsig.invalid || cosignatories.status === 'INVALID' || cosignatoriesList.length === 0 || isRepeatCosignatoryVal" mdbBtn type="submit"
                   rounded="true" mdbWavesEffect class="btn-proximax" size="md">
                   <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true" *ngIf="blockSend"></span>
                   <span class="fs-1-2em color-white">Send</span>
