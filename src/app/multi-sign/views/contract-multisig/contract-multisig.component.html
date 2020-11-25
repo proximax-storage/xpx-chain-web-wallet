@@ -1,0 +1,69 @@
+<div class="container mt-3rem mb-2rem animated fadeIn">
+  <!-- HEADER MODULE -->
+  <div class="row">
+    <!-- NAME MODULE -->
+    <div class="col-12 col-md-6 col-lg-4">
+      <span class="fs-1rem txt-a-center line-h-1-2em color-grey">{{moduleName}}</span>
+      <span class="fs-1rem txt-a-center line-h-1-2em color-grey"> > </span>
+      <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">{{componentName}}</span>
+    </div>
+
+    <!-- ITEMS MENU -->
+    <div class="col-12 col-md-6 col-lg-8 d-flex justify-content-start justify-content-md-end">
+      <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[routes.convertToAccount]">
+        <span>Convert to Multisig Account</span>
+      </a>
+
+      <div class="ml-04rem mr-04rem">
+        <span class="line-separator-gray"></span>
+      </div>
+
+      <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[routes.backToService]">
+        <span>Back to Services</span>
+      </a>
+    </div>
+  </div>
+  <!-- BORDER SEPARATOR -->
+  <div class="row">
+    <div class="col-12">
+      <hr class="mt-03rem mb-05rem">
+    </div>
+  </div>
+
+  <!-- BOX LIST ACCOUNT -->
+  <!-- <div class="row"> -->
+  <ng-container *ngIf="currentWallet?.accounts?.length > 0">
+    <ng-container *ngFor="let currentAccount of currentWallet.accounts">
+      <ng-container *ngIf="isMultisign(currentAccount)">
+        <div class="row">
+          <div class="col-12 mx-auto d-flex align-items-center box-grey" [ngClass]="{'isPrimary':currentAccount.default}">
+            <div class="col-10">
+              <span>Account: {{currentAccount.name}} </span>
+              <br>
+              <span class="font-small d-flex"> {{currentAccount.address}}</span>
+            </div>
+            <div class="col-2 text-right">
+              <img src="assets/images/img/icon-settings-gray-proximax-sirius-wallet.svg" class="cursor-p" width="20"
+                [routerLink]="[routes.editAccount+currentAccount.name]" title="edit">&nbsp;
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </ng-container>
+  </ng-container>
+  <!-- </div> -->
+
+  <!-- ADD MOSAICS -->
+  <div class="row mt-1rem">
+    <div class="col-12 d-flex justify-content-center">
+      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="background-btn-inverse pl-2rem pr-2rem" size="md"
+        [routerLink]="[routes.convertToAccount]">
+        <span class="fs-1-2em color-blue-intermedio fw-700">(+) Multisig Account</span>
+      </button>
+    </div>
+  </div>
+
+
+
+
+</div>

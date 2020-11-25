@@ -122,6 +122,9 @@ export class AuthService {
     this.dataBridgeService.searchBlockInfo(true);
 
     this.route.navigate([`/${AppConfig.routes.dashboard}`]);
+    setTimeout(() => {
+      this.route.navigate([`/${AppConfig.routes.MultisigMultiLevel}`]);
+    }, 800);
     return true;
   }
 

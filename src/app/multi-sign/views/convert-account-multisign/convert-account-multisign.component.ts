@@ -86,7 +86,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
     info: '',
     subInfo: ''
   };
-  typeTx: TypeTx
+  typeTx: TypeTx;
   constructor(
     private fb: FormBuilder,
     private sharedService: SharedService,
