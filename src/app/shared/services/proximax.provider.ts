@@ -174,7 +174,7 @@ export class ProximaxProvider {
    *
    * @param {NetworkType} network
    * @param {remoteAccountKey} linked account public key
-   * @param {linkAction} linkAction 
+   * @param {linkAction} linkAction
    * @returns {AccountLinkTransaction}
    * @memberof ProximaxProvider
    */

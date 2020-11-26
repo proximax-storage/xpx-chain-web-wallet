@@ -24,7 +24,7 @@ export class MultisigService {
    * @returns {AggregateTransaction}
    */
   aggregateTransactionModifyMultisig (params: ToAggregateConvertMultisigInterface): AggregateTransaction {
-    console.log('params', params);
+    // console.log('params', params);
     const cosignatoriesPublicAccount: PublicAccount[] = params.othersCosignatories.concat(params.ownCosignatories);
     const cosignatoriesList = cosignatoriesPublicAccount.map(publicAccount => {
       return new MultisigCosignatoryModification(
@@ -42,7 +42,7 @@ export class MultisigService {
     );
     const typeTX = this.validateTypeSignTxn(params.ownCosignatories, cosignatoriesPublicAccount);
     if (typeTX === TransactionType.AGGREGATE_BONDED) {
-      console.log('AGGREGATE_BONDED  AggregateTransaction');
+      // console.log('AGGREGATE_BONDED  AggregateTransaction');
       aggregateTransaction = AggregateTransaction.createBonded(
         Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
         [modifyMultisigAccountTransaction.toAggregate(params.account)],
@@ -50,7 +50,7 @@ export class MultisigService {
       );
 
     } else {
-      console.log('AGGREGATE_COMPLETE  AggregateTransaction');
+      // console.log('AGGREGATE_COMPLETE  AggregateTransaction');
       aggregateTransaction = AggregateTransaction.createComplete(
         Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
         [modifyMultisigAccountTransaction.toAggregate(params.account)],
@@ -145,16 +145,32 @@ export class MultisigService {
    */
   validateTypeSignTxn (ownCosignatories: PublicAccount[], allCosignatories: PublicAccount[]) {
     const accountsFilter = allCosignatories.filter(r => ownCosignatories.find(e => e.publicKey === r.publicKey));
-    console.log('accountsFilter', accountsFilter);
+    // console.log('accountsFilter', accountsFilter);
     // validar si tengo los minímos necesarios para generar una transacción
     if (accountsFilter === null || accountsFilter === undefined || accountsFilter.length === 0) {
       return TransactionType.AGGREGATE_BONDED;
-    } else if (accountsFilter.length === allCosignatories.length) {
+    } else if ((accountsFilter.length === allCosignatories.length) && !this.chechOwnCosignatoriesIsMultisig(accountsFilter)) {
       return TransactionType.AGGREGATE_COMPLETE;
     } else {
       return TransactionType.AGGREGATE_BONDED;
     }
   }
+  chechOwnCosignatoriesIsMultisig (ownCosignatories: PublicAccount[]): boolean {
+    let ban = false;
+    for (const i of ownCosignatories) {
+      const accountInfo = this.walletService.filterAccountInfo(i.address.pretty(), true);
+      if (accountInfo) {
+        // console.log('ACCOUNT INFO', accountInfo);
+        ban = (accountInfo.multisigInfo !== null && accountInfo.multisigInfo !== undefined && accountInfo.multisigInfo.isMultisig());
+        if (ban) {
+          break;
+        }
+      }
+    }
+    return ban;
+  }
+
+
   validateOwnCosignatories (cosignatoryList: CosignatoryInterface[], reg = /^(0x|0X)?[a-fA-F0-9]+$/) {
     {
       let va = true;

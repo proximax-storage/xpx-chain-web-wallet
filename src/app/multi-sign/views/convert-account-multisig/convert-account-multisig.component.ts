@@ -132,12 +132,14 @@ export class ConvertAccountMultisigComponent implements OnInit {
     this.createForm();
     // this.getAccounts();
     this.subscribeValueChange();
-    this.validateSnapshot();
+
+    this.load();
     //
   }
 
   validateSnapshot () {
-    console.log('name snapshot', this.activateRoute.snapshot.paramMap.get('name'));
+    this.currentAccounts = [];
+    // console.log('name snapshot', this.activateRoute.snapshot.paramMap.get('name'));
     if (this.activateRoute.snapshot.paramMap.get('name') !== null) {
       this.getAccount(this.activateRoute.snapshot.paramMap.get('name'));
       this.snapshot = true;
@@ -279,40 +281,32 @@ export class ConvertAccountMultisigComponent implements OnInit {
             return Account.createFromPrivateKey(common.privateKey, x.network);
           }
         });
-        console.log('AccountOwnCosignatoriess', accountOwnCosignatoriess);
+        // console.log('AccountOwnCosignatoriess', accountOwnCosignatoriess);
         const signedTransaction = this.multisigService.signedTransaction(accountSign, this.aggregateTransaction,
           this.dataBridge.blockInfo.generationHash, accountOwnCosignatoriess);
         if (this.aggregateTransaction.type === TransactionType.AGGREGATE_BONDED) {
-          console.log('AGGREGATE_BONDED');
+          // console.log('AGGREGATE_BONDED');
           const hashLockSigned = this.transactionService.buildHashLockTransaction(signedTransaction, accountSign, this.dataBridge.blockInfo.generationHash)
           this.hashLock(hashLockSigned, signedTransaction);
         } else {
-          console.log('AGGREGATE_COMPLETE');
+          // console.log('AGGREGATE_COMPLETE');
           this.announceAggregateComplete(signedTransaction);
         }
-        // if (ownCosignatories.length > 0) {
-        //   for (let item of ownCosignatories) {
-        //     if (this.walletService.decrypt(common, item)) {
-        //       AccountMyCosigners.push(Account.createFromPrivateKey(common.privateKey, item.network))
-        //     }
-        //   }
-        // const ownCosignatories = this.multisigService.filterOwnCosignatories(this.cosignatoriesList, this.walletService.currentWallet.accounts);
       } else {
-        console.log('CLAVE NO VALIDA');
+        // console.log('CLAVE NO VALIDA');
         this.blockSend = false;
       }
     }
 
   }
 
-/**
- * @memberof CreateMultiSignatureComponent
- */
+  /**
+   * @memberof CreateMultiSignatureComponent
+   */
   clearForm () {
-    // this.cosignatories.value.forEach((element, index) => {
-    //   this.removeCosignatory(index);
-    // });
-    this.currentAccountToConvert = undefined;
+
+    // this.currentAccountToConvert = undefined;
+    this.cosignatories.clear();
     this.showContacts = false;
     this.formConvertAccountMultsig.reset({
       selectAccount: '',
@@ -373,6 +367,7 @@ export class ConvertAccountMultisigComponent implements OnInit {
    * @memberof ConvertAccountMultisigComponent
    */
   getAccounts () {
+    this.currentAccounts = []
     const currentWallet = Object.assign({}, this.walletService.currentWallet);
     if (currentWallet && Object.keys(currentWallet).length > 0) {
       // console.log('currentWallet', currentWallet);
@@ -382,16 +377,17 @@ export class ConvertAccountMultisigComponent implements OnInit {
           .getAggregateBondedTransactions$()
           .subscribe((transactions: TransactionsInterface[]) => {
             if (transactions.length > 0) {
-              console.log('ESTAS SON MIS TRANSACCIONES', transactions);
+              // console.log('ESTAS SON MIS TRANSACCIONES', transactions);
             }
           })
       );
 
       currentWallet.accounts.forEach((element) => {
+        // console.log('mis cuentas', element);
         const accountInfo = this.walletService.filterAccountInfo(element.name);
         if (accountInfo) {
           if (!this.multisigService.checkIsMultisig(element)) {
-            console.log('is not multisig');
+            // console.log('is not multisig');
             this.currentAccounts.push({
               label: element.name,
               value: element.publicAccount,
@@ -415,7 +411,7 @@ export class ConvertAccountMultisigComponent implements OnInit {
         .getAggregateBondedTransactions$()
         .subscribe((transactions: TransactionsInterface[]) => {
           if (transactions.length > 0) {
-            console.log('ESTAS SON MIS TRANSACCIONES', transactions);
+            // console.log('ESTAS SON MIS TRANSACCIONES', transactions);
           }
         })
     );
@@ -428,7 +424,7 @@ export class ConvertAccountMultisigComponent implements OnInit {
       isMultisig: this.multisigService.checkIsMultisig(currentAccount),
     });
     this.selectAccount(this.currentAccounts[0]);
-    console.log('currentAccount', this.currentAccounts);
+    // console.log('currentAccount', this.currentAccounts);
     this.formConvertAccountMultsig.controls['selectAccount'].setValidators([]);
     this.formConvertAccountMultsig.controls['selectAccount'].updateValueAndValidity({ emitEvent: false, onlySelf: true });
   }
@@ -494,6 +490,21 @@ export class ConvertAccountMultisigComponent implements OnInit {
       }
     );
   }
+
+  /**
+   *
+   *
+   * @memberof ConvertAccountMultisignComponent
+   */
+  load () {
+    this.subscribe.push(this.walletService.getAccountsInfo$().subscribe(
+      next => {
+        // console.log('NUEVO VALOR', next);
+        this.validateSnapshot();
+      }
+    ));
+
+  }
   /**
    * Before sending an aggregate bonded transaction, the future
    * multisig account needs to lock at least 10 cat.currency.
@@ -552,17 +563,20 @@ export class ConvertAccountMultisigComponent implements OnInit {
       .get('cosignatory')
       .patchValue('', { emitEvent: false, onlySelf: false });
     if (account) {
-      console.log('Account selected --->', account);
+      // console.log('Account selected --->', account);
       this.maxDelta = 1;
       this.currentAccountToConvert = account.data;
       this.contactList = this.multisigService.validateAccountListContact(
         account.label
       );
       this.validateAccountAlert = this.validAccountAlert(account.data);
+      if (account.isMultisig) {
+        this.validateAccountAlert = { show: true, info: 'Is Multisig', subInfo: '' }
+      }
       console.log('this.validateAccountAlert', this.validateAccountAlert);
       if (this.validateAccountAlert.show) {
-
         this.disabledForm('selectAccount', true);
+        this.cosignatories.clear()
       } else {
         this.disabledForm('selectAccount', false);
       }
@@ -709,27 +723,22 @@ export class ConvertAccountMultisigComponent implements OnInit {
    * @memberof ConvertAccountMultisigComponent
    */
   validateInput (
-    nameInput: string = '',
-    nameControl: string = '',
-    nameValidation: string = ''
+    nameInput: string = ''
   ) {
     let validation: AbstractControl = null;
-    if (nameInput !== '' && nameControl !== '') {
-      validation = this.formConvertAccountMultsig.controls[nameControl].get(
-        nameInput
-      );
-    } else if (
-      nameInput === '' &&
-      nameControl !== '' &&
-      nameValidation !== ''
-    ) {
-      validation = this.formConvertAccountMultsig.controls[
-        nameControl
-      ].getError(nameValidation);
-    } else if (nameInput !== '') {
+    if (nameInput !== '') {
       validation = this.formConvertAccountMultsig.get(nameInput);
     }
     return validation;
+  }
+  /**
+   *
+   * @param numberControl
+   */
+  validateInputCosignatory (numberControl: number
+  ) {
+    this.cosignatories.controls[numberControl].get('cosignatory');
+    return this.cosignatories.controls[numberControl].get('cosignatory');
   }
 
   /**
