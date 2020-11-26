@@ -568,19 +568,17 @@ export class ConvertAccountMultisigComponent implements OnInit {
    */
   validBalance(account: AccountsInterface): ValidateAccountAlert {
     const accountFiltered = this.walletService.filterAccountInfo(account.name);
-    const disabled: boolean = (
-      accountFiltered !== null &&
-      accountFiltered !== undefined && accountFiltered.accountInfo !== null);
     const insufficientBalanceSub = `${this.transactionService.amountFormatterSimple(this.feeConfig.totalFee)} XPX required to cover LockFund.`;
     const value: ValidateAccountAlert = { show: true, info: 'Insufficient Balance', subInfo: insufficientBalanceSub };
-    if (!disabled) {
+    if (!(accountFiltered !== null && accountFiltered !== undefined && accountFiltered.accountInfo !== null)) {
       return value;
     }
-    const balanceAccount = accountFiltered.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id).amount.compact();
+    console.log('accountFiltered', accountFiltered)
+    const balanceAccount = accountFiltered.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id);
     if (!balanceAccount) {
       return value;
     }
-    if (balanceAccount < this.feeConfig.totalFee) {
+    if (balanceAccount.amount.compact() < this.feeConfig.totalFee) {
       return value;
     }
     return { show: false, info: '', subInfo: '' };

@@ -3,8 +3,9 @@ import { Routes, RouterModule } from '@angular/router';
 import { AppConfig } from '../config/app.config';
 import { ContractMultisigComponent } from './views/contract-multisig/contract-multisig.component';
 import { ConvertAccountMultisigComponent } from './views/convert-account-multisig/convert-account-multisig.component';
+import { EditAccountMultisigComponent } from './views/edit-account-multisig/edit-account-multisig.component';
 // import { ConvertAccountMultisignComponent } from './views/convert-account-multisign/convert-account-multisign.component';
-import { EditAccountMultisignComponent } from './views/edit-account-multisign/edit-account-multisign.component';
+// import { EditAccountMultisignComponent } from './views/edit-account-multisign/edit-account-multisign.component';
 import { MultiSignatureContractComponent } from './views/multi-signature-contract/multi-signature-contract.component';
 
 const routes: Routes = [
@@ -41,6 +42,17 @@ const routes: Routes = [
       }
     }
   },
+    {
+    path: `${AppConfig.routes.editAccountMultisign}/:name`,
+    component: EditAccountMultisigComponent,
+    data: {
+      meta: {
+        title: 'editAccountMultisign.title',
+        description: 'editAccountMultisign.text',
+        override: true,
+      },
+    }
+  }
   /* {
     path: AppConfig.routes.convertToAccountMultisign,
     component: ConvertAccountMultisignComponent,
@@ -61,17 +73,19 @@ const routes: Routes = [
         override: true,
       }
     }
-  }, */ {
-    path: `${AppConfig.routes.editAccountMultisign}/:name`,
-    component: EditAccountMultisignComponent,
-    data: {
-      meta: {
-        title: 'editAccountMultisign.title',
-        description: 'editAccountMultisign.text',
-        override: true,
-      },
-    }
-  }/*, {
+  }, */
+  // {
+  //   path: `${AppConfig.routes.editAccountMultisign}/:name`,
+  //   component: EditAccountMultisignComponent,
+  //   data: {
+  //     meta: {
+  //       title: 'editAccountMultisign.title',
+  //       description: 'editAccountMultisign.text',
+  //       override: true,
+  //     },
+  //   }
+  // }
+  /*, {
     path: AppConfig.routes.MultiSign,
     component: MultiSignatureContractComponent,
     data: {

@@ -1,0 +1,105 @@
+<app-header [params]="paramsHeader"></app-header>
+
+
+<div class="container-fluid mb-2rem animated fadeIn">
+  <div class="row mt-2rem">
+    <div class="col-11 col-md-10 col-lg-10 col-xl-10 mx-auto">
+      <div class="box-grey">
+        <div class="row">
+          <div class="col-12">
+            <img class="w-30px" src="assets/images/img/icon-account-green-16h-proximax-sirius-wallet.svg">
+            <span class="fw-600"> Proximax</span> <br>
+            <span class="fw-300 fs-08rem color-grey pl-2rem"> VAUIIRN33XXWCJARFXOKIEPIEJY3Y26U4J6THBGH</span>
+          </div>
+          <div class="col-12 d-flex justify-content-center ">
+            <span class="fs-1-3rem fw-300 mt-2rem mb-7rem mb-06rem"> Cosignatories for this account</span>
+
+          </div>
+          <ng-container >
+            <div class="col-12" *ngFor="let item of data; let index = index" (click)="showSubItem(index)">
+              <div class="box-grey-invert">
+                <div class="row">
+                  <div class="col-12 ma-0-4">
+                    <span class="fw-600"> {{item.name}}</span> <br>
+                    <span class="fw-300 fs-08rem color-grey"> {{item.addres}}</span>
+                  </div>
+
+                  <ng-container *ngIf="visibleIndex === index">
+                    <div class="col-12 flash">
+                      <div class="box-grey-o ">
+                        <div class="row">
+                          <div class="col-12 line-h-2em">
+                            <span class="fw-600 fs-09rem ml-1-4rem color-blue-intermedio">
+                              Inner level cosignatories
+                            </span>
+                            <ul>
+                              <li *ngFor="let subItem of item.cosig">
+                                <span class="fw-600"> {{subItem.name}}</span> ({{subItem.addres}})
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </ng-container>
+
+                </div>
+              </div>
+            </div>
+          </ng-container>
+
+
+          <!-- <div class="col-12">
+            <div class="box-grey-invert">
+              <div class="row">
+                <div class="col-12 ma-0-4">
+                  <span class="fw-600"> Long won</span> <br>
+                  <span class="fw-300 fs-08rem color-grey"> VAUIIRN33XXWCJARFXOKIEPIEJY3Y26U4J6THBGH</span>
+                </div>
+              </div>
+            </div>
+          </div> -->
+          <!-- <div class="col-12">
+            <div class="box-grey-invert">
+              <div class="row">
+                <div class="col-12 ma-0-4">
+                  <span class="fw-600"> develomen</span>
+                  <span class="fs-07rem color-blue-intermedio tag-account">- Multisig</span>
+                  <br>
+                  <span class="fw-300 fs-08rem color-grey"> VAUIIRN33XXWCJARFXOKIEPIEJY3Y26U4J6THBGH</span>
+                </div>
+                <div class="col-12">
+                  <div class="box-grey-o ">
+                    <div class="row">
+                      <div class="col-12 line-h-2em">
+                        <span class="fw-600 fs-09rem ml-1-4rem color-blue-intermedio">
+                          Inner level cosignatories
+                        </span>
+                        <ul>
+                          <li> <span class="fw-600"> Roimer </span> (VD4RD57SGDNJWWWNV6LNUIIQ6EF7YYHC6X7YRQHS)</li>
+                          <li> <span class="fw-600">jeffersson </span> (VD4RD57SGDNJWWWNV6LNUIIQ6EF7YYHC6X7YRQHS)</li>
+                          <li> <span class="fw-600">Eleazar </span> (VD4RD57SGDNJWWWNV6LNUIIQ6EF7YYHC6X7YRQHS) </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div> -->
+          <!-- <div class="col-12">
+            <div class="box-grey-invert">
+              <div class="row">
+                <div class="col-12 ma-0-4">
+                  <span class="fw-600"> Long won</span> <br>
+                  <span class="fw-300 fs-08rem color-grey"> VAUIIRN33XXWCJARFXOKIEPIEJY3Y26U4J6THBGH</span>
+                </div>
+              </div>
+            </div>
+          </div> -->
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

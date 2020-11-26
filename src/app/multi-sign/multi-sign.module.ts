@@ -7,6 +7,7 @@ import { CreateMultiSignatureComponent } from './components/create-multi-signatu
 import { EditAccountMultisignComponent } from './views/edit-account-multisign/edit-account-multisign.component';
 import { ConvertAccountMultisigComponent } from './views/convert-account-multisig/convert-account-multisig.component';
 import { ContractMultisigComponent } from './views/contract-multisig/contract-multisig.component';
+import { EditAccountMultisigComponent } from './views/edit-account-multisig/edit-account-multisig.component';
 
 @NgModule({
   declarations: [
@@ -16,6 +17,7 @@ import { ContractMultisigComponent } from './views/contract-multisig/contract-mu
     CreateMultiSignatureComponent,
     // ConvertAccountMultisignComponent,
     EditAccountMultisignComponent,
+    EditAccountMultisigComponent,
   ],
   schemas: [NO_ERRORS_SCHEMA],
   imports: [
