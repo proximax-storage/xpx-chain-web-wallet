@@ -8,6 +8,7 @@ import {
 import { environment } from '../../../environments/environment';
 import { Address } from 'tsjs-xpx-chain-sdk/dist/src/model/account/Address';
 import { PublicAccount } from 'tsjs-xpx-chain-sdk/dist/src/model/account/PublicAccount';
+import { TransactionsInterface } from 'src/app/transactions/services/transactions.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +20,7 @@ export class MultisigService {
     private walletService: WalletService
   ) { }
   /**
-   * AggregateTransaction
+   * Aggregate transaction
    * @param {ToAggregateConvertMultisigInterface} params
    * @returns {AggregateTransaction}
    */
@@ -61,6 +62,11 @@ export class MultisigService {
     }
     return aggregateTransaction;
   }
+
+  /**
+   *
+   * @param params
+   */
   convertAccountToMultisig (params: ToConvertMultisigInterface) {
     const cosignatoriesPublicAccount: PublicAccount[] = params.othersCosignatories.concat(params.ownCosignatories.map(r => r.publicAccount));
     // const cosignatoriesPublicAccount: PublicAccount[] = params.othersCosignatories.concat(params.ownCosignatories);
@@ -84,6 +90,40 @@ export class MultisigService {
 
   /**
    *
+   * check is multisig account
+   * @param {AccountsInterface} account
+   * @returns {boolean}
+   * @memberof MultisigService
+   */
+  checkIsMultisig (account: AccountsInterface): boolean {
+    let isMultisigValidate = false;
+    if (account.isMultisign) {
+      isMultisigValidate = account.isMultisign.minRemoval !== 0 && account.isMultisign.minApproval !== 0;
+    }
+    return Boolean(account.isMultisign !== null && account.isMultisign !== undefined && isMultisigValidate);
+  }
+
+  /**
+   * check is multisig  own cosignatories
+   * @param ownCosignatories
+   */
+  chechOwnCosignatoriesIsMultisig (ownCosignatories: PublicAccount[]): boolean {
+    let ban = false;
+    for (const i of ownCosignatories) {
+      const accountInfo = this.walletService.filterAccountInfo(i.address.pretty(), true);
+      if (accountInfo) {
+        // console.log('ACCOUNT INFO', accountInfo);
+        ban = (accountInfo.multisigInfo !== null && accountInfo.multisigInfo !== undefined && accountInfo.multisigInfo.isMultisig());
+        if (ban) {
+          break;
+        }
+      }
+    }
+    return ban;
+  }
+
+  /**
+   * sign tx aggregate
    * @param {Account} accountSign
    * @param {AggregateTransaction} aggregateTransaction
    * @param {any}generationHash
@@ -94,15 +134,15 @@ export class MultisigService {
   signedTransaction (accountSign: Account, aggregateTransaction: AggregateTransaction, generationHash: any, myCosigners: Account[]): SignedTransaction {
     let signedTransaction: SignedTransaction = null;
     if (myCosigners.length > 0) {
-      signedTransaction = accountSign.signTransactionWithCosignatories(aggregateTransaction, myCosigners, generationHash)
+      signedTransaction = accountSign.signTransactionWithCosignatories(aggregateTransaction, myCosigners, generationHash);
     } else {
-      signedTransaction = accountSign.sign(aggregateTransaction, generationHash)
+      signedTransaction = accountSign.sign(aggregateTransaction, generationHash);
     }
     return signedTransaction;
   }
 
   /**
-   *
+   * filter  own cosignatories
    * @param {CosignatoryInterface[]} cosignatoryList
    * @param {AccountsInterface[]} accounts
    * @returns
@@ -118,7 +158,7 @@ export class MultisigService {
   }
 
   /**
-   *
+   * filter  others cosignatories
    * @param {CosignatoryInterface[]} cosignatoryList
    * @param {AccountsInterface[]} accounts
    * @returns
@@ -135,9 +175,34 @@ export class MultisigService {
     return othersCosignatories;
   }
 
+
   /**
    *
+   * @param account
+   * @param txOnpartial
+   */
+  onPartial (account: AccountsInterface, txOnpartial: TransactionsInterface[]): boolean {
+    let isPartial = false;
+    if (txOnpartial !== null && txOnpartial.length > 0) {
+      for (const tx of txOnpartial) {
+        // tslint:disable-next-line: prefer-for-of
+        for (let i = 0; i < tx.data['innerTransactions'].length; i++) {
+          isPartial = (tx.data['innerTransactions'][i].signer.publicKey === account.publicAccount.publicKey);
+          if (isPartial) {
+            break;
+          }
+        }
+        if (isPartial) {
+          break;
+        }
+      }
+    }
+    return isPartial;
+  }
+
+  /**
    *
+   * check type TXs sign
    * @param {Account[]} ownCosignatories
    * @param {PublicAccount[]} allCosignatories
    * @returns
@@ -155,22 +220,12 @@ export class MultisigService {
       return TransactionType.AGGREGATE_BONDED;
     }
   }
-  chechOwnCosignatoriesIsMultisig (ownCosignatories: PublicAccount[]): boolean {
-    let ban = false;
-    for (const i of ownCosignatories) {
-      const accountInfo = this.walletService.filterAccountInfo(i.address.pretty(), true);
-      if (accountInfo) {
-        // console.log('ACCOUNT INFO', accountInfo);
-        ban = (accountInfo.multisigInfo !== null && accountInfo.multisigInfo !== undefined && accountInfo.multisigInfo.isMultisig());
-        if (ban) {
-          break;
-        }
-      }
-    }
-    return ban;
-  }
 
-
+  /**
+   * Validate public key  ownCosignatories
+   * @param cosignatoryList;
+   * @param reg;
+   */
   validateOwnCosignatories (cosignatoryList: CosignatoryInterface[], reg = /^(0x|0X)?[a-fA-F0-9]+$/) {
     {
       let va = true;
@@ -185,20 +240,6 @@ export class MultisigService {
     }
   }
 
-  /**
-   *
-   *
-   * @param {AccountsInterface} account
-   * @returns {boolean}
-   * @memberof MultisigService
-   */
-  checkIsMultisig (account: AccountsInterface): boolean {
-    let isMultisigValidate = false;
-    if (account.isMultisign) {
-      isMultisigValidate = account.isMultisign.minRemoval !== 0 && account.isMultisign.minApproval !== 0;
-    }
-    return Boolean(account.isMultisign !== null && account.isMultisign !== undefined && isMultisigValidate);
-  }
 
   /**
    *
