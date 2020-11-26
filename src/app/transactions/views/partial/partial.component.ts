@@ -185,43 +185,104 @@ export class PartialComponent implements OnInit, OnDestroy {
           const exist = arraySelect.find((b: any) => b.value.address === element.cosignatoryPublicAccount.address.plain());
           console.log('exist', exist);
           if (!exist) {
-            const possibleCosignatorie: AccountsInterface = this.walletService.filterAccountWallet('', null, element.cosignatoryPublicAccount.address.pretty());
-            console.log('possibleCosignatorie ---->', possibleCosignatorie);
+            const possibleCosignatory: AccountsInterface = this.walletService.filterAccountWallet('', null, element.cosignatoryPublicAccount.address.pretty());
+            console.log('possibleCosignatory ---->', possibleCosignatory);
             // Address encontrada
-            if (possibleCosignatorie) {
-              if (possibleCosignatorie && possibleCosignatorie.isMultisign) {
-                possibleCosignatorie.isMultisign.cosignatories.forEach(e => {
-                  const existOtherCosignatory = arraySelect.find((b: any) => b.value.address === e.address.plain());
+            if (possibleCosignatory) {
+              if (possibleCosignatory && possibleCosignatory.isMultisign) {
+                // All cosignatories level 2
+                possibleCosignatory.isMultisign.cosignatories.forEach(level2 => {
+                  // Is added before in array select?
+                  const existOtherCosignatory = arraySelect.find((b: any) => b.value.address === level2.address.plain());
                   if (!existOtherCosignatory) {
-                    const otherCosignatory: AccountsInterface = this.walletService.filterAccountWallet('', null, e.address.pretty());
-                    console.log('otherCosignatory', otherCosignatory);
-                    if (otherCosignatory) {
-                      const publicAccount = this.proximaxProvider.createPublicAccount(
-                        otherCosignatory.publicAccount.publicKey,
-                        this.walletService.currentAccount.network
-                      );
+                    // Other cosignatory level 2
+                    const cosignatoryLevelTwo: AccountsInterface = this.walletService.filterAccountWallet('', null, level2.address.pretty());
+                    console.log('cosignatoryLevelTwo', cosignatoryLevelTwo);
+                    if (cosignatoryLevelTwo) {
+                      if (cosignatoryLevelTwo && cosignatoryLevelTwo.isMultisign) {
+                        // All cosignatories level 3
+                        cosignatoryLevelTwo.isMultisign.cosignatories.forEach(level3 => {
+                          // Is added before in array select?
+                          const existCosignatoryLevelThree = arraySelect.find((b: any) => b.value.address === level3.address.plain());
+                          console.log('existCosignatoryLevelThree', existCosignatoryLevelThree);
+                          if (!existCosignatoryLevelThree) {
+                            // Other cosignatory level 3
+                            const cosignatoryLevelThree: AccountsInterface = this.walletService.filterAccountWallet('', null, level3.address.pretty());
+                            console.log('cosignatoryLevelThree', cosignatoryLevelThree);
+                            if (cosignatoryLevelThree) {
+                              const publicAccount = this.proximaxProvider.createPublicAccount(
+                                cosignatoryLevelThree.publicAccount.publicKey,
+                                this.walletService.currentAccount.network
+                              );
 
-                      const signedByAccount = transaction.data.signedByAccount(publicAccount);
-                      arraySelect.push({
-                        label: otherCosignatory.name,
-                        value: otherCosignatory,
-                        selected: false,
-                        signed: signedByAccount,
-                        disabled: signedByAccount
-                      });
+                              const signedByAccount = transaction.data.signedByAccount(publicAccount);
+                              arraySelect.push({
+                                label: cosignatoryLevelThree.name,
+                                value: cosignatoryLevelThree,
+                                selected: false,
+                                signed: signedByAccount,
+                                disabled: signedByAccount
+                              });
+                            }
+                          }
+                        });
+                      } else {
+                        const publicAccount = this.proximaxProvider.createPublicAccount(
+                          cosignatoryLevelTwo.publicAccount.publicKey,
+                          this.walletService.currentAccount.network
+                        );
+
+                        const signedByAccount = transaction.data.signedByAccount(publicAccount);
+                        arraySelect.push({
+                          label: cosignatoryLevelTwo.name,
+                          value: cosignatoryLevelTwo,
+                          selected: false,
+                          signed: signedByAccount,
+                          disabled: signedByAccount
+                        });
+                      }
+                      /* if (levelThreeCosignatory) {
+                        const publicAccount = this.proximaxProvider.createPublicAccount(
+                          cosignatoryLevelTwo.publicAccount.publicKey,
+                          this.walletService.currentAccount.network
+                        );
+
+                        const signedByAccount = transaction.data.signedByAccount(publicAccount);
+                        arraySelect.push({
+                          label: cosignatoryLevelTwo.name,
+                          value: cosignatoryLevelTwo,
+                          selected: false,
+                          signed: signedByAccount,
+                          disabled: signedByAccount
+                        });
+                      } else {
+                        const publicAccount = this.proximaxProvider.createPublicAccount(
+                          cosignatoryLevelTwo.publicAccount.publicKey,
+                          this.walletService.currentAccount.network
+                        );
+
+                        const signedByAccount = transaction.data.signedByAccount(publicAccount);
+                        arraySelect.push({
+                          label: cosignatoryLevelTwo.name,
+                          value: cosignatoryLevelTwo,
+                          selected: false,
+                          signed: signedByAccount,
+                          disabled: signedByAccount
+                        });
+                      } */
                     }
                   }
                 });
               } else {
                 const publicAccount = this.proximaxProvider.createPublicAccount(
-                  possibleCosignatorie.publicAccount.publicKey,
+                  possibleCosignatory.publicAccount.publicKey,
                   this.walletService.currentAccount.network
                 );
 
                 const signedByAccount = transaction.data.signedByAccount(publicAccount);
                 arraySelect.push({
-                  label: possibleCosignatorie.name,
-                  value: possibleCosignatorie,
+                  label: possibleCosignatory.name,
+                  value: possibleCosignatory,
                   selected: false,
                   signed: signedByAccount,
                   disabled: signedByAccount
