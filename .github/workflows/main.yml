@@ -41,4 +41,11 @@ jobs:
           cat ./node_modules/@angular-devkit/build-angular/src/angular-cli-files/models/webpack-configs/browser.js
       
       - name: build for testnet
-        run: npm run build:optimizer-testnet
+        run: node --max_old_space_size=5048 ./node_modules/@angular/cli/bin/ng build --aot --prod --build-optimizer=true --vendor-chunk=true --configuration=main
+      
+      - name: Archive artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: dist
+          path: |
+            dist
