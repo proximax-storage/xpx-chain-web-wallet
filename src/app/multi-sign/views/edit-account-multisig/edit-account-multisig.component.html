@@ -8,23 +8,24 @@
         <div class="row">
           <div class="col-12">
             <img class="w-30px" src="assets/images/img/icon-account-green-16h-proximax-sirius-wallet.svg">
-            <span class="fw-600"> Proximax</span> <br>
-            <span class="fw-300 fs-08rem color-grey pl-2rem"> VAUIIRN33XXWCJARFXOKIEPIEJY3Y26U4J6THBGH</span>
+            <span class="fw-600"> {{dataCurrentAccout.name}}</span> <br>
+            <span class="fw-300 fs-08rem color-grey pl-2rem"> {{dataCurrentAccout.address}}</span>
           </div>
           <div class="col-12 d-flex justify-content-center ">
             <span class="fs-1-3rem fw-300 mt-2rem mb-7rem mb-06rem"> Cosignatories for this account</span>
 
           </div>
           <ng-container >
-            <div class="col-12" *ngFor="let item of data; let index = index" (click)="showSubItem(index)">
+            <div class="col-12" *ngFor="let item of dataCurrentAccout.cosignatoryList; let index = index" (click)="showSubItem(index)">
               <div class="box-grey-invert">
                 <div class="row">
                   <div class="col-12 ma-0-4">
                     <span class="fw-600"> {{item.name}}</span> <br>
-                    <span class="fw-300 fs-08rem color-grey"> {{item.addres}}</span>
+                    <span *ngIf="item.isMultisig && item.isMultisig.isMultisig()" class="fs-07rem color-blue-intermedio tag-account">- Multisig</span>
+                    <span class="fw-300 fs-08rem color-grey"> {{item.publicAccount.publicKey}}</span>
                   </div>
 
-                  <ng-container *ngIf="visibleIndex === index">
+                  <!-- <ng-container *ngIf="visibleIndex === index">
                     <div class="col-12 flash">
                       <div class="box-grey-o ">
                         <div class="row">
@@ -41,7 +42,7 @@
                         </div>
                       </div>
                     </div>
-                  </ng-container>
+                  </ng-container> -->
 
                 </div>
               </div>

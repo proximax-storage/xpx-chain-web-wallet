@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ServicesModuleService } from 'src/app/servicesModule/services/services-module.service';
 import { AccountsInterface, WalletService } from 'src/app/wallet/services/wallet.service';
 import {
-  Account, AggregateTransaction, Deadline, ModifyMultisigAccountTransaction, MultisigCosignatoryModification,
+  Account, AggregateTransaction, Deadline, ModifyMultisigAccountTransaction, MultisigAccountInfo, MultisigCosignatoryModification,
   MultisigCosignatoryModificationType, SignedTransaction, TransactionType, UInt64
 } from 'tsjs-xpx-chain-sdk';
 import { environment } from '../../../environments/environment';
@@ -157,6 +157,17 @@ export class MultisigService {
     return myAccountsFilter;
   }
 
+/**
+ * filter  own cosignatories
+ * @param {CosignatoryInterface[]} cosignatoryList
+ * @param {AccountsInterface[]} accounts
+ * @returns
+ * @memberof MultisigService
+ */
+  filterOwnCosignatory (cosignatoryList: CosignatoryInterface, accounts: AccountsInterface[]): AccountsInterface {
+    return accounts.find(x => x.publicAccount.publicKey === cosignatoryList.publicKey)
+  }
+
   /**
    * filter  others cosignatories
    * @param {CosignatoryInterface[]} cosignatoryList
@@ -296,7 +307,21 @@ export interface CosignatoryInterface {
   publicKey: string;
   type?: number;
 }
-
+export interface CosignatoryListInterface extends CosignatoriesInterface {
+  loading?: boolean;
+  action: string;
+  type: number;
+  disableItem: boolean;
+  id: Address;
+  cosignatories?: CosignatoriesInterface[];
+}
+export interface CosignatoriesInterface {
+  isMultisig?: MultisigAccountInfo;
+  name?: string;
+  address?: string;
+  publicAccount?: PublicAccount;
+  ownCosignatories?: boolean;
+}
 export interface ToAggregateConvertMultisigInterface {
   account: PublicAccount;
   ownCosignatories: PublicAccount[];
