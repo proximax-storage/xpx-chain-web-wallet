@@ -257,6 +257,10 @@ export class MultisigService {
         const account = this.walletService.filterAccountWallet(element.label);
         let isMultisig = false;
         let publicKey = null;
+        // TODO: Validar aqui si mi contacto es multifirma y si yo estoy como cosignatario de mi contacto, no debe listarme ese contacto
+        // if (account && account.isMultisign && account.isMultisign.isMultisig() && account.isMultisign.cosignatories.find(r => r.)) {
+
+        // }
         if (account) {
           publicKey = account.publicAccount.publicKey;
           isMultisig = this.checkIsMultisig(account);
