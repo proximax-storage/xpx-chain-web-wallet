@@ -155,9 +155,11 @@ export class PartialComponent implements OnInit, OnDestroy {
     this.password = '';
     const arraySelect = [];
     const accountMultisig = this.walletService.filterAccountInfo(transaction.data['innerTransactions'][0].signer.address.pretty(), true);
+    console.log('accountMultisig', accountMultisig);
     if (accountMultisig && accountMultisig.multisigInfo && accountMultisig.multisigInfo.cosignatories && accountMultisig.multisigInfo.cosignatories.length > 0) {
       accountMultisig.multisigInfo.cosignatories.forEach(element => {
         const cosignatorie: AccountsInterface = this.walletService.filterAccountWallet('', null, element.address.pretty());
+        console.log('cosignatorie', cosignatorie);
         if (cosignatorie) {
           const publicAccount = this.proximaxProvider.createPublicAccount(cosignatorie.publicAccount.publicKey, cosignatorie.publicAccount.address.networkType);
           const signedByAccount = transaction.data.signedByAccount(publicAccount);
@@ -181,24 +183,50 @@ export class PartialComponent implements OnInit, OnDestroy {
         // tslint:disable-next-line: no-shadowed-variable
         data.modifications.forEach(element => {
           const exist = arraySelect.find((b: any) => b.value.address === element.cosignatoryPublicAccount.address.plain());
+          console.log('exist', exist);
           if (!exist) {
             const possibleCosignatorie: AccountsInterface = this.walletService.filterAccountWallet('', null, element.cosignatoryPublicAccount.address.pretty());
-            // console.log('possibleCosignatorie ---->', possibleCosignatorie);
+            console.log('possibleCosignatorie ---->', possibleCosignatorie);
             // Address encontrada
             if (possibleCosignatorie) {
-              const publicAccount = this.proximaxProvider.createPublicAccount(
-                possibleCosignatorie.publicAccount.publicKey,
-                this.walletService.currentAccount.network
-              );
+              if (possibleCosignatorie && possibleCosignatorie.isMultisign) {
+                possibleCosignatorie.isMultisign.cosignatories.forEach(e => {
+                  const existOtherCosignatory = arraySelect.find((b: any) => b.value.address === e.address.plain());
+                  if (!existOtherCosignatory) {
+                    const otherCosignatory: AccountsInterface = this.walletService.filterAccountWallet('', null, e.address.pretty());
+                    console.log('otherCosignatory', otherCosignatory);
+                    if (otherCosignatory) {
+                      const publicAccount = this.proximaxProvider.createPublicAccount(
+                        otherCosignatory.publicAccount.publicKey,
+                        this.walletService.currentAccount.network
+                      );
 
-              const signedByAccount = transaction.data.signedByAccount(publicAccount);
-              arraySelect.push({
-                label: possibleCosignatorie.name,
-                value: possibleCosignatorie,
-                selected: false,
-                signed: signedByAccount,
-                disabled: signedByAccount
-              });
+                      const signedByAccount = transaction.data.signedByAccount(publicAccount);
+                      arraySelect.push({
+                        label: otherCosignatory.name,
+                        value: otherCosignatory,
+                        selected: false,
+                        signed: signedByAccount,
+                        disabled: signedByAccount
+                      });
+                    }
+                  }
+                });
+              } else {
+                const publicAccount = this.proximaxProvider.createPublicAccount(
+                  possibleCosignatorie.publicAccount.publicKey,
+                  this.walletService.currentAccount.network
+                );
+
+                const signedByAccount = transaction.data.signedByAccount(publicAccount);
+                arraySelect.push({
+                  label: possibleCosignatorie.name,
+                  value: possibleCosignatorie,
+                  selected: false,
+                  signed: signedByAccount,
+                  disabled: signedByAccount
+                });
+              }
             }
           }
         });
