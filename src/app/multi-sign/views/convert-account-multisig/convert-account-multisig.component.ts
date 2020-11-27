@@ -272,7 +272,8 @@ export class ConvertAccountMultisigComponent implements OnInit {
       const common: any = { password: this.formConvertAccountMultsig.get('password').value };
       if (this.walletService.decrypt(common, this.currentAccountToConvert)) {
         const accountSign: Account = Account.createFromPrivateKey(common.privateKey, this.currentAccountToConvert.network);
-        const ownCosignatories = this.multisigService.filterOwnCosignatories(this.paramConvert.ownCosignatories, this.walletService.currentWallet.accounts);
+        const accountsWalletValid = this.walletService.currentWallet.accounts.filter(r => r.encrypted);
+        const ownCosignatories = this.multisigService.filterOwnCosignatories(this.paramConvert.ownCosignatories, accountsWalletValid);
         const accountOwnCosignatoriess: Account[] = ownCosignatories.map(x => {
           if (this.walletService.decrypt(common, x)) {
             return Account.createFromPrivateKey(common.privateKey, x.network);
