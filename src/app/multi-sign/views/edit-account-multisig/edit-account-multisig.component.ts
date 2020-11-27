@@ -22,8 +22,11 @@ import { Address } from 'tsjs-xpx-chain-sdk/dist/src/model/account/Address';
 import { MultisigAccountInfo } from 'tsjs-xpx-chain-sdk/dist/src/model/account/MultisigAccountInfo';
 import {
   CosignatoryListInterface, CosignatoriesInterface, CosignatoryInterface,
-  MultisigService
+  MultisigService, ContactsListInterface
 } from '../../service/multisig.service';
+import { TransactionHttp } from 'tsjs-xpx-chain-sdk/dist/src/infrastructure/TransactionHttp';
+import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
+import { AccountInfo } from 'tsjs-xpx-chain-sdk/dist/src/model/account/AccountInfo';
 @Component({
   selector: 'app-edit-account-multisig',
   templateUrl: './edit-account-multisig.component.html',
@@ -36,7 +39,14 @@ export class EditAccountMultisigComponent implements OnInit {
   aggregateTransaction: AggregateTransaction = null;
   currentAccount: CurrentAccountInterface[] = [];
   dataCurrentAccout: DataCurrentAccount = {};
-
+  minDelta = 1;
+  maxDelta = 1;
+  contactList: ContactsListInterface[] = [];
+  currentIteratorCosignatory: number;
+  imageActiveBook =
+    'assets/images/img/icon-address-book-gray-28h-proximax-sirius-wallet.svg';
+  imageInactiveBook =
+    'assets/images/img/icon-address-green-book-16h-proximax-sirius-wallet.svg';
   // currentAccount?: {
   //   name?: string;
   //   publicAccount?: PublicAccount;
@@ -57,13 +67,20 @@ export class EditAccountMultisigComponent implements OnInit {
     moduleName: 'Accounts > Multisign'
   };
   subscribe: Subscription[] = [];
+  searchContact = [];
+  subscribeContact: Subscription[] = [];
+  transactionHttp: TransactionHttp;
   txOnpartial: TransactionsInterface[] = null;
   visibleIndex = -1;
+  showAccount = false;
+  isRepeatCosignatoryVal = false;
+  showContacts = false;
   validateAccountAlert: ValidateAccountAlert = null;
   constructor(
     private transactionService: TransactionsService, private walletService: WalletService,
     private activateRoute: ActivatedRoute, private sharedService: SharedService,
     private fb: FormBuilder, private multisigService: MultisigService,
+    private proximaxProvider: ProximaxProvider,
   ) {
     this.data = [
       {
@@ -147,6 +164,42 @@ export class EditAccountMultisigComponent implements OnInit {
     this.createForm();
     this.load();
   }
+
+  /**
+   *
+   *
+   * @returns {FormGroup}
+   * @memberof ConvertAccountMultisigComponent
+   */
+  newCosignatory(): FormGroup {
+    return this.fb.group({
+      cosignatory: ['', [Validators.pattern('^(0x|0X)?[a-fA-F0-9]+$')]],
+    });
+  }
+
+  /**
+   *
+   *
+   * @memberof ConvertAccountMultisigComponent
+   */
+  addCosignatory() {
+    if (this.cosignatories.status === 'VALID') {
+      this.searchContact.push(false);
+      this.cosignatories.push(this.newCosignatory());
+    }
+  }
+  /**
+   *
+   *
+   * @param {*} e
+   * @returns
+   * @memberof ConvertAccountMultisigComponent
+   */
+  preventNumbers(e) {
+    if (e.keyCode >= 48 && e.keyCode <= 57) {
+      return false;
+    }
+  }
   /**
    *
    */
@@ -169,8 +222,114 @@ export class EditAccountMultisigComponent implements OnInit {
           Validators.minLength(this.configurationForm.passwordWallet.minLength),
           Validators.maxLength(this.configurationForm.passwordWallet.maxLength),
         ],
-      ]
+      ],
+      cosignatories: this.fb.array([]),
     });
+  }
+  /**
+   * Delete cosignatory to the cosignatory List
+   * @memberof CreateMultiSignatureComponent
+   * @param {Address} id  - Address in cosignatory.
+   * @param {Boolean} disableItem
+   * @param {number} type
+   */
+  deleteCosignatory(id: Address, disableItem: boolean, type: number) {
+    this.dataCurrentAccout.cosignatoryList.filter(x => x.action === 'edit').map((item: CosignatoryListInterface) => {
+      item.type = 3;
+    });
+    if (type === 2) {
+      this.dataCurrentAccout.cosignatoryList.find(x => x.id.plain() === id.plain() && x.action === 'edit').type = 3;
+    } else {
+      this.dataCurrentAccout.cosignatoryList.find(x => x.id.plain() === id.plain() && x.action === 'edit').type = 2;
+    }
+  }
+  editIntoMultisigTransaction() {
+  }
+
+  /**
+   *
+   *
+   * @param {number} i
+   * @memberof ConvertAccountMultisigComponent
+   */
+  removeCosignatory(i: number) {
+    this.cosignatories.removeAt(i);
+    this.searchContact.pop();
+  }
+  /**
+   *
+   *
+   * @memberof ConvertAccountMultisigComponent
+   */
+  showContact(iterator: number) {
+    if (this.contactList.length > 0) {
+      this.currentIteratorCosignatory = iterator;
+      this.showContacts = !this.showContacts;
+      this.modalContact.show();
+    }
+  }
+  /**
+   *
+   *
+   * @param {ContactsListInterface} data
+   * @memberof ConvertAccountMultisigComponent
+   */
+  selectContact(data: ContactsListInterface) {
+    this.unsubscribe(this.subscribeContact);
+    this.modalContact.hide();
+    this.cosignatories.controls[this.currentIteratorCosignatory]
+      .get('cosignatory')
+      .patchValue('', { emitEvent: true });
+    if (data.publicKey) {
+      if (!this.isRepeatCosignatory(this.cosignatoriesList, data.publicKey)) {
+        this.cosignatories.controls[this.currentIteratorCosignatory]
+          .get('cosignatory')
+          .patchValue(data.publicKey, { emitEvent: true });
+        this.formEditAccountMultsig
+          .get('contact')
+          .patchValue('', { emitEvent: false, onlySelf: true });
+      }
+    } else {
+      this.searchContact[this.currentIteratorCosignatory] = true;
+      this.subscribeContact.push(
+        this.proximaxProvider
+          .getAccountInfo(Address.createFromRawAddress(data.value))
+          .subscribe(
+            async (response: AccountInfo) => {
+              this.unsubscribe(this.subscribeContact);
+              this.searchContact[this.currentIteratorCosignatory] = false;
+              if (response.publicKeyHeight.toHex() === '0000000000000000') {
+                this.sharedService.showWarning(
+                  '',
+                  'Cosignatory does not have a public key'
+                );
+                this.formEditAccountMultsig
+                  .get('cosignatory')
+                  .patchValue('', { emitEvent: false, onlySelf: true });
+                this.formEditAccountMultsig
+                  .get('contact')
+                  .patchValue('', { emitEvent: false, onlySelf: true });
+              } else {
+                if (!this.isRepeatCosignatory(this.cosignatoriesList, response.publicKey)) {
+                  this.cosignatories.controls[this.currentIteratorCosignatory]
+                    .get('cosignatory')
+                    .patchValue(response.publicKey, { emitEvent: true });
+                  this.formEditAccountMultsig
+                    .get('contact')
+                    .patchValue('', { emitEvent: false, onlySelf: true });
+                }
+              }
+            },
+            (err) => {
+              this.formEditAccountMultsig
+                .get('contact')
+                .patchValue('', { emitEvent: false, onlySelf: true });
+              this.searchContact[this.currentIteratorCosignatory] = false;
+              this.sharedService.showWarning('', 'Address is not valid');
+            }
+          )
+      );
+    }
   }
 
   /**
@@ -181,18 +340,20 @@ export class EditAccountMultisigComponent implements OnInit {
   getAccount(name) {
     const currentAccount = this.walletService.filterAccountWallet(name);
     this.currentAccount.push({
-      // label: currentAccount.name,
-      // value: currentAccount.publicAccount,
       data: currentAccount,
-      // isPartial: false,
-      // isMultisig: true
-      // this.multisigService.checkIsMultisig(currentAccount),
     });
     this.selectAccount(this.currentAccount[0]);
-    // this.formEditAccountMultsig.controls['selectAccount'].setValidators([]);
-    // this.formEditAccountMultsig.controls['selectAccount'].updateValueAndValidity({ emitEvent: false, onlySelf: true });
   }
-
+  getColor(type) {
+    switch (type) {
+      case 1:
+        return 'green';
+      case 2:
+        return 'red';
+      case 3:
+        return 'gray';
+    }
+  }
   /**
    *
    *
@@ -201,14 +362,21 @@ export class EditAccountMultisigComponent implements OnInit {
    */
   selectAccount(account: CurrentAccountInterface) {
     console.log('ACCOUNT', account.data);
-    this.setDataCurrentAccout(account.data);
+    if (account) {
+      const data = this.setDataCurrentAccout(account.data);
+      this.contactList = this.multisigService.removeContactList(this.multisigService.validateAccountListContact(
+        account.data.name ,
+      ), data.cosignatoryList);
+    } else {
+      this.contactList = [];
+    }
     // this.dataCurrentAccout.currentAccount = {
     //   name: account.data.name,
     //   publicAccount : account.data.publicAccount
     // }
     // this.cosignatories.clear();
-    // this.formConvertAccountMultsig.enable({ emitEvent: false, onlySelf: true });
-    // this.formConvertAccountMultsig
+    // this.formEditAccountMultsig.enable({ emitEvent: false, onlySelf: true });
+    // this.formEditAccountMultsig
     //   .get('cosignatory')
     //   .patchValue('', { emitEvent: false, onlySelf: false });
     // if (account) {
@@ -237,12 +405,37 @@ export class EditAccountMultisigComponent implements OnInit {
     //   this.contactList = [];
     // }
   }
-  // ODO hacer recursive function
-  setDataCurrentAccout(account: AccountsInterface) {
+  /**
+   * Validate new cosignatory is repeat in cosignatories List
+   * @param cosignatoriesList
+   * @param newCosignatory
+   */
+  isRepeatCosignatory(cosignatoriesList?: CosignatoryInterface[], compareCosignatory?): boolean {
+    this.isRepeatCosignatoryVal = false;
+    const list = (cosignatoriesList) ? cosignatoriesList : this.cosignatoriesList;
+    if (list.length > 0 && compareCosignatory) {
+      if (list.find((x) => x.publicKey.toUpperCase() === compareCosignatory.toUpperCase())) {
+        this.isRepeatCosignatoryVal = true;
+      }
+    } else {
+      if (list.find((item, index, array) => {
+        return array.map((mapItem) => mapItem['publicKey']).indexOf(item['publicKey']) !== index;
+      })) {
+        this.isRepeatCosignatoryVal = true;
+      }
+    }
+    if (this.isRepeatCosignatoryVal) { this.sharedService.showWarning('', 'Consignee already exists'); }
+    return this.isRepeatCosignatoryVal;
+  }
+  // TODO hacer recursive function
+  setDataCurrentAccout(account: AccountsInterface): DataCurrentAccount {
     this.dataCurrentAccout.name = account.name;
     this.dataCurrentAccout.publicAccount = account.publicAccount;
     const address = Address.createFromPublicKey(account.publicAccount.publicKey, environment.typeNetwork.value);
     this.dataCurrentAccout.address = address.plain();
+    this.formEditAccountMultsig.get('minApprovalDelta').patchValue(account.isMultisign.minApproval, { emitEvent: false, onlySelf: true });
+    this.formEditAccountMultsig.get('minRemovalDelta').patchValue(account.isMultisign.minRemoval, { emitEvent: false, onlySelf: true });
+    this.validatorsDelta(account.isMultisign.cosignatories.length);
     this.dataCurrentAccout.cosignatoryList = account.isMultisign.cosignatories.map(x => {
       const data: CosignatoryListInterface = {
         publicAccount: PublicAccount.createFromPublicKey(x.publicKey, environment.typeNetwork.value),
@@ -262,11 +455,8 @@ export class EditAccountMultisigComponent implements OnInit {
         ownCosignatories: false
       };
       if (ownCosignatories) {
-        console.log('aquiii')
         if (ownCosignatories.isMultisign && ownCosignatories.isMultisign.isMultisig()) {
-          console.log('ownCosignatories.isMultisign.cosignatories', ownCosignatories.isMultisign.cosignatories)
           for (const i of ownCosignatories.isMultisign.cosignatories) {
-            console.log(i)
             const ownCosignatoriesTow = this.multisigService.filterOwnCosignatory({ publicKey: i.publicKey }, this.walletService.currentWallet.accounts);
             if (ownCosignatoriesTow) {
               data.cosignatories.push(
@@ -290,7 +480,7 @@ export class EditAccountMultisigComponent implements OnInit {
       }
       return Object.assign(data, d);
     });
-    console.log('this.dataCurrentAccout', this.dataCurrentAccout.cosignatoryList);
+    return this.dataCurrentAccout;
   }
 
   /**
@@ -337,6 +527,102 @@ export class EditAccountMultisigComponent implements OnInit {
     );
   }
 
+
+  /**
+   *
+   * @param numberControl
+   */
+  validateInputCosignatory(numberControl: number
+  ) {
+    this.cosignatories.controls[numberControl].get('cosignatory');
+    return this.cosignatories.controls[numberControl].get('cosignatory');
+  }
+  /**
+   *
+   *
+   * @param {string} [nameInput='']
+   * @param {string} [nameControl='']
+   * @param {string} [nameValidation='']
+   * @returns
+   * @memberof ConvertAccountMultisigComponent
+   */
+  validateInput(
+    nameInput: string = ''
+  ) {
+    let validation: AbstractControl = null;
+    if (nameInput !== '') {
+      validation = this.formEditAccountMultsig.get(nameInput);
+    }
+    return validation;
+  }
+/**
+ *  TODO   patchValue , updateValueAndValidity, setValidators optimizar para una sola funcion
+ */
+  validatorsDelta(maxDelta: number = 1) {
+    this.maxDelta = maxDelta;
+    const validators = [Validators.required,
+    Validators.minLength(1),
+    Validators.maxLength(this.maxDelta)];
+    if (maxDelta > 0) {
+      while (this.formEditAccountMultsig.get('minApprovalDelta').value > maxDelta) {
+        this.formEditAccountMultsig.get('minApprovalDelta').patchValue(this.formEditAccountMultsig.get('minApprovalDelta').value - 1,
+          { emitEvent: false, onlySelf: true });
+      }
+      while (this.formEditAccountMultsig.get('minRemovalDelta').value > maxDelta) {
+        this.formEditAccountMultsig.get('minRemovalDelta').patchValue(this.formEditAccountMultsig.get('minRemovalDelta').value - 1,
+          { emitEvent: false, onlySelf: true });
+      }
+    } else {
+      this.formEditAccountMultsig.get('minApprovalDelta').patchValue(1, { emitEvent: false, onlySelf: true });
+      this.formEditAccountMultsig.get('minRemovalDelta').patchValue(1, { emitEvent: false, onlySelf: true });
+    }
+    this.formEditAccountMultsig.controls['minApprovalDelta'].setValidators(validators);
+    this.formEditAccountMultsig.controls['minApprovalDelta'].updateValueAndValidity({ emitEvent: false, onlySelf: true });
+    this.formEditAccountMultsig.controls['minRemovalDelta'].setValidators(validators);
+    this.formEditAccountMultsig.controls['minRemovalDelta'].updateValueAndValidity({ emitEvent: false, onlySelf: true });
+  }
+
+
+  /**
+   *
+   *
+   * @param {Subscription[]} subscribe
+   * @memberof ConvertAccountMultisigComponent
+   */
+  unsubscribe(subscribe: Subscription[]) {
+    if (subscribe.length > 0) {
+      subscribe.forEach((subscription) => {
+        subscription.unsubscribe();
+      });
+    }
+  }
+  /**
+   *
+   *
+   * @readonly
+   * @type {FormArray}
+   * @memberof ConvertAccountMultisigComponent
+   */
+  get cosignatories(): FormArray {
+    return this.formEditAccountMultsig.get('cosignatories') as FormArray;
+  }
+
+  /**
+   *
+   *
+   * @readonly
+   * @type {FormArray}
+   * @memberof ConvertAccountMultisigComponent
+   */
+  get cosignatoriesList(): CosignatoryInterface[] {
+    return this.formEditAccountMultsig
+      .get('cosignatories')
+      .value.filter((x) => x.cosignatory).map(x => {
+        return {
+          publicKey: x.cosignatory.toUpperCase()
+        };
+      });
+  }
 }
 
 interface CurrentAccountInterface {
@@ -361,20 +647,6 @@ interface ValidateAccountAlert {
 //  * @param disableItem - Disable item list
 //  * @param id - Address in cosignatory
 // */
-// export interface CosignatoryListInterface extends CosignatoriesInterface {
-//   action: string;
-//   type: number;
-//   disableItem: boolean;
-//   id: Address;
-//   cosignatories?: CosignatoriesInterface[];
-// }
-// export interface CosignatoriesInterface {
-//   isMultisig?: boolean;
-//   name?: string;
-//   address?: string;
-//   publicAccount?: PublicAccount;
-//   ownCosignatories?: boolean;
-// }
 
 export interface DataCurrentAccount {
   name?: string;
