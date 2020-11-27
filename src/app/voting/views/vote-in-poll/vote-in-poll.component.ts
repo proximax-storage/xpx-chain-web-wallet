@@ -35,6 +35,7 @@ export class VoteInPollComponent implements OnInit {
   pollResultVoting: any = [];
   pollResultVotingChar: any = [];
   headResults = ['Options', 'Total'];
+  statHeadResults = ['Statistic', 'Total'];
   searching: boolean;
   incrementOption = 0;
   memberVoted: boolean;
@@ -59,6 +60,9 @@ export class VoteInPollComponent implements OnInit {
   updateFlag = false;
   passwordMain: string = 'password';
   signedTransaction: SignedTransaction;
+  votedPublicKey: any = [];
+  votedPublicKeyCount = 0;
+  totalVoteCount = 0;
 
   constructor(
     private nodeService: NodeService,
@@ -214,10 +218,21 @@ export class VoteInPollComponent implements OnInit {
 
   countNewVoteTransaction(array: Transaction[], voteTransaction: any): number {
     var newVoteTransactions = array.filter(function (current) {
+      if(this.indexOf(current.signer.publicKey) < 0){
+        this.push(current.signer.publicKey); 
+      }
       var isNew = !voteTransaction[current.signer.publicKey] || false;
       voteTransaction[current.signer.publicKey] = true;
       return isNew;
-    });
+    }, this.votedPublicKey);
+
+    /*
+    for(var i = 0; newVoteTransactions.length > i ;++i){
+      if(this.votedPublicKey.indexOf(current.signer.publicKey) < 0){
+        this.votedPublicKey.push(current.signer.publicKey); 
+      }
+    }
+    */
     
     return newVoteTransactions.length;
   }
@@ -240,6 +255,11 @@ export class VoteInPollComponent implements OnInit {
 
     if (param === 'RESULTS') {
       this.modalInfo.show()
+    }
+    else if(this.incrementOptionV === 0){
+      this.totalVoteCount = 0;
+      this.votedPublicKeyCount = 0;
+      this.votedPublicKey = [];
     }
     if (this.incrementOptionV < this.pollSelected.options.length) {
       this.showResultProgress = true;
@@ -292,9 +312,11 @@ export class VoteInPollComponent implements OnInit {
               element.y = lengthVote
             })
 
+            this.totalVoteCount += lengthVote;
             this.pollResultVotingChar = this.pollResultVoting
             this.setcreatecharts(this.pollResultVotingChar);
             this.incrementOptionV++;
+            this.votedPublicKeyCount = this.votedPublicKey.length;
             this.getResult(param);
           }, dataError => {
             if (dataError && dataError.error.message) {
