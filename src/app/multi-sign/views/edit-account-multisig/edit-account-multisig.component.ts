@@ -22,11 +22,12 @@ import { Address } from 'tsjs-xpx-chain-sdk/dist/src/model/account/Address';
 import { MultisigAccountInfo } from 'tsjs-xpx-chain-sdk/dist/src/model/account/MultisigAccountInfo';
 import {
   CosignatoryListInterface, CosignatoriesInterface, CosignatoryInterface,
-  MultisigService, ContactsListInterface
+  MultisigService, ContactsListInterface, ConsginerFirmList
 } from '../../service/multisig.service';
 import { TransactionHttp } from 'tsjs-xpx-chain-sdk/dist/src/infrastructure/TransactionHttp';
 import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
 import { AccountInfo } from 'tsjs-xpx-chain-sdk/dist/src/model/account/AccountInfo';
+import { CosignatoryList } from '../../service/multi-sign.service';
 @Component({
   selector: 'app-edit-account-multisig',
   templateUrl: './edit-account-multisig.component.html',
@@ -34,6 +35,7 @@ import { AccountInfo } from 'tsjs-xpx-chain-sdk/dist/src/model/account/AccountIn
 })
 export class EditAccountMultisigComponent implements OnInit {
   @ViewChild('modalContact', { static: true }) modalContact: ModalDirective;
+  showSignCosignatory = false;
   accountToConvertMultisig: Account;
   accountToConvertSign: Account;
   aggregateTransaction: AggregateTransaction = null;
@@ -52,8 +54,14 @@ export class EditAccountMultisigComponent implements OnInit {
   //   publicAccount?: PublicAccount;
   //   cosignatoryList?: CosignatoryListInterface[]
   // }
+  showConsginerFirmList = false;
   configurationForm: ConfigurationForm = {};
   formEditAccountMultsig: FormGroup;
+  consignerFirmList: ConsginerFirmList[] = [];
+  otherCosignatorieList: ConsginerFirmList[] = [];
+  otherCosignerFirmAccountList: ConsginerFirmList[] = [];
+  consignerFirm: ConsginerFirmList
+  infoBalance: InfoBalance;
   // TODO pasar a una sola junto con covert multisig
   feeConfig: {
     fee: any,
@@ -61,11 +69,13 @@ export class EditAccountMultisigComponent implements OnInit {
     feeTransaction: number,
     totalFee: number,
   };
+  signType = 0;
   data: Array<any>;
   paramsHeader: HeaderServicesInterface = {
     componentName: 'Edit Account Multisig',
     moduleName: 'Accounts > Multisign'
   };
+  passwordMain = 'password';
   subscribe: Subscription[] = [];
   searchContact = [];
   subscribeContact: Subscription[] = [];
@@ -82,68 +92,11 @@ export class EditAccountMultisigComponent implements OnInit {
     private fb: FormBuilder, private multisigService: MultisigService,
     private proximaxProvider: ProximaxProvider,
   ) {
-    this.data = [
-      {
-        name: 'Lon wond',
-        addres: 'VB2JKY-HRYWKO-4OX5HM-ABIOQH-IM6A25-53KGSQ-ONCU',
-        isMultisig: true,
-        cosig: [
-          {
-            name: 'Alivin',
-            addres: 'VD4RD57SGDNJWWWNV6LNUIIQ6EF7YYHC6X7YRQHS',
-            isMultisig: false,
-            cosig: [
 
-            ]
-          },
-          {
-            name: 'Corina',
-            addres: 'VAUIIRN33XXWCJARFXOKIEPIEJY3Y26U4J6THBGH',
-            isMultisig: false
-          }
-        ]
-      },
-      {
-        name: 'Jeffersson',
-        addres: 'VBHRT2OWO7UUPX7TIHF7LUJC62CQO34WWPDRXIWL',
-        isMultisig: false,
-        cosig: [
-          {
-            name: 'Alivin',
-            addres: 'VD4RD57SGDNJWWWNV6LNUIIQ6EF7YYHC6X7YRQHS',
-            isMultisig: false,
-            cosig: [
-
-            ]
-          },
-          {
-            name: 'Corina',
-            addres: 'VAUIIRN33XXWCJARFXOKIEPIEJY3Y26U4J6THBGH',
-            isMultisig: false
-          }
-        ]
-      },
-      {
-        name: 'Luis',
-        addres: 'VC737QHSRTY2J7RSYDIVGD244RG74YOSUV3O6UCY',
-        isMultisig: false,
-        cosig: [
-          {
-            name: 'Alivin',
-            addres: 'VD4RD57SGDNJWWWNV6LNUIIQ6EF7YYHC6X7YRQHS',
-            isMultisig: false,
-            cosig: [
-
-            ]
-          },
-          {
-            name: 'Corina',
-            addres: 'VAUIIRN33XXWCJARFXOKIEPIEJY3Y26U4J6THBGH',
-            isMultisig: false
-          }
-        ]
-      }
-    ];
+    this.infoBalance = {
+      disabled: false,
+      info: ''
+    }
     // TODO pasar a una sola junto con covert multisig validateAccountAlert  feeConfig , configurationForm
     this.validateAccountAlert = {
       show: false,
@@ -160,9 +113,13 @@ export class EditAccountMultisigComponent implements OnInit {
     this.configurationForm = this.sharedService.configurationForm;
   }
 
-  ngOnInit() {
+  ngOnInit () {
     this.createForm();
+    this.subscribeValueChange();
     this.load();
+    this.selectCosignatorieSign();
+    this.selectOtherCosignatorieSign();
+
   }
 
   /**
@@ -171,7 +128,7 @@ export class EditAccountMultisigComponent implements OnInit {
    * @returns {FormGroup}
    * @memberof ConvertAccountMultisigComponent
    */
-  newCosignatory(): FormGroup {
+  newCosignatory (): FormGroup {
     return this.fb.group({
       cosignatory: ['', [Validators.pattern('^(0x|0X)?[a-fA-F0-9]+$')]],
     });
@@ -182,7 +139,7 @@ export class EditAccountMultisigComponent implements OnInit {
    *
    * @memberof ConvertAccountMultisigComponent
    */
-  addCosignatory() {
+  addCosignatory () {
     if (this.cosignatories.status === 'VALID') {
       this.searchContact.push(false);
       this.cosignatories.push(this.newCosignatory());
@@ -195,17 +152,30 @@ export class EditAccountMultisigComponent implements OnInit {
    * @returns
    * @memberof ConvertAccountMultisigComponent
    */
-  preventNumbers(e) {
+  preventNumbers (e) {
     if (e.keyCode >= 48 && e.keyCode <= 57) {
       return false;
     }
   }
   /**
    *
+   *
+   * @param {*} inputType
+   * @returns
+   * @memberof ConvertAccountMultisigComponent
    */
-  createForm() {
+  changeInputType (inputType: string) {
+    this.passwordMain = this.sharedService.changeInputType(inputType);
+    return this.passwordMain;
+  }
+  /**
+   *
+   */
+  createForm () {
     this.formEditAccountMultsig = this.fb.group({
       cosignatory: ['', [Validators.pattern('^(0x|0X)?[a-fA-F0-9]+$')]],
+      cosignatorieSign: [''],
+      otherCosignatorie: [''],
       contact: [''],
       minApprovalDelta: [
         1,
@@ -226,6 +196,70 @@ export class EditAccountMultisigComponent implements OnInit {
       cosignatories: this.fb.array([]),
     });
   }
+
+  /**
+   *
+   * @memberof EditAccountMultisignComponent
+   */
+  selectCosignatorieSign () {
+    this.formEditAccountMultsig.get('cosignatorieSign').valueChanges.subscribe(
+      id => {
+        console.log('ididid', id)
+        this.showSignCosignatory = false;
+        this.formEditAccountMultsig.get('otherCosignatorie').setValue('', {
+          emitEvent: false
+        })
+        // this.consginerFirmAccountList = this.pushConsginerFirmList(id)
+        const signCosignatory = this.consignerFirmList.find(item => item.value === id)
+        if (signCosignatory) {
+          this.showSignCosignatory = true;
+          this.consignerFirm = signCosignatory;
+          console.log('this.consignerFirmList', this.consignerFirmList)
+          console.log(this.consignerFirmList.filter(item => item.value !== id))
+        }
+        this.otherCosignatorieList = this.consignerFirmList.filter(item => item.value !== id)
+        // this.builder()
+      }
+    );
+  }
+  // builderOtherCosignatorie(id) {
+  //   if (id) {
+
+  //   }
+  // }
+
+  /**
+   *
+   *
+   */
+  selectOtherCosignatorieSign () {
+    this.formEditAccountMultsig.get('otherCosignatorie').valueChanges.subscribe(
+      id => {
+        console.log('id', id)
+        this.otherCosignerFirmAccountList = [];
+        this.otherCosignerFirmAccountList = this.pushOtherConsginerFirmList(id);
+        // this.builder()
+      }
+    );
+  }
+  /**
+   *
+   * @param id
+   */
+  pushOtherConsginerFirmList (id: []): ConsginerFirmList[] {
+    const value: ConsginerFirmList[] = [];
+    if (id) {
+      id.forEach((v, index) => {
+        this.otherCosignatorieList.forEach(item => {
+          if (v === item.value) {
+            value.push(item);
+          }
+        });
+      });
+    }
+    return value;
+  }
+
   /**
    * Delete cosignatory to the cosignatory List
    * @memberof CreateMultiSignatureComponent
@@ -233,7 +267,7 @@ export class EditAccountMultisigComponent implements OnInit {
    * @param {Boolean} disableItem
    * @param {number} type
    */
-  deleteCosignatory(id: Address, disableItem: boolean, type: number) {
+  deleteCosignatory (id: Address, disableItem: boolean, type: number) {
     this.dataCurrentAccout.cosignatoryList.filter(x => x.action === 'edit').map((item: CosignatoryListInterface) => {
       item.type = 3;
     });
@@ -242,8 +276,9 @@ export class EditAccountMultisigComponent implements OnInit {
     } else {
       this.dataCurrentAccout.cosignatoryList.find(x => x.id.plain() === id.plain() && x.action === 'edit').type = 2;
     }
+    this.validatorsDelta(this.cosignatoriesList.filter(x => x.type === 1 || x.type === 3).length);
   }
-  editIntoMultisigTransaction() {
+  editIntoMultisigTransaction () {
   }
 
   /**
@@ -252,7 +287,7 @@ export class EditAccountMultisigComponent implements OnInit {
    * @param {number} i
    * @memberof ConvertAccountMultisigComponent
    */
-  removeCosignatory(i: number) {
+  removeCosignatory (i: number) {
     this.cosignatories.removeAt(i);
     this.searchContact.pop();
   }
@@ -261,7 +296,7 @@ export class EditAccountMultisigComponent implements OnInit {
    *
    * @memberof ConvertAccountMultisigComponent
    */
-  showContact(iterator: number) {
+  showContact (iterator: number) {
     if (this.contactList.length > 0) {
       this.currentIteratorCosignatory = iterator;
       this.showContacts = !this.showContacts;
@@ -274,7 +309,7 @@ export class EditAccountMultisigComponent implements OnInit {
    * @param {ContactsListInterface} data
    * @memberof ConvertAccountMultisigComponent
    */
-  selectContact(data: ContactsListInterface) {
+  selectContact (data: ContactsListInterface) {
     this.unsubscribe(this.subscribeContact);
     this.modalContact.hide();
     this.cosignatories.controls[this.currentIteratorCosignatory]
@@ -337,14 +372,14 @@ export class EditAccountMultisigComponent implements OnInit {
    *
    * @memberof ConvertAccountMultisigComponent
    */
-  getAccount(name) {
+  getAccount (name) {
     const currentAccount = this.walletService.filterAccountWallet(name);
     this.currentAccount.push({
       data: currentAccount,
     });
     this.selectAccount(this.currentAccount[0]);
   }
-  getColor(type) {
+  getColor (type) {
     switch (type) {
       case 1:
         return 'green';
@@ -354,19 +389,53 @@ export class EditAccountMultisigComponent implements OnInit {
         return 'gray';
     }
   }
+
+  setCosignatorieSign (cosignerLength: number, accountConver: AccountsInterface): ConsginerFirmList[] {
+    if (cosignerLength === 1) {
+      this.showConsginerFirmList = false;
+      this.formEditAccountMultsig.controls['cosignatorieSign'].setValidators(null);
+    }
+    if (cosignerLength > 1) {
+      this.showConsginerFirmList = true;
+      this.formEditAccountMultsig.controls['cosignatorieSign'].setValidators([Validators.required]);
+    }
+    this.formEditAccountMultsig.controls['cosignatorieSign'].updateValueAndValidity({ emitEvent: false, onlySelf: true });
+
+
+    return this.multisigService.builConsginerList(accountConver.isMultisign, this.walletService.currentWallet.accounts, 10000);
+  }
   /**
    *
    *
    * @param {*} account
    * @memberof ConvertAccountMultisigComponent
    */
-  selectAccount(account: CurrentAccountInterface) {
+  selectAccount (account: CurrentAccountInterface) {
     console.log('ACCOUNT', account.data);
     if (account) {
       const data = this.setDataCurrentAccout(account.data);
       this.contactList = this.multisigService.removeContactList(this.multisigService.validateAccountListContact(
         account.data.name ,
       ), data.cosignatoryList);
+      // Validate is has cosigner currentWallet
+      const cosignerLength = this.multisigService.hasCosignerInCurrentWallet(account.data.isMultisign, this.walletService.currentWallet.accounts);
+      const isCosigner = (cosignerLength > 0) ? true : false;
+      if (!isCosigner) {
+        this.validateAccountAlert = { show: true, info: 'You are not consignee of the account', subInfo: 'Requires a valid cosigner to edit this account.' };
+      } else {
+        this.consignerFirmList = this.setCosignatorieSign(cosignerLength, account.data);
+        if (this.consignerFirmList.length === 1) {
+          this.consignerFirm = this.consignerFirmList[0]
+          this.signType = 1;
+        } else {
+          this.signType = 2;
+        }
+      }
+      //   // Validate in partial txs
+      //   const ispartial = this.multisigService.onPartial(account.data, this.txOnpartial);
+      //   if (ispartial) {
+      //     this.validateAccountAlert = { show: true, info: 'Partial', subInfo: 'Has transactions in partial' };
+      //   }
     } else {
       this.contactList = [];
     }
@@ -410,16 +479,17 @@ export class EditAccountMultisigComponent implements OnInit {
    * @param cosignatoriesList
    * @param newCosignatory
    */
-  isRepeatCosignatory(cosignatoriesList?: CosignatoryInterface[], compareCosignatory?): boolean {
+  isRepeatCosignatory (cosignatoriesList?: CosignatoryListInterface[], compareCosignatory?): boolean {
     this.isRepeatCosignatoryVal = false;
+    console.log('cosignatoriesList', cosignatoriesList);
     const list = (cosignatoriesList) ? cosignatoriesList : this.cosignatoriesList;
     if (list.length > 0 && compareCosignatory) {
-      if (list.find((x) => x.publicKey.toUpperCase() === compareCosignatory.toUpperCase())) {
+      if (list.find((x) => x.publicAccount.publicKey.toUpperCase() === compareCosignatory.toUpperCase())) {
         this.isRepeatCosignatoryVal = true;
       }
     } else {
       if (list.find((item, index, array) => {
-        return array.map((mapItem) => mapItem['publicKey']).indexOf(item['publicKey']) !== index;
+        return array.map((mapItem) => mapItem.publicAccount['publicKey']).indexOf(item.publicAccount['publicKey']) !== index;
       })) {
         this.isRepeatCosignatoryVal = true;
       }
@@ -428,7 +498,7 @@ export class EditAccountMultisigComponent implements OnInit {
     return this.isRepeatCosignatoryVal;
   }
   // TODO hacer recursive function
-  setDataCurrentAccout(account: AccountsInterface): DataCurrentAccount {
+  setDataCurrentAccout (account: AccountsInterface): DataCurrentAccount {
     this.dataCurrentAccout.name = account.name;
     this.dataCurrentAccout.publicAccount = account.publicAccount;
     const address = Address.createFromPublicKey(account.publicAccount.publicKey, environment.typeNetwork.value);
@@ -487,28 +557,20 @@ export class EditAccountMultisigComponent implements OnInit {
    *
    * @param ind
    */
-  showSubItem(ind) {
+  showSubItem (ind) {
     if (this.visibleIndex === ind) {
       this.visibleIndex = -1;
     } else {
       this.visibleIndex = ind;
     }
   }
-  // setValueForm (action: string, disableItem: boolean, type: number) {
-  //   const consignatarioList: CosignatoryListInterface[] = [];
-  //   for (const element of this.accountInfo.multisigInfo.cosignatories) {
-  //     consignatarioList.push({ publicAccount: element, action, type, disableItem, id: element.address, isMultisig: false });
-  //   }
-  //   this.formEditAccountMultsig.get('minApprovalDelta').patchValue(this.accountInfo.multisigInfo.minApproval, { emitEvent: false, onlySelf: true });
-  //   this.formEditAccountMultsig.get('minRemovalDelta').patchValue(this.accountInfo.multisigInfo.minRemoval, { emitEvent: false, onlySelf: true });
-  //   // this.setCosignatoryList(consignatarioList, false);
-  // }
+
   /**
    *
    *
    * @memberof ConvertAccountMultisignComponent
    */
-  load() {
+  load () {
     this.subscribe.push(this.walletService.getAccountsInfo$().subscribe(
       next => {
         // console.log('NUEVO VALOR', next);
@@ -527,12 +589,21 @@ export class EditAccountMultisigComponent implements OnInit {
     );
   }
 
-
+  subscribeValueChange () {
+    // Cosignatory ValueChange
+    this.formEditAccountMultsig.get('cosignatories').valueChanges.subscribe(
+      async next => {
+        this.isRepeatCosignatory();
+        this.validatorsDelta(this.cosignatoriesList.filter(x => x.type === 1 || x.type === 3).length);
+        // this.aggregateTransactionModifyMultisig();
+      }
+    );
+  }
   /**
    *
    * @param numberControl
    */
-  validateInputCosignatory(numberControl: number
+  validateInputCosignatory (numberControl: number
   ) {
     this.cosignatories.controls[numberControl].get('cosignatory');
     return this.cosignatories.controls[numberControl].get('cosignatory');
@@ -546,7 +617,7 @@ export class EditAccountMultisigComponent implements OnInit {
    * @returns
    * @memberof ConvertAccountMultisigComponent
    */
-  validateInput(
+  validateInput (
     nameInput: string = ''
   ) {
     let validation: AbstractControl = null;
@@ -555,10 +626,11 @@ export class EditAccountMultisigComponent implements OnInit {
     }
     return validation;
   }
-/**
- *  TODO   patchValue , updateValueAndValidity, setValidators optimizar para una sola funcion
- */
-  validatorsDelta(maxDelta: number = 1) {
+  /**
+   *  TODO   patchValue , updateValueAndValidity, setValidators optimizar para una sola funcion
+   */
+  validatorsDelta (maxDelta: number = 1) {
+    console.log('maxDelta', maxDelta);
     this.maxDelta = maxDelta;
     const validators = [Validators.required,
     Validators.minLength(1),
@@ -589,7 +661,7 @@ export class EditAccountMultisigComponent implements OnInit {
    * @param {Subscription[]} subscribe
    * @memberof ConvertAccountMultisigComponent
    */
-  unsubscribe(subscribe: Subscription[]) {
+  unsubscribe (subscribe: Subscription[]) {
     if (subscribe.length > 0) {
       subscribe.forEach((subscription) => {
         subscription.unsubscribe();
@@ -603,7 +675,7 @@ export class EditAccountMultisigComponent implements OnInit {
    * @type {FormArray}
    * @memberof ConvertAccountMultisigComponent
    */
-  get cosignatories(): FormArray {
+  get cosignatories (): FormArray {
     return this.formEditAccountMultsig.get('cosignatories') as FormArray;
   }
 
@@ -614,15 +686,49 @@ export class EditAccountMultisigComponent implements OnInit {
    * @type {FormArray}
    * @memberof ConvertAccountMultisigComponent
    */
-  get cosignatoriesList(): CosignatoryInterface[] {
-    return this.formEditAccountMultsig
+  get cosignatoriesList (): CosignatoryListInterface[] {
+    const list = this.formEditAccountMultsig
       .get('cosignatories')
       .value.filter((x) => x.cosignatory).map(x => {
         return {
           publicKey: x.cosignatory.toUpperCase()
         };
-      });
+      }).filter(x => x && x !== '' && this.multisigService.validatePublicKey(x.publicKey));
+    return this.concatCosignatoriesList(list, this.dataCurrentAccout.cosignatoryList);
   }
+
+  /**
+   *
+   * @param newCosignatoryList
+   * @param oldCosignatoryList
+   */
+  concatCosignatoriesList (newCosignatoryList: CosignatoryInterface[], oldCosignatoryList: CosignatoryListInterface[]): CosignatoryListInterface[] {
+    const list: CosignatoryListInterface[] = newCosignatoryList.map(x => {
+      const publicAccountS = (!this.multisigService.validatePublicKey(x.publicKey)) ? null : PublicAccount.createFromPublicKey(x.publicKey, environment.typeNetwork.value);
+      return {
+        type: 1,
+        action: 'add',
+        disableItem: false,
+        id: publicAccountS.address,
+        loading: false,
+        cosignatories: [],
+        publicAccount: publicAccountS
+      };
+    });
+    return list.concat(oldCosignatoryList);
+  }
+  // full
+  setValueForm (action: string, disableItem: boolean, type: number) {
+
+    // const consignatarioList: CosignatoryList[] = [];
+    // for (const element of this.accountInfo.multisigInfo.cosignatories) {
+    //   consignatarioList.push({ publicAccount: element, action: action, type: type, disableItem: disableItem, id: element.address });
+    // }
+    // this.editAccountMultsignForm.get('minApprovalDelta').patchValue(this.accountInfo.multisigInfo.minApproval, { emitEvent: false, onlySelf: true });
+    // this.editAccountMultsignForm.get('minRemovalDelta').patchValue(this.accountInfo.multisigInfo.minRemoval, { emitEvent: false, onlySelf: true });
+    // this.setCosignatoryList(consignatarioList, false);
+  }
+
 }
 
 interface CurrentAccountInterface {
@@ -653,4 +759,9 @@ export interface DataCurrentAccount {
   address?: string;
   publicAccount?: PublicAccount;
   cosignatoryList?: CosignatoryListInterface[];
+}
+
+export interface InfoBalance {
+  disabled: Boolean,
+  info: string
 }
