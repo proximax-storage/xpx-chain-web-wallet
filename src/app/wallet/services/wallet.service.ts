@@ -44,6 +44,9 @@ export class WalletService {
   accountsPushedSubject: BehaviorSubject<AccountsInterface[]> = new BehaviorSubject<AccountsInterface[]>(null);
   accountsPushedSubject$: Observable<AccountsInterface[]> = this.accountsPushedSubject.asObservable();
 
+  cosignatoriesPushedSubject: BehaviorSubject<[]> = new BehaviorSubject<[]>([]);
+  cosignatoriesPushedSubject$: Observable<[]> = this.cosignatoriesPushedSubject.asObservable();
+
   constructor(
     private sharedService: SharedService,
     private proximaxProvider: ProximaxProvider
@@ -89,21 +92,60 @@ export class WalletService {
             }
 
             // this.mosaicServices.searchMosaics(mosaicsIds);
-            let isMultisig: MultisigAccountInfo = null;
+            let propertiesMultisig: MultisigAccountInfo = null;
             try {
-              isMultisig = await this.proximaxProvider.getMultisigAccountInfo(this.proximaxProvider.createFromRawAddress(element.address)).toPromise();
+              propertiesMultisig = await this.proximaxProvider.getMultisigAccountInfo(this.proximaxProvider.createFromRawAddress(element.address)).toPromise();
+              // TO DO: Aquí verifico que mi cuenta sea multifirma y consulto la data de sus cosignatarios
+              // console.log('\n\n ---> propertiesMultisig', propertiesMultisig);
+              /* if (propertiesMultisig.isMultisig()) {
+                // console.log('consignatory', propertiesMultisig.cosignatories);
+                let cosignatoriesCounter = 0;
+                const dataMultiLevel = {
+                  multisig: {
+                    name: element.name,
+                    publicKey: element.publicAccount.publicKey,
+                    data: element
+                  },
+                  cosignatoriesMultisig: []
+                };
+
+                propertiesMultisig.cosignatories.forEach(publicAccount => {
+                  this.proximaxProvider.getMultisigAccountInfo(this.proximaxProvider.createFromRawAddress(publicAccount.address.pretty())).pipe(first()).subscribe(
+                    response => {
+                      // console.log('response data cosignatory ---->', response);
+                      if (response && response.isMultisig()) {
+                        dataMultiLevel.cosignatoriesMultisig.push(response);
+                      }
+
+                      cosignatoriesCounter = cosignatoriesCounter + 1;
+                      if (cosignatoriesCounter === propertiesMultisig.cosignatories.length) {
+                        console.log('\n\n\n dataMultiLevel', dataMultiLevel);
+                        this.getCosignatoriesSubject().pipe(first()).subscribe(r => {
+                          console.log('la rrrrr', r);
+                          const total = r ? r : [];
+                          console.log(total);
+                          if (!total.find(b => b.multisig.name === dataMultiLevel.multisig.name)) {
+                            total.push(dataMultiLevel);
+                            this.setCosignatoriesPushedSubject(total);
+                          }
+                        });
+                      }
+                    }
+                  );
+                });
+              } */
             } catch (error) {
-              isMultisig = null;
+              propertiesMultisig = null;
             }
 
             const accountInfoBuilded = {
               name: element.name,
               accountInfo,
-              multisigInfo: isMultisig
+              multisigInfo: propertiesMultisig
             };
 
             accountsInfo.push(accountInfoBuilded);
-            const newAccounts = this.changeIsMultiSign(element.name, isMultisig);
+            const newAccounts = this.changeIsMultiSign(element.name, propertiesMultisig);
             if (newAccounts.length > 0) {
               // Issue changes to new accounts
               this.setAccountsPushedSubject(newAccounts);
@@ -275,7 +317,6 @@ export class WalletService {
     if (isMultisig) {
       // si es multifirma, preguntar
       if (isMultisig.multisigAccounts.length > 0) {
-        const myAccounts = this.currentWallet.accounts;
         isMultisig.multisigAccounts.forEach(multisigAccount => {
           const exist = this.currentWallet.accounts.find(x => x.address === multisigAccount.address.plain());
           if (!exist) {
@@ -599,6 +640,16 @@ export class WalletService {
     return this.accountsPushedSubject$;
   }
 
+  /**
+   *
+   *
+   * @returns
+   * @memberof WalletService
+   */
+  getCosignatoriesSubject() {
+    return this.cosignatoriesPushedSubject$;
+  }
+
 
   /**
    *
@@ -634,10 +685,11 @@ export class WalletService {
     return walletsStorage;
   }
 
-
-
   /**
    *
+   *
+   * @returns
+   * @memberof WalletService
    */
   getUnconfirmedTransaction() {
     return this.unconfirmedTransactions;
@@ -891,6 +943,17 @@ export class WalletService {
   /**
    *
    *
+   * @param {*} data
+   * @returns
+   * @memberof WalletService
+   */
+  setCosignatoriesPushedSubject(data: any) {
+    return this.cosignatoriesPushedSubject.next(data);
+  }
+
+  /**
+   *
+   *
    * @memberof WalletService
    */
   setAccountsInfo(accountsInfo: AccountsInfoInterface[], pushed = false) {
@@ -947,7 +1010,7 @@ export class WalletService {
   }
 
   /**
-   *Set a wallet as current
+   * Set a wallet as current
    *
    * @param {*} wallet
    * @returns
