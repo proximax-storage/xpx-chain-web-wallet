@@ -30,6 +30,30 @@
                   </div>
 
                 </div>
+
+                <div class="col-12 pl-3rem">
+                  <div class="row">
+
+
+                    <!-- COSIGNATORY ACCOUNT -->
+                    <ng-container *ngIf="consignerFirmList.length === 1">
+                      <div class="col-12 mx-auto d-flex justify-content-start pt-05rem pb-05rem">
+                        <span class="fs-08rem fw-600">Cosignatory Account:&nbsp;</span>
+                        <span class="fs-08rem">{{consignerFirm?.label}}</span>
+                      </div>
+                    </ng-container>
+
+                    <!-- INSUFFICIENT BALANCE -->
+                    <ng-container
+                      *ngIf="consignerFirmList && consignerFirmList.length === 1 && consignerFirm.disabled">
+                      <div class="col-12 mx-auto d-flex justify-content-start pt-05rem pb-05rem">
+                        <span class="fs-08rem fw-600 color-error-message">
+                          Cosignatory {{consignerFirm.info}}
+                        </span>
+                      </div>
+                    </ng-container>
+                  </div>
+                </div>
               </div>
             </div>
             <ng-container *ngIf="showAccount">
@@ -265,6 +289,89 @@
                 <div class="ml-2">
                   <span>of {{dataCurrentAccout.cosignatoryList.length}} cosignatories</span>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- COSIGNATORIES -->
+        <ng-container *ngIf="consignerFirmList.length > 1  && showConsginerFirmList">
+          <div class="row mt-1-5rem">
+            <div class="col-12 mx-auto">
+              <div class="class row">
+                <div class="col-sm-12 col-md-7 col-lg-7 col-xl-7 mx-auto">
+                  <!-- ssss -->
+                  <ng-select class="selectWrapper mt-06rem" [items]="consignerFirmList" bindLabel="label"
+                    labelForId="cosignatorieSign" bindValue="value" placeholder="My cosignatorie sign"
+                    formControlName="cosignatorieSign">
+                    <ng-template ng-option-tmp let-item="item" let-index="index">
+                      <b>{{item.label}}</b>
+                      &nbsp;<b class="color-error-message">{{item.info}}</b>
+                    </ng-template>
+                    <ng-template ng-footer-tmp>
+                      <!-- <span class="fs-08rem color-error-message">
+                    Cosignatory has sufficient balance
+                    ({{amountFormatterSimple(totalFee)}} XPX) to cover LockFund Fee
+                  </span> -->
+
+                    </ng-template>
+                  </ng-select>
+                  <ng-container *ngIf="showSignCosignatory">
+                    <span *ngIf="infoBalance.disabled" class="fs-07rem color-error-message">
+                      - {{infoBalance.info}}
+                    </span>
+                  </ng-container>
+                </div>
+                <div class="col-sm-12 col-md-5 col-lg-5 col-xl-5 mx-auto">
+                  <ng-select class="selectWrapper" [items]="otherCosignatorieList" [maxSelectedItems]="limitSelect-1"
+                    bindLabel="label" labelForId="otherCosignatorie" [multiple]="true"
+                    formControlName="otherCosignatorie" bindValue="value" placeholder="My other Cosignatorie">
+
+                  </ng-select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <!-- Passowrd -->
+        <div class="row mt-1-5rem">
+          <div class="col-12">
+            <div class="md-form form-sm">
+              <img class="form-control-feedback"
+                src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
+              <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
+                src="assets/images/img/icon-show-hide-password.svg" *ngIf="passwordMain === 'password'">
+              <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
+                src="assets/images/img/icon-show-hide-password-grey.svg" *ngIf="passwordMain === 'text'">
+              <input [maxlength]="configurationForm.passwordWallet.maxLength"
+                [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
+                mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" [type]="passwordMain"
+                id="password" class="form-control form-control-sm input-border" placeholder="Enter Wallet Password">
+              <mdb-error
+                *ngIf="validateInput('password').invalid && (validateInput('password').dirty || validateInput('password').touched)">
+                <span>Password Required </span>
+              </mdb-error>
+            </div>
+          </div>
+        </div>
+        <!-- Buttons -->
+        <div class="row mt-1-5rem">
+          <div class="col-12">
+            <div class="row">
+              <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+                <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="md"
+                  (click)="clearForm()">
+                  <span class="fs-1-2em color-white">Clear</span>
+                </button>
+              </div>
+              <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+                <button
+                  [disabled]="formEditAccountMultsig.invalid || cosignatories.status === 'INVALID' || cosignatoriesList.length === 0 || isRepeatCosignatoryVal"
+                  mdbBtn type="submit" rounded="true" mdbWavesEffect class="btn-proximax" size="md">
+                  <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+                    *ngIf="blockSend"></span>
+                  <span class="fs-1-2em color-white">Send</span>
+                </button>
               </div>
             </div>
           </div>
