@@ -60,6 +60,14 @@ export class WalletService {
    * @memberof WalletService
    */
   checkLevel(data: MultisigAccountGraphInfo) {
+    // const root = data.multisigAccounts.get(0);
+    // console.log('root data');
+    // const cosignatories = root[0].cosignatories;
+    // const level1 = data.multisigAccounts.get(1);
+    // cosignatories.forEach(element => {
+    //   console.log('level1 ---->', level1);
+    // });
+
     if (data.multisigAccounts.has(-2)) {
       return 2;
     } else if (data.multisigAccounts.has(-1)) {
@@ -113,9 +121,10 @@ export class WalletService {
             } = null;
             try {
               const accountGraphInfo = await this.proximaxProvider.getMultisigAccountGraphInfo(this.proximaxProvider.createFromRawAddress(element.address)).toPromise();
-              console.log('\n\n\n The response ---->', accountGraphInfo);
-              console.log('element ---->', element.publicAccount.publicKey);
-              console.log('accountGraphInfo2', accountGraphInfo.multisigAccounts.get(0));
+              console.log('\n\n\n address ---->', element.publicAccount.address['address']);
+              console.log('publickey ---->', element.publicAccount.publicKey);
+              console.log('All structure ---->', accountGraphInfo);
+              console.log('root', accountGraphInfo.multisigAccounts.get(0));
               accountGraphInfo.multisigAccounts.forEach(r => {
                 console.log('Multisig data --->', r);
               });
