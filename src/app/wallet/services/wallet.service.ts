@@ -60,9 +60,7 @@ export class WalletService {
    * @memberof WalletService
    */
   checkLevel(data: MultisigAccountGraphInfo) {
-    if (data.multisigAccounts.has(-3)) {
-      return 3;
-    } else if (data.multisigAccounts.has(-2)) {
+    if (data.multisigAccounts.has(-2)) {
       return 2;
     } else if (data.multisigAccounts.has(-1)) {
       return 1;
@@ -164,7 +162,8 @@ export class WalletService {
             const accountInfoBuilded = {
               name: element.name,
               accountInfo: null,
-              multisigInfo: null
+              multisigInfo: null,
+              multisigAccountGraphInfo: null
             };
 
             accountsInfo.push(accountInfoBuilded);
@@ -494,13 +493,16 @@ export class WalletService {
    * @returns
    * @memberof WalletService
    */
-  filterAccountWallet(byName: string = '', byDefault: boolean = null, byAddress = ''): AccountsInterface {
+  filterAccountWallet(byName: string = '', byDefault = null, byAddress = ''): AccountsInterface {
+    console.log('### address to search ####', byAddress);
     if (this.currentWallet && this.currentWallet.accounts && this.currentWallet.accounts.length > 0) {
       if (byDefault !== null && byName === '') {
         return this.currentWallet.accounts.find(elm => elm.default === true);
       } else if (byName !== '') {
         return this.currentWallet.accounts.find(elm => elm.name === byName);
       } else {
+        const response = this.currentWallet.accounts.find(elm => this.proximaxProvider.createFromRawAddress(elm.address).pretty() === byAddress);
+        console.log('#### response', response);
         return this.currentWallet.accounts.find(elm => this.proximaxProvider.createFromRawAddress(elm.address).pretty() === byAddress);
       }
     }
@@ -1174,7 +1176,7 @@ export interface TransactionsNis1Interface {
 }
 
 export interface AccountsInterface {
-  address: any;
+  address: string;
   algo: string;
   brain: boolean;
   default: boolean;
@@ -1195,6 +1197,8 @@ export interface AccountsInfoInterface {
   name: string;
   accountInfo: AccountInfo;
   multisigInfo: MultisigAccountInfo;
+  multisigAccountGraphInfo: MultisigAccountGraphInfo;
+  level: number;
 }
 
 export interface WalletAccountInterface {
