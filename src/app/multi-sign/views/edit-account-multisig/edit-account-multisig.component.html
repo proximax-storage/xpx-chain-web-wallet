@@ -469,7 +469,7 @@
               </div>
               <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
                 <button
-                  [disabled]="formEditAccountMultsig.invalid || cosignatories.status === 'INVALID' || cosignatoriesList.length === 0 || isRepeatCosignatoryVal"
+                  [disabled]="formEditAccountMultsig.invalid || cosignatories.status === 'INVALID' || cosignatoriesList.length === 0 || isRepeatCosignatoryVal || validateAccountAlert.show"
                   mdbBtn type="submit" rounded="true" mdbWavesEffect class="btn-proximax" size="md">
                   <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
                     *ngIf="blockSend"></span>
