@@ -68,7 +68,7 @@
                         <span class="fw-600"> {{item.name}}</span>
                         <span *ngIf="item.isMultisig && item.isMultisig.isMultisig()"
                           class="fs-07rem color-blue-intermedio tag-account">- Multisig</span>
-                        <br> <span class="fw-300 fs-08rem color-grey"> {{item.publicAccount.publicKey}}</span>
+                        <br> <span class="fw-300 fs-08rem color-grey"> {{item.address}}</span>
                       </div>
                       <div class="col-6 d-flex justify-content-end align-items-center">
                         <div class="row">
@@ -99,7 +99,7 @@
                                         <span *ngIf="itemOnelvl.isMultisig && itemOnelvl.isMultisig.isMultisig()"
                                           class="fs-07rem color-blue-intermedio tag-account">- Multisig</span>
                                         <br> <span class="fw-300 fs-08rem color-grey">
-                                          {{itemOnelvl.publicAccount.publicKey}}</span>
+                                          {{itemOnelvl.address}}</span>
                                       </div>
                                       <div class="col-6 d-flex justify-content-end align-items-center">
                                         <div class="row">
@@ -124,7 +124,7 @@
                                                 </span>
                                                 <ul>
                                                   <li *ngFor="let itemTowlvl of itemOnelvl.cosignatorieswTow" style="font-size: x-small;">
-                                                    <span class="fw-600"> {{itemTowlvl.name}}</span> ({{itemTowlvl.publicAccount.publicKey}})
+                                                    <span class="fw-600"> {{itemTowlvl.name}}</span> ({{itemTowlvl.address}})
                                                   </li>
                                                 </ul>
 

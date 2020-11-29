@@ -588,6 +588,7 @@ export class EditAccountMultisigComponent implements OnInit {
     } else {
       this.visibleIndex = ind;
     }
+    this.visibleIndexOnelvl = -1;
   }
   /**
   *
