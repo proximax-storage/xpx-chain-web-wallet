@@ -114,6 +114,8 @@ export class EditAccountMultisigComponent implements OnInit {
   }
 
   ngOnInit () {
+
+
     this.createForm();
     this.subscribeValueChange();
     this.load();
