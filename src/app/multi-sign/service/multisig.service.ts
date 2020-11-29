@@ -260,28 +260,15 @@ export class MultisigService {
     return true;
   }
 
-  recurBuildCosig (publicKey: string, accounts: AccountsInterface[], feeTx: number) {
-
-    // if (accountUni.isMultisign && accountUni.isMultisign.isMultisig()) {
-
-    //   for (let item of accountUni.isMultisign.account())
-    //   // const ownCosignatories = this.filterOwnCosignatory({ publicKey: items.publicKey }, this.walletService.currentWallet.accounts);
-
-    //  }
-
-    // this.consginerFirmList.push({
-    //   label: item.name,
-    //   value: item.address,
-    //   disabled: infValidate[0].disabled,
-    //   info: infValidate[0].info,
-    //   account: item,
-    //   isMultisig: item.isMultisign
-    // })
-
-
-  }
-
-  checkCosig(account: AccountsInterface, feeTx: number) {
+  /**
+   *
+   *
+   * @param {AccountsInterface} account
+   * @param {number} feeTx
+   * @returns
+   * @memberof MultisigService
+   */
+  buildCosignatory(account: AccountsInterface, feeTx: number) {
     const accountFiltered: AccountsInfoInterface = this.walletService.filterAccountInfo(account.name);
     if (accountFiltered) {
       const accountIsMultisig = accountFiltered && accountFiltered.multisigInfo && accountFiltered.multisigInfo.cosignatories.length > 0;
@@ -315,21 +302,21 @@ export class MultisigService {
     for (const item of accounts) {
       const publicAccount: PublicAccount = PublicAccount.createFromPublicKey(item.publicAccount.publicKey, item.network);
       if (accountConvert.hasCosigner(publicAccount)) {
-        const response = this.checkCosig(item, feeTx);
+        const response = this.buildCosignatory(item, feeTx);
         if (response) {
           list.push(response);
           if (response.accountIsMultisig) {
             response.accountFiltered.multisigInfo.cosignatories.forEach(e => {
               const cosignatoryLevel1Filtered = this.walletService.filterAccountWallet('', null, e.address.pretty());
               if (cosignatoryLevel1Filtered) {
-                const responseCosigLevel1 = this.checkCosig(cosignatoryLevel1Filtered, feeTx);
+                const responseCosigLevel1 = this.buildCosignatory(cosignatoryLevel1Filtered, feeTx);
                 if (responseCosigLevel1) {
                   list.push(responseCosigLevel1);
                   if (responseCosigLevel1.accountIsMultisig) {
                     responseCosigLevel1.accountFiltered.multisigInfo.cosignatories.forEach(b => {
                       const cosignatoryLevel2Filtered = this.walletService.filterAccountWallet('', null, b.address.pretty());
                       if (cosignatoryLevel2Filtered) {
-                        const responseCosigLevel2 = this.checkCosig(cosignatoryLevel2Filtered, feeTx);
+                        const responseCosigLevel2 = this.buildCosignatory(cosignatoryLevel2Filtered, feeTx);
                         if (responseCosigLevel2) {
                           list.push(responseCosigLevel2);
                         }
