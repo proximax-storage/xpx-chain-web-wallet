@@ -28,7 +28,7 @@
                       <!-- Is Multisig -->
                       <ng-container
                         *ngIf="account && account.isMultisign && account.isMultisign.cosignatories.length > 0 && account.isMultisign.multisigAccounts.length > 0">
-                        <span class="ml-1rem fs-07rem color-blue-intermedio tag-account">- MultiLevel</span>
+                        <span class="ml-1rem fs-07rem color-blue-intermedio tag-account">- MultiLevel ({{account?.level}})</span>
                       </ng-container>
                       <!-- Is Swap -->
                       <ng-container *ngIf="[undefined, null].includes(account.nis1Account) === false">

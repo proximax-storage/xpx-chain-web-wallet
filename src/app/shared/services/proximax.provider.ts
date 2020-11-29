@@ -45,7 +45,7 @@ import {
   Convert,
   RawAddress,
   AccountLinkTransaction,
-  LinkAction
+  LinkAction, MultisigAccountGraphInfo
 } from 'tsjs-xpx-chain-sdk';
 import { BlockchainNetworkType } from 'tsjs-chain-xipfs-sdk';
 import { Observable } from 'rxjs/internal/Observable';
@@ -455,6 +455,17 @@ export class ProximaxProvider {
    */
   getMultisigAccountInfo(address: Address): Observable<MultisigAccountInfo> {
     return this.accountHttp.getMultisigAccountInfo(address);
+  }
+
+  /**
+   *
+   *
+   * @param {Address} address
+   * @returns {Observable<MultisigAccountInfo>}
+   * @memberof ProximaxProvider
+   */
+  getMultisigAccountGraphInfo(address: Address): Observable<MultisigAccountGraphInfo> {
+    return this.accountHttp.getMultisigAccountGraphInfo(address);
   }
 
   /**
