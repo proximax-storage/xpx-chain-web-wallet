@@ -424,6 +424,7 @@ export interface CosignatoriesInterface {
   address?: string;
   publicAccount?: PublicAccount;
   ownCosignatories?: boolean;
+  cosignatorieswTow?: CosignatoriesInterface[];
 }
 export interface ToAggregateConvertMultisigInterface {
   account: PublicAccount;
