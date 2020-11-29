@@ -60,18 +60,14 @@ export class WalletService {
    * @memberof WalletService
    */
   checkLevel(data: MultisigAccountGraphInfo) {
-    // const root = data.multisigAccounts.get(0);
-    // console.log('root data');
-    // const cosignatories = root[0].cosignatories;
-    // const level1 = data.multisigAccounts.get(1);
-    // cosignatories.forEach(element => {
-    //   console.log('level1 ---->', level1);
-    // });
-
-    if (data.multisigAccounts.has(-2)) {
+    if (data.multisigAccounts.has(3)) {
       return 2;
-    } else if (data.multisigAccounts.has(-1)) {
+    } else if (data.multisigAccounts.has(2)) {
       return 1;
+    } else if (data.multisigAccounts.has(1)) {
+      return null;
+    } else {
+      return null;
     }
   }
 
@@ -172,7 +168,8 @@ export class WalletService {
               name: element.name,
               accountInfo: null,
               multisigInfo: null,
-              multisigAccountGraphInfo: null
+              multisigAccountGraphInfo: null,
+              level: null
             };
 
             accountsInfo.push(accountInfoBuilded);
