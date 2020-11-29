@@ -15,6 +15,7 @@ import { TransactionsInterface, TransactionsService } from 'src/app/transactions
 })
 
 export class MultisigService {
+  consginerFirmList: ConsginerFirmList[] = [];
   constructor(
     private serviceModuleService: ServicesModuleService,
     private walletService: WalletService,
@@ -259,6 +260,27 @@ export class MultisigService {
     return true;
   }
 
+  recurBuildCosig (publicKey: string, accounts: AccountsInterface[], feeTx: number) {
+
+    // if (accountUni.isMultisign && accountUni.isMultisign.isMultisig()) {
+
+    //   for (let item of accountUni.isMultisign.account())
+    //   // const ownCosignatories = this.filterOwnCosignatory({ publicKey: items.publicKey }, this.walletService.currentWallet.accounts);
+
+    //  }
+
+    // this.consginerFirmList.push({
+    //   label: item.name,
+    //   value: item.address,
+    //   disabled: infValidate[0].disabled,
+    //   info: infValidate[0].info,
+    //   account: item,
+    //   isMultisig: item.isMultisign
+    // })
+
+
+  }
+
   /**
    *
    * @param {AccountsInterface[]} accounts  -
@@ -272,6 +294,16 @@ export class MultisigService {
       if (accountConvert.hasCosigner(publicAccount)) {
         const accountFiltered: AccountsInfoInterface = this.walletService.filterAccountInfo(item.name);
         const infValidate = this.transactionService.validateBalanceCosignatorie(accountFiltered, Number(feeTx)).infValidate;
+        // if (item.isMultisign && item.isMultisign.isMultisig()) {
+        //   for (let items of item.isMultisign.cosignatories) {
+        //     const ownCosignatories = this.filterOwnCosignatory({ publicKey: items.publicKey }, this.walletService.currentWallet.accounts);
+
+
+        //   }
+
+
+
+        // } else {
         list.push({
           label: item.name,
           value: item.address,
@@ -280,6 +312,8 @@ export class MultisigService {
           account: item,
           isMultisig: item.isMultisign
         });
+        // }
+
       }
     }
 
