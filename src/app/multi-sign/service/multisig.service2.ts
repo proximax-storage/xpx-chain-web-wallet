@@ -341,6 +341,65 @@ export class MultisigService {
             });
           }
         }
+        /* const accountFiltered: AccountsInfoInterface = this.walletService.filterAccountInfo(item.name);
+        const accountIsMultisig = accountFiltered && accountFiltered.multisigInfo && accountFiltered.multisigInfo.cosignatories.length > 0;
+        console.log('###### accountFiltered', accountFiltered);
+        const infValidate = this.transactionService.validateBalanceCosignatorie(accountFiltered, Number(feeTx)).infValidate;
+        list.push({
+          label: accountIsMultisig ? `${item.name} - Multisig` : item.name,
+          value: item.address,
+          disabled: infValidate[0].disabled || accountIsMultisig,
+          info: infValidate[0].info,
+          account: item,
+          isMultisig: item.isMultisign
+        });
+
+        // Check is Multisig
+        if (accountIsMultisig) {
+          console.log('Cosig is Multisig', accountFiltered.name);
+          accountFiltered.multisigInfo.cosignatories.forEach(e => {
+            const cosignatoryLevel1Filtered = this.walletService.filterAccountWallet('', false, e.address.pretty());
+            console.log('\n cosignatoryFiltered -->', cosignatoryLevel1Filtered);
+            if (cosignatoryLevel1Filtered) {
+              const cosignatoryAccountInfo: AccountsInfoInterface = this.walletService.filterAccountInfo(cosignatoryLevel1Filtered.name);
+              const hasBalance = this.transactionService.validateBalanceCosignatorie(cosignatoryAccountInfo, Number(feeTx)).infValidate;
+              const cosignatoryIsMultisig = cosignatoryAccountInfo && cosignatoryAccountInfo.multisigInfo && cosignatoryAccountInfo.multisigInfo.cosignatories.length > 0;
+              console.log('\n --> Cosignatory has balance', hasBalance);
+              list.push({
+                label: cosignatoryAccountInfo.name + ' --> Is cosignatory -->' + item.name + ' - Multisig',
+                value: cosignatoryAccountInfo.accountInfo.address.plain(),
+                disabled: hasBalance[0].disabled || cosignatoryIsMultisig,
+                info: hasBalance[0].info,
+                account: cosignatoryLevel1Filtered,
+                isMultisig: cosignatoryAccountInfo.multisigInfo
+              });
+
+              if (cosignatoryIsMultisig) {
+                console.log('cosignatory is multisig', cosignatoryAccountInfo.multisigInfo.cosignatories);
+                cosignatoryAccountInfo.multisigInfo.cosignatories.forEach(publicAccountLevel2 => {
+                  console.log('###### publicAccountLevel2 ######', publicAccountLevel2);
+                  const cosigOfMultisigLevel2Filtered = this.walletService.filterAccountWallet('', null, publicAccountLevel2.address.pretty());
+                  console.log('cosigOfMultisigLevel2Filtered', cosigOfMultisigLevel2Filtered);
+                  if (cosigOfMultisigLevel2Filtered) {
+                    const cosigLevel2: AccountsInfoInterface = this.walletService.filterAccountInfo(cosigOfMultisigLevel2Filtered.name);
+                    console.log('cosigLevel2', cosigLevel2);
+                    const hasBalanceLevel2 = this.transactionService.validateBalanceCosignatorie(cosigLevel2, Number(feeTx)).infValidate;
+                    // const cosignatoryIsMultisig = cosigLevel2 && cosigLevel2.multisigInfo && cosigLevel2.multisigInfo.cosignatories.length > 0;
+                    console.log('\n --> Cosignatory has balance', hasBalanceLevel2);
+                    list.push({
+                      label: cosigLevel2.name,
+                      value: cosigLevel2.accountInfo.address.plain(),
+                      disabled: hasBalanceLevel2[0].disabled,
+                      info: hasBalanceLevel2[0].info,
+                      account: cosignatoryLevel1Filtered,
+                      isMultisig: cosigLevel2.multisigInfo
+                    });
+                  }
+                });
+              }
+            }
+          });
+        } */
       }
     }
 

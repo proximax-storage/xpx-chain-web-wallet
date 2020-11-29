@@ -271,7 +271,7 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
    * @returns {ConsginerFirmList[]}
    * @memberof EditAccountMultisignComponent
    */
-  builConsginerList(accounts: AccountsInterface[]): ConsginerFirmList[] {
+  buildCosignerList(accounts: AccountsInterface[]): ConsginerFirmList[] {
     let list: ConsginerFirmList[] = []
     for (let index = 0; index < accounts.length; index++) {
       const publicAccount: PublicAccount = PublicAccount.createFromPublicKey(accounts[index].publicAccount.publicKey, accounts[index].network);
@@ -1073,7 +1073,7 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
     //validate actual  consginerFirmList
     if (this.hasCosigner() && !validateBuildAccount.disabledItem) {
       this.consginerFirmList = []
-      this.consginerFirmList = this.builConsginerList(this.walletService.currentWallet.accounts)
+      this.consginerFirmList = this.buildCosignerList(this.walletService.currentWallet.accounts)
       if (this.consginerFirmList.length === 1) {
         this.signType = 1;
         this.consginerFirmAccount = this.consginerFirmList[0]

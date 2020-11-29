@@ -404,7 +404,7 @@ export class EditAccountMultisigComponent implements OnInit {
     this.formEditAccountMultsig.controls['cosignatorieSign'].updateValueAndValidity({ emitEvent: false, onlySelf: true });
 
 
-    return this.multisigService.builConsginerList(accountConver.isMultisign, this.walletService.currentWallet.accounts, 10000);
+    return this.multisigService.buildCosignerList(accountConver.isMultisign, this.walletService.currentWallet.accounts, 10000);
   }
   /**
    *
