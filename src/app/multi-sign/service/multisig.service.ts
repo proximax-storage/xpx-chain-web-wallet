@@ -15,7 +15,7 @@ import { TransactionsInterface, TransactionsService } from 'src/app/transactions
 })
 
 export class MultisigService {
-  consginerFirmList: ConsginerFirmList[] = [];
+  consginerFirmList: CosignerFirmList[] = [];
   constructor(
     private serviceModuleService: ServicesModuleService,
     private walletService: WalletService,
@@ -294,16 +294,16 @@ export class MultisigService {
   }
 
   /**
-   *
+   * TO DO: Validar que los cosignatarios no se repitan en la l
    *
    * @param {MultisigAccountInfo} accountConvert
    * @param {AccountsInterface[]} accounts
    * @param {number} feeTx
-   * @returns {ConsginerFirmList[]}
+   * @returns {cosignerFirmList[]}
    * @memberof MultisigService
    */
-  buildCosignerList(accountConvert: MultisigAccountInfo, accounts: AccountsInterface[], feeTx: number): ConsginerFirmList[] {
-    const list: ConsginerFirmList[] = [];
+  buildCosignerList(accountConvert: MultisigAccountInfo, accounts: AccountsInterface[], feeTx: number): CosignerFirmList[] {
+    const list: CosignerFirmList[] = [];
     for (const item of accounts) {
       const publicAccount: PublicAccount = PublicAccount.createFromPublicKey(item.publicAccount.publicKey, item.network);
       if (accountConvert.hasCosigner(publicAccount)) {
@@ -316,14 +316,18 @@ export class MultisigService {
               if (cosignatoryLevel1Filtered) {
                 const responseCosigLevel1 = this.buildCosignatory(cosignatoryLevel1Filtered, feeTx, response.account.name);
                 if (responseCosigLevel1) {
-                  list.push(responseCosigLevel1);
+                  if (!list.find(d => d.account.publicAccount.publicKey === responseCosigLevel1.account.publicAccount.publicKey)) {
+                    list.push(responseCosigLevel1);
+                  }
                   if (responseCosigLevel1.accountIsMultisig) {
                     responseCosigLevel1.accountFiltered.multisigInfo.cosignatories.forEach(b => {
                       const cosignatoryLevel2Filtered = this.walletService.filterAccountWallet('', null, b.address.pretty());
                       if (cosignatoryLevel2Filtered) {
                         const responseCosigLevel2 = this.buildCosignatory(cosignatoryLevel2Filtered, feeTx, responseCosigLevel1.account.name);
                         if (responseCosigLevel2) {
-                          list.push(responseCosigLevel2);
+                          if (!list.find(d => d.account.publicAccount.publicKey === responseCosigLevel2.account.publicAccount.publicKey)) {
+                            list.push(responseCosigLevel2);
+                          }
                         }
                       }
                     });
@@ -461,11 +465,13 @@ export interface ToConvertMultisigInterface {
   minRemovalDelta: number;
 }
 
-export interface ConsginerFirmList {
+export interface CosignerFirmList {
   label: string;
   value: any;
   disabled: boolean;
   info: string;
   account: AccountsInterface;
-  isMultisig: MultisigAccountInfo
+  isMultisig: MultisigAccountInfo;
+  accountIsMultisig: boolean;
+  accountFiltered: AccountsInfoInterface;
 }
