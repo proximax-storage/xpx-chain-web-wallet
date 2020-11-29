@@ -22,6 +22,84 @@ export class MultisigService {
     private transactionService: TransactionsService,
   ) { }
   /**
+  *
+  *
+  * @param {CosignatoryList[]}
+  * @returns {MultisigCosignatoryModification[]}
+  * @memberof EditAccountMultisignComponent
+  */
+  multisigCosignatoryModification (cosignatoryList: CosignatoryListInterface[]): MultisigCosignatoryModification[] {
+    const cosignatory = [];
+    if (cosignatoryList.length > 0) {
+      // tslint:disable-next-line: prefer-for-of
+      for (let index = 0; index < cosignatoryList.length; index++) {
+        const element = cosignatoryList[index];
+        const type: MultisigCosignatoryModificationType = (cosignatoryList[index].type === 1) ?
+          MultisigCosignatoryModificationType.Add : MultisigCosignatoryModificationType.Remove;
+        cosignatory.push(
+          new MultisigCosignatoryModification(
+            type,
+            cosignatoryList[index].publicAccount,
+          )
+        );
+      }
+
+    }
+    return cosignatory;
+  }
+  /**
+   * Aggregate transaction
+   * @param {ToAggregateConvertMultisigInterface} params
+   * @returns {AggregateTransaction}
+   */
+  aggregateTransactionEditModifyMultisig (params: ToAggregateTransactionEditModifyMultisig): AggregateTransaction {
+    const valor = this.calcMinDelta(
+      params.minApprovalDelta.minApprovalOld,
+      params.minRemovalDelta.minRemovalOld,
+      params.minApprovalDelta.minApprovalNew,
+      params.minRemovalDelta.minRemovalNew,
+    );
+    const modifyMultisigAccountTransaction: ModifyMultisigAccountTransaction = ModifyMultisigAccountTransaction.create(
+      Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
+      valor['minApprovalDelta'],
+      valor['minRemovalDelta'],
+      this.multisigCosignatoryModification(params.cosignatoryLis),
+      environment.typeNetwork.value
+    );
+    let aggregateTransaction: AggregateTransaction = null;
+
+    const typeTX = this.typeSignTxEdit(params.cosignatoryLis,
+      params.minRemovalDelta.minRemovalOld,
+      params.minApprovalDelta.minApprovalOld,
+      params.cosignerFirmList,
+      params.accountsWallet)
+    if (typeTX === TransactionType.AGGREGATE_BONDED) {
+      aggregateTransaction = AggregateTransaction.createBonded(
+        Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
+        [modifyMultisigAccountTransaction.toAggregate(params.account)],
+        params.account.address.networkType
+      );
+
+    } else {
+      aggregateTransaction = AggregateTransaction.createComplete(
+        Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
+        [modifyMultisigAccountTransaction.toAggregate(params.account)],
+        params.account.address.networkType,
+        []
+      );
+
+    }
+    return aggregateTransaction
+  }
+
+  calcMinDelta (minApprovalDeltaE: number, minRemovalDeltaE: number, minApprovalDeltaM: number, minRemovalDeltaM: number) {
+    return new Object({
+      minApprovalDelta: minApprovalDeltaM - minApprovalDeltaE,
+      minRemovalDelta: minRemovalDeltaM - minRemovalDeltaE
+    });
+  }
+
+  /**
    * Aggregate transaction
    * @param {ToAggregateConvertMultisigInterface} params
    * @returns {AggregateTransaction}
@@ -169,6 +247,15 @@ export class MultisigService {
   filterOwnCosignatory (cosignatoryList: CosignatoryInterface, accounts: AccountsInterface[]): AccountsInterface {
     return accounts.find(x => x.publicAccount.publicKey === cosignatoryList.publicKey);
   }
+  filterOtherCosignerFirmAccountList (cosignerFirmListOne: CosignerFirmList[], cosignerFirmListOtwo: CosignerFirmList[]): CosignerFirmList[] {
+    const cosignerFirmListOnes: CosignerFirmList[] = []
+    for (const list of cosignerFirmListOne) {
+      if (!cosignerFirmListOtwo.find(items => list.account.address === items.account.address)) {
+        cosignerFirmListOnes.push(list);
+      }
+    }
+    return cosignerFirmListOnes;
+  }
 
   /**
    * filter  others cosignatories
@@ -233,7 +320,62 @@ export class MultisigService {
       return TransactionType.AGGREGATE_BONDED;
     }
   }
-
+  typeSignTxEdit (
+    cosignatoryList: CosignatoryListInterface[],
+    minRemoval: number,
+    minApproval: number,
+    consginerFirmAccountList: CosignerFirmList[],
+    accounts: AccountsInterface[]): TransactionType {
+    let cantFirm = consginerFirmAccountList.length;
+    cantFirm = (cantFirm > 0) ? cantFirm : 1;
+    const ownCosignatories = this.filterOwnCosignatories(cosignatoryList.map(x => {
+      return {
+        publicKey: x.publicAccount.publicKey
+      };
+    }), accounts);
+    if (!Boolean(ownCosignatories.length === cosignatoryList.length)) {
+      return TransactionType.AGGREGATE_BONDED;
+    }
+    const cantAdd = cosignatoryList.filter(x => x.type === 1).length;
+    const cabtRemove = cosignatoryList.filter(x => x.type === 2).length;
+    console.log('cantAdd', cantAdd)
+    console.log('cabtRemove', cabtRemove)
+    console.log('cantFirm', cantFirm)
+    console.log('minRemoval', minRemoval)
+     console.log('minApproval', minApproval)
+    if (cantAdd > 0 && cabtRemove > 0) {
+      console.debug('ADD Y REMOVE');
+      if (cantFirm >= minRemoval && cantFirm >= minApproval) {
+        return TransactionType.AGGREGATE_COMPLETE;
+      } else {
+        return TransactionType.AGGREGATE_BONDED;
+      }
+    }
+    if (cantAdd == 0 && cabtRemove == 0) {
+      console.debug('NEVER');
+      if (cantFirm >= minRemoval && cantFirm >= minApproval) {
+        return TransactionType.AGGREGATE_COMPLETE;
+      } else {
+        return TransactionType.AGGREGATE_BONDED;
+      }
+    }
+    if (cantAdd > 0) {
+      console.debug('ADD');
+      if (cantFirm >= minApproval) {
+        return TransactionType.AGGREGATE_COMPLETE;
+      } else {
+        return TransactionType.AGGREGATE_BONDED;
+      }
+    }
+    if (cabtRemove > 0) {
+      console.debug('REMOVE');
+      if (cantFirm >= minRemoval) {
+        return TransactionType.AGGREGATE_COMPLETE;
+      } else {
+        return TransactionType.AGGREGATE_BONDED;
+      }
+    }
+  }
   /**
    * Validate public key  ownCosignatories
    * @param cosignatoryList;
@@ -269,7 +411,7 @@ export class MultisigService {
    * @returns
    * @memberof MultisigService
    */
-  buildCosignatory(account: AccountsInterface, feeTx: number, isCosigOf?: string) {
+  buildCosignatory (account: AccountsInterface, feeTx: number, isCosigOf?: string) {
     const accountFiltered: AccountsInfoInterface = this.walletService.filterAccountInfo(account.name);
     if (accountFiltered) {
       const accountIsMultisig = accountFiltered && accountFiltered.multisigInfo && accountFiltered.multisigInfo.cosignatories.length > 0;
@@ -302,7 +444,7 @@ export class MultisigService {
    * @returns {cosignerFirmList[]}
    * @memberof MultisigService
    */
-  buildCosignerList(accountConvert: MultisigAccountInfo, accounts: AccountsInterface[], feeTx: number): CosignerFirmList[] {
+  buildCosignerList (accountConvert: MultisigAccountInfo, accounts: AccountsInterface[], feeTx: number): CosignerFirmList[] {
     const list: CosignerFirmList[] = [];
     for (const item of accounts) {
       const publicAccount: PublicAccount = PublicAccount.createFromPublicKey(item.publicAccount.publicKey, item.network);
@@ -434,6 +576,15 @@ export interface CosignatoryInterface {
   publicKey: string;
   type?: number;
 }
+
+/**
+ * cosignatory List
+ * @param publicAccount
+ * @param action - event (Add or delete)
+ * @param type - 1 = Add , 2 = remove , 3 = view
+ * @param disableItem - Disable item list
+ * @param id - Address in cosignatory
+*/
 export interface CosignatoryListInterface extends CosignatoriesInterface {
   loading?: boolean;
   action: string;
@@ -457,6 +608,21 @@ export interface ToAggregateConvertMultisigInterface {
   minApprovalDelta: number;
   minRemovalDelta: number;
 }
+export interface ToAggregateTransactionEditModifyMultisig {
+  account: PublicAccount;
+  cosignerFirmList: CosignerFirmList[]
+  cosignatoryLis: CosignatoryListInterface[];
+  accountsWallet: AccountsInterface[]
+  minApprovalDelta: {
+    minApprovalOld: number,
+    minApprovalNew: number
+  };
+  minRemovalDelta: {
+    minRemovalOld: number,
+    minRemovalNew: number
+  };
+}
+
 export interface ToConvertMultisigInterface {
   account: Account;
   ownCosignatories: Account[];

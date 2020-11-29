@@ -7,7 +7,7 @@ import { ModalDirective } from 'ng-uikit-pro-standard';
 import { Account } from 'tsjs-xpx-chain-sdk/dist/src/model/account/Account';
 import { AggregateTransaction } from 'tsjs-xpx-chain-sdk/dist/src/model/transaction/AggregateTransaction';
 import { ServicesModuleService, HeaderServicesInterface } from '../../../servicesModule/services/services-module.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from '../../../../environments/environment';
 import {
   AbstractControl,
@@ -22,12 +22,13 @@ import { Address } from 'tsjs-xpx-chain-sdk/dist/src/model/account/Address';
 import { MultisigAccountInfo } from 'tsjs-xpx-chain-sdk/dist/src/model/account/MultisigAccountInfo';
 import {
   CosignatoryListInterface, CosignatoriesInterface, CosignatoryInterface,
-  MultisigService, ContactsListInterface, ConsginerFirmList
+  MultisigService, ContactsListInterface, CosignerFirmList, ToAggregateTransactionEditModifyMultisig
 } from '../../service/multisig.service';
 import { TransactionHttp } from 'tsjs-xpx-chain-sdk/dist/src/infrastructure/TransactionHttp';
 import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
 import { AccountInfo } from 'tsjs-xpx-chain-sdk/dist/src/model/account/AccountInfo';
 import { CosignatoryList } from '../../service/multi-sign.service';
+import { AppConfig } from 'src/app/config/app.config';
 @Component({
   selector: 'app-edit-account-multisig',
   templateUrl: './edit-account-multisig.component.html',
@@ -36,10 +37,10 @@ import { CosignatoryList } from '../../service/multi-sign.service';
 export class EditAccountMultisigComponent implements OnInit {
   @ViewChild('modalContact', { static: true }) modalContact: ModalDirective;
   showSignCosignatory = false;
-  accountToConvertMultisig: Account;
   accountToConvertSign: Account;
   aggregateTransaction: AggregateTransaction = null;
   currentAccount: CurrentAccountInterface[] = [];
+  currentAccountToConvert: AccountsInterface;
   dataCurrentAccout: DataCurrentAccount = {};
   minDelta = 1;
   maxDelta = 1;
@@ -54,13 +55,14 @@ export class EditAccountMultisigComponent implements OnInit {
   //   publicAccount?: PublicAccount;
   //   cosignatoryList?: CosignatoryListInterface[]
   // }
-  showConsginerFirmList = false;
+
+  showCosignerFirmList = false;
   configurationForm: ConfigurationForm = {};
   formEditAccountMultsig: FormGroup;
-  consignerFirmList: ConsginerFirmList[] = [];
-  otherCosignatorieList: ConsginerFirmList[] = [];
-  otherCosignerFirmAccountList: ConsginerFirmList[] = [];
-  consignerFirm: ConsginerFirmList;
+  consignerFirmList: CosignerFirmList[] = [];
+  otherCosignatorieList: CosignerFirmList[] = [];
+  otherCosignerFirmAccountList: CosignerFirmList[] = [];
+  consignerFirm: CosignerFirmList;
   infoBalance: InfoBalance;
   // TODO pasar a una sola junto con covert multisig
   feeConfig: {
@@ -92,6 +94,7 @@ export class EditAccountMultisigComponent implements OnInit {
     private activateRoute: ActivatedRoute, private sharedService: SharedService,
     private fb: FormBuilder, private multisigService: MultisigService,
     private proximaxProvider: ProximaxProvider,
+    private router: Router,
   ) {
 
     this.infoBalance = {
@@ -147,6 +150,7 @@ export class EditAccountMultisigComponent implements OnInit {
       this.searchContact.push(false);
       this.cosignatories.push(this.newCosignatory());
     }
+    console.log('addCosignatory', this.cosignatoriesList)
   }
   /**
    *
@@ -212,7 +216,7 @@ export class EditAccountMultisigComponent implements OnInit {
         this.formEditAccountMultsig.get('otherCosignatorie').setValue('', {
           emitEvent: false
         });
-        // this.consginerFirmAccountList = this.pushConsginerFirmList(id)
+        // this.consginerFirmAccountList = this.pushCosignerFirmList(id)
         const signCosignatory = this.consignerFirmList.find(item => item.value === id);
         if (signCosignatory) {
           this.showSignCosignatory = true;
@@ -221,6 +225,7 @@ export class EditAccountMultisigComponent implements OnInit {
           console.log(this.consignerFirmList.filter(item => item.value !== id));
         }
         this.otherCosignatorieList = this.consignerFirmList.filter(item => item.value !== id);
+        this.builderOtherCosignatorie(id)
         // this.builder()
       }
     );
@@ -240,7 +245,7 @@ export class EditAccountMultisigComponent implements OnInit {
       id => {
         console.log('id', id);
         this.otherCosignerFirmAccountList = [];
-        this.otherCosignerFirmAccountList = this.pushOtherConsginerFirmList(id);
+        this.otherCosignerFirmAccountList = this.pushOtherCosignerFirmList(id);
         // this.builder()
       }
     );
@@ -249,8 +254,8 @@ export class EditAccountMultisigComponent implements OnInit {
    *
    * @param id
    */
-  pushOtherConsginerFirmList (id: []): ConsginerFirmList[] {
-    const value: ConsginerFirmList[] = [];
+  pushOtherCosignerFirmList (id: []): CosignerFirmList[] {
+    const value: CosignerFirmList[] = [];
     if (id) {
       id.forEach((v, index) => {
         this.otherCosignatorieList.forEach(item => {
@@ -282,6 +287,7 @@ export class EditAccountMultisigComponent implements OnInit {
     this.validatorsDelta(this.cosignatoriesList.filter(x => x.type === 1 || x.type === 3).length);
   }
   editIntoMultisigTransaction () {
+    this.aggregateTransactionEditModifyMultisig()
   }
 
   /**
@@ -393,19 +399,19 @@ export class EditAccountMultisigComponent implements OnInit {
     }
   }
 
-  setCosignatorieSign (cosignerLength: number, accountConver: AccountsInterface): ConsginerFirmList[] {
+  updateConfigFormCosignatorieSign (cosignerLength: number) {
     if (cosignerLength === 1) {
-      this.showConsginerFirmList = false;
+      this.showCosignerFirmList = false;
       this.formEditAccountMultsig.controls['cosignatorieSign'].setValidators(null);
     }
     if (cosignerLength > 1) {
-      this.showConsginerFirmList = true;
+      this.showCosignerFirmList = true;
       this.formEditAccountMultsig.controls['cosignatorieSign'].setValidators([Validators.required]);
     }
     this.formEditAccountMultsig.controls['cosignatorieSign'].updateValueAndValidity({ emitEvent: false, onlySelf: true });
 
 
-    return this.multisigService.buildCosignerList(accountConver.isMultisign, this.walletService.currentWallet.accounts, 10000);
+    // return this.multisigService.buildCosignerList(accountConver.isMultisign, this.walletService.currentWallet.accounts, 10000);
   }
   /**
    *
@@ -415,31 +421,31 @@ export class EditAccountMultisigComponent implements OnInit {
    */
   selectAccount (account: CurrentAccountInterface) {
     console.log('ACCOUNT', account.data);
-
+    if (!account.data.isMultisign) {
+      this.router.navigate([`/${AppConfig.routes.home}`]);
+    }
+    // falta lo del parcial TODO
     if (account) {
+      this.currentAccountToConvert = account.data;
       const data = this.setDataCurrentAccout(account.data);
       this.contactList = this.multisigService.removeContactList(this.multisigService.validateAccountListContact(
         account.data.name ,
       ), data.cosignatoryList);
       // Validate is has cosigner currentWallet
-      const cosignerLength = this.multisigService.hasCosignerInCurrentWallet(account.data.isMultisign, this.walletService.currentWallet.accounts);
-      const isCosigner = (cosignerLength > 0) ? true : false;
-      if (!isCosigner) {
-        this.validateAccountAlert = { show: true, info: 'You are not consignee of the account', subInfo: 'Requires a valid cosigner to edit this account.' };
-      } else {
-        this.consignerFirmList = this.setCosignatorieSign(cosignerLength, account.data);
-        if (this.consignerFirmList.length === 1) {
-          this.consignerFirm = this.consignerFirmList[0];
+      const list = this.multisigService.buildCosignerList(account.data.isMultisign, this.walletService.currentWallet.accounts, this.feeConfig.totalFee);
+      const listFilter = list.filter(x => !x.accountIsMultisig);
+      if (listFilter.length > 0) {
+        if (listFilter.length === 1) {
+          this.consignerFirm = listFilter[0];
           this.signType = 1;
         } else {
+          this.consignerFirmList = list;
           this.signType = 2;
         }
+        this.updateConfigFormCosignatorieSign(listFilter.length);
+      } else {
+        this.validateAccountAlert = { show: true, info: 'You are not consignee of the account', subInfo: 'Requires a valid cosigner to edit this account.' };
       }
-      //   // Validate in partial txs
-      //   const ispartial = this.multisigService.onPartial(account.data, this.txOnpartial);
-      //   if (ispartial) {
-      //     this.validateAccountAlert = { show: true, info: 'Partial', subInfo: 'Has transactions in partial' };
-      //   }
     } else {
       this.contactList = [];
     }
@@ -485,7 +491,6 @@ export class EditAccountMultisigComponent implements OnInit {
    */
   isRepeatCosignatory (cosignatoriesList?: CosignatoryListInterface[], compareCosignatory?): boolean {
     this.isRepeatCosignatoryVal = false;
-    console.log('cosignatoriesList', cosignatoriesList);
     const list = (cosignatoriesList) ? cosignatoriesList : this.cosignatoriesList;
     if (list.length > 0 && compareCosignatory) {
       if (list.find((x) => x.publicAccount.publicKey.toUpperCase() === compareCosignatory.toUpperCase())) {
@@ -632,9 +637,61 @@ export class EditAccountMultisigComponent implements OnInit {
       async next => {
         this.isRepeatCosignatory();
         this.validatorsDelta(this.cosignatoriesList.filter(x => x.type === 1 || x.type === 3).length);
-        // this.aggregateTransactionModifyMultisig();
+        this.aggregateTransactionEditModifyMultisig();
       }
     );
+  }
+  builderOtherCosignatorie(id) {
+    if (id) {
+      this.otherCosignatorieList = this.consignerFirmList.filter(item => item.value !== id)
+    }
+  }
+  /**
+  * Get aggregateTransaction
+  */
+  aggregateTransactionEditModifyMultisig () {
+    const cosignatoriesList = this.cosignatoriesList.filter(x => x.type === 1 || x.type === 2).map(x => {
+      return {
+        publicKey: x.publicAccount.publicKey
+      }
+    });
+    if (this.multisigService.validateOwnCosignatories(cosignatoriesList)) {
+      console.log('this.otherCosignerFirmAccountList', this.otherCosignerFirmAccountList)
+      console.log('this.consignerFirmList', this.consignerFirmList.filter(x => !x.disabled))
+
+      console.log('this.otherCosignerFirmAccountList fil', this.otherCosignerFirmAccountList.filter(x => !x.disabled))
+      const param: ToAggregateTransactionEditModifyMultisig = {
+        account: this.currentAccountToConvert.publicAccount,
+        cosignerFirmList: this.consignerFirmList.filter(x => !x.disabled).concat(this.otherCosignerFirmAccountList.filter(x => !x.disabled)),
+        cosignatoryLis: this.cosignatoriesList.filter(x => x.type === 1 || x.type === 2),
+        accountsWallet: this.walletService.currentWallet.accounts,
+        minApprovalDelta: {
+          minApprovalOld: this.currentAccountToConvert.isMultisign.minApproval,
+          minApprovalNew: this.formEditAccountMultsig.get('minApprovalDelta').value
+        },
+        minRemovalDelta: {
+          minRemovalOld: this.currentAccountToConvert.isMultisign.minRemoval,
+          minRemovalNew: this.formEditAccountMultsig.get('minRemovalDelta').value
+        },
+      };
+      this.aggregateTransaction = this.multisigService.aggregateTransactionEditModifyMultisig(param);
+      const feeAgregate = Number(this.transactionService.amountFormatterSimple(this.aggregateTransaction.maxFee.compact()));
+      this.feeConfig.fee = feeAgregate.toFixed(6);
+      console.log('this.aggregateTransactio', this.aggregateTransaction)
+      console.log( this.feeConfig.fee )
+      // if (this.aggregateTransaction.type === TransactionType.AGGREGATE_BONDED) {
+      //   this.totalFee = this.feeTransaction + this.feeLockfund;
+      //   this.showLockfund = true
+      //   const cosignatorySign = this.consginerFirmAccount
+      //   if (cosignatorySign) {
+      //     this.infoBalance = this.validateBalanceCosignatorySign(cosignatorySign.account, this.totalFee)
+      //   }
+      // } else {
+      //   this.totalFee = this.feeTransaction
+      //   this.showLockfund = false
+      // }
+    }
+
   }
   /**
    *
