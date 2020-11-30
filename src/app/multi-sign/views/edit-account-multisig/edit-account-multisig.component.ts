@@ -224,7 +224,7 @@ export class EditAccountMultisigComponent implements OnInit {
    *
    * @memberof EditAccountMultisignComponent
    */
-  selectCosignatorieSign () {
+  selectCosignatorieSign() {
     this.formEditAccountMultsig.get('cosignatorieSign').valueChanges.subscribe(
       id => {
         this.showSignCosignatory = false;
@@ -639,7 +639,7 @@ export class EditAccountMultisigComponent implements OnInit {
           this.consignerFirm = listFilter[0];
           this.signType = 1;
         } else {
-          this.consignerFirmList = list;
+          this.consignerFirmList = list.filter(r => !r.disabled);
           this.signType = 2;
         }
         this.updateConfigFormCosignatorieSign(listFilter.length);
@@ -720,8 +720,8 @@ export class EditAccountMultisigComponent implements OnInit {
     this.formEditAccountMultsig.get('minApprovalDelta').patchValue(account.isMultisign.minApproval, { emitEvent: false, onlySelf: true });
     this.formEditAccountMultsig.get('minRemovalDelta').patchValue(account.isMultisign.minRemoval, { emitEvent: false, onlySelf: true });
     this.validatorsDelta(account.isMultisign.cosignatories.length);
-    const nameNull = 'Other cosigner';
     this.dataCurrentAccout.cosignatoryList = account.isMultisign.cosignatories.map(x => {
+      const nameNull = `Cosigner-${x.address.pretty().substr(-4)}`;
       const data: CosignatoryListInterface = {
         publicAccount: PublicAccount.createFromPublicKey(x.publicKey, environment.typeNetwork.value),
         action: 'edit',

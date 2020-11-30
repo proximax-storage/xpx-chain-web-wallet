@@ -582,7 +582,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
       listCosignatorie.map(r => r.value = r.account);
       console.log('myCosignatories', listCosignatorie);
       if (listCosignatorie && listCosignatorie.length > 0) {
-        this.listCosignatorie = listCosignatorie;
+        this.listCosignatorie = listCosignatorie.filter(r => !r.disabled);
         if (listCosignatorie.length === 1) {
           this.cosignatorie = listCosignatorie[0].value;
         }

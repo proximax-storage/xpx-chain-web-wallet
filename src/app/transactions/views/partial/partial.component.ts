@@ -310,10 +310,10 @@ export class PartialComponent implements OnInit, OnDestroy {
         this.account = arraySelect[0].value;
         this.selectAccount(arraySelect[0]);
       } else {
-        this.arraySelect = arraySelect;
+        this.arraySelect = arraySelect.filter(r => !r.disabled);
       }
     } else {
-      this.arraySelect = arraySelect;
+      this.arraySelect = arraySelect.filter(r => !r.disabled);
     }
   }
 
