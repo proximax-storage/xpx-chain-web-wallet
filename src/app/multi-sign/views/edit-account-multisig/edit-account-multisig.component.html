@@ -36,7 +36,8 @@
 
 
                     <!-- COSIGNATORY ACCOUNT -->
-                    <ng-container *ngIf="consignerFirmList.length === 1">
+                    <!-- {{consignerFirm}} -->
+                    <ng-container *ngIf="!showCosignerFirmList &&  consignerFirm">
                       <div class="col-12 mx-auto d-flex justify-content-start pt-05rem pb-05rem">
                         <span class="fs-08rem fw-600">Cosignatory Account:&nbsp;</span>
                         <span class="fs-08rem">{{consignerFirm?.label}}</span>
@@ -44,7 +45,7 @@
                     </ng-container>
 
                     <!-- INSUFFICIENT BALANCE -->
-                    <ng-container *ngIf="consignerFirmList && consignerFirmList.length === 1 && consignerFirm.disabled">
+                    <ng-container *ngIf="!showCosignerFirmList &&  consignerFirm?.disabled">
                       <div class="col-12 mx-auto d-flex justify-content-start pt-05rem pb-05rem">
                         <span class="fs-08rem fw-600 color-error-message">
                           Cosignatory {{consignerFirm.info}}
@@ -68,7 +69,7 @@
                         <span class="fw-600"> {{item.name}}</span>
                         <span *ngIf="item.isMultisig && item.isMultisig.isMultisig()"
                           class="fs-07rem color-blue-intermedio tag-account">- Multisig</span>
-                        <br> <span class="fw-300 fs-08rem color-grey"> {{item.publicAccount.publicKey}}</span>
+                        <br> <span class="fw-300 fs-08rem color-grey"> {{item.address}}</span>
                       </div>
                       <div class="col-6 d-flex justify-content-end align-items-center">
                         <div class="row">
@@ -99,7 +100,7 @@
                                         <span *ngIf="itemOnelvl.isMultisig && itemOnelvl.isMultisig.isMultisig()"
                                           class="fs-07rem color-blue-intermedio tag-account">- Multisig</span>
                                         <br> <span class="fw-300 fs-08rem color-grey">
-                                          {{itemOnelvl.publicAccount.publicKey}}</span>
+                                          {{itemOnelvl.address}}</span>
                                       </div>
                                       <div class="col-6 d-flex justify-content-end align-items-center">
                                         <div class="row">
@@ -124,7 +125,7 @@
                                                 </span>
                                                 <ul>
                                                   <li *ngFor="let itemTowlvl of itemOnelvl.cosignatorieswTow" style="font-size: x-small;">
-                                                    <span class="fw-600"> {{itemTowlvl.name}}</span> ({{itemTowlvl.publicAccount.publicKey}})
+                                                    <span class="fw-600"> {{itemTowlvl.name}}</span> ({{itemTowlvl.address}})
                                                   </li>
                                                 </ul>
 
@@ -210,6 +211,29 @@
             </div>
           </div> -->
 
+          </div>
+        </div>
+        <div class="row" *ngIf="validateAccountAlert.show">
+          <div class="col-8 mx-auto mb-1rem  box-transparent-border-red"
+            *ngIf='validateAccountAlert.info !== "Partial"'>
+            <div class="txt-a-center">
+              <img src="assets/images/img/icon-restriction-white.svg" style="filter: invert(50%)" alt="" width="30">
+            </div>
+            <h6 *ngIf="validateAccountAlert.info !==''" class="fw-600">{{validateAccountAlert.info}}</h6>
+            <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em" [innerHtml]="validateAccountAlert.subInfo">
+
+            </p>
+          </div>
+          <div class="col-8 mx-auto mb-1rem  box-transparent-border-orange"
+            *ngIf='validateAccountAlert.info === "Partial"'>
+            <div class="txt-a-center">
+              <!-- <img src="assets/images/img/icon-restriction-white.svg" style="filter: invert(50%)" alt="" width="30"> -->
+              <i title="On partial" style="color:#f2a917" class="fa fa-bell"></i>
+            </div>
+            <h6 *ngIf="validateAccountAlert.info !==''" class="fw-600">{{validateAccountAlert.info}}</h6>
+            <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em" [innerHtml]="validateAccountAlert.subInfo">
+
+            </p>
           </div>
         </div>
         <!-- DYNAMIC FORM -->
@@ -341,12 +365,43 @@
             </div>
           </div>
         </div>
+        <div class="row mt-1-5rem">
+          <div class="col-11 col-md-10 col-lg-8 mx-auto">
+            <div class="row">
+              <div class="col-12 col-md-6 mx-auto">
+                <div class="box-grey d-flex justify-content-center pt-08rem pb-08rem">
+                  <div class="row">
+                    <div class="col-12 text-center">
+                      <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20"
+                        alt="">
+                      <span class="fs-07rem">Unconfirmed/Recommended Fee: {{transactionService.amountFormatterSimple(feeConfig.fee)}} XPX <br></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-12 col-md-6 mx-auto">
+                <!-- <div *ngIf="showLockfund" class="col-12 col-md-6 mx-auto"></div> -->
+                <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
+                  <div class="row">
+                    <div class="col-12 d-flex align-items-center">
+                      <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20"
+                        alt="">
+                      <span class="fs-07rem">LockFund: 10.000000 XPX <br> Unconfirmed/Recommended Fee: 0.044500 XPX</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- COSIGNATORIES -->
-        <ng-container *ngIf="consignerFirmList.length > 1  && showConsginerFirmList">
+        <ng-container *ngIf="showCosignerFirmList">
           <div class="row mt-1-5rem">
             <div class="col-12 mx-auto">
               <div class="class row">
-                <div class="col-sm-12 col-md-7 col-lg-7 col-xl-7 mx-auto">
+                <div class="col-12 mx-auto">
                   <!-- ssss -->
                   <ng-select class="selectWrapper mt-06rem" [items]="consignerFirmList" bindLabel="label"
                     labelForId="cosignatorieSign" bindValue="value" placeholder="My cosignatorie sign"
@@ -356,10 +411,10 @@
                       &nbsp;<b class="color-error-message">{{item.info}}</b>
                     </ng-template>
                     <ng-template ng-footer-tmp>
-                      <!-- <span class="fs-08rem color-error-message">
+                      <span class="fs-08rem color-error-message">
                     Cosignatory has sufficient balance
-                    ({{amountFormatterSimple(totalFee)}} XPX) to cover LockFund Fee
-                  </span> -->
+                    ({{transactionService.amountFormatterSimple(feeConfig.totalFee)}} XPX) to cover LockFund Fee
+                  </span>
 
                     </ng-template>
                   </ng-select>
@@ -369,7 +424,7 @@
                     </span>
                   </ng-container>
                 </div>
-                <div class="col-sm-12 col-md-5 col-lg-5 col-xl-5 mx-auto">
+                <div class="col-12 mx-auto">
                   <ng-select class="selectWrapper" [items]="otherCosignatorieList" [maxSelectedItems]="limitSelect-1"
                     bindLabel="label" labelForId="otherCosignatorie" [multiple]="true"
                     formControlName="otherCosignatorie" bindValue="value" placeholder="My other Cosignatorie">
