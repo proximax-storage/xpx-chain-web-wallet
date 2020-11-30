@@ -408,7 +408,7 @@
                 <div class="col-12 mx-auto">
                   <!-- ssss -->
                   <ng-select class="selectWrapper mt-06rem" [items]="consignerFirmList" bindLabel="label"
-                    labelForId="cosignatorieSign" bindValue="value" placeholder="My cosignatorie sign"
+                    labelForId="cosignatorieSign" bindValue="value" placeholder="Main Cosignatory To Sign"
                     formControlName="cosignatorieSign">
                     <ng-template ng-option-tmp let-item="item" let-index="index">
                       <b>{{item.label}}</b>
@@ -431,7 +431,7 @@
                 <div class="col-12 mx-auto">
                   <ng-select class="selectWrapper" [items]="otherCosignatorieList" [maxSelectedItems]="limitSelect-1"
                     bindLabel="label" labelForId="otherCosignatorie" [multiple]="true"
-                    formControlName="otherCosignatorie" bindValue="value" placeholder="My other Cosignatorie">
+                    formControlName="otherCosignatorie" bindValue="value" placeholder="Also I Will Sign Sith This Consignatories">
 
                   </ng-select>
                 </div>
