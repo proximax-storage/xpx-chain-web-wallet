@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { crypto } from 'js-xpx-chain-library';
 import {
   Password,
   SimpleWallet,
@@ -45,7 +44,8 @@ import {
   Convert,
   RawAddress,
   AccountLinkTransaction,
-  LinkAction
+  LinkAction,
+  Crypto
 } from 'tsjs-xpx-chain-sdk';
 import { BlockchainNetworkType } from 'tsjs-chain-xipfs-sdk';
 import { Observable } from 'rxjs/internal/Observable';
@@ -269,7 +269,7 @@ export class ProximaxProvider {
       iv,
     };
 
-    crypto.passwordToPrivatekey(common, wallet, 'pass:bip32');
+    Crypto.passwordToPrivateKey(common, wallet, 'pass:bip32');
     return common.privateKey;
   }
 

@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SimpleWallet, PublicAccount, AccountInfo, MultisigAccountInfo, NamespaceId, MosaicId } from 'tsjs-xpx-chain-sdk';
-import { crypto } from 'js-xpx-chain-library';
+import { SimpleWallet, PublicAccount, AccountInfo, MultisigAccountInfo, NamespaceId, MosaicId, Crypto } from 'tsjs-xpx-chain-sdk';
 import { AbstractControl } from '@angular/forms';
 import { BehaviorSubject, Observable, timer, Subject } from 'rxjs';
 
@@ -373,7 +372,7 @@ export class WalletService {
     // console.log(acct, common);
     try {
       if (acct && common && acct.encrypted !== '') {
-        if (!crypto.passwordToPrivatekey(common, acct, alg)) {
+        if (!Crypto.passwordToPrivateKey(common, acct, alg)) {
           this.sharedService.showError('', 'Invalid password');
           return false;
         }
