@@ -105,7 +105,6 @@ export class MultisigService {
    * @returns {AggregateTransaction}
    */
   aggregateTransactionModifyMultisig(params: ToAggregateConvertMultisigInterface): AggregateTransaction {
-    // console.log('params', params);
     const cosignatoriesPublicAccount: PublicAccount[] = params.othersCosignatories.concat(params.ownCosignatories);
     const cosignatoriesList = cosignatoriesPublicAccount.map(publicAccount => {
       return new MultisigCosignatoryModification(
@@ -123,7 +122,6 @@ export class MultisigService {
     );
     const typeTX = this.validateTypeSignTxn(params.ownCosignatories, cosignatoriesPublicAccount);
     if (typeTX === TransactionType.AGGREGATE_BONDED) {
-      // console.log('AGGREGATE_BONDED  AggregateTransaction');
       aggregateTransaction = AggregateTransaction.createBonded(
         Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
         [modifyMultisigAccountTransaction.toAggregate(params.account)],
@@ -131,7 +129,6 @@ export class MultisigService {
       );
 
     } else {
-      // console.log('AGGREGATE_COMPLETE  AggregateTransaction');
       aggregateTransaction = AggregateTransaction.createComplete(
         Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
         [modifyMultisigAccountTransaction.toAggregate(params.account)],
@@ -192,7 +189,6 @@ export class MultisigService {
     for (const i of ownCosignatories) {
       const accountInfo = this.walletService.filterAccountInfo(i.address.pretty(), true);
       if (accountInfo) {
-        // console.log('ACCOUNT INFO', accountInfo);
         ban = (accountInfo.multisigInfo !== null && accountInfo.multisigInfo !== undefined && accountInfo.multisigInfo.isMultisig());
         if (ban) {
           break;
@@ -212,8 +208,6 @@ export class MultisigService {
    * @memberof MultisigService
    */
   signedTransaction (accountSign: Account, aggregateTransaction: AggregateTransaction, generationHash: any, myCosigners: Account[]): SignedTransaction {
-    console.log('accountSign', accountSign)
-    console.log('myCosigners', myCosigners)
     let signedTransaction: SignedTransaction = null;
     if (myCosigners.length > 0) {
       signedTransaction = accountSign.signTransactionWithCosignatories(aggregateTransaction, myCosigners, generationHash);
@@ -312,7 +306,6 @@ export class MultisigService {
    */
   validateTypeSignTxn(ownCosignatories: PublicAccount[], allCosignatories: PublicAccount[]) {
     const accountsFilter = allCosignatories.filter(r => ownCosignatories.find(e => e.publicKey === r.publicKey));
-    // console.log('accountsFilter', accountsFilter);
     // validar si tengo los minímos necesarios para generar una transacción
     if (accountsFilter === null || accountsFilter === undefined || accountsFilter.length === 0) {
       return TransactionType.AGGREGATE_BONDED;
@@ -340,11 +333,6 @@ export class MultisigService {
     }
     const cantAdd = cosignatoryList.filter(x => x.type === 1).length;
     const cabtRemove = cosignatoryList.filter(x => x.type === 2).length;
-    console.log('cantAdd', cantAdd);
-    console.log('cabtRemove', cabtRemove);
-    console.log('cantFirm', cantFirm);
-    console.log('minRemoval', minRemoval);
-    console.log('minApproval', minApproval);
     if (cantAdd > 0 && cabtRemove > 0) {
       console.log('ADD Y REMOVE');
       if (cantFirm >= minRemoval && cantFirm >= minApproval) {
@@ -451,7 +439,6 @@ export class MultisigService {
    * @memberof MultisigService
    */
   buildCosignerList(account: MultisigAccountInfo, accounts: AccountsInterface[], feeTx?: number): CosignerFirmList[] {
-    console.log('account', account);
     if (account) {
       const list: CosignerFirmList[] = [];
       for (const item of accounts) {
@@ -559,10 +546,7 @@ export class MultisigService {
    * @memberof MultisigService
    */
   removeContactList(contactList: ContactsListInterface[], cosignatoryList: CosignatoryListInterface[]): ContactsListInterface[] {
-    console.log('contactList', contactList);
-    console.log('cosignatoryList', cosignatoryList);
     return contactList.map(x => {
-      console.log('cosignatoryList', cosignatoryList.find(i => i.address === x.value));
       if (!cosignatoryList.find(i => i.address === x.value)) {
         return x;
       }

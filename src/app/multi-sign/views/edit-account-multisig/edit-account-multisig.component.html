@@ -45,13 +45,13 @@
                     </ng-container>
 
                     <!-- INSUFFICIENT BALANCE -->
-                    <ng-container *ngIf="!showCosignerFirmList &&  consignerFirm?.disabled">
+                    <!-- <ng-container *ngIf="!showCosignerFirmList &&  consignerFirm?.disabled">
                       <div class="col-12 mx-auto d-flex justify-content-start pt-05rem pb-05rem">
                         <span class="fs-08rem fw-600 color-error-message">
                           Cosignatory {{consignerFirm.info}}
                         </span>
                       </div>
-                    </ng-container>
+                    </ng-container> -->
                   </div>
                 </div>
               </div>
@@ -324,8 +324,10 @@
                     <div class="col-12 text-center">
                       <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
                         width="20" alt="">
-                      <span class="fs-07rem">Unconfirmed/Recommended Fee:
-                        {{transactionService.amountFormatterSimple(feeConfig.fee)}} XPX <br></span>
+                      <!-- {{feeConfig.fee}} -->
+                      <span class="fs-07rem">Unconfirmed/Recommended Fee: {{feeConfig.fee}} XPX <br></span>
+                      <!-- <span class="fs-07rem">Unconfirmed/Recommended Fee:
+                        {{transactionService.amountFormatterSimple(feeConfig.fee)}} XPX <br></span> -->
                     </div>
                   </div>
                 </div>
