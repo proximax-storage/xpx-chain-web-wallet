@@ -53,3 +53,40 @@ ul li.active .submenu {
 .ma-0-4 {
   margin: 0.4rem;
 }
+
+
+
+
+/* Styles Luis Cardenas */
+.box-multisig {
+  border-radius: 20px;
+  background: #f4f4f4;
+  padding: 0.5rem 1rem 0.5rem 1rem;
+  color: #333333;
+  font-size: 1rem !important;
+  margin: 0.4rem 0rem 0.4rem 0rem;
+}
+.box-multisig-l1 {
+  border-radius: 20px;
+  background: #ffffff;
+  padding: 0.5rem 1rem 0.5rem 1rem;
+  color: #333333;
+  font-size: 1rem !important;
+  margin: 0.4rem 0rem 0.4rem 0rem;
+}
+.box-multisig-l2 {
+  border-radius: 10px;
+  background: #f4f4f4;
+  padding: 0.5rem 1rem 0.5rem 1rem;
+  color: #333333;
+  font-size: 0.9rem !important;
+  margin: 0.4rem 0rem 0.4rem 0rem;
+}
+.box-multisig-l3 {
+  border-radius: 4px;
+  background: #ffffff;
+  padding: 0.5rem 1rem 0.5rem 1rem;
+  color: #333333;
+  font-size: 1rem !important;
+  margin: 0.4rem 0rem 0.4rem 0rem;
+}
