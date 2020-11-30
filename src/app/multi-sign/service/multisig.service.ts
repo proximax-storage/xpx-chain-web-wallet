@@ -15,7 +15,7 @@ import { TransactionsInterface, TransactionsService } from 'src/app/transactions
 })
 
 export class MultisigService {
-  consginerFirmList: CosignerFirmList[] = [];
+  consginerFirmList: CosignatoryListInterface[] = [];
   constructor(
     private serviceModuleService: ServicesModuleService,
     private walletService: WalletService,
@@ -269,11 +269,15 @@ export class MultisigService {
    * @returns
    * @memberof MultisigService
    */
-  buildCosignatory(account: AccountsInterface, feeTx: number, isCosigOf?: string) {
+  private buildCosignatory(account: AccountsInterface, feeTx: number, isCosigOf?: string) {
     const accountFiltered: AccountsInfoInterface = this.walletService.filterAccountInfo(account.name);
     if (accountFiltered) {
       const accountIsMultisig = accountFiltered && accountFiltered.multisigInfo && accountFiltered.multisigInfo.cosignatories.length > 0;
-      const infValidate = this.transactionService.validateBalanceCosignatorie(accountFiltered, Number(feeTx)).infValidate;
+      let validateBalance = null;
+      if (feeTx) {
+        validateBalance = this.transactionService.validateBalanceCosignatorie(accountFiltered, Number(feeTx)).infValidate;
+      }
+
       let label = accountIsMultisig ? `${account.name} - Multisig` : account.name;
       if (accountIsMultisig && isCosigOf) {
         label = `${isCosigOf} > ${label}`;
@@ -281,8 +285,8 @@ export class MultisigService {
       return {
         label,
         value: account.address,
-        disabled: infValidate[0].disabled || accountIsMultisig,
-        info: infValidate[0].info,
+        disabled: (validateBalance && validateBalance[0].disabled) || accountIsMultisig,
+        info: validateBalance && validateBalance[0].info,
         account,
         isMultisig: account.isMultisign,
         accountIsMultisig,
@@ -294,7 +298,7 @@ export class MultisigService {
   }
 
   /**
-   * TO DO: Validar que los cosignatarios no se repitan en la l
+   *
    *
    * @param {MultisigAccountInfo} accountConvert
    * @param {AccountsInterface[]} accounts
@@ -302,45 +306,49 @@ export class MultisigService {
    * @returns {cosignerFirmList[]}
    * @memberof MultisigService
    */
-  buildCosignerList(accountConvert: MultisigAccountInfo, accounts: AccountsInterface[], feeTx: number): CosignerFirmList[] {
-    const list: CosignerFirmList[] = [];
-    for (const item of accounts) {
-      const publicAccount: PublicAccount = PublicAccount.createFromPublicKey(item.publicAccount.publicKey, item.network);
-      if (accountConvert.hasCosigner(publicAccount)) {
-        const response = this.buildCosignatory(item, feeTx);
-        if (response) {
-          list.push(response);
-          if (response.accountIsMultisig) {
-            response.accountFiltered.multisigInfo.cosignatories.forEach(e => {
-              const cosignatoryLevel1Filtered = this.walletService.filterAccountWallet('', null, e.address.pretty());
-              if (cosignatoryLevel1Filtered) {
-                const responseCosigLevel1 = this.buildCosignatory(cosignatoryLevel1Filtered, feeTx, response.account.name);
-                if (responseCosigLevel1) {
-                  if (!list.find(d => d.account.publicAccount.publicKey === responseCosigLevel1.account.publicAccount.publicKey)) {
-                    list.push(responseCosigLevel1);
-                  }
-                  if (responseCosigLevel1.accountIsMultisig) {
-                    responseCosigLevel1.accountFiltered.multisigInfo.cosignatories.forEach(b => {
-                      const cosignatoryLevel2Filtered = this.walletService.filterAccountWallet('', null, b.address.pretty());
-                      if (cosignatoryLevel2Filtered) {
-                        const responseCosigLevel2 = this.buildCosignatory(cosignatoryLevel2Filtered, feeTx, responseCosigLevel1.account.name);
-                        if (responseCosigLevel2) {
-                          if (!list.find(d => d.account.publicAccount.publicKey === responseCosigLevel2.account.publicAccount.publicKey)) {
-                            list.push(responseCosigLevel2);
+  buildCosignerList(account: MultisigAccountInfo, accounts: AccountsInterface[], feeTx?: number): CosignerFirmList[] {
+    console.log('account', account);
+    if (account) {
+      const list: CosignerFirmList[] = [];
+      for (const item of accounts) {
+        const publicAccount: PublicAccount = PublicAccount.createFromPublicKey(item.publicAccount.publicKey, item.network);
+        if (account.hasCosigner(publicAccount)) {
+          const response = this.buildCosignatory(item, feeTx);
+          if (response) {
+            list.push(response);
+            if (response.accountIsMultisig) {
+              response.accountFiltered.multisigInfo.cosignatories.forEach(e => {
+                const cosignatoryLevel1Filtered = this.walletService.filterAccountWallet('', null, e.address.pretty());
+                if (cosignatoryLevel1Filtered) {
+                  const responseCosigLevel1 = this.buildCosignatory(cosignatoryLevel1Filtered, feeTx, response.account.name);
+                  if (responseCosigLevel1) {
+                    if (!list.find(d => d.account.publicAccount.publicKey === responseCosigLevel1.account.publicAccount.publicKey)) {
+                      list.push(responseCosigLevel1);
+                    }
+                    if (responseCosigLevel1.accountIsMultisig) {
+                      responseCosigLevel1.accountFiltered.multisigInfo.cosignatories.forEach(b => {
+                        const cosignatoryLevel2Filtered = this.walletService.filterAccountWallet('', null, b.address.pretty());
+                        if (cosignatoryLevel2Filtered) {
+                          const responseCosigLevel2 = this.buildCosignatory(cosignatoryLevel2Filtered, feeTx, responseCosigLevel1.account.name);
+                          if (responseCosigLevel2) {
+                            if (!list.find(d => d.account.publicAccount.publicKey === responseCosigLevel2.account.publicAccount.publicKey)) {
+                              list.push(responseCosigLevel2);
+                            }
                           }
                         }
-                      }
-                    });
+                      });
+                    }
                   }
                 }
-              }
-            });
+              });
+            }
           }
         }
       }
+      return list;
+    } else {
+      return [];
     }
-
-    return list;
   }
 
   /**
@@ -474,4 +482,5 @@ export interface CosignerFirmList {
   isMultisig: MultisigAccountInfo;
   accountIsMultisig: boolean;
   accountFiltered: AccountsInfoInterface;
+  selected?: boolean;
 }

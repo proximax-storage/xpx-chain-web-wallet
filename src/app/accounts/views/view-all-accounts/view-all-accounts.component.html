@@ -19,20 +19,17 @@
                       <ng-container *ngIf="account.default">
                         <span class="tag-account color-blue-intermedio fs-07rem">- Current default</span>
                       </ng-container>
-                      <!-- Is Multisig
-                      account.isMultisign !== null && account.isMultisign.cosignatories.length > 0
-                      -->
-                      <ng-container *ngIf="account && account.isMultisign && account.isMultisign.cosignatories.length > 0">
-                        <span class="ml-1rem fs-07rem color-blue-intermedio tag-account">- Multisig</span>
+                      <!-- Is Multisig -->
+                      <ng-container *ngIf="account && account.isMultisign && account.isMultisign.cosignatories.length > 0 && !account.level">
+                        <span class="fs-07rem color-blue-intermedio tag-account">- Multisig</span>
                       </ng-container>
                       <!-- Is Multisig -->
-                      <ng-container
-                        *ngIf="account && account.isMultisign && account.isMultisign.cosignatories.length > 0 && account.isMultisign.multisigAccounts.length > 0">
-                        <span class="ml-1rem fs-07rem color-blue-intermedio tag-account">- MultiLevel ({{account?.level}})</span>
+                      <ng-container *ngIf="account && account.isMultisign && account.isMultisign.cosignatories.length > 0 && account.level">
+                        <span class="fs-07rem color-blue-intermedio tag-account">- MultiLevel ({{account?.level}})</span>
                       </ng-container>
                       <!-- Is Swap -->
                       <ng-container *ngIf="[undefined, null].includes(account.nis1Account) === false">
-                        <span class="ml-1rem fs-07rem color-blue-intermedio tag-account">- Swap</span>
+                        <span class="fs-07rem color-blue-intermedio tag-account">- Swap</span>
                       </ng-container>
                     </div>
                   </div>
