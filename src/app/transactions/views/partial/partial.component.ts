@@ -15,6 +15,7 @@ import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { TransactionsInterface, TransactionsService } from '../../services/transactions.service';
 import { SharedService, ConfigurationForm } from '../../../shared/services/shared.service';
 import { environment } from '../../../../environments/environment';
+import { CosignerFirmList, MultisigService } from 'src/app/multi-sign/service/multisig.service';
 
 @Component({
   selector: 'app-partial',
@@ -63,7 +64,8 @@ export class PartialComponent implements OnInit, OnDestroy {
     private proximaxProvider: ProximaxProvider,
     private sharedService: SharedService,
     public transactionService: TransactionsService,
-    private walletService: WalletService
+    private walletService: WalletService,
+    private multisigService: MultisigService
   ) { }
 
   /**
@@ -153,11 +155,21 @@ export class PartialComponent implements OnInit, OnDestroy {
     // this.arraySelect = [];
     this.account = null;
     this.password = '';
-    const arraySelect = [];
+    let arraySelect = [];
     const accountMultisig = this.walletService.filterAccountInfo(transaction.data['innerTransactions'][0].signer.address.pretty(), true);
     console.log('accountMultisig', accountMultisig);
     if (accountMultisig && accountMultisig.multisigInfo && accountMultisig.multisigInfo.cosignatories && accountMultisig.multisigInfo.cosignatories.length > 0) {
-      accountMultisig.multisigInfo.cosignatories.forEach(element => {
+      arraySelect = this.multisigService.buildCosignerList(accountMultisig.multisigInfo, this.walletService.currentWallet.accounts);
+      arraySelect.map((r: CosignerFirmList | any) => {
+        const publicAccount = this.proximaxProvider.createPublicAccount(r.account.publicAccount.publicKey, r.account.network);
+        const hasSigned = transaction.data.signedByAccount(publicAccount);
+        r.value = r.account;
+        r.signed = hasSigned;
+        if (!r.disabled) {
+          r.disabled = r.disabled || hasSigned;
+        }
+      });
+      /* accountMultisig.multisigInfo.cosignatories.forEach(element => {
         const cosignatorie: AccountsInterface = this.walletService.filterAccountWallet('', null, element.address.pretty());
         console.log('cosignatorie', cosignatorie);
         if (cosignatorie) {
@@ -171,7 +183,7 @@ export class PartialComponent implements OnInit, OnDestroy {
             disabled: signedByAccount
           });
         }
-      });
+      }); */
     }
 
     transaction.data['innerTransactions'].forEach((element: any) => {
