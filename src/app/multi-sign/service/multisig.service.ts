@@ -211,7 +211,9 @@ export class MultisigService {
    * @returns
    * @memberof MultisigService
    */
-  signedTransaction(accountSign: Account, aggregateTransaction: AggregateTransaction, generationHash: any, myCosigners: Account[]): SignedTransaction {
+  signedTransaction (accountSign: Account, aggregateTransaction: AggregateTransaction, generationHash: any, myCosigners: Account[]): SignedTransaction {
+    console.log('accountSign', accountSign)
+    console.log('myCosigners', myCosigners)
     let signedTransaction: SignedTransaction = null;
     if (myCosigners.length > 0) {
       signedTransaction = accountSign.signTransactionWithCosignatories(aggregateTransaction, myCosigners, generationHash);
