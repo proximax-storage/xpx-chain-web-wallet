@@ -96,7 +96,7 @@ export class EditAccountMultisigComponent implements OnInit {
   showContacts = false;
   validateAccountAlert: ValidateAccountAlert = null;
   constructor(
-    private transactionService: TransactionsService, private walletService: WalletService,
+    public transactionService: TransactionsService, private walletService: WalletService,
     private activateRoute: ActivatedRoute, private sharedService: SharedService,
     private fb: FormBuilder, private multisigService: MultisigService,
     private proximaxProvider: ProximaxProvider,
