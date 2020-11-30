@@ -422,10 +422,10 @@ export class MultisigService {
         validateBalance = this.transactionService.validateBalanceCosignatorie(accountFiltered, Number(feeTx)).infValidate;
       }
 
-      let label = accountIsMultisig ? `${account.name} - Multisig` : account.name;
-      if (accountIsMultisig && isCosigOf) {
-        label = `${isCosigOf} > ${label}`;
-      }
+      const label = accountIsMultisig ? `${account.name} - Multisig` : account.name;
+      // if (accountIsMultisig && isCosigOf) {
+      //   label = `${isCosigOf} > ${label}`;
+      // }
       return {
         label,
         value: account.address,
