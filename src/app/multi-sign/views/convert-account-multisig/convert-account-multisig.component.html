@@ -1,0 +1,205 @@
+<app-header [params]="paramsHeader"></app-header>
+
+<div class="container-fluid mb-2rem animated fadeIn">
+  <form [formGroup]="formConvertAccountMultsig" (ngSubmit)="convertIntoMultisigTransaction()">
+    <v-row>
+      <div class="col-12 col-md-11 col-lg-10 col-xl-9 mx-auto">
+        <!-- SELECT ACCOUNT -->
+        <div class="row mt-2rem">
+          <div class="col-12">
+            <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [searchable]="false" [clearable]="true"
+              [validateError]="true" class="selectWrapper" [items]="currentAccounts" formControlName="selectAccount"
+              bindLabel="label" placeholder="Select an account" (change)="selectAccount($event)">
+            </ng-select>
+          </div>
+        </div>
+        <!-- SCHEME NODE -->
+        <div class="row mt-2rem">
+          <div class="col-12">
+            <div class="d-flex align-items-center flex-wrap">
+              <!-- SCHEME -->
+              <div class="mr-1">
+                <h5 class="h5-responsive">
+                  Scheme for
+                  <span class="ml-2">></span>
+                </h5>
+              </div>
+
+              <!-- MIN APROVE -->
+              <div class="d-flex align-items-center justify-content-center flex-fill">
+                <div>
+                  <span class="fw-bold">Approve transactions: &nbsp;</span>
+                </div>
+                <div class="md-form form-sm mt-03rem mb-0rem">
+                  <input (keypress)="preventNumbers($event)" onkeydown="return false" max="{{minApprovaMaxLength}}"
+                    min="{{minApprovaMinLength}}" formControlName="minApprovalDelta" required mdbInputDirective
+                    mdbValidate [validateSuccess]="true" [validateError]="true" type="number" id="minApprovalDelta"
+                    class="form-control form-control-sm input-border text-center" placeholder="Min approval"
+                    onkeyup="javascript:this.value=this.value.toLowerCase();">
+                  <!-- VALIDATION -->
+                  <mdb-error
+                    *ngIf="validateInput('minApprovalDelta', '').invalid && (validateInput('minApprovalDelta', '').dirty || validateInput('minApprovalDelta', '').touched)">
+                    <span>Invalid value</span>
+                  </mdb-error>
+                </div>
+                <div class="ml-2">
+                  <span>of 0 cosignatories</span>
+                </div>
+              </div>
+
+              <!-- SEPARATOR -->
+              <div class="d-none d-sm-flex justify-content-center flex-fill">
+                <span>|</span>
+              </div>
+
+              <!-- MIN REMOVE-->
+              <div class="d-flex align-items-center justify-content-center flex-fill">
+                <div>
+                  <span class="fw-bold">Delete users: &nbsp;</span>
+                </div>
+                <div class="md-form form-sm mt-03rem mb-0rem">
+                  <input (keypress)="preventNumbers($event)" onkeydown="return false" max="{{minApprovaMaxLength}}"
+                    min="{{minApprovaMinLength}}" formControlName="minRemovalDelta" required mdbInputDirective
+                    mdbValidate [validateSuccess]="true" [validateError]="true" type="number" id="minRemovalDelta"
+                    class="form-control form-control-sm input-border text-center" placeholder="Min removal"
+                    onkeyup="javascript:this.value=this.value.toLowerCase();">
+                  <!-- VALIDATION -->
+                  <mdb-error
+                    *ngIf="validateInput('minRemovalDelta', '').invalid && (validateInput('minRemovalDelta', '').dirty || validateInput('minRemovalDelta', '').touched)">
+                    <span>Invalid value</span>
+                  </mdb-error>
+                </div>
+                <div class="ml-2">
+                  <span>of 0 cosignatories</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- LINE SEPARATOR -->
+        <div class="row">
+          <v-col>
+            <hr>
+          </v-col>
+        </div>
+
+        <!-- Dynamic Form -->
+        <div formArrayName="cosignatories">
+          <div *ngFor="let cosignatory of cosignatories.controls; let i=index">
+            <!-- COSIGNATORY -->
+            <div [formGroupName]="i" class="row mt-1rem">
+              <div class="col-12">
+                <div class="row">
+                  <!-- COSIGNATORY INPUT-->
+                  <div class="col-12">
+                    <!-- Remove user -->
+                    <div class="d-flex justify-content-center">
+                      <div class="pt-2">
+                        <i (click)="removeCosignatory(i)" class="cursor-p fa fa-trash fs-1rem"></i>
+                      </div>
+                      <!-- Input Public Key -->
+                      <div class="md-form form-sm mt-1rem mb-0rem flex-fill">
+                        <img class="form-control-feedback"
+                          src="assets/images/img/icon-public-key-green-16h-proximax-sirius-wallet.svg" width="43"
+                          height="43">
+                        <input [maxlength]="configurationForm.publicKey.maxLength"
+                          [minlength]="configurationForm.publicKey.minLength" formControlName="cosignatory" required
+                          mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
+                          id="cosignatory" class="form-control form-control-sm input-border"
+                          placeholder="Cosignatory Account Public Key "
+                          onkeyup="javascript:this.value=this.value.toLowerCase();">
+                        <!-- VALIDATION -->
+                          <!-- <mdb-error
+                          *ngIf="validateInput('cosignatory', '').invalid && (validateInput('cosignatory', '').dirty || validateInput('cosignatory', '').touched)">
+                          <span>Invalid Key</span>
+                        </mdb-error> -->
+                      </div>
+                      <!--SHOW CONTACT-->
+                      <div [attr.disabled]="contactList.length === 0" class="cursor-p" (click)="showContact()"
+                        [title]="(!showContacts) ? 'Show contacts': 'Hide contacts'">
+                        <img class="w-25px"
+                          [src]="(!showContacts && contactList.length === 0) ? imageActiveBook : imageInactiveBook">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <!-- Progress -->
+                  <div class="col-9 col-sm-10 col-lg-11">
+                    <ng-container *ngIf="searchContact">
+                      <div class="col-12">
+                        <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate">
+                        </mdb-progress-bar>
+                      </div>
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- ADD COSIGNATORY -->
+        <div class="row mt-1-5rem">
+          <div class="col-11 col-md-10 col-lg-9 col-xl-8 mx-auto d-flex justify-content-center">
+            <button mdbBtn type="button" rounded="true" mdbWavesEffect class="background-btn-inverse pl-2rem pr-2rem"
+              size="sm" (click)="addCosignatory()">
+              <span class="fs-1-2em color-blue-intermedio fw-700">(+) Add Cosignatory</span>
+            </button>
+          </div>
+        </div>
+        <!-- MODAL SELECT CONTACT -->
+        <div class="d-flex align-items-center">
+          <div mdbModal #modalContact="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+            aria-labelledby="modalContact" aria-hidden="true">
+            <div class="modal-dialog modal-md d-flex align-items-center" role="document">
+              <div class="modal-content form-elegant bord-rad-1-5rem">
+                <div class="row">
+                  <div class="col-12">
+                    <div class="col-12">
+                      <span class="cursor-p d-flex justify-content-end fw-600 fs-1rem pt-04rem"
+                        (click)="modalContact.hide()">x</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="modal-body" style="height: 250px;">
+                  <div class="container mt-1rem mb-2rem animated fadeIn">
+                    <div class="row">
+                      <div class="col-12 d-flex justify-content-center">
+                        <span class="fs-1-4rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">Contacts</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- CONTACTS -->
+                  <div class="row">
+                    <div class="col-12 col-md-10 mx-auto">
+                      <div class="row mt-1rem">
+                        <div class="col-12">
+                          <ng-select mdbInputDirective mdbValidate formControlName="contact" class="selectWrapper"
+                            [searchable]="false" [items]="contactList" bindLabel="label" bindValue="value"
+                            placeholder="Select an contact" (change)="selectContact($event)">
+                            <ng-template ng-option-tmp let-item="item" let-index="index">
+                              <ng-container *ngIf="item.disabled">
+                                <b>
+                                  <i class="fa fa-users"> </i>
+                                </b>&nbsp;
+                              </ng-container>
+                              <b>{{item.label}}</b>
+                            </ng-template>
+                          </ng-select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </v-row>
+  </form>
+</div>

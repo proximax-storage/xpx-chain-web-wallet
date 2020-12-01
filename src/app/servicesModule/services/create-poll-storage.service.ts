@@ -132,8 +132,7 @@ export class CreatePollStorageService {
     return await promise;
   }
 
-
-  async loadTransactions(publicAccount?: PublicAccount, address?: string) {
+  async loadTransactions(publicAccount?: PublicAccount, address?: string, fromTransactionId?: string) {
     this.transactionResults = [];
     this.pollResult = [];
     const promise = new Promise(async (resolve, reject) => {
@@ -146,13 +145,18 @@ export class CreatePollStorageService {
           //console.log("search by address")
           searchParam = SearchParameter.createForAddress(address)
         }
+
+        if(fromTransactionId){
+          searchParam.withFromTransactionId(fromTransactionId);
+        }
         searchParam.withTransactionFilter(TransactionFilter.INCOMING);
+        
         // console.log('searchParam',searchParam)
         // searchParam.withResultSize(100);
         const searchResult = await this.searcher.search(searchParam.build());
         console.log('searchResult', searchResult)
         if (searchResult.results.length > 0) {
-          for (const resultItem of searchResult.results.reverse()) {
+          for (const resultItem of searchResult.results) {
             const encrypted = resultItem.messagePayload.privacyType !== PrivacyType.PLAIN;
 
             if (resultItem.messagePayload.data.description === 'poll') {
@@ -174,9 +178,11 @@ export class CreatePollStorageService {
               // resultData.push();
 
               this.pollResult.push(this.ab2str(dataBuffer));
-              resolve({ result: this.ab2str(dataBuffer), size: searchResult.results.length });
+              resolve({ result: this.ab2str(dataBuffer), size: searchResult.results.length, 
+                fromTransactionId: searchResult.fromTransactionId, toTransactionId: searchResult.toTransactionId });
 
-              this.setPolls$({ result: this.ab2str(dataBuffer), size: searchResult.results.length });
+              this.setPolls$({ result: this.ab2str(dataBuffer), size: searchResult.results.length,
+                fromTransactionId: searchResult.fromTransactionId, toTransactionId: searchResult.toTransactionId });
             }
           }
         } else {

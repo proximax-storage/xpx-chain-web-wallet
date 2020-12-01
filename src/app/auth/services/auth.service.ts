@@ -131,6 +131,7 @@ export class AuthService {
     this.dataBridgeService.searchBlockInfo();
     this.dataBridgeService.searchBlockInfo(true);
 
+
     //this.route.navigate([`/${AppConfig.routes.dashboard}`]);
     this.ngZone.run(() => this.route.navigate([`/${AppConfig.routes.polls}`])).then();
     return true;
