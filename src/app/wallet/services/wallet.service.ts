@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SimpleWallet, PublicAccount, AccountInfo, MultisigAccountInfo, NamespaceId, MosaicId, Crypto } from 'tsjs-xpx-chain-sdk';
+import { SimpleWallet, PublicAccount, AccountInfo, MultisigAccountInfo, NamespaceId, MosaicId, Crypto, MultisigAccountGraphInfo } from 'tsjs-xpx-chain-sdk';
 import { AbstractControl } from '@angular/forms';
 import { BehaviorSubject, Observable, timer, Subject } from 'rxjs';
 
@@ -43,10 +43,32 @@ export class WalletService {
   accountsPushedSubject: BehaviorSubject<AccountsInterface[]> = new BehaviorSubject<AccountsInterface[]>(null);
   accountsPushedSubject$: Observable<AccountsInterface[]> = this.accountsPushedSubject.asObservable();
 
+  cosignatoriesPushedSubject: BehaviorSubject<[]> = new BehaviorSubject<[]>([]);
+  cosignatoriesPushedSubject$: Observable<[]> = this.cosignatoriesPushedSubject.asObservable();
+
   constructor(
     private sharedService: SharedService,
     private proximaxProvider: ProximaxProvider
   ) { }
+
+  /**
+   *
+   *
+   * @param {MultisigAccountGraphInfo} data
+   * @returns
+   * @memberof WalletService
+   */
+  checkLevel(data: MultisigAccountGraphInfo) {
+    if (data.multisigAccounts.has(3)) {
+      return 2;
+    } else if (data.multisigAccounts.has(2)) {
+      return 1;
+    } else if (data.multisigAccounts.has(1)) {
+      return null;
+    } else {
+      return null;
+    }
+  }
 
   /**
    *
@@ -88,21 +110,43 @@ export class WalletService {
             }
 
             // this.mosaicServices.searchMosaics(mosaicsIds);
-            let isMultisig: MultisigAccountInfo = null;
+            let propertiesMultisig: {
+              multisigAccountInfo: MultisigAccountInfo,
+              multisigAccountGraphInfo: MultisigAccountGraphInfo
+            } = null;
             try {
-              isMultisig = await this.proximaxProvider.getMultisigAccountInfo(this.proximaxProvider.createFromRawAddress(element.address)).toPromise();
+              const accountGraphInfo = await this.proximaxProvider.getMultisigAccountGraphInfo(this.proximaxProvider.createFromRawAddress(element.address)).toPromise();
+              console.log('\n\n\n address ---->', element.publicAccount.address['address']);
+              console.log('publickey ---->', element.publicAccount.publicKey);
+              console.log('All structure ---->', accountGraphInfo);
+              console.log('root', accountGraphInfo.multisigAccounts.get(0));
+              accountGraphInfo.multisigAccounts.forEach(r => {
+                console.log('Multisig data --->', r);
+              });
+
+              const data = accountGraphInfo.multisigAccounts.get(0).find(r => r.account.publicKey === element.publicAccount.publicKey);
+              if (data) {
+                propertiesMultisig = {
+                  multisigAccountInfo: data,
+                  multisigAccountGraphInfo: accountGraphInfo
+                };
+              }
+              // propertiesMultisig = await this.proximaxProvider.getMultisigAccountInfo(this.proximaxProvider.createFromRawAddress(element.address)).toPromise();
             } catch (error) {
-              isMultisig = null;
+              propertiesMultisig = null;
             }
 
+            const level = propertiesMultisig ? this.checkLevel(propertiesMultisig.multisigAccountGraphInfo) : null;
             const accountInfoBuilded = {
               name: element.name,
               accountInfo,
-              multisigInfo: isMultisig
+              multisigInfo: propertiesMultisig ? propertiesMultisig.multisigAccountInfo : null,
+              multisigAccountGraphInfo: propertiesMultisig ? propertiesMultisig.multisigAccountGraphInfo : null,
+              level
             };
 
             accountsInfo.push(accountInfoBuilded);
-            const newAccounts = this.changeIsMultiSign(element.name, isMultisig);
+            const newAccounts = this.changeIsMultiSign(element.name, propertiesMultisig);
             if (newAccounts.length > 0) {
               // Issue changes to new accounts
               this.setAccountsPushedSubject(newAccounts);
@@ -122,7 +166,9 @@ export class WalletService {
             const accountInfoBuilded = {
               name: element.name,
               accountInfo: null,
-              multisigInfo: null
+              multisigInfo: null,
+              multisigAccountGraphInfo: null,
+              level: null
             };
 
             accountsInfo.push(accountInfoBuilded);
@@ -165,6 +211,8 @@ export class WalletService {
       network: data.network,
       publicAccount: data.publicAccount,
       isMultisign: null,
+      multisigAccountGraphInfo: null,
+      level: null,
       nis1Account: data.nis1Account,
       prefixKeyNis1: data.prefixKeyNis1
     };
@@ -269,13 +317,12 @@ export class WalletService {
    * @returns
    * @memberof WalletService
    */
-  changeIsMultiSign(name: string, isMultisig: MultisigAccountInfo) {
+  changeIsMultiSign(name: string, isMultisig: { multisigAccountInfo: MultisigAccountInfo, multisigAccountGraphInfo: MultisigAccountGraphInfo }) {
     const newAccount = [];
     if (isMultisig) {
       // si es multifirma, preguntar
-      if (isMultisig.multisigAccounts.length > 0) {
-        const myAccounts = this.currentWallet.accounts;
-        isMultisig.multisigAccounts.forEach(multisigAccount => {
+      if (isMultisig.multisigAccountInfo.multisigAccounts.length > 0) {
+        isMultisig.multisigAccountInfo.multisigAccounts.forEach(multisigAccount => {
           const exist = this.currentWallet.accounts.find(x => x.address === multisigAccount.address.plain());
           if (!exist) {
             const accountBuilded: AccountsInterface = this.buildAccount({
@@ -284,6 +331,8 @@ export class WalletService {
               encrypted: '',
               firstAccount: false,
               isMultisign: null,
+              multisigAccountGraphInfo: null,
+              level: null,
               iv: '',
               network: multisigAccount.address.networkType,
               nameAccount: `MULTISIG-${multisigAccount.address.plain().slice(36, 40)}`,
@@ -300,7 +349,6 @@ export class WalletService {
               dataComparate: null
             };
             const saved = this.saveContacts(paramsStorage);
-
             this.saveAccountWalletStorage(accountBuilded);
           }
         });
@@ -316,7 +364,9 @@ export class WalletService {
 
     myAccounts.forEach((element: AccountsInterface) => {
       if (element.name === name) {
-        element.isMultisign = isMultisig;
+        element.isMultisign = isMultisig ? isMultisig.multisigAccountInfo : null;
+        element.multisigAccountGraphInfo = isMultisig ? isMultisig.multisigAccountGraphInfo : null;
+        element.level = isMultisig ? this.checkLevel(isMultisig.multisigAccountGraphInfo) : null;
       }
     });
 
@@ -448,13 +498,16 @@ export class WalletService {
    * @returns
    * @memberof WalletService
    */
-  filterAccountWallet(byName: string = '', byDefault: boolean = null, byAddress = ''): AccountsInterface {
+  filterAccountWallet(byName: string = '', byDefault = null, byAddress = ''): AccountsInterface {
+    console.log('### address to search ####', byAddress);
     if (this.currentWallet && this.currentWallet.accounts && this.currentWallet.accounts.length > 0) {
       if (byDefault !== null && byName === '') {
         return this.currentWallet.accounts.find(elm => elm.default === true);
       } else if (byName !== '') {
         return this.currentWallet.accounts.find(elm => elm.name === byName);
       } else {
+        const response = this.currentWallet.accounts.find(elm => this.proximaxProvider.createFromRawAddress(elm.address).pretty() === byAddress);
+        console.log('#### response', response);
         return this.currentWallet.accounts.find(elm => this.proximaxProvider.createFromRawAddress(elm.address).pretty() === byAddress);
       }
     }
@@ -598,6 +651,16 @@ export class WalletService {
     return this.accountsPushedSubject$;
   }
 
+  /**
+   *
+   *
+   * @returns
+   * @memberof WalletService
+   */
+  getCosignatoriesSubject() {
+    return this.cosignatoriesPushedSubject$;
+  }
+
 
   /**
    *
@@ -633,10 +696,11 @@ export class WalletService {
     return walletsStorage;
   }
 
-
-
   /**
    *
+   *
+   * @returns
+   * @memberof WalletService
    */
   getUnconfirmedTransaction() {
     return this.unconfirmedTransactions;
@@ -890,6 +954,17 @@ export class WalletService {
   /**
    *
    *
+   * @param {*} data
+   * @returns
+   * @memberof WalletService
+   */
+  setCosignatoriesPushedSubject(data: any) {
+    return this.cosignatoriesPushedSubject.next(data);
+  }
+
+  /**
+   *
+   *
    * @memberof WalletService
    */
   setAccountsInfo(accountsInfo: AccountsInfoInterface[], pushed = false) {
@@ -946,7 +1021,7 @@ export class WalletService {
   }
 
   /**
-   *Set a wallet as current
+   * Set a wallet as current
    *
    * @param {*} wallet
    * @returns
@@ -1106,7 +1181,7 @@ export interface TransactionsNis1Interface {
 }
 
 export interface AccountsInterface {
-  address: any;
+  address: string;
   algo: string;
   brain: boolean;
   default: boolean;
@@ -1117,6 +1192,8 @@ export interface AccountsInterface {
   network: number;
   publicAccount: PublicAccount;
   isMultisign: MultisigAccountInfo;
+  level: number;
+  multisigAccountGraphInfo: MultisigAccountGraphInfo;
   nis1Account: any;
   prefixKeyNis1: string;
 }
@@ -1125,6 +1202,8 @@ export interface AccountsInfoInterface {
   name: string;
   accountInfo: AccountInfo;
   multisigInfo: MultisigAccountInfo;
+  multisigAccountGraphInfo: MultisigAccountGraphInfo;
+  level: number;
 }
 
 export interface WalletAccountInterface {

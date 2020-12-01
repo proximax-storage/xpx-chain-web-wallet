@@ -31,6 +31,7 @@ import { environment } from '../../../../environments/environment';
 import { ServicesModuleService, HeaderServicesInterface } from '../../../servicesModule/services/services-module.service';
 import { NodeService } from '../../../servicesModule/services/node.service';
 import { AppConfig } from '../../../config/app.config';
+import { MultisigService } from 'src/app/multi-sign/service/multisig.service';
 
 
 @Component({
@@ -115,7 +116,8 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
     private sharedService: SharedService,
     private transactionService: TransactionsService,
     private walletService: WalletService,
-    private nodeService: NodeService
+    private nodeService: NodeService,
+    private multisigService: MultisigService
   ) { }
 
   /**
@@ -279,13 +281,12 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
     return;
   }
 
-
   /**
-  *
-  *
-  * @param {AccountsInterface} accountToSend
-  * @memberof CreateTransferComponent
-  */
+   *
+   *
+   * @param {AccountsInterface} accountToSend
+   * @memberof CreateTransferComponent
+   */
   async changeSender(accountToSend: AccountsInterface) {
     if (accountToSend) {
       this.sender = accountToSend;
@@ -577,7 +578,19 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
     this.listCosignatorie = [];
     this.disabledAllField = false;
     if (element.isMultisign && element.isMultisign.cosignatories && element.isMultisign.cosignatories.length > 0) {
-      if (element.isMultisign.cosignatories.length === 1) {
+      const listCosignatorie = this.multisigService.buildCosignerList(element.isMultisign, this.walletService.currentWallet.accounts, this.feeCosignatory);
+      listCosignatorie.map(r => r.value = r.account);
+      console.log('myCosignatories', listCosignatorie);
+      if (listCosignatorie && listCosignatorie.length > 0) {
+        this.listCosignatorie = listCosignatorie.filter(r => !r.disabled);
+        if (listCosignatorie.length === 1) {
+          this.cosignatorie = listCosignatorie[0].value;
+        }
+      } else {
+        this.disabledAllField = true;
+        this.formTransfer.disable();
+      }
+      /* if (element.isMultisign.cosignatories.length === 1) {
         const address = this.proximaxProvider.createFromRawAddress(element.isMultisign.cosignatories[0].address['address']);
         const cosignatorieAccount: AccountsInterface = this.walletService.filterAccountWallet('', null, address.pretty());
         if (cosignatorieAccount) {
@@ -626,7 +639,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
         }
 
         return;
-      }
+      } */
     }
   }
 
@@ -914,12 +927,14 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
         const common = { password: this.formTransfer.get('password').value };
         const mosaicsToSend = this.validateMosaicsToSend();
         const type = (this.cosignatorie) ? true : false;
+        console.log('with cosignatorie', type);
         switch (type) {
           case true:
-            /*console.log('TRANSFIERE CON COSIGNATARIO');
+            console.log('TRANSFIERE CON COSIGNATARIO');
             // console.log('ACCOUNT SENDER ----> ', this.sender);
-            // console.log('COSIGNATARIO SELECCIONADO ----> ', this.cosignatorie);*/
+            // console.log('COSIGNATARIO SELECCIONADO ----> ', this.cosignatorie);
             const generationHash = this.dataBridge.blockInfo.generationHash;
+            console.log('COSIGNATORIE --->', this.cosignatorie)
             if (this.walletService.decrypt(common, this.cosignatorie)) {
               // console.log(this.typeMessage, common);
 

@@ -1,0 +1,92 @@
+ul li .submenu {
+  display: none;
+}
+
+ul li.active .submenu {
+  display: block;
+  list-style: none;
+}
+
+.box-grey {
+  border-radius: 1.5rem;
+  background: #f4f4f4;
+  padding: 0.5rem 1rem 0.5rem 1rem;
+  color: #333333;
+  font-size: 0.9rem !important;
+  margin: 0.4rem 0rem 0.4rem 0rem;
+}
+.box-grey-o {
+  background: #f4f4f4;
+  padding: 0.5rem 1rem 0.5rem 1rem;
+  color: #333333;
+  font-size: 0.9rem !important;
+  margin: 0.4rem 0rem 0.4rem 0rem;
+}
+.box-grey-invert {
+  border-radius: 1.5rem;
+  background: #ffffff;
+  padding: 0.5rem 1rem 0.5rem 1rem;
+  color: #161111;
+  font-size: 0.9rem !important;
+  margin: 0.4rem 0rem 0.4rem 0rem;
+}
+.fw-600 {
+  font-weight: 600;
+}
+
+.pl-2rem {
+  padding-left: 2rem !important;
+}
+
+.tag-account {
+  background: transparent;
+  border-radius: 20px;
+  padding: 1px 4px !important;
+  text-align: center;
+  line-height: 1rem;
+  font-style: italic !important;
+}
+.color-blue-intermedio {
+  color: #306EB5 !important;
+}
+
+.ma-0-4 {
+  margin: 0.4rem;
+}
+
+
+
+
+/* Styles Luis Cardenas */
+.box-multisig {
+  border-radius: 20px;
+  background: #f4f4f4;
+  padding: 0.5rem 1rem 0.5rem 1rem;
+  color: #333333;
+  font-size: 1rem !important;
+  margin: 0.4rem 0rem 0.4rem 0rem;
+}
+.box-multisig-l1 {
+  border-radius: 20px;
+  background: #ffffff;
+  padding: 0.5rem 1rem 0.5rem 1rem;
+  color: #333333;
+  font-size: 1rem !important;
+  margin: 0.4rem 0rem 0.4rem 0rem;
+}
+.box-multisig-l2 {
+  border-radius: 10px;
+  background: #f4f4f4;
+  padding: 0.5rem 1rem 0.5rem 1rem;
+  color: #333333;
+  font-size: 0.9rem !important;
+  margin: 0.4rem 0rem 0.4rem 0rem;
+}
+.box-multisig-l3 {
+  border-radius: 4px;
+  background: #ffffff;
+  padding: 0.5rem 1rem 0.5rem 1rem;
+  color: #333333;
+  font-size: 1rem !important;
+  margin: 0.4rem 0rem 0.4rem 0rem;
+}
