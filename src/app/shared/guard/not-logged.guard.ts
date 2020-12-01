@@ -17,7 +17,7 @@ export class NotLoggedGuard implements CanActivate {
   ): Observable<boolean> | Promise<boolean> | boolean {
 
     if (this.authService.isLogged) {
-      this.route.navigate([`/${AppConfig.routes.dashboard}`]);
+      this.route.navigate([`/${AppConfig.routes.polls}`]);
       return false;
     }
 
