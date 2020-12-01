@@ -139,7 +139,7 @@ export class HomeComponent implements OnInit {
         };
         accounts.push({
           address: wallet.address.plain(),
-          algo: 'pass:bip32',
+          algo: ProximaxProvider.getWalletAlgorithm().Pass_bip32,
           brain: true,
           default: (index === 0),
           encrypted: wallet.encryptedPrivateKey.encryptedKey,
