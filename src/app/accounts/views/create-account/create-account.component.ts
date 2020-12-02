@@ -172,7 +172,7 @@ export class CreateAccountComponent implements OnInit {
                 return;
               }
 
-              if (!accountEqual.encrypted) {
+              if (accountEqual &&  !accountEqual.encrypted) {
                 this.saveAccount(newAccount, nameAccount, password, this.prefix, true);
               } else {
                 this.saveAccount(newAccount, nameAccount, password, this.prefix);

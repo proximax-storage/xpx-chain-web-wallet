@@ -71,7 +71,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
   msgErrorUnsupportedContact = '';
   mosaicXpx: { id: string, name: string; divisibility: number } = null;
   listContacts: any = [];
-  listCosignatorie: any = [];
+  listCosignatorie: CosignerFirmList[] = [];
   fee: any = '0.037250';
   feeCosignatory: any = 10044500;
   goBack = `/${AppConfig.routes.service}`;
@@ -125,7 +125,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
    *
    * @memberof CreateTransferComponent
    */
-  ngOnInit() {
+  ngOnInit () {
     this.configurationForm = this.sharedService.configurationForm;
     this.charRest = 0; // this.configurationForm.message.maxLength;
     this.createFormTransfer();
@@ -172,7 +172,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
    *
    * @memberof CreateTransferComponent
    */
-  ngOnDestroy(): void {
+  ngOnDestroy (): void {
     this.subscription.forEach(subscription => {
       subscription.unsubscribe();
     });
@@ -186,7 +186,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
    * @param {number} position
    * @memberof CreateTransferComponent
    */
-  async amountOtherMosaicChanged(amount: string, mosaicId: string | [], position: number) {
+  async amountOtherMosaicChanged (amount: string, mosaicId: string | [], position: number) {
     if (amount !== null && amount !== undefined) {
       const mosaic = await this.mosaicServices.filterMosaics([new MosaicId(mosaicId)]);
       const a = Number(amount);
@@ -203,7 +203,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
    * @param {AccountInfo} accountInfo
    * @memberof CreateTransferComponent
    */
-  async buildCurrentAccountInfo(accountInfo: AccountInfo) {
+  async buildCurrentAccountInfo (accountInfo: AccountInfo) {
     const mosaicsSelect: any = [];
     if (accountInfo !== undefined && accountInfo !== null) {
       if (accountInfo.mosaics.length > 0) {
@@ -287,7 +287,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
    * @param {AccountsInterface} accountToSend
    * @memberof CreateTransferComponent
    */
-  async changeSender(accountToSend: AccountsInterface) {
+  async changeSender (accountToSend: AccountsInterface) {
     if (accountToSend) {
       this.sender = accountToSend;
       this.findCosignatories(accountToSend);
@@ -327,7 +327,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
    * @param {*} recipient
    * @memberof CreateTransferComponent
    */
-  async verifyRecipientInfo(recipient: string) {
+  async verifyRecipientInfo (recipient: string) {
     // console.log(recipient);
     const invalidPublicKey = '0000000000000000000000000000000000000000000000000000000000000000';
     const net = environment.typeNetwork.value;
@@ -363,7 +363,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
    * @returns {string}
    * @memberof CreateTransferComponent
    */
-  amountFormatterSimple(amount: any): string {
+  amountFormatterSimple (amount: any): string {
     this.calculateFee(this.formTransfer.get('message').value);
     return this.transactionService.amountFormatterSimple(amount);
   }
@@ -376,7 +376,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
    * @returns
    * @memberof CreateTransferComponent
    */
-  addZeros(cant: any, amount: string = '0') {
+  addZeros (cant: any, amount: string = '0') {
     const x = '0';
     if (amount === '0') {
       for (let index = 0; index < cant - 1; index++) {
@@ -397,7 +397,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
    * @param {*} account
    * @memberof CreateTransferComponent
    */
-  accountSelected(position: number, account: any) {
+  accountSelected (position: number, account: any) {
     const accounts = [];
     Object.keys(this.accounts).forEach(element => {
       if (element === String(position)) {
@@ -416,7 +416,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
    *
    * @param signedTransaction
    */
-  announceAggregateBonded(signedTransaction: SignedTransaction) { // change
+  announceAggregateBonded (signedTransaction: SignedTransaction) { // change
     this.transactionHttp.announceAggregateBonded(signedTransaction).subscribe(
       async () => {
         this.transactionSigned.push(signedTransaction);
@@ -431,7 +431,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
    *
    * @memberof CreateTransferComponent
    */
-  booksAddress() {
+  booksAddress () {
     this.listContacts = this.serviceModuleService.getBooksAddressBuilder();
   }
 
@@ -441,7 +441,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
    * @param {number} message
    * @memberof CreateTransferComponent
    */
-  calculateFee(message: number) {
+  calculateFee (message: number) {
     this.mosaicsToSend = this.validateMosaicsToSend();
     const x = TransferTransaction.calculateSize(PlainMessage.create(this.formTransfer.get('message').value).size(), this.mosaicsToSend.length);
     const b = FeeCalculationStrategy.calculateFee(x);
@@ -460,7 +460,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
    *
    * @memberof CreateTransferComponent
    */
-  createFormTransfer() {
+  createFormTransfer () {
     this.formTransfer = this.fb.group({
       accountRecipient: ['', [
         Validators.required,
@@ -492,7 +492,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
    * @param {*} inputType
    * @memberof CreateTransferComponent
    */
-  changeInputType(inputType: any) {
+  changeInputType (inputType: any) {
     const newType = this.sharedService.changeInputType(inputType);
     this.passwordMain = newType;
   }
@@ -503,7 +503,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
    * @param {string} event
    * @memberof CreateTransferComponent
    */
-  changeMessageType(event) {
+  changeMessageType (event) {
     this.typeMessage = event;
     // console.log(event, this.configurationForm);
 
@@ -529,7 +529,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
    * @returns
    * @memberof CreateTransferComponent
    */
-  clearForm(custom?: string | (string | number)[], formControl?: string | number) {
+  clearForm (custom?: string | (string | number)[], formControl?: string | number) {
     if (custom !== undefined) {
       this.cosignatorie = null;
       if (formControl !== undefined) {
@@ -557,7 +557,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
    * @param {number} position
    * @memberof CreateTransferComponent
    */
-  deleteMoreMosaic(position: number) {
+  deleteMoreMosaic (position: number) {
     const otherMosaics = [];
     Object.keys(this.boxOtherMosaics).forEach(element => {
       if (Number(element) !== position) {
@@ -571,7 +571,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
    *
    * @param element
    */
-  findCosignatories(element: AccountsInterface) {
+  findCosignatories (element: AccountsInterface) {
     this.cosignatorie = null;
     this.listCosignatorie = [];
     this.disabledAllField = false;
@@ -581,11 +581,11 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
       listCosignatorie.map(r => r.value = r.account);
       console.log('myCosignatories', listCosignatorie);
       if (listCosignatorie && listCosignatorie.length > 0) {
-        this.listCosignatorie = listCosignatorie.filter(r => !r.disabled && !r.accountIsMultisig);
+        this.listCosignatorie = listCosignatorie.filter(r => !r.accountIsMultisig);
         console.log('this.listCosignatorie', this.listCosignatorie);
         if (this.listCosignatorie.length === 1) {
           console.log('LA LONGITUD DE ESE COSIGNATARIO ES UNO SOLO.......');
-          this.cosignatorie = this.listCosignatorie[0].value;
+          this.cosignatorie = this.listCosignatorie[0];
         }
       } else {
         this.disabledAllField = true;
@@ -649,7 +649,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
    *
    * @memberof CreateTransferComponent
    */
-  getAccountInfo() {
+  getAccountInfo () {
     this.subscription.push(this.walletService.getAccountsInfo$().subscribe(
       next => {
         this.searching = false;
@@ -663,7 +663,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
    *
    * @memberof CreateTransferComponent
    */
-  getTransactionStatus() {
+  getTransactionStatus () {
     // Get transaction status
     if (!this.subscription['transactionStatus']) {
       this.subscription['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
@@ -705,7 +705,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
    * @param signedTransactionHashLock
    * @param signedTransactionBonded
    */
-  getTransactionStatusHashLock(signedTransactionHashLock: SignedTransaction, signedTransactionBonded: SignedTransaction) {
+  getTransactionStatusHashLock (signedTransactionHashLock: SignedTransaction, signedTransactionBonded: SignedTransaction) {
     // Get transaction status
     this.subscription['getTransactionStatushashLock'] = this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
@@ -735,7 +735,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
    * @returns
    * @memberof CreateTransferComponent
    */
-  getQuantity(quantity: string) {
+  getQuantity (quantity: string) {
     return this.sharedService.amountFormat(quantity);
   }
 
@@ -747,7 +747,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
    * @param {number} i
    * @memberof CreateTransferComponent
    */
-  otherMosaicsChange(mosaicSelected: any, position: number) {
+  otherMosaicsChange (mosaicSelected: any, position: number) {
     // console.log('\n\n mosaicSelected ---> ', mosaicSelected);
     // console.log('\n\n this.boxOtherMosaics[position] ---> ', this.boxOtherMosaics[position]);
     if (mosaicSelected !== undefined) {
@@ -790,7 +790,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
    * @param {number} position
    * @memberof CreateTransferComponent
    */
-  otherMosaicsBuild(mosaicSelected: any, position: number) {
+  otherMosaicsBuild (mosaicSelected: any, position: number) {
     this.boxOtherMosaics[position].amount = '';
     this.boxOtherMosaics[position].balance = mosaicSelected.balance;
     this.boxOtherMosaics[position].config = mosaicSelected.config;
@@ -811,7 +811,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
    *
    * @memberof CreateTransferComponent
    */
-  pushedOtherMosaics() {
+  pushedOtherMosaics () {
     if (this.selectOtherMosaics.length > 0) {
       if (this.boxOtherMosaics.length === 0) {
         // console.log('VALIDA 1');
@@ -866,7 +866,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
    *
    * @memberof CreateTransferComponent
    */
-  reset() {
+  reset () {
     this.haveBalance = false;
     this.allMosaics = [];
     this.balanceXpx = '0.000000';
@@ -899,7 +899,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
    *
    * @memberof CreateTransferComponent
    */
-  saveContactFn() {
+  saveContactFn () {
     this.getBooksAddress = this.serviceModuleService.getBooksAddress();
     if (this.getBooksAddress) {
       const contact = this.getBooksAddress.find(el => el.value === this.formTransfer.get('accountRecipient').value.split('-').join(''));
@@ -920,7 +920,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
    *
    * @memberof CreateTransferComponent
    */
-  sendTransfer() {
+  sendTransfer () {
     if (this.formTransfer.valid && (!this.blockSendButton || !this.errorOtherMosaics)) {
       this.reloadBtn = true;
       this.blockSendButton = true;
@@ -936,8 +936,8 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
         switch (type) {
           case true:
             console.log('TRANSFIERE CON COSIGNATARIO');
-            // console.log('ACCOUNT SENDER ----> ', this.sender);
-            // console.log('COSIGNATARIO SELECCIONADO ----> ', this.cosignatorie);
+            console.log('ACCOUNT SENDER ----> ', this.sender);
+            console.log('COSIGNATARIO SELECCIONADO ----> ', this.cosignatorie);
             const generationHash = this.dataBridge.blockInfo.generationHash;
             console.log('COSIGNATORIE --->', this.cosignatorie);
             if (this.walletService.decrypt(common, this.cosignatorie.account)) {
@@ -953,6 +953,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
               // console.log('True', params);
 
               const cosignatoryAccount = Account.createFromPrivateKey(params.common.privateKey, params.network);
+              console.log('cosignatoryAccount', cosignatoryAccount)
               const recipientAddress = this.proximaxProvider.createFromRawAddress(params.recipient);
               const mosaics = params.mosaic;
               const allMosaics = [];
@@ -981,7 +982,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
               const hashLockSigned = this.transactionService.buildHashLockTransaction(aggregateSigned, cosignatoryAccount, generationHash);
               this.saveContactFn();
               this.clearForm();
-
+              console.log('aggregateSigned', aggregateSigned)
               this.transactionService.buildTransactionHttp().announce(hashLockSigned).subscribe(async () => {
                 this.getTransactionStatusHashLock(hashLockSigned, aggregateSigned);
               }, err => { });
@@ -1046,9 +1047,10 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
    * @param {*} $event
    * @memberof CreateTransferComponent
    */
-  selectCosignatorie($event: any) {
+  selectCosignatorie ($event: any) {
     if ($event) {
-      this.cosignatorie = $event.value;
+      const item: AccountsInterface = $event.value;
+      this.cosignatorie = this.listCosignatorie.find(x => x.account.publicAccount.publicKey === item.publicAccount.publicKey)
     } else {
       this.cosignatorie = null;
     }
@@ -1060,7 +1062,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
    * @param {*} event
    * @memberof CreateTransferComponent
    */
-  selectContact(event: { label: string, value: string }) {
+  selectContact (event: { label: string, value: string }) {
     if (event !== undefined && event.value !== '') {
       this.formTransfer.get('accountRecipient').patchValue(event.value);
     }
@@ -1076,7 +1078,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
    *
    * @memberof CreateTransferComponent
    */
-  subscribeValue() {
+  subscribeValue () {
     this.formTransfer.get('accountRecipient').valueChanges.subscribe(value => {
       let valueWithoutSpaces = '';
       if (value) {
@@ -1211,7 +1213,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
    * @param {MosaicsStorage} mosaic
    * @memberof CreateTransferComponent
    */
-  validateAmountToTransfer(amount: string, mosaic: MosaicsStorage, position: number) {
+  validateAmountToTransfer (amount: string, mosaic: MosaicsStorage, position: number) {
     let validateAmount = false;
     const accountInfo = this.walletService.filterAccountInfo(this.sender.name);
     if (accountInfo !== undefined && accountInfo !== null && Object.keys(accountInfo).length > 0) {
@@ -1272,7 +1274,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
    * @returns
    * @memberof CreateTransferComponent
    */
-  validateMosaicsToSend() {
+  validateMosaicsToSend () {
     const mosaics = [];
     const amountXpx = this.formTransfer.get('amountXpx').value;
 
@@ -1333,7 +1335,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
    * @returns
    * @memberof CreateTransferComponent
    */
-  verifyMessage(message: string, senderPrivateKey: any) {
+  verifyMessage (message: string, senderPrivateKey: any) {
     let result;
     if (message !== null && message !== '') {
       switch (this.typeMessage) {
@@ -1365,7 +1367,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
    *
    * @memberof CreateTransferComponent
    */
-  getValueAndVerify() {
+  getValueAndVerify () {
     const recipientValue = (this.formTransfer.get('accountRecipient').value.includes('-')) ?
       this.formTransfer.get('accountRecipient').value.split('-').join('') :
       this.formTransfer.get('accountRecipient').value;
@@ -1381,7 +1383,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
    * @returns
    * @memberof CreateTransferComponent
    */
-  saveContactNew() {
+  saveContactNew () {
     const books = { value: this.formContact.address, label: this.formContact.name };
     if (!this.getBooksAddress) {
       this.serviceModuleService.setBookAddress([books], '');
@@ -1406,7 +1408,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
     this.sharedService.showError('User repeated', `The contact "${this.formContact.name}" already exists`);
   }
 
-  setMessageToEncrypted() {
+  setMessageToEncrypted () {
     // console.log(this.messageWillBeEncrypted);
     if (this.messageWillBeEncrypted === true) {
       this.messageMaxLength = this.configurationForm.encryptedMessage.maxLength;
@@ -1424,7 +1426,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
    * @returns
    * @memberof CreateTransferComponent
    */
-  validateInput(nameInput: string = '', nameControl: string = '', nameValidation: string = '') {
+  validateInput (nameInput: string = '', nameControl: string = '', nameValidation: string = '') {
     let validation: AbstractControl = null;
     if (nameInput !== '' && nameControl !== '') {
       validation = this.formTransfer.controls[nameControl].get(nameInput);
