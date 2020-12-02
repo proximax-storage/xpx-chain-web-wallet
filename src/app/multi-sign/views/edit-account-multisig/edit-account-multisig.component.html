@@ -67,13 +67,13 @@
                     <div class="row ma-0-4">
                       <div class="col-6 ">
                         <span class="fw-600"> {{item.name}}</span>
-                        <span *ngIf="item.isMultisig && item.isMultisig.isMultisig()"
+                        <span *ngIf="item.cosignatories.length > 0 "
                           class="fs-07rem color-blue-intermedio tag-account">- Multisig</span>
                         <br> <span class="fw-300 fs-08rem color-grey"> {{item.address}}</span>
                       </div>
                       <div class="col-6 d-flex justify-content-end align-items-center">
                         <div class="row">
-                          <div *ngIf="item.isMultisig && item.isMultisig.isMultisig()"
+                          <div *ngIf="item.cosignatories.length > 0 "
                             class="col-6 d-flex justify-content-center align-items-center">
                             <img (click)="showSubItem(index)" src="assets/images/img/icon-collapse-accordion-button.svg"
                               class="cursor-p" width="25">
