@@ -329,7 +329,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
    */
   async verifyRecipientInfo(recipient: string) {
     // console.log(recipient);
-    const invalidPublicKey = '0000000000000000000000000000000000000000000000000000000000000000'
+    const invalidPublicKey = '0000000000000000000000000000000000000000000000000000000000000000';
     const net = environment.typeNetwork.value;
     let address;
 
@@ -504,23 +504,21 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
    * @memberof CreateTransferComponent
    */
   changeMessageType(event) {
-    this.typeMessage = event
+    this.typeMessage = event;
     // console.log(event, this.configurationForm);
 
     if (this.typeMessage === '1') {
       if (this.messageWillBeEncrypted === true) {
-        this.messageMaxLength = this.configurationForm.encryptedMessage.maxLength
-        this.formTransfer.get('message').setValue('')
+        this.messageMaxLength = this.configurationForm.encryptedMessage.maxLength;
+        this.formTransfer.get('message').setValue('');
       } else {
-        this.messageMaxLength = this.configurationForm.message.maxLength
-        this.formTransfer.get('message').setValue('')
+        this.messageMaxLength = this.configurationForm.message.maxLength;
+        this.formTransfer.get('message').setValue('');
       }
     } else if (this.typeMessage === '2') {
-      this.messageMaxLength = this.configurationForm.message.maxLength
-      this.formTransfer.get('message').setValue('')
+      this.messageMaxLength = this.configurationForm.message.maxLength;
+      this.formTransfer.get('message').setValue('');
     }
-    let recipient = this.formTransfer.get("amountXpx").value
-    // console.log(event, recipient);
   }
 
   /**
@@ -1131,16 +1129,16 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
       if (val && val !== null) {
         if (this.typeMessage === '1') {
           if (this.messageWillBeEncrypted === true) {
-            let REGEX = /[^a-zA-Z0-9 ]\s*/;
+            const REGEX = /[^a-zA-Z0-9 ]\s*/;
             if (val.search(REGEX) > -1) {
-              let subStr = val.replace(REGEX, '');
+              const subStr = val.replace(REGEX, '');
               this.formTransfer.get('message').setValue(subStr);
             }
           }
         } else if (this.typeMessage === '2') {
-          let REGEX = /[^A-Fa-f0-9]/g;
+          const REGEX = /[^A-Fa-f0-9]/g;
           if (val.search(REGEX) > -1) {
-            let subStr = val.replace(REGEX, '');
+            const subStr = val.replace(REGEX, '');
             this.formTransfer.get('message').setValue(subStr);
           }
         }
@@ -1411,9 +1409,9 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
   setMessageToEncrypted() {
     // console.log(this.messageWillBeEncrypted);
     if (this.messageWillBeEncrypted === true) {
-      this.messageMaxLength = this.configurationForm.encryptedMessage.maxLength
+      this.messageMaxLength = this.configurationForm.encryptedMessage.maxLength;
     } else {
-      this.messageMaxLength = this.configurationForm.message.maxLength
+      this.messageMaxLength = this.configurationForm.message.maxLength;
     }
   }
 
