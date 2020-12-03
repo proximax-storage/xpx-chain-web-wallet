@@ -167,8 +167,6 @@ ul li.active .submenu {
   top: 1px;
   transform: rotate(180deg);
 }
-
-
 .tree li a:hover, .tree li a:hover + ul li a {
   background: #306EB5;
   color: #fff;
@@ -178,14 +176,4 @@ ul li.active .submenu {
   border-color: #306EB5;
 }
 
-.hyphenation {
-  word-break: break-all;
-  word-break: break-word;
-  -webkit-hyphens: auto;
-  -moz-hyphens: auto;
-  -ms-hyphens: auto;
-  hyphens: auto;
-}
-.normal{
-  width: 50px;
-}
+
