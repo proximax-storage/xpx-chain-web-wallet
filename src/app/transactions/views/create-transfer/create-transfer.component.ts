@@ -24,14 +24,14 @@ import * as FeeCalculationStrategy from 'tsjs-xpx-chain-sdk/dist/src/model/trans
 import { MosaicService, MosaicsStorage } from '../../../servicesModule/services/mosaic.service';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { DataBridgeService } from '../../../shared/services/data-bridge.service';
-import { WalletService, AccountsInterface, AccountsInfoInterface } from '../../../wallet/services/wallet.service';
+import { WalletService, AccountsInterface } from '../../../wallet/services/wallet.service';
 import { SharedService, ConfigurationForm } from '../../../shared/services/shared.service';
 import { TransactionsService, TransferInterface } from '../../services/transactions.service';
 import { environment } from '../../../../environments/environment';
 import { ServicesModuleService, HeaderServicesInterface } from '../../../servicesModule/services/services-module.service';
 import { NodeService } from '../../../servicesModule/services/node.service';
 import { AppConfig } from '../../../config/app.config';
-import { MultisigService } from 'src/app/multi-sign/service/multisig.service';
+import { CosignerFirmList, MultisigService } from '../../../multi-sign/service/multisig.service';
 
 
 @Component({
@@ -51,7 +51,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
   blockSendButton = false;
   reloadBtn = false;
   charRest: number;
-  cosignatorie: any = null;
+  cosignatorie: CosignerFirmList = null;
   configurationForm: ConfigurationForm;
   currentBlock = 0;
   disabledBtnAddMosaic = false;
@@ -577,14 +577,17 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
     this.cosignatorie = null;
     this.listCosignatorie = [];
     this.disabledAllField = false;
+    console.log('element', element);
     if (element.isMultisign && element.isMultisign.cosignatories && element.isMultisign.cosignatories.length > 0) {
       const listCosignatorie = this.multisigService.buildCosignerList(element.isMultisign, this.walletService.currentWallet.accounts, this.feeCosignatory);
       listCosignatorie.map(r => r.value = r.account);
       console.log('myCosignatories', listCosignatorie);
       if (listCosignatorie && listCosignatorie.length > 0) {
-        this.listCosignatorie = listCosignatorie.filter(r => !r.disabled);
-        if (listCosignatorie.length === 1) {
-          this.cosignatorie = listCosignatorie[0].value;
+        this.listCosignatorie = listCosignatorie.filter(r => !r.disabled && !r.accountIsMultisig);
+        console.log('this.listCosignatorie', this.listCosignatorie);
+        if (this.listCosignatorie.length === 1) {
+          console.log('LA LONGITUD DE ESE COSIGNATARIO ES UNO SOLO.......');
+          this.cosignatorie = this.listCosignatorie[0].value;
         }
       } else {
         this.disabledAllField = true;
@@ -923,7 +926,11 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
     if (this.formTransfer.valid && (!this.blockSendButton || !this.errorOtherMosaics)) {
       this.reloadBtn = true;
       this.blockSendButton = true;
-      if (this.transactionService.validateBuildSelectAccountBalance(Number(this.balanceXpx.split(',').join('')), Number(this.fee), Number(this.formTransfer.get('amountXpx').value))) {
+      if (this.transactionService.validateBuildSelectAccountBalance(
+        Number(this.balanceXpx.split(',').join('')),
+        Number(this.fee),
+        Number(this.formTransfer.get('amountXpx').value))
+      ) {
         const common = { password: this.formTransfer.get('password').value };
         const mosaicsToSend = this.validateMosaicsToSend();
         const type = (this.cosignatorie) ? true : false;
@@ -934,8 +941,8 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
             // console.log('ACCOUNT SENDER ----> ', this.sender);
             // console.log('COSIGNATARIO SELECCIONADO ----> ', this.cosignatorie);
             const generationHash = this.dataBridge.blockInfo.generationHash;
-            console.log('COSIGNATORIE --->', this.cosignatorie)
-            if (this.walletService.decrypt(common, this.cosignatorie)) {
+            console.log('COSIGNATORIE --->', this.cosignatorie);
+            if (this.walletService.decrypt(common, this.cosignatorie.account)) {
               // console.log(this.typeMessage, common);
 
               const params: TransferInterface = {
