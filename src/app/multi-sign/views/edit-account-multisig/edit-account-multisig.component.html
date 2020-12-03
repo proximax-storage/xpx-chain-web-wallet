@@ -6,7 +6,7 @@
       <div class="col-8 col-md-8 col-lg-8 col-xl-8 mx-auto">
 
         <!-- LIST COSIGNATORY -->
-        <div class="box-grey">
+        <div class="box-multisig">
           <div class="row">
             <div class="col-12 mb-07rem">
               <div class="row">
@@ -45,13 +45,13 @@
                     </ng-container>
 
                     <!-- INSUFFICIENT BALANCE -->
-                    <ng-container *ngIf="!showCosignerFirmList &&  consignerFirm?.disabled">
+                    <!-- <ng-container *ngIf="!showCosignerFirmList &&  consignerFirm?.disabled">
                       <div class="col-12 mx-auto d-flex justify-content-start pt-05rem pb-05rem">
                         <span class="fs-08rem fw-600 color-error-message">
                           Cosignatory {{consignerFirm.info}}
                         </span>
                       </div>
-                    </ng-container>
+                    </ng-container> -->
                   </div>
                 </div>
               </div>
@@ -63,17 +63,17 @@
               </div>
               <ng-container *ngFor="let item of dataCurrentAccout.cosignatoryList; let index = index">
                 <div class="col-12">
-                  <div class="box-grey-invert">
+                  <div class="box-multisig-l1">
                     <div class="row ma-0-4">
                       <div class="col-6 ">
                         <span class="fw-600"> {{item.name}}</span>
-                        <span *ngIf="item.isMultisig && item.isMultisig.isMultisig()"
+                        <span *ngIf="item.cosignatories.length > 0 "
                           class="fs-07rem color-blue-intermedio tag-account">- Multisig</span>
                         <br> <span class="fw-300 fs-08rem color-grey"> {{item.address}}</span>
                       </div>
                       <div class="col-6 d-flex justify-content-end align-items-center">
                         <div class="row">
-                          <div *ngIf="item.isMultisig && item.isMultisig.isMultisig()"
+                          <div *ngIf="item.cosignatories.length > 0 "
                             class="col-6 d-flex justify-content-center align-items-center">
                             <img (click)="showSubItem(index)" src="assets/images/img/icon-collapse-accordion-button.svg"
                               class="cursor-p" width="25">
@@ -89,67 +89,67 @@
                       </div>
                       <ng-container *ngIf="visibleIndex === index && item.cosignatories.length > 0 ">
                         <div class="col-12 flash">
-                          <div class="box-grey-o ">
+                          <div class="box-multisig-l2">
                             <div class="row">
-                              <ng-container *ngFor="let itemOnelvl of item.cosignatories; let indexOnelvl = index">
-                                <div class="col-12">
-                                  <div class="box-grey-invert">
-                                    <div class="row ma-0-4">
-                                      <div class="col-6 ">
-                                        <span class="fw-600"> {{itemOnelvl.name}}</span>
-                                        <span *ngIf="itemOnelvl.isMultisig && itemOnelvl.isMultisig.isMultisig()"
-                                          class="fs-07rem color-blue-intermedio tag-account">- Multisig</span>
-                                        <br> <span class="fw-300 fs-08rem color-grey">
-                                          {{itemOnelvl.address}}</span>
-                                      </div>
-                                      <div class="col-6 d-flex justify-content-end align-items-center">
-                                        <div class="row">
-                                          <div *ngIf="itemOnelvl.isMultisig && itemOnelvl.isMultisig.isMultisig()"
-                                            class="col-6 d-flex justify-content-center align-items-center">
-                                            <img (click)="showSubItemOnelvl(indexOnelvl)"
-                                              src="assets/images/img/icon-collapse-accordion-button.svg"
-                                              class="cursor-p" width="25">
-                                            &nbsp;
-                                            <!-- showSubItemOnelvl -->
-                                          </div>
-                                        </div>
-                                      </div>
-                                      <ng-container
-                                        *ngIf="visibleIndexOnelvl === indexOnelvl && itemOnelvl.cosignatorieswTow.length > 0 ">
-                                        <div class="col-12 flash">
-                                          <div class="box-grey-o ">
-                                            <div class="row">
-                                              <div class="col-12 line-h-2em">
-                                                <span class="fw-600 fs-09rem ml-1-4rem color-blue-intermedio">
-                                                  Inner level cosignatories
-                                                </span>
-                                                <ul>
-                                                  <li *ngFor="let itemTowlvl of itemOnelvl.cosignatorieswTow" style="font-size: x-small;">
-                                                    <span class="fw-600"> {{itemTowlvl.name}}</span> ({{itemTowlvl.address}})
-                                                  </li>
-                                                </ul>
+                              <div class="col-12">
+                                <span class="fw-600 fs-09rem ml-1-4rem color-blue-intermedio">
+                                  Cosignatories of {{item.name}}
+                                </span>
 
-                                              </div>
+                              </div>
+                              <div class="col-12">
+                                <ul>
+                                  <li *ngFor="let itemOnelvl of item.cosignatories; let indexOnelvl = index">
+                                    <div class="col-12">
+                                      <!-- <div class="box-grey-invert"> -->
+                                      <div class="row ma-0-4">
+                                        <div class="col-6 ">
+                                          <span class="fw-600"> {{itemOnelvl.name}}</span>
+                                          <span *ngIf="itemOnelvl.isMultisig && itemOnelvl.isMultisig.isMultisig()"
+                                            class="fs-07rem color-blue-intermedio tag-account">- Multisig</span>
+                                          <br> <span class="fw-300 fs-08rem color-grey">
+                                            {{itemOnelvl.address}}</span>
+                                        </div>
+                                        <div class="col-6 d-flex justify-content-end align-items-center">
+                                          <div class="row">
+                                            <div *ngIf="itemOnelvl.isMultisig && itemOnelvl.isMultisig.isMultisig()"
+                                              class="col-6 d-flex justify-content-center align-items-center">
+                                              <img (click)="showSubItemOnelvl(indexOnelvl)"
+                                                src="assets/images/img/icon-collapse-accordion-button.svg"
+                                                class="cursor-p" width="25">
+                                              &nbsp;
+                                              <!-- showSubItemOnelvl -->
                                             </div>
                                           </div>
                                         </div>
-                                      </ng-container>
+                                        <ng-container
+                                          *ngIf="visibleIndexOnelvl === indexOnelvl && itemOnelvl.cosignatorieswTow.length > 0 ">
+                                          <div class="col-12 flash">
+                                            <div class="box-multisig-l3">
+                                              <div class="row">
+                                                <div class="col-12 line-h-2em">
+                                                  <span class="fw-600 fs-09rem ml-1-4rem color-blue-intermedio">
+                                                    Inner level cosignatories
+                                                  </span>
+                                                  <ul>
+                                                    <li *ngFor="let itemTowlvl of itemOnelvl.cosignatorieswTow"
+                                                      style="font-size: x-small;">
+                                                      <span class="fw-600"> {{itemTowlvl.name}}</span>
+                                                      ({{itemTowlvl.address}})
+                                                    </li>
+                                                  </ul>
+
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </ng-container>
+                                      </div>
+                                      <!-- </div> -->
                                     </div>
-                                  </div>
-                                </div>
-                              </ng-container>
-
-
-                              <!-- <div class="col-12 line-h-2em"> -->
-                              <!-- <span class="fw-600 fs-09rem ml-1-4rem color-blue-intermedio">
-                                  Inner level cosignatories
-                                </span>
-                                <ul>
-                                  <li *ngFor="let itemOnelvl of item.cosignatories">
-                                    <span class="fw-600"> {{itemOnelvl.name}}</span> ({{itemOnelvl.address}})
                                   </li>
-                                </ul> -->
-                              <!-- </div> -->
+                                </ul>
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -160,56 +160,6 @@
                 </div>
               </ng-container>
             </ng-container>
-
-
-            <!-- <div class="col-12">
-            <div class="box-grey-invert">
-              <div class="row">
-                <div class="col-12 ma-0-4">
-                  <span class="fw-600"> Long won</span> <br>
-                  <span class="fw-300 fs-08rem color-grey"> VAUIIRN33XXWCJARFXOKIEPIEJY3Y26U4J6THBGH</span>
-                </div>
-              </div>
-            </div>
-          </div> -->
-            <!-- <div class="col-12">
-            <div class="box-grey-invert">
-              <div class="row">
-                <div class="col-12 ma-0-4">
-                  <span class="fw-600"> develomen</span>
-                  <span class="fs-07rem color-blue-intermedio tag-account">- Multisig</span>
-                  <br>
-                  <span class="fw-300 fs-08rem color-grey"> VAUIIRN33XXWCJARFXOKIEPIEJY3Y26U4J6THBGH</span>
-                </div>
-                <div class="col-12">
-                  <div class="box-grey-o ">
-                    <div class="row">
-                      <div class="col-12 line-h-2em">
-                        <span class="fw-600 fs-09rem ml-1-4rem color-blue-intermedio">
-                          Inner level cosignatories
-                        </span>
-                        <ul>
-                          <li> <span class="fw-600"> Roimer </span> (VD4RD57SGDNJWWWNV6LNUIIQ6EF7YYHC6X7YRQHS)</li>
-                          <li> <span class="fw-600">jeffersson </span> (VD4RD57SGDNJWWWNV6LNUIIQ6EF7YYHC6X7YRQHS)</li>
-                          <li> <span class="fw-600">Eleazar </span> (VD4RD57SGDNJWWWNV6LNUIIQ6EF7YYHC6X7YRQHS) </li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div> -->
-            <!-- <div class="col-12">
-            <div class="box-grey-invert">
-              <div class="row">
-                <div class="col-12 ma-0-4">
-                  <span class="fw-600"> Long won</span> <br>
-                  <span class="fw-300 fs-08rem color-grey"> VAUIIRN33XXWCJARFXOKIEPIEJY3Y26U4J6THBGH</span>
-                </div>
-              </div>
-            </div>
-          </div> -->
 
           </div>
         </div>
@@ -372,9 +322,12 @@
                 <div class="box-grey d-flex justify-content-center pt-08rem pb-08rem">
                   <div class="row">
                     <div class="col-12 text-center">
-                      <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20"
-                        alt="">
-                      <span class="fs-07rem">Unconfirmed/Recommended Fee: {{transactionService.amountFormatterSimple(feeConfig.fee)}} XPX <br></span>
+                      <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
+                        width="20" alt="">
+                      <!-- {{feeConfig.fee}} -->
+                      <span class="fs-07rem">Unconfirmed/Recommended Fee: {{feeConfig.fee}} XPX <br></span>
+                      <!-- <span class="fs-07rem">Unconfirmed/Recommended Fee:
+                        {{transactionService.amountFormatterSimple(feeConfig.fee)}} XPX <br></span> -->
                     </div>
                   </div>
                 </div>
@@ -385,9 +338,10 @@
                 <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
                   <div class="row">
                     <div class="col-12 d-flex align-items-center">
-                      <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20"
-                        alt="">
-                      <span class="fs-07rem">LockFund: 10.000000 XPX <br> Unconfirmed/Recommended Fee: 0.044500 XPX</span>
+                      <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
+                        width="20" alt="">
+                      <span class="fs-07rem">LockFund: 10.000000 XPX <br> Unconfirmed/Recommended Fee: 0.044500
+                        XPX</span>
                     </div>
                   </div>
                 </div>
@@ -412,9 +366,9 @@
                     </ng-template>
                     <ng-template ng-footer-tmp>
                       <span class="fs-08rem color-error-message">
-                    Cosignatory has sufficient balance
-                    ({{transactionService.amountFormatterSimple(feeConfig.totalFee)}} XPX) to cover LockFund Fee
-                  </span>
+                        Cosignatory has sufficient balance
+                        ({{transactionService.amountFormatterSimple(feeConfig.totalFee)}} XPX) to cover LockFund Fee
+                      </span>
 
                     </ng-template>
                   </ng-select>
@@ -427,7 +381,8 @@
                 <div class="col-12 mx-auto">
                   <ng-select class="selectWrapper" [items]="otherCosignatorieList" [maxSelectedItems]="limitSelect-1"
                     bindLabel="label" labelForId="otherCosignatorie" [multiple]="true"
-                    formControlName="otherCosignatorie" bindValue="value" placeholder="Also I Will Sign Sith This Consignatories">
+                    formControlName="otherCosignatorie" bindValue="value"
+                    placeholder="Also I Will Sign Sith This Consignatories">
 
                   </ng-select>
                 </div>
