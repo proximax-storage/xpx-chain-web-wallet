@@ -46,7 +46,8 @@ import {
   AccountLinkTransaction,
   LinkAction,
   Crypto, 
-  MultisigAccountGraphInfo
+  MultisigAccountGraphInfo, 
+  WalletAlgorithm
 } from 'tsjs-xpx-chain-sdk';
 import { BlockchainNetworkType } from 'tsjs-chain-xipfs-sdk';
 import { Observable } from 'rxjs/internal/Observable';
@@ -270,7 +271,7 @@ export class ProximaxProvider {
       iv,
     };
 
-    Crypto.passwordToPrivateKey(common, wallet, 'pass:bip32');
+    Crypto.passwordToPrivateKey(common, wallet, WalletAlgorithm.Pass_bip32);
     return common.privateKey;
   }
 
@@ -835,6 +836,16 @@ export class ProximaxProvider {
         return false;
       }
     }
+  }
+
+  /**
+   *
+   *
+   * @returns {WalletAlgorithm}
+   * @memberof ProximaxProvider
+   */
+  static getWalletAlgorithm(){
+    return WalletAlgorithm;
   }
 }
 

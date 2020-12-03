@@ -13,7 +13,6 @@ import { ServicesModuleService, StructureService } from '../../../servicesModule
 import { SharedService } from '../../../shared/services/shared.service';
 import { WalletService } from '../../../wallet/services/wallet.service';
 
-
 @Component({
   selector: 'app-selection-wallet-creation-type',
   templateUrl: './selection-wallet-creation-type.component.html',
@@ -88,7 +87,7 @@ export class SelectionWalletCreationTypeComponent implements OnInit {
           };
           accounts.push({
             address: wallet.address.plain(),
-            algo: "pass:bip32",
+            algo: ProximaxProvider.getWalletAlgorithm().Pass_bip32,
             brain: true,
             default: (index === 0),
             encrypted: wallet.encryptedPrivateKey.encryptedKey,

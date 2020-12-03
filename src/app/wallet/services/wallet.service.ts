@@ -200,7 +200,7 @@ export class WalletService {
    */
   buildAccount (data: any): AccountsInterface {
     return {
-      algo: 'pass:bip32',
+      algo: ProximaxProvider.getWalletAlgorithm().Pass_bip32,
       address: data.address,
       brain: true,
       default: data.byDefault,
@@ -1206,7 +1206,7 @@ export interface TransactionsNis1Interface {
 
 export interface AccountsInterface {
   address: string;
-  algo: string;
+  algo: number;
   brain: boolean;
   default: boolean;
   encrypted: string;
