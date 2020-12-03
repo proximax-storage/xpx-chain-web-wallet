@@ -40,6 +40,7 @@ import { NodeService } from 'src/app/servicesModule/services/node.service';
 })
 export class EditAccountMultisigComponent implements OnInit {
   @ViewChild('modalContact', { static: true }) modalContact: ModalDirective;
+  @ViewChild('scheme', { static: true }) scheme: ModalDirective;
   blockSend: boolean;
   paramConvert: ToAggregateTransactionEditModifyMultisig;
   showSignCosignatory = false;
@@ -509,6 +510,15 @@ export class EditAccountMultisigComponent implements OnInit {
       this.showContacts = !this.showContacts;
       this.modalContact.show();
     }
+  }
+  /**
+   *
+   *
+   * @memberof ConvertAccountMultisigComponent
+   */
+  showScheme () {
+
+      this.scheme.show();
   }
   /**
    *
