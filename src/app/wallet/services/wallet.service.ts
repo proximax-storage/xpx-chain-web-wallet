@@ -200,7 +200,7 @@ export class WalletService {
    */
   buildAccount (data: any): AccountsInterface {
     return {
-      algo: ProximaxProvider.getWalletAlgorithm().Pass_bip32,
+      algo: "pass:bip32",
       address: data.address,
       brain: true,
       default: data.byDefault,
@@ -422,7 +422,17 @@ export class WalletService {
     // console.log(acct, common);
     try {
       if (acct && common && acct.encrypted !== '') {
-        if (!Crypto.passwordToPrivateKey(common, acct, alg)) {
+
+        var algo = null;
+
+        if(alg === "pass:bip32"){
+          algo = ProximaxProvider.getWalletAlgorithm().Pass_bip32;
+        }
+        else{
+          algo = alg;
+        }
+
+        if (!Crypto.passwordToPrivateKey(common, acct, algo)) {
           this.sharedService.showError('', 'Invalid password');
           return false;
         }
@@ -1206,7 +1216,7 @@ export interface TransactionsNis1Interface {
 
 export interface AccountsInterface {
   address: string;
-  algo: number;
+  algo: string;
   brain: boolean;
   default: boolean;
   encrypted: string;
