@@ -328,15 +328,16 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
    * @memberof CreateTransferComponent
    */
   async verifyRecipientInfo(recipient: string) {
+    console.log('recipient', recipient)
     // console.log(recipient);
     const invalidPublicKey = '0000000000000000000000000000000000000000000000000000000000000000'
     const net = environment.typeNetwork.value;
     let address;
 
-    address = this.proximaxProvider.createFromRawAddress(recipient);
+    address = this.proximaxProvider.createFromRawAddress(recipient.toLocaleUpperCase());
 
     try {
-      if ([null].includes(recipient) === false) {
+      if ([null].includes(recipient.toLocaleUpperCase()) === false) {
         const accountInfo = await this.proximaxProvider.getAccountInfo(address).toPromise();
         if (accountInfo.publicKey === invalidPublicKey) {
           throw new Error(`The receiver's public key is not valid for sending encrypted messages`);
@@ -1072,13 +1073,17 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
    * @memberof CreateTransferComponent
    */
   subscribeValue() {
-    this.formTransfer.get('accountRecipient').valueChanges.subscribe(value => {
+    this.formTransfer.get('accountRecipient').valueChanges.subscribe(recipient => {
+      let value = '';
       let valueWithoutSpaces = '';
-      if (value) {
+      if (recipient) {
+        value = recipient.toLocaleUpperCase();
         valueWithoutSpaces = value.trim();
       }
 
-      const accountRecipient = (valueWithoutSpaces !== undefined && valueWithoutSpaces !== null && valueWithoutSpaces !== '') ? valueWithoutSpaces.split('-').join('') : '';
+      const accountRecipient = (
+        valueWithoutSpaces !== undefined && valueWithoutSpaces !== null && valueWithoutSpaces !== ''
+      ) ? valueWithoutSpaces.split('-').join('') : '';
       //  const accountSelected = (value) ? value.split('-').join('') : '';
       const contact = this.formTransfer.get('contact').value;
       const accountSelected = (contact !== undefined && contact !== null && contact !== '') ? contact.value.split('-').join('') : '';
