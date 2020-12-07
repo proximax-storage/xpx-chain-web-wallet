@@ -91,16 +91,16 @@
         <!-- COSIGNATORY ACCOUNT -->
         <ng-container *ngIf="listCosignatorie.length === 1">
           <div class="col-11 col-md-10 col-lg-8 mx-auto d-flex justify-content-start pt-1-5rem pb-05rem lh-1em cursor-p"
-            [title]="'Address: '+cosignatorie.address">
+            [title]="'Address: '+cosignatorie?.account?.address">
             <span class="fs-08rem fw-400">Cosignatory: &nbsp;</span>
-            <span class="fs-08rem">{{cosignatorie.name}}</span>
+            <span class="fs-08rem">{{cosignatorie?.label}}</span>
           </div>
 
           <!-- INSUFFICIENT BALANCE -->
           <ng-container *ngIf="listCosignatorie[0].disabled">
             <div
               class="col-11 col-md-10 col-lg-8 mx-auto d-flex justify-content-start pt-1-5rem pb-05rem lh-1em cursor-p"
-              [title]="'Address: '+cosignatorie.address">
+              [title]="'Address: '+cosignatorie?.account?.address">
               <span class="fs-08rem fw-400 color-error-message">Cosignatory: &nbsp;</span>
               <span class="fs-08rem color-error-message">{{listCosignatorie[0].info}}</span>
             </div>
