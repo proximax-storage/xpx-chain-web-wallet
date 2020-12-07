@@ -1,3 +1,31 @@
+<!-- RELEASE TESTNET v0.5.3 -->
+## [Version: 0.5.3](https://github.com/proximax-storage/xpx-chain-web-wallet/releases/tag/release-v0.5.3)
+<h2>Update</h2>
+<ul>
+<h3>Multisig-multilevel</h3>
+ <li>Add an account as a consignee of an account</li>
+<li>Add a multi-signature account as a consignee of an account</li>
+<li>Pre-visualization of the entire multi-signature scheme</li>
+<li>Edit a multi-signature account</li>
+<li>Multi-level support </li>
+<h3>Account</h3>
+<li>Identify and label multi-level accounts</li>
+</ul>
+
+<h2>Fix bug</h2>
+<ul>
+<h3>Multisig-Account</h3>
+  <li>Import an existing multi-signature account into the wallet</li>
+</ul>
+
+<h2>Feateures</h2>
+<ul>
+<h3>Partial</h3>
+  <li>Sign transactions with multi-level accounts</li>
+<h3>Trasfer</h3>
+  <li>Sign transactions with multi-level accounts</li>
+</ul>
+
 <!-- RELEASE TESTNET v0.1.7 -->
 ## [Version: 0.1.7](https://github.com/proximax-storage/xpx-chain-web-wallet/releases/tag/0.1.7)
 
