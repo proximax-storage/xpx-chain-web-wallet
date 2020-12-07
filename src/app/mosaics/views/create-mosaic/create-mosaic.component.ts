@@ -109,7 +109,8 @@ export class CreateMosaicComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
-    this.transactionHttp = new TransactionHttp(environment.protocol + '://' + `${this.nodeService.getNodeSelected()}`);
+    // update protocol
+    this.transactionHttp = new TransactionHttp(this.sharedService.buildUrlBlockchain(`${this.nodeService.getNodeSelected()}`, this.sharedService.hrefProtocol()));
     this.createForm();
     this.subscribeValue();
 

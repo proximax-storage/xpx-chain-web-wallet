@@ -98,7 +98,8 @@ export class CreateNamespaceComponent implements OnInit, OnDestroy {
     this.createForm();
     this.subscribeValueChange();
     this.showSelectAccount = true;
-    this.transactionHttp = new TransactionHttp(environment.protocol + '://' + `${this.nodeService.getNodeSelected()}`);
+    // update protocol
+    this.transactionHttp = new TransactionHttp(this.sharedService.buildUrlBlockchain(`${this.nodeService.getNodeSelected()}`, this.sharedService.hrefProtocol()));
     /*
     this.amountAccount = this.walletService.getAmountAccount();
     this.durationByBlock = this.transactionService.calculateDurationforDay(this.namespaceForm.get('duration').value).toString();

@@ -279,7 +279,8 @@ export class SidebarMainComponent implements OnInit {
    */
   getNodeSeletcd() {
     this.subscription.push(this.nodeService.nodeObsSelected.subscribe(node => {
-      this.nodeSelected = `${environment.protocol}://${node}`;
+       // update protocol
+      this.nodeSelected = this.sharedService.buildUrlBlockchain(node, this.sharedService.hrefProtocol());
     }));
   }
 

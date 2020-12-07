@@ -102,7 +102,8 @@ export class ExtendDurationNamespaceComponent implements OnInit, OnDestroy {
 
 
     this.configurationForm = this.sharedService.configurationForm;
-    this.transactionHttp = new TransactionHttp(environment.protocol + '://' + `${this.nodeService.getNodeSelected()}`);
+     // update protocol
+     this.transactionHttp = new TransactionHttp(this.sharedService.buildUrlBlockchain(`${this.nodeService.getNodeSelected()}`, this.sharedService.hrefProtocol()));
     this.fee = '0.000000';
     this.createForm();
     // this.getNamespaces();

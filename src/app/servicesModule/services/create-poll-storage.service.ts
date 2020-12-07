@@ -13,6 +13,7 @@ import { ProximaxProvider } from '../../shared/services/proximax.provider';
 import { environment } from '../../../environments/environment';
 import { WalletService } from '../../wallet/services/wallet.service';
 import { SharedService } from '../../shared/services/shared.service';
+import { NodeService } from '../../servicesModule/services/node.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -33,36 +34,30 @@ export class CreatePollStorageService {
     private proximaxProvider: ProximaxProvider,
     private sharedService: SharedService,
     private walletService: WalletService,
+    private nodeService: NodeService
   ) {
     this.connectionStorage();
   }
 
-
-
+  // update protocol
   connectionStorage() {
     const blockChainNetworkType = this.proximaxProvider.getBlockchainNetworkType(this.walletService.currentAccount.network);
-    const blockChainHost = environment.blockchainConnection.host;
-    const blockChainPort = environment.blockchainConnection.port;
-    const blockChainProtocol = environment.blockchainConnection.protocol === 'https' ? Protocol.HTTPS : Protocol.HTTP;
-
-    const storageHost = environment.storageConnection.host;
-    const storagePort = environment.storageConnection.port;
-    const storageOptions = environment.storageConnection.options;
+    const blockchainConnection = this.sharedService.splitURL(
+      this.sharedService.buildUrlBlockchain(`${this.nodeService.getNodeSelected()}`, this.sharedService.hrefProtocol())
+      )
+    let blockChainProtocol = blockchainConnection.protocol === 'https' ? Protocol.HTTPS : Protocol.HTTP;
+    const storageConnection = this.sharedService.splitURL(
+      this.sharedService.buildUrlStorage(`${environment.storageConnection.host}`, this.sharedService.hrefProtocol())
+      )
+    const options =  environment.storageConnection.options
+    options.protocol = storageConnection.protocol
     const connectionConfig = ConnectionConfig.createWithLocalIpfsConnection(
-      new BlockchainNetworkConnection(blockChainNetworkType, blockChainHost, blockChainPort, blockChainProtocol),
-      new IpfsConnection(storageHost, storagePort, storageOptions));
-    const storageHostUploader = environment.storageConnectionUnload.host;
-    const storagePortUploader = environment.storageConnectionUnload.port;
-    const storageOptionsUploader = environment.storageConnectionUnload.options;
-    const connectionConfigUploader = ConnectionConfig.createWithLocalIpfsConnection(
-      new BlockchainNetworkConnection(blockChainNetworkType, blockChainHost, blockChainPort, blockChainProtocol),
-      new IpfsConnection(storageHostUploader, storagePortUploader, storageOptionsUploader));
-    this.uploader = new Uploader(connectionConfigUploader);
+      new BlockchainNetworkConnection(blockChainNetworkType, blockchainConnection.domainIp, Number(blockchainConnection.port), blockChainProtocol),
+      new IpfsConnection(storageConnection.domainIp, Number(storageConnection.port), options)
+    );
+    this.uploader = new Uploader(connectionConfig);
     this.searcher = new Searcher(connectionConfig);
     this.downloader = new Downloader(connectionConfig);
-
-    console.log('downloader', this.downloader)
-    console.log('uploader', this.uploader)
   }
 
 

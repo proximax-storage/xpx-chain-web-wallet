@@ -27,6 +27,7 @@ import { NodeService } from '../../servicesModule/services/node.service';
 import { environment } from '../../../environments/environment';
 import { MosaicService } from '../../servicesModule/services/mosaic.service';
 import { NamespacesService } from '../../servicesModule/services/namespaces.service';
+import { SharedService } from '../../shared/services/shared.service';
 import {
   WalletService,
   AccountsInfoInterface,
@@ -128,7 +129,8 @@ export class TransactionsService {
     public nodeService: NodeService,
     private walletService: WalletService,
     private mosaicServices: MosaicService,
-    private namespaceService: NamespacesService
+    private namespaceService: NamespacesService,
+    private sharedService: SharedService,
   ) {
     this.monitorNewAccounts();
   }
@@ -391,9 +393,9 @@ export class TransactionsService {
 
   /**
    *
-   */
+   */ // update protocol
   buildTransactionHttp(protocol = environment.protocol, node = this.nodeService.getNodeSelected()) {
-    return new TransactionHttp(protocol + '://' + `${node}`);
+    return new TransactionHttp(this.sharedService.buildUrlBlockchain(node, this.sharedService.hrefProtocol()));
   }
 
   /**

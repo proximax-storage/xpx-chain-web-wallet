@@ -98,6 +98,7 @@ export class NodeService {
     this.nodeObsSelected.subscribe(
       next => {
         this.setSelectedNodeStorage(next);
+        console.log('setSelectedNodeStorage', next)
         this.proximaxProvider.initInstances(next);
         // this.dataBridge.closeConenection();
         // this.dataBridge.connectnWs(next);

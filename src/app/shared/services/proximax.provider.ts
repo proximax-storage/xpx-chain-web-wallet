@@ -53,7 +53,7 @@ import { mergeMap } from 'rxjs/operators';
 import { MosaicDefinitionTransaction } from 'tsjs-xpx-chain-sdk/dist/src/model/transaction/MosaicDefinitionTransaction';
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
-
+import { SharedService } from './shared.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -72,7 +72,7 @@ export class ProximaxProvider {
   namespaceService: NamespaceService;
   transactionStatusError: TransactionStatusError;
 
-  constructor(public http: HttpClient, ) {
+  constructor(public http: HttpClient,  private sharedService: SharedService,) {
   }
 
   /**
@@ -539,7 +539,7 @@ export class ProximaxProvider {
    * @param param
    */
   getTransactionInformation(hash: string, node = ''): any { // Observable<Transaction> {
-    const transaction: TransactionHttp = (node === '') ? this.transactionHttp : new TransactionHttp(environment.protocol + '://' + `${node}`);
+    const transaction: TransactionHttp = (node === '') ? this.transactionHttp : new TransactionHttp(node);
     return transaction.getTransaction(hash);
   }
 
@@ -657,7 +657,8 @@ export class ProximaxProvider {
   * @memberof ProximaxProvider
   */
   initInstances(url: string) {
-    this.url = `${environment.protocol}://${url}`;
+    // update protocol
+    this.url = this.sharedService.buildUrlBlockchain(url, this.sharedService.hrefProtocol())
     this.blockHttp = new BlockHttp(this.url);
     this.blockchainHttp = new ChainHttp(this.url); // Update-sdk-dragon
     this.accountHttp = new AccountHttp(this.url);
@@ -666,6 +667,9 @@ export class ProximaxProvider {
     this.mosaicService = new MosaicService(this.accountHttp, this.mosaicHttp);
     this.namespaceService = new NamespaceService(this.namespaceHttp);
     this.transactionHttp = new TransactionHttp(this.url);
+    // this.getBlockInfo().subscribe (v=> {
+    //   console.log('v', v)
+    // })
   }
 
   /**

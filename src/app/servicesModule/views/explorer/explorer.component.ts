@@ -126,7 +126,8 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
         // From publickey
         if (this.paramSearch.length === 64) {
           const publicAccount = this.proximaxProvider.createPublicAccount(this.paramSearch, this.walletService.currentAccount.network);
-          this.proximaxProvider.getTransactionsFromAccount(publicAccount, this.nodeService.getNodeSelected()).subscribe(
+          // update protocol
+          this.proximaxProvider.getTransactionsFromAccount(publicAccount, this.sharedService.buildUrlBlockchain(`${this.nodeService.getNodeSelected()}`, this.sharedService.hrefProtocol())).subscribe(
             resp => {
               this.searching = false;
               this.buildTransaction(resp);
@@ -143,7 +144,8 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
       } else if (this.typeSearch === 'hash') {
         // From hash
         if (this.paramSearch.length === 64) {
-          this.proximaxProvider.getTransactionInformation(this.paramSearch, this.nodeService.getNodeSelected()).subscribe(
+          // update protocol
+          this.proximaxProvider.getTransactionInformation(this.paramSearch, this.sharedService.buildUrlBlockchain(`${this.nodeService.getNodeSelected()}`, this.sharedService.hrefProtocol())).subscribe(
             resp => {
               // console.log('with hash info', resp);
               this.searching = false;

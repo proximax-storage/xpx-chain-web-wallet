@@ -9,7 +9,7 @@ import { TransactionsService, TransactionsInterface } from '../../../transaction
 import { ModalDirective } from 'ng-uikit-pro-standard';
 import { PaginationInstance } from 'ngx-pagination';
 import * as JSZip from 'jszip';
-import { environment } from '../../../../environments/environment';
+import { SharedService } from '../../../shared/services/shared.service';
 import { StorageService } from '../../../storage/views/services/storage.service';
 
 @Component({
@@ -55,9 +55,11 @@ export class AuditApostilleComponent implements OnInit {
     private proximaxProvider: ProximaxProvider,
     private nodeService: NodeService,
     private transactionService: TransactionsService,
-    private storageService: StorageService
+    private storageService: StorageService,
+    private sharedService: SharedService,
   ) {
-    this.url = `${environment.protocol}://${this.nodeService.getNodeSelected()}`;
+    // update protocol
+    this.url = this.sharedService.buildUrlBlockchain(`${this.nodeService.getNodeSelected()}`, this.sharedService.hrefProtocol())
   }
 
   ngOnInit() { }

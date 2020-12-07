@@ -52,8 +52,8 @@ export class BlockchainComponent implements OnInit {
 
   ngOnInit() {
 
-
-    this.getNodeSelected = `${environment.protocol}://${this.nodeService.getNodeSelected()}`
+    // update protocol
+    this.getNodeSelected = this.sharedService.buildUrlBlockchain(`${this.nodeService.getNodeSelected()}`, this.sharedService.hrefProtocol())
     this.createForm();
     this.getAllNodes();
 
@@ -78,14 +78,13 @@ export class BlockchainComponent implements OnInit {
     // const listNodeStorage = Json.
     const listNodeStorage: any = this.nodeService.getAllNodes();
 
-
-    // environment.protocol + "://" + `${this.nodeService.getNodeSelected()}`
     if (listNodeStorage.length > 0) {
       for (let element of listNodeStorage) {
         this.arrayNodes.push({
-          label: `${environment.protocol}://${element.label}`,
+          label: this.sharedService.buildUrlBlockchain(`${element.label}`, this.sharedService.hrefProtocol()),
           value: element.value,
-          disabled: Boolean(`${environment.protocol}://${element.label}` === `${environment.protocol}://${this.nodeService.getNodeSelected()}`),
+          // update protocol
+          disabled: Boolean( this.sharedService.buildUrlBlockchain(`${element.label}`, this.sharedService.hrefProtocol()) === this.sharedService.buildUrlBlockchain(`${this.nodeService.getNodeSelected()}`, this.sharedService.hrefProtocol())),
           isDefault: element.isDefault
         })
       }
@@ -108,7 +107,8 @@ export class BlockchainComponent implements OnInit {
 
   nodeSelect(event) {
     this.nodeService.addNewNodeSelected(event.value);
-    this.nodeForm.get('nodeSelect').patchValue(`${environment.protocol}://${this.nodeService.getNodeSelected()}`)
+    // update protocol
+    this.nodeForm.get('nodeSelect').patchValue(this.sharedService.buildUrlBlockchain(`${this.nodeService.getNodeSelected()}`, this.sharedService.hrefProtocol()))
     // this.getBlock();
     this.getAllNodes();
     this.dashboardService.destroySubscription();
