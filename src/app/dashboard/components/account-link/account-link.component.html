@@ -1,0 +1,52 @@
+<div class="row">
+  <div class="col-12">
+    <div class="row">
+      <!-- name -->
+      <div class="col-12">
+        <span class="fw-600 fs-1-2rem">{{accountLink.nameType}}</span>
+      </div>
+
+      <!-- Timestamp -->
+      <div class="col-12" *ngIf="accountLink?.timestamp">
+        <span class="color-black fs-07rem fw-500 w-w-b-w">{{accountLink?.timestamp}}</span>
+      </div>
+
+      <!-- Fee -->
+      <div class="col-12 mt-1rem">
+        <span class="fw-600 fs-095rem">Effective Fee:&nbsp;&nbsp;</span>
+        <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
+        <span class="fs-095rem color-black">{{accountLink?.feePart.part1}}</span>
+        <span class="fs-075rem color-black">{{accountLink?.feePart.part2}}</span>
+        <span class="fs-095rem color-black"> XPX </span>
+      </div>
+
+      <!-- HEIGHT -->
+      <ng-container *ngIf="accountLink?.data.transactionInfo.height.compact() > 0">
+        <div class="col-12 mt-1rem lh-1em">
+          <span class="fw-600 fs-08rem color-black">Height:&nbsp;&nbsp;</span>
+          <span
+            class="fs-07rem fw-400 color-black">{{accountLink?.data.transactionInfo.height.compact()}}</span>
+        </div>
+      </ng-container>
+
+      <!-- TYPE -->
+      <div class="col-12 lh-1em">
+        <span class="fw-600 fs-08rem color-black">Type:&nbsp;&nbsp;</span>
+        <span class="fs-07rem fw-400 color-black">{{typeTransactionHex}}</span>
+      </div>
+
+      <!-- Link Action -->
+      <div class="col-12 lh-1em">
+        <span class="fw-600 fs-08rem color-black">Link Action:&nbsp;&nbsp;</span>
+        <span class="fs-07rem fw-400 color-black">{{accountLink?.data['linkAction'] === 0 ? 'Link' : 'Unlink' }}</span>
+      </div>
+
+      <!-- Remote Account Key -->
+      <div class="col-12 mt-03rem">
+        <span class="fw-600 fs-08rem">Delegated account Public Key:&nbsp;&nbsp;</span>
+        <span class="fs-07rem w-w-b-w d-flex">{{accountLink?.data['remoteAccountKey'].toString(16).toUpperCase()}}</span>
+      </div>
+
+    </div>
+  </div>
+</div>

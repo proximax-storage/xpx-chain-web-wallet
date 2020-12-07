@@ -102,6 +102,10 @@ export class TransactionsService {
     lock: {
       id: TransactionType.LOCK,
       name: 'LockFund'
+    },
+    accountLink:{
+      id: TransactionType.LINK_ACCOUNT,
+      name: 'Account Link'
     }
     /*secretLock: {
        id: TransactionType.SECRET_LOCK,

@@ -1,0 +1,12 @@
+.pb-01rem{
+    padding-bottom: 1rem;
+}
+
+.pb-02rem{
+    padding-bottom: 2rem;
+}
+
+.font-small {
+    flex-wrap: wrap !important;
+    word-break: break-all;
+  }

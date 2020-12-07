@@ -9,7 +9,7 @@ export const environment = {
   production: true,
   routeNodesJson: 'testnet',
   itemBooksAddress: 'sw-books-testnet',
-  version: '0.4.24',
+  version: '0.5.2',
   cacheVersion: '01',
   nameKeyBlockStorage: `sw-blocks`,
   nameKeyNodeSelected: `sw-selected-node-testnet`,
@@ -66,9 +66,9 @@ export const environment = {
   },
   storageConnection: {
     host: 'ipfs1-dev.xpxsirius.io',
-    port: 80,
+    port: 443,
     options: {
-      protocol: 'http'
+      protocol: 'https'
     }
 
   },

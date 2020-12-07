@@ -32,6 +32,7 @@ import { AttestationTypeComponent } from '../dashboard/components/attestation-ty
 import { VoteTypeComponent } from '../dashboard/components/vote-type/vote-type.component';
 import { SwapCertificateComponent } from '../servicesModule/components/swap-certificate/swap-certificate.component';
 import { TransferTypeBondedComponent } from '../dashboard/components/transfer-type-bonded/transfer-type-bonded.component';
+import { AccountLinkComponent } from '../dashboard/components/account-link/account-link.component';
 import { FilterObjectPipe } from '../shared/pipes/filter-object.pipe';
 import { BoxDataSignerHashComponent } from '../dashboard/components/box-data-signer-hash/box-data-signer-hash.component';
 import { AuthComponent } from '../auth/views/auth/auth.component';
@@ -76,8 +77,8 @@ const components = [
   SwapCertificateComponent,
   TransferTypeBondedComponent,
   BoxDataSignerHashComponent,
-  SelectAccountComponent
-
+  SelectAccountComponent,
+  AccountLinkComponent
 ]
 
 const moduls = [

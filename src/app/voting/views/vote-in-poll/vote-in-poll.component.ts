@@ -213,6 +213,29 @@ export class VoteInPollComponent implements OnInit {
     return array
   }
 
+  countNewVoteTransaction(array: Transaction[], voteTransaction: any): number {
+    var newVoteTransactions = array.filter(function (current) {
+      var isNew = !voteTransaction[current.signer.publicKey] || false;
+      voteTransaction[current.signer.publicKey] = true;
+      return isNew;
+    });
+    
+    return newVoteTransactions.length;
+  }
+
+  async getMoreTransaction(publicAccountOfSelectedOption: PublicAccount, id: string): Promise<Transaction[]>{
+
+    return new Promise((resolve, reject) => {
+      this.proximaxProvider.getTransactionsFromAccountId(publicAccountOfSelectedOption, id).subscribe(
+        (next: Transaction[]) => {
+  
+          resolve(next);
+  
+        }, dataError => {
+          reject(dataError);
+        });
+    });
+  }
 
   getResult(param: string) {
 
@@ -231,17 +254,38 @@ export class VoteInPollComponent implements OnInit {
         //Obtiene todas las transacciones del PollOption
 
         this.proximaxProvider.getTransactionsFromAccount(publicAccountOfSelectedOption).subscribe(
-          (next: Transaction[]) => {
+          async (next: Transaction[]) => {
 
-            let lengthVote = 0
+            var lengthVote = 0
+            var allVoteTransactions = {};
+            var transactionsLengthFromResponse = 0;
             if (next.length > 0) {
-              next = next.filter(element => element.type === 16705)
-              for (var index = 0; index < this.filterTransactions(next).length; index++) {
-                const transaction = this.filterTransactions(next)[index];
-                // if (this.walletService.currentAccount.publicAccount.publicKey === transaction.signer.publicKey) {
-                lengthVote++
+              
+              transactionsLengthFromResponse = next.length;
+              var lastTransaction = next.slice(-1).pop();
+              var lastId = lastTransaction.transactionInfo.id;
 
-                // }
+              next = next.filter(element => element.type === 16705)
+
+              lengthVote += this.countNewVoteTransaction(next, allVoteTransactions);
+
+              while(transactionsLengthFromResponse === 100 && lastId != ""){
+                var newTransaction = [];
+                newTransaction = await this.getMoreTransaction(publicAccountOfSelectedOption, lastId);
+                transactionsLengthFromResponse = newTransaction.length;
+                
+                if(newTransaction.length > 0){
+                  lastTransaction = newTransaction.slice(-1).pop();
+                  lastId = lastTransaction.transactionInfo.id;
+
+                  newTransaction = newTransaction.filter(element => element.type === 16705)
+
+                  lengthVote += this.countNewVoteTransaction(newTransaction, allVoteTransactions);
+                }
+                else{
+                  transactionsLengthFromResponse = 0;
+                  lastId = "";
+                }
               }
 
             }
