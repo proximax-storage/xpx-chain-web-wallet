@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { PublicAccount } from 'tsjs-xpx-chain-sdk';
+import { PublicAccount, Account } from 'tsjs-xpx-chain-sdk';
 import { Router } from '@angular/router';
 import { PaginationInstance } from 'ngx-pagination';
 import { Subscription } from 'rxjs';
@@ -48,10 +48,6 @@ export class PollsComponent implements OnInit {
   subscription: Subscription
   filterObjectSelect: any = [];
   showSearch: boolean;
-  currentSearchingAddress: string = "";
-  lastTransactionId: string = "";
-  isLoadMore = false;
-  isLoading = false;
 
   constructor(
     private router: Router,
@@ -74,7 +70,6 @@ export class PollsComponent implements OnInit {
     // if(publicAccount.publicKey === this.publicKeyNotFound) {
     // console.log('load transaction by address');
     const address = environment.pollsContent.address_public_test;
-    this.currentSearchingAddress = address;
     this.loadTransactionsStorage(null, this.proximaxProvider.createFromRawAddress(address).pretty());
     // } else {
     //console.log('load transaction by public account');
@@ -84,22 +79,8 @@ export class PollsComponent implements OnInit {
 
   }
 
-  ngOnDestroy() {
-    this.getPoll = false;
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
-
-
-    this.promosePoadTransactions.finally()
-    // this.sub.unsubscribe();
-  }
-
-  loadTransactionsStorage(publicAccount?: PublicAccount, address?: string, fromTransactionId?: string) {
-
-    this.isLoading = true;
-
-    this.promosePoadTransactions = this.createPollStorageService.loadTransactions(publicAccount, address, fromTransactionId).then(resp => {
+  loadTransactionsStorage(publicAccount?: PublicAccount, address?: string) {
+    this.promosePoadTransactions = this.createPollStorageService.loadTransactions(publicAccount, address).then(resp => {
       // console.log("respondio aqui", resp)
       this.showBarProgressone = false;
       if (this.getPoll) {
@@ -108,24 +89,15 @@ export class PollsComponent implements OnInit {
           this.getPollStorage();
         } else {
 
-          if(!this.isLoadMore){
-            this.pollResult = [];
+          this.pollResult = [];
 
-            this.cantPolls = 0;
-          }
-          else{
-            this.sharedService.showInfo("", "No more polls found");
-          }
+          this.cantPolls = 0;
         }
       }
     });
-  }
 
-  loadMore(){
-    this.isLoadMore = true;
-    this.loadTransactionsStorage(null, this.proximaxProvider.createFromRawAddress(this.currentSearchingAddress).pretty(), this.lastTransactionId);
-  }
 
+  }
   setSelectFilter() {
     this.filterObjectSelect = [
       { value: 'All', label: 'All', disabled: false, selected: true },
@@ -137,15 +109,25 @@ export class PollsComponent implements OnInit {
     ]
 
   }
-  
+  ngOnDestroy() {
+    this.getPoll = false;
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
+
+
+    this.promosePoadTransactions.finally()
+    // this.sub.unsubscribe();
+  }
+
   filterSelected(event) {
     this.placeholderText = 'Search'
     this.showSearch = false;
     this.keyObjectValue = (event) ? event.value : 'All';
     this.filterChange(this.filter)
   }
-
   filterChange(event) {
+
 
     let key = this.keyObjectValue;
     if (key !== 'address') {
@@ -159,9 +141,9 @@ export class PollsComponent implements OnInit {
       this.showSearch = true;
       this.placeholderText = 'Enter Address Private Poll'
       this.searchAddress(event)
+
     }
   }
-
   searchAddress(address: string) {
     const addressTrimAndUpperCase = address
       .trim()
@@ -172,16 +154,11 @@ export class PollsComponent implements OnInit {
 
     if (new String(addressTrimAndUpperCase).length < 40 || new String(addressTrimAndUpperCase).length > 40)
       return this.sharedService.showError('', 'Address has to be 40 characters long');
-    
     const currentAccount = Object.assign({}, this.walletService.getCurrentAccount());
-    
     if (!this.proximaxProvider.verifyNetworkAddressEqualsNetwork(
       this.proximaxProvider.createFromRawAddress(currentAccount.address).plain(), address)
     )
       return this.sharedService.showError('', 'Invalid Address');
-
-    this.resetResults();
-    this.currentSearchingAddress = address;
     this.showBarProgressone = true;
     // return this.proximaxProvider.getAccountInfo(this.proximaxProvider.createFromRawAddress(address)).subscribe(
     //   accountInfo => {
@@ -204,19 +181,10 @@ export class PollsComponent implements OnInit {
 
   }
 
-  resetResults(){
-    this.lastTransactionId = null;
-    this.isLoadMore = false;
-    this.pollResult = [];
-    this.cantPolls = 0;
-  }
+
 
   routerRouterLink(link: string) {
     // Create Book logic
-    if(!link || link === ""){
-      this.sharedService.showError('', `Something where wrong, please try again`);
-    }
-
     if (this.walletService.canVote) {
       this.router.navigate([link]);
     } else {
@@ -233,16 +201,16 @@ export class PollsComponent implements OnInit {
   */
   getPollStorage() {
     this.showRefresh = false;
+    this.pollResult = []
 
     const resultData: PollInterface[] = [];
+
 
     this.subscription = this.createPollStorageService.getPolls$().subscribe(data => {
       // let endDate = new Date(data.result.endDate).getTime();
       // let starDate = new Date(data.result.startDate).getTime();
       // const now = new Date().getTime();
       //console.log("data result:", data)
-      this.lastTransactionId = data.toTransactionId;
-
       resultData.push(data.result);
       if (resultData.length > 0) {
         resultData.map(elemt => {
@@ -255,12 +223,12 @@ export class PollsComponent implements OnInit {
         });
         this.showBarProgress = true;
         this.resultLength = resultData.length;
-        const progress = this.resultLength * 100 / data.size;
+        this.cantPolls = data.size;
+        const progress = this.resultLength * 100 / this.cantPolls;
         this.progressBar = Math.round(progress * 100) / 100;
-        this.pollResult.push(data.result);
-        //this.pollResult.sort(this.compareCreatedDate);
+        this.pollResult = resultData
 
-        if (resultData.length === data.size) {
+        if (resultData.length === this.cantPolls) {
 
           setTimeout(() => {
             this.objectValue = undefined;
@@ -269,39 +237,20 @@ export class PollsComponent implements OnInit {
           // this.subscription.unsubscribe();
           this.showRefresh = true;
           this.showBarProgress = false;
-          this.isLoading = false;
-
-          if (this.subscription) {
-            this.subscription.unsubscribe();
-          }
-        }
-
-        if(resultData.length === 1){
-          this.cantPolls += data.size;
         }
       }
     });
   }
 
-  compareCreatedDate( a, b ) {
-    if ( a.createdDate < b.createdDate ){
-      return 1;
-    }
-    if ( a.createdDate > b.createdDate ){
-      return -1;
-    }
-    return 0;
-  }
+
 
   refreshData(event) {
-    this.resetResults();
-    this.filter = '';
+    this.filter = ''
     // this.filterChange('')
     // this.setSelectFilter()
     if (this.showRefresh) {
       this.showRefresh = false;
       const address = environment.pollsContent.address_public_test
-      this.currentSearchingAddress = address;
       // const publicAccount = PublicAccount.createFromPublicKey(environment.pollsContent.public_key, this.walletService.currentAccount.network)
       this.createPollStorageService.loadTransactions(null, this.proximaxProvider.createFromRawAddress(address).pretty()).then(resp => {
         this.showBarProgressone = false;

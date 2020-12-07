@@ -49,12 +49,6 @@ export class ServicesBoxComponent implements OnInit {
           '',
           '',
           AppConfig.routes.MultiSign,
-        ), multiSign2: this.services.buildStructureService(
-          'Multi-level multisig account (MLMA)',
-          true,
-          '',
-          '',
-          AppConfig.routes.MultisigMultiLevel,
         ), restrinctions: this.services.buildStructureService(
           'Restrictions',
           false,

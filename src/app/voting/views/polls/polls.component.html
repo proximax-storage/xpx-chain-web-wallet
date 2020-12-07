@@ -48,7 +48,7 @@
             </div> -->
 
             <div class="col-12 col-sm-2">
-              <button (click)="refreshData($event)" [disabled]="isLoading" mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
+              <button (click)="refreshData($event)" mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
                 size="sm">
                 <span class="fs-1-2em color-white">Refresh</span>
               </button>
@@ -93,7 +93,7 @@
           </thead>
 
           <tbody class="background-white">
-            <ng-container *ngFor="let poll of pollResult | filterobject: objectValue ">
+            <ng-container *ngFor="let poll of pollResult | filterobject: objectValue | paginate: configAdvance">
               <tr class="white-space-pre cursor-p" mdbTableCol (click)="routerRouterLink(routes.voteInpoll+poll.id)">
                 <!-- <td class="fs-07rem" [ngClass]="transaction ? 'fw-600': ''">{{transaction.status}}</td> -->
                 <td class="fs-07rem txt-a-center">{{poll.name}}</td>
@@ -114,10 +114,8 @@
     </div>
 
     <div class="col-12 pt-1rem pb-3rem d-flex justify-content-center mx-auto">
-      <button [disabled]="isLoading" (click)="loadMore()" mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
-        size="sm">
-        <span class="fs-1-2em color-white">Load more</span>
-      </button>
+      <pagination-controls [id]="configAdvance.id" (pageChange)="configAdvance.currentPage = $event">
+      </pagination-controls>
     </div>
   </div>
 </div>
