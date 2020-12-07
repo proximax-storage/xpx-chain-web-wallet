@@ -63,6 +63,7 @@ export class VoteInPollComponent implements OnInit {
   votedPublicKey: any = [];
   votedPublicKeyCount = 0;
   totalVoteCount = 0;
+  stopResultLoading = false;
 
   constructor(
     private nodeService: NodeService,
@@ -87,8 +88,10 @@ export class VoteInPollComponent implements OnInit {
     this.activate = false;
     this.showResultProgress = false;
     this.createForm()
-    this.getPoll(this.activateRoute.snapshot.paramMap.get('id'));
-
+    this.activateRoute.paramMap.subscribe( paramMap => {
+      this.getPoll(paramMap.get('id'));
+    });
+    //this.getPoll(this.activateRoute.snapshot.paramMap.get('id'));
 
   }
   @ViewChild('modalInfo', { static: true }) modalInfo: ModalDirective;
@@ -251,12 +254,26 @@ export class VoteInPollComponent implements OnInit {
     });
   }
 
+  closeResultModal(){
+    this.stopResultLoading = true;
+    this.modalInfo.hide();
+  }
+
   getResult(param: string) {
 
-    if (param === 'RESULTS') {
-      this.modalInfo.show()
+    if(this.stopResultLoading){
+      this.totalVoteCount = 0;
+      this.incrementOptionV = 0;
+      this.stopResultLoading = false;
+      return;
     }
-    else if(this.incrementOptionV === 0){
+
+    if (param === 'RESULTS') {
+      this.modalInfo.show();
+      this.showResultProgress = false;
+    }
+    
+    if(this.incrementOptionV === 0){
       this.totalVoteCount = 0;
       this.votedPublicKeyCount = 0;
       this.votedPublicKey = [];
@@ -288,7 +305,7 @@ export class VoteInPollComponent implements OnInit {
 
               lengthVote += this.countNewVoteTransaction(next, allVoteTransactions);
 
-              while(transactionsLengthFromResponse === 100 && lastId != ""){
+              while(transactionsLengthFromResponse === 100 && lastId != "" && this.stopResultLoading === false){
                 var newTransaction = [];
                 newTransaction = await this.getMoreTransaction(publicAccountOfSelectedOption, lastId);
                 transactionsLengthFromResponse = newTransaction.length;
