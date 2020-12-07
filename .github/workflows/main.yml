@@ -8,7 +8,7 @@ on:
 jobs:
   # This workflow contains a single job called "build"
   build:
-    if: ${{github_head_ref}} == 'development'
+    if: github.head_ref == 'development'
     
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
@@ -46,7 +46,7 @@ jobs:
           cat ./node_modules/@angular-devkit/build-angular/src/angular-cli-files/models/webpack-configs/browser.js
       
       - name: build for testnet
-        run: node --max_old_space_size=5048 ./node_modules/@angular/cli/bin/ng build --aot --prod --build-optimizer=true --vendor-chunk=true --configuration=main
+        run: node --max_old_space_size=5048 ./node_modules/@angular/cli/bin/ng build --aot --prod --build-optimizer=true --vendor-chunk=true
       
       - name: Archive artifact
         uses: actions/upload-artifact@v2

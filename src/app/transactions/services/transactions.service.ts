@@ -102,7 +102,7 @@ export class TransactionsService {
       id: TransactionType.LOCK,
       name: 'LockFund'
     },
-    accountLink:{
+    accountLink: {
       id: TransactionType.LINK_ACCOUNT,
       name: 'Account Link'
     }
@@ -173,7 +173,7 @@ export class TransactionsService {
    * @param amount Amount to add zeros
    */
   addDecimals(cant: any, amount = '0') {
-    console.debug('cant', cant)
+    console.debug('cant', cant);
     const x = '0';
     if (amount === '0') {
       for (let index = 0; index < cant - 1; index++) {
@@ -185,7 +185,7 @@ export class TransactionsService {
       }
     }
 
-    console.debug(amount)
+    console.debug(amount);
     return amount;
   }
 
@@ -1059,7 +1059,7 @@ export class TransactionsService {
       accountInfo.accountInfo !== null;
     // Validate account info
     if (!disabled) {
-      return { infValidate: [{ disabled: true, info: "Not Valid" }] };
+      return { infValidate: [{ disabled: true, info: 'Not Valid' }] };
     }
     // Validate mosaics
     if (
@@ -1068,14 +1068,14 @@ export class TransactionsService {
       )
     ) {
       return {
-        infValidate: [{ disabled: true, info: "Insufficient Balance" }]
+        infValidate: [{ disabled: true, info: 'Insufficient Balance' }]
       };
     }
     // Validate balance account
     const balanceAccount = accountInfo.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id).amount.compact();
     if (!(balanceAccount >= feeTotal)) {
       return {
-        infValidate: [{ disabled: true, info: "Insufficient Balance" }]
+        infValidate: [{ disabled: true, info: 'Insufficient Balance' }]
       };
     }
 

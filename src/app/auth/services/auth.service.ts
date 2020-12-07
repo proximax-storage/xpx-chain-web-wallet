@@ -127,12 +127,13 @@ export class AuthService {
     // if (!this.walletNameSID){
     //   this.transactionService.searchAccountsInfo(this.walletService.currentWallet.accounts);
     // }
+    this.walletService.setCosignatoriesPushedSubject([]);
     this.transactionService.searchAccountsInfo(this.walletService.currentWallet.accounts);
     this.dataBridgeService.searchBlockInfo();
     this.dataBridgeService.searchBlockInfo(true);
 
 
-    //this.route.navigate([`/${AppConfig.routes.dashboard}`]);
+    // this.route.navigate([`/${AppConfig.routes.dashboard}`]);
     this.ngZone.run(() => this.route.navigate([`/${AppConfig.routes.dashboard}`])).then();
 
     return true;
@@ -207,55 +208,61 @@ export class AuthService {
 
   /**
    * Create QR Code for Login by SiriusID
+   *
+   * @memberof AuthService
    */
-  createInvitationRequestMessage(){
-    let networkType = environment.typeNetwork.value;
-      let nodeUrl = environment.blockchainConnection.protocol + '://' + environment.blockchainConnection.host;
-      let account = Account.generateNewAccount(networkType);
-      let mess = InvitationRequestMessage.create("Login request from Proximax Sirius Wallet", account.publicKey, nodeUrl);
-      this.qrInvitation = mess.generateQR();
-  
-      //console.log('channel: ' + mess.getSessionId());
-      //this.peer = new Peer(mess.getSessionId()); 
-      this.peer = new Peer(
+  createInvitationRequestMessage() {
+    const networkType = environment.typeNetwork.value;
+    const nodeUrl = environment.blockchainConnection.protocol + '://' + environment.blockchainConnection.host;
+    const account = Account.generateNewAccount(networkType);
+    const mess = InvitationRequestMessage.create('Login request from Proximax Sirius Wallet', account.publicKey, nodeUrl);
+    this.qrInvitation = mess.generateQR();
+
+      // console.log('channel: ' + mess.getSessionId());
+      // this.peer = new Peer(mess.getSessionId());
+    this.peer = new Peer(
         mess.getSessionId(),
         environment.peerHosting
-      )
-      this.peer.on('connection', (conn) => {
+      );
+    this.peer.on('connection', (conn) => {
         conn.on('data', async (data) => {
-          let resMess = InvitationResponseMessage.createFromPayload(data,account.privateKey);  
-          await this.importWalletAndLogin(resMess.getWltBase64(),resMess.getSecretKey());
+          const resMess = InvitationResponseMessage.createFromPayload(data, account.privateKey);
+          await this.importWalletAndLogin(resMess.getWltBase64(), resMess.getSecretKey());
         });
         conn.on('open', () => {
-          let interval = setInterval(() => {
-            if (this.withSiriusID){
-              console.debug("response message to SiriusID");
+          const interval = setInterval(() => {
+            if (this.withSiriusID) {
               conn.send('Received');
               this.withSiriusID = false;
               clearInterval(interval);
             }
-          },100)
-          
+          }, 100);
+
         });
         conn.on('close', () => {
-          console.debug('connection close');
-        })
+        });
       });
-  
-      this.peer.on('error', (error) => {
-        console.error("connection has an error", error.message);
-      })
-  
-      this.peer.on('close', () => {
-        console.debug("peer close");
-      })
+
+    this.peer.on('error', (error) => {
+        console.error('connection has an error', error.message);
+      });
+
+    this.peer.on('close', () => {
+      });
   }
 
+  /**
+   *
+   *
+   * @param {*} wlt
+   * @param {string} secretKey
+   * @memberof AuthService
+   */
   async importWalletAndLogin(wlt: any, secretKey: string) {
     if (wlt) {
       const existWallet = this.walletService.getWalletStorage().find(
         (element: any) => {
-          let publicKey = wlt.accounts[0].publicAccount.publicKey;
+          const publicKey = wlt.accounts[0].publicAccount.publicKey;
           return element.accounts[0].publicAccount.publicKey === publicKey;
         }
       );
@@ -265,7 +272,7 @@ export class AuthService {
       if (wlt.accounts[0].network === environment.typeNetwork.value) {
         let walletName = wlt.name;
         this.walletNameSID = walletName;
-        walletName = (walletName.includes(' ') === true) ? walletName.split(' ').join('_') : walletName
+        walletName = (walletName.includes(' ') === true) ? walletName.split(' ').join('_') : walletName;
         const accounts = [];
         const contacs = [];
         if (wlt.accounts.length !== undefined) {
@@ -277,28 +284,28 @@ export class AuthService {
         }
         const wallet = {
           name: walletName,
-          accounts: accounts
-        }
-        let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
+          accounts
+        };
+        const walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
         walletsStorage.push(wallet);
         localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
 
-        let pass = new Password(secretKey);
-        
-        let privateKey = this.proximaxProvider.decryptPrivateKey(pass,wallet.accounts[0]['encrypted'],wallet.accounts[0]['iv']);
-        
-        let commonValue = {
+        const pass = new Password(secretKey);
+
+        const privateKey = this.proximaxProvider.decryptPrivateKey(pass, wallet.accounts[0]['encrypted'], wallet.accounts[0]['iv']);
+
+        const commonValue = {
           password: secretKey,
-          privateKey: privateKey
-        }
+          privateKey
+        };
         await this.login(commonValue, wallet);
-        
+
         setTimeout(() => {
           this.withSiriusID = true;
-        },1500)
+        }, 1500);
         setTimeout(() => {
           this.peer.destroy();
-        },3000)
+        }, 3000);
       } else {
         this.sharedService.showError('', 'Invalid network type');
       }

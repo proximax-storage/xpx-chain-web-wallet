@@ -194,7 +194,7 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
   /**
    *
    * @memberof EditAccountMultisignComponent
-   *  @param {String} amount  - 
+   *  @param {String} amount  -
    */
   amountFormatterSimple(amount): string {
     return this.transactionService.amountFormatterSimple(amount);
@@ -267,11 +267,11 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
 
   /**
    *
-   * @param {AccountsInterface[]} accounts  - 
+   * @param {AccountsInterface[]} accounts  -
    * @returns {ConsginerFirmList[]}
    * @memberof EditAccountMultisignComponent
    */
-  builConsginerList(accounts: AccountsInterface[]): ConsginerFirmList[] {
+  buildCosignerList(accounts: AccountsInterface[]): ConsginerFirmList[] {
     let list: ConsginerFirmList[] = []
     for (let index = 0; index < accounts.length; index++) {
       const publicAccount: PublicAccount = PublicAccount.createFromPublicKey(accounts[index].publicAccount.publicKey, accounts[index].network);
@@ -340,7 +340,7 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
   /**
    *
    * @memberof EditAccountMultisignComponent
-   *  @param {any} value  - 
+   *  @param {any} value  -
    */
   cleanArray(value: any) {
     const newArray = new Array();
@@ -389,7 +389,7 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
 
   /**
    * Clean select content - defined empty by default
-   * @param {any} item 
+   * @param {any} item
    * @memberof EditAccountMultisignComponent
    */
   clearItemSelect(item: any) {
@@ -431,7 +431,7 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
   * @memberof CreateMultiSignatureComponent
   * @param {Address} id  - Address in cosignatory.
   * @param {Boolean} disableItem
-  * @param {number} type 
+  * @param {number} type
   */
   deleteCosignatory(id: Address, disableItem: boolean, type: number) {
     if (!disableItem) {
@@ -521,8 +521,8 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
    * Array of duplicated filters
    * @memberof CreateMultiSignatureComponent
    * @param {Array<object>} value1  - Address in cosignatory.
-   * @param {Array<object>} value2 
-   * @param {string} key 
+   * @param {Array<object>} value2
+   * @param {string} key
    */
   filterArrayUnic(value1: any, value2: any, key: string) {
     let newArray = new Array();
@@ -880,7 +880,7 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * 
+   *
    * @memberof EditAccountMultisignComponent
    */
   selectCosignatorieSign() {
@@ -903,7 +903,7 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * 
+   *
    * @memberof EditAccountMultisignComponent
    */
   selectOtherCosignatorieSign() {
@@ -1070,9 +1070,10 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
     if (!this.accountInfo.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id)) {
       return this.sharedService.showError('', 'Insufficient Balance');
     }
+    //validate actual  consginerFirmList
     if (this.hasCosigner() && !validateBuildAccount.disabledItem) {
       this.consginerFirmList = []
-      this.consginerFirmList = this.builConsginerList(this.walletService.currentWallet.accounts)
+      this.consginerFirmList = this.buildCosignerList(this.walletService.currentWallet.accounts)
       if (this.consginerFirmList.length === 1) {
         this.signType = 1;
         this.consginerFirmAccount = this.consginerFirmList[0]

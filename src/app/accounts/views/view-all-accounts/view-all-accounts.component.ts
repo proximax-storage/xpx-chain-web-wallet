@@ -81,6 +81,7 @@ export class ViewAllAccountsComponent implements OnInit, OnDestroy{
         }
       }
       this.currentWallet = currentWallet;
+      console.log(this.currentWallet)
     }
   }
 
@@ -129,6 +130,13 @@ export class ViewAllAccountsComponent implements OnInit, OnDestroy{
     return temp;
   }
 
+  /**
+   *
+   *
+   * @param {*} account
+   * @returns
+   * @memberof ViewAllAccountsComponent
+   */
   deleteVerification(account) {
     let erasable = false;
 
@@ -203,6 +211,11 @@ export class ViewAllAccountsComponent implements OnInit, OnDestroy{
     ));
   }
 
+  /**
+   *
+   *
+   * @memberof ViewAllAccountsComponent
+   */
   validateUniqueAccount() {
     if (this.currentWallet.accounts.length === 1) {
       this.currentWallet.accounts[0].firstAccount = true;
@@ -211,14 +224,12 @@ export class ViewAllAccountsComponent implements OnInit, OnDestroy{
   }
 
   /**
-     *
-     *  @param {string} quantity
-     * @memberof ViewAllAccountsComponent
-     */
-  /*getQuantity(quantity: string) {
-    return this.transactionService.getDataPart(quantity, 6);
-  }*/
-
+   *
+   *
+   * @param {string} quantity
+   * @returns
+   * @memberof ViewAllAccountsComponent
+   */
   getQuantity(quantity: string) {
     return this.sharedService.amountFormat(quantity);
   }

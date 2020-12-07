@@ -45,7 +45,9 @@ import {
   RawAddress,
   AccountLinkTransaction,
   LinkAction,
-  Crypto
+  Crypto, 
+  MultisigAccountGraphInfo, 
+  WalletAlgorithm
 } from 'tsjs-xpx-chain-sdk';
 import { BlockchainNetworkType } from 'tsjs-chain-xipfs-sdk';
 import { Observable } from 'rxjs/internal/Observable';
@@ -174,7 +176,7 @@ export class ProximaxProvider {
    *
    * @param {NetworkType} network
    * @param {remoteAccountKey} linked account public key
-   * @param {linkAction} linkAction 
+   * @param {linkAction} linkAction
    * @returns {AccountLinkTransaction}
    * @memberof ProximaxProvider
    */
@@ -269,7 +271,7 @@ export class ProximaxProvider {
       iv,
     };
 
-    Crypto.passwordToPrivateKey(common, wallet, 'pass:bip32');
+    Crypto.passwordToPrivateKey(common, wallet, WalletAlgorithm.Pass_bip32);
     return common.privateKey;
   }
 
@@ -455,6 +457,17 @@ export class ProximaxProvider {
    */
   getMultisigAccountInfo(address: Address): Observable<MultisigAccountInfo> {
     return this.accountHttp.getMultisigAccountInfo(address);
+  }
+
+  /**
+   *
+   *
+   * @param {Address} address
+   * @returns {Observable<MultisigAccountInfo>}
+   * @memberof ProximaxProvider
+   */
+  getMultisigAccountGraphInfo(address: Address): Observable<MultisigAccountGraphInfo> {
+    return this.accountHttp.getMultisigAccountGraphInfo(address);
   }
 
   /**
@@ -823,6 +836,16 @@ export class ProximaxProvider {
         return false;
       }
     }
+  }
+
+  /**
+   *
+   *
+   * @returns {WalletAlgorithm}
+   * @memberof ProximaxProvider
+   */
+  static getWalletAlgorithm(){
+    return WalletAlgorithm;
   }
 }
 
