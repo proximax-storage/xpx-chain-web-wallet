@@ -54,6 +54,7 @@ export class MultisigService {
    * @returns {AggregateTransaction}
    */
   aggregateTransactionEditModifyMultisig (params: ToAggregateTransactionEditModifyMultisig): AggregateTransaction {
+    console.log('params', params)
     const valor = this.calcMinDelta(
       params.minApprovalDelta.minApprovalOld,
       params.minRemovalDelta.minRemovalOld,
@@ -74,6 +75,7 @@ export class MultisigService {
       params.minApprovalDelta.minApprovalOld,
       params.cosignerFirmList,
       params.accountsWallet);
+    console.log('typeTX', typeTX)
     if (typeTX === TransactionType.AGGREGATE_BONDED) {
       aggregateTransaction = AggregateTransaction.createBonded(
         Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
@@ -345,13 +347,19 @@ export class MultisigService {
         publicKey: x.publicAccount.publicKey
       };
     }), accounts);
-    if (!Boolean(ownCosignatories.length === cosignatoryList.length)) {
-      return TransactionType.AGGREGATE_BONDED;
-    }
+
     const cantAdd = cosignatoryList.filter(x => x.type === 1).length;
     const cabtRemove = cosignatoryList.filter(x => x.type === 2).length;
+    console.log('cantAdd', cantAdd)
+    console.log('cabtRemove', cabtRemove)
+    console.log('cantFirm', cantFirm)
+    console.log('ownCosignatories', ownCosignatories)
+    console.log('cosignatoryList', cosignatoryList)
+    if (!Boolean(ownCosignatories.length === cosignatoryList.length) && cantAdd > 0) {
+      return TransactionType.AGGREGATE_BONDED;
+    }
     if (cantAdd > 0 && cabtRemove > 0) {
-      // console.log('ADD Y REMOVE');
+      console.log('ADD Y REMOVE');
       if (cantFirm >= minRemoval && cantFirm >= minApproval) {
         return TransactionType.AGGREGATE_COMPLETE;
       } else {
@@ -359,7 +367,7 @@ export class MultisigService {
       }
     }
     if (cantAdd === 0 && cabtRemove === 0) {
-      // console.log('NEVER');
+      console.log('NEVER');
       if (cantFirm >= minRemoval && cantFirm >= minApproval) {
         return TransactionType.AGGREGATE_COMPLETE;
       } else {
@@ -367,7 +375,7 @@ export class MultisigService {
       }
     }
     if (cantAdd > 0) {
-      // console.log('ADD');
+      console.log('ADD');
       if (cantFirm >= minApproval) {
         return TransactionType.AGGREGATE_COMPLETE;
       } else {
@@ -375,7 +383,7 @@ export class MultisigService {
       }
     }
     if (cabtRemove > 0) {
-      // console.log('REMOVE');
+      console.log('REMOVE');
       if (cantFirm >= minRemoval) {
         return TransactionType.AGGREGATE_COMPLETE;
       } else {

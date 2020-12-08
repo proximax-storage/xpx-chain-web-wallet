@@ -226,19 +226,22 @@ export class EditAccountMultisigComponent implements OnInit {
   selectCosignatorieSign () {
     this.formEditAccountMultsig.get('cosignatorieSign').valueChanges.subscribe(
       id => {
-        this.showSignCosignatory = false;
-        this.formEditAccountMultsig.get('otherCosignatorie').setValue('', {
-          emitEvent: false
-        });
-        // this.consginerFirmAccountList = this.pushCosignerFirmList(id)
-        const signCosignatory = this.consignerFirmList.find(item => item.value === id);
-        if (signCosignatory) {
-          this.showSignCosignatory = true;
-          this.consignerFirm = signCosignatory;
+        if (id) {
+          this.showSignCosignatory = false;
+          this.formEditAccountMultsig.get('otherCosignatorie').setValue('', {
+            emitEvent: false
+          });
+          // this.consginerFirmAccountList = this.pushCosignerFirmList(id)
+          const signCosignatory = this.consignerFirmList.find(item => item.value === id);
+          if (signCosignatory) {
+            this.showSignCosignatory = true;
+            this.consignerFirm = signCosignatory;
+          }
+          this.otherCosignatorieList = this.consignerFirmList.filter(item => item.value !== id);
+          console.log('this.otherCosignatorieList 1', this.otherCosignatorieList)
+          this.builderOtherCosignatorie(id);
+          // this.builder()
         }
-        this.otherCosignatorieList = this.consignerFirmList.filter(item => item.value !== id);
-        this.builderOtherCosignatorie(id);
-        // this.builder()
       }
     );
   }
@@ -590,6 +593,7 @@ export class EditAccountMultisigComponent implements OnInit {
    * @memberof ConvertAccountMultisigComponent
    */
   async getAccount (name) {
+    this.otherCosignatorieList = []
     const currentAccount = this.walletService.filterAccountWallet(name);
     this.currentAccount.push({
       data: currentAccount,
@@ -849,6 +853,7 @@ export class EditAccountMultisigComponent implements OnInit {
   builderOtherCosignatorie (id) {
     if (id) {
       this.otherCosignatorieList = this.consignerFirmList.filter(item => item.value !== id);
+      console.log('this.otherCosignatorieList 2', this.otherCosignatorieList)
     }
   }
   /**
@@ -870,9 +875,10 @@ export class EditAccountMultisigComponent implements OnInit {
       };
     });
     if (this.multisigService.validateOwnCosignatories(cosignatoriesList)) {
+
       this.paramConvert = {
         account: this.currentAccountToConvert.publicAccount,
-        cosignerFirmList: this.consignerFirmList.filter(x => !x.disabled).concat(this.otherCosignerFirmAccountList.filter(x => !x.disabled)),
+        cosignerFirmList: [this.consignerFirm].concat(this.otherCosignerFirmAccountList.filter(x => !x.disabled)),
         cosignatoryLis: this.cosignatoriesList.filter(x => x.type === 1 || x.type === 2),
         accountsWallet: this.walletService.currentWallet.accounts,
         minApprovalDelta: {
