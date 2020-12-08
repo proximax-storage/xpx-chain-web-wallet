@@ -518,7 +518,7 @@ export class EditAccountMultisigComponent implements OnInit {
    */
   showScheme () {
 
-      this.scheme.show();
+    this.scheme.show();
   }
   /**
    *
@@ -626,10 +626,15 @@ export class EditAccountMultisigComponent implements OnInit {
    * @memberof ConvertAccountMultisigComponent
    */
   selectAccount (account: CurrentAccountInterface) {
-    console.log('ACCOUNT', account.data);
-    console.log(this.txOnpartial);
+    this.validateAccountAlert = {
+      show: false,
+      info: '',
+      subInfo: ''
+    };
+    // console.log('ACCOUNT', account.data);
+    // console.log(this.txOnpartial);
     const ispartial = this.multisigService.onPartial(account.data, this.txOnpartial);
-    console.log(ispartial);
+    console.log('ispartial', ispartial);
     if (ispartial) {
       this.validateAccountAlert = { show: true, info: 'Partial', subInfo: 'Has transactions in partial' };
     }
@@ -712,11 +717,11 @@ export class EditAccountMultisigComponent implements OnInit {
         id: x.address,
         cosignatories: []
       };
-      const ownCosignatories = this.multisigService.multisigAccountGraphInfoMap(account.multisigAccountGraphInfo).find(c => c.account.publicKey === x.publicKey)
+      const ownCosignatories = this.multisigService.multisigAccountGraphInfoMap(account.multisigAccountGraphInfo).find(c => c.account.publicKey === x.publicKey);
       let nameNull = null;
       const oneName = (this.multisigService.filterOwnCosignatory({ publicKey: x.publicKey },
         this.walletService.currentWallet.accounts)) ? this.multisigService.filterOwnCosignatory({ publicKey: x.publicKey },
-          this.walletService.currentWallet.accounts).name : `Cosigner-${x.address.pretty().substr(-4)}`;
+          this.walletService.currentWallet.accounts).name : `Consignee-${x.address.pretty().substr(-4)}`;
       let d = {
         loading: true,
         isMultisig: null,
@@ -726,19 +731,17 @@ export class EditAccountMultisigComponent implements OnInit {
         ownCosignatories: false
       };
       if (ownCosignatories.isMultisig()) {
-        //   if (ownCosignatories.isMultisign && ownCosignatories.isMultisign.isMultisig()) {
         for (const i of ownCosignatories.cosignatories) {
-          // const ownCosignatoriesTow = this.multisigService.filterOwnCosignatory({ publicKey: i.publicKey }, this.walletService.currentWallet.accounts);
-          const ownCosignatoriesTow = this.multisigService.multisigAccountGraphInfoMap(account.multisigAccountGraphInfo).find(c => c.account.publicKey === i.publicKey)
+          const ownCosignatoriesTow = this.multisigService.multisigAccountGraphInfoMap(account.multisigAccountGraphInfo).find(c => c.account.publicKey === i.publicKey);
           const towName = (this.multisigService.filterOwnCosignatory({ publicKey: i.publicKey },
-            this.walletService.currentWallet.accounts)) ? this.multisigService.filterOwnCosignatory({ publicKey: x.publicKey },
-              this.walletService.currentWallet.accounts).name : `Cosigner-${i.address.pretty().substr(-4)}`;
+            this.walletService.currentWallet.accounts)) ? this.multisigService.filterOwnCosignatory({ publicKey: i.publicKey },
+              this.walletService.currentWallet.accounts).name : `Consignee-${i.address.pretty().substr(-4)}`;
           if (ownCosignatoriesTow) {
             const cosignatorieswTowList: CosignatoriesInterface[] = ownCosignatoriesTow.cosignatories.map(xY => {
               const ownCosignatoriesThree = this.multisigService.filterOwnCosignatory({ publicKey: xY.publicKey }, this.walletService.currentWallet.accounts);
               const ThreeName = (this.multisigService.filterOwnCosignatory({ publicKey: xY.publicKey },
                 this.walletService.currentWallet.accounts)) ? this.multisigService.filterOwnCosignatory({ publicKey: x.publicKey },
-                  this.walletService.currentWallet.accounts).name : `Cosigner-${xY.address.pretty().substr(-4)}`;
+                  this.walletService.currentWallet.accounts).name : `Consignee-${xY.address.pretty().substr(-4)}`;
               const xy = {
                 name: ThreeName,
                 address: xY.address.plain(),
@@ -757,7 +760,7 @@ export class EditAccountMultisigComponent implements OnInit {
               }
             );
           } else {
-            nameNull = `Cosigner-${i.address.pretty().substr(-4)}`;
+            nameNull = `Consignee-${i.address.pretty().substr(-4)}`;
             data.cosignatories.push(
               {
                 publicAccount: PublicAccount.createFromPublicKey(i.publicKey, environment.typeNetwork.value),
@@ -780,7 +783,7 @@ export class EditAccountMultisigComponent implements OnInit {
 
       return Object.assign(data, d);
     });
-    console.log('this.dataCurrentAccout.cosignatoryList', this.dataCurrentAccout.cosignatoryList)
+    // console.log('this.dataCurrentAccout.cosignatoryList', this.dataCurrentAccout.cosignatoryList);
     return this.dataCurrentAccout;
   }
 
@@ -821,12 +824,13 @@ export class EditAccountMultisigComponent implements OnInit {
           if (transactions.length > 0) {
             console.log('ESTAS SON MIS TRANSACCIONES', transactions);
             this.txOnpartial = transactions;
+            this.getAccount(this.activateRoute.snapshot.paramMap.get('name'));
           }
         })
     );
     this.subscribe.push(this.walletService.getAccountsInfo$().subscribe(
       next => {
-        // console.log('NUEVO VALOR', next);
+        console.log('NUEVO VALOR', next);
         this.getAccount(this.activateRoute.snapshot.paramMap.get('name'));
       }
     ));
@@ -874,7 +878,7 @@ export class EditAccountMultisigComponent implements OnInit {
       this.aggregateTransaction = this.multisigService.aggregateTransactionEditModifyMultisig(this.paramConvert);
       const feeAgregate = Number(this.transactionService.amountFormatterSimple(this.aggregateTransaction.maxFee.compact()));
       this.feeConfig.fee = feeAgregate.toFixed(6);
-      console.log(this.feeConfig.fee);
+      // console.log(this.feeConfig.fee);
     }
 
   }

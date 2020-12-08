@@ -116,13 +116,13 @@ export class WalletService {
             } = null;
             try {
               const accountGraphInfo = await this.proximaxProvider.getMultisigAccountGraphInfo(this.proximaxProvider.createFromRawAddress(element.address)).toPromise();
-              console.log('\n\n\n address ---->', element.publicAccount.address['address']);
-              console.log('publickey ---->', element.publicAccount.publicKey);
+              // console.log('\n\n\n address ---->', element.publicAccount.address['address']);
+              // console.log('publickey ---->', element.publicAccount.publicKey);
               console.log('All structure ---->', accountGraphInfo);
-              console.log('root', accountGraphInfo.multisigAccounts.get(0));
-              accountGraphInfo.multisigAccounts.forEach(r => {
-                console.log('Multisig data --->', r);
-              });
+              // console.log('root', accountGraphInfo.multisigAccounts.get(0));
+              // accountGraphInfo.multisigAccounts.forEach(r => {
+              //   console.log('Multisig data --->', r);
+              // });
 
               const data = accountGraphInfo.multisigAccounts.get(0).find(r => r.account.publicKey === element.publicAccount.publicKey);
               if (data) {
@@ -509,7 +509,7 @@ export class WalletService {
    * @memberof WalletService
    */
   filterAccountWallet (byName: string = '', byDefault = null, byAddress = ''): AccountsInterface {
-    console.log('### address to search ####', byAddress);
+    // console.log('### address to search ####', byAddress);
     if (this.currentWallet && this.currentWallet.accounts && this.currentWallet.accounts.length > 0) {
       if (byDefault !== null && byName === '') {
         return this.currentWallet.accounts.find(elm => elm.default === true);
@@ -517,7 +517,7 @@ export class WalletService {
         return this.currentWallet.accounts.find(elm => elm.name === byName);
       } else {
         const response = this.currentWallet.accounts.find(elm => this.proximaxProvider.createFromRawAddress(elm.address).pretty() === byAddress);
-        console.log('#### response', response);
+        // console.log('#### response', response);
         return this.currentWallet.accounts.find(elm => this.proximaxProvider.createFromRawAddress(elm.address).pretty() === byAddress);
       }
     }

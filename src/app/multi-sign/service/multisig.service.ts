@@ -318,7 +318,6 @@ export class MultisigService {
   }
 
   multisigAccountGraphInfoMap (multisigAccountGraphInfo: MultisigAccountGraphInfo) {
-    console.log('multisigAccountGraphInfo', multisigAccountGraphInfo)
     const multisigGraph: MultisigAccountInfo[] = [];
     multisigAccountGraphInfo.multisigAccounts.forEach((x: any) => {
       if (x.length > 0) {
@@ -332,19 +331,6 @@ export class MultisigService {
     });
     return multisigGraph;
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   typeSignTxEdit (
     cosignatoryList: CosignatoryListInterface[],
@@ -365,7 +351,7 @@ export class MultisigService {
     const cantAdd = cosignatoryList.filter(x => x.type === 1).length;
     const cabtRemove = cosignatoryList.filter(x => x.type === 2).length;
     if (cantAdd > 0 && cabtRemove > 0) {
-      console.log('ADD Y REMOVE');
+      // console.log('ADD Y REMOVE');
       if (cantFirm >= minRemoval && cantFirm >= minApproval) {
         return TransactionType.AGGREGATE_COMPLETE;
       } else {
@@ -373,7 +359,7 @@ export class MultisigService {
       }
     }
     if (cantAdd === 0 && cabtRemove === 0) {
-      console.log('NEVER');
+      // console.log('NEVER');
       if (cantFirm >= minRemoval && cantFirm >= minApproval) {
         return TransactionType.AGGREGATE_COMPLETE;
       } else {
@@ -381,7 +367,7 @@ export class MultisigService {
       }
     }
     if (cantAdd > 0) {
-      console.log('ADD');
+      // console.log('ADD');
       if (cantFirm >= minApproval) {
         return TransactionType.AGGREGATE_COMPLETE;
       } else {
@@ -389,7 +375,7 @@ export class MultisigService {
       }
     }
     if (cabtRemove > 0) {
-      console.log('REMOVE');
+      // console.log('REMOVE');
       if (cantFirm >= minRemoval) {
         return TransactionType.AGGREGATE_COMPLETE;
       } else {

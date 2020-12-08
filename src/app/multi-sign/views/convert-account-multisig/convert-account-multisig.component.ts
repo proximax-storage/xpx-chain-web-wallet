@@ -477,6 +477,7 @@ export class ConvertAccountMultisigComponent implements OnInit {
           if (transactions.length > 0) {
             console.log('ESTAS SON MIS TRANSACCIONES', transactions);
             this.txOnpartial = transactions;
+            this.validateSnapshot();
           }
         })
     );
