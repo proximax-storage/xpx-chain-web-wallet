@@ -589,7 +589,7 @@ export class EditAccountMultisigComponent implements OnInit {
    *
    * @memberof ConvertAccountMultisigComponent
    */
-  getAccount (name) {
+  async getAccount (name) {
     const currentAccount = this.walletService.filterAccountWallet(name);
     this.currentAccount.push({
       data: currentAccount,
@@ -634,7 +634,7 @@ export class EditAccountMultisigComponent implements OnInit {
     // console.log('ACCOUNT', account.data);
     // console.log(this.txOnpartial);
     const ispartial = this.multisigService.onPartial(account.data, this.txOnpartial);
-    console.log('ispartial', ispartial);
+    // console.log('ispartial', ispartial);
     if (ispartial) {
       this.validateAccountAlert = { show: true, info: 'Partial', subInfo: 'Has transactions in partial' };
     }
@@ -821,16 +821,16 @@ export class EditAccountMultisigComponent implements OnInit {
       this.transactionService
         .getAggregateBondedTransactions$()
         .subscribe((transactions: TransactionsInterface[]) => {
+          console.log('ESTAS SON MIS TRANSACCIONES', transactions);
           if (transactions.length > 0) {
-            console.log('ESTAS SON MIS TRANSACCIONES', transactions);
             this.txOnpartial = transactions;
-            this.getAccount(this.activateRoute.snapshot.paramMap.get('name'));
+          } else {
+            this.txOnpartial = [];
           }
-        })
-    );
+        }));
     this.subscribe.push(this.walletService.getAccountsInfo$().subscribe(
       next => {
-        console.log('NUEVO VALOR', next);
+        // console.log('NUEVO VALOR', next);
         this.getAccount(this.activateRoute.snapshot.paramMap.get('name'));
       }
     ));
@@ -855,6 +855,15 @@ export class EditAccountMultisigComponent implements OnInit {
    * Get aggregateTransaction
    */
   aggregateTransactionEditModifyMultisig () {
+    let minRemovalNewV = this.formEditAccountMultsig.get('minRemovalDelta').value;
+    let minApprovalNewV = this.formEditAccountMultsig.get('minApprovalDelta').value;
+    if (this.cosignatoriesList.filter(x => x.type === 1 || x.type === 3).length === 0) {
+
+      if (this.cosignatoriesList.filter(x => x.type === 2).length === 1) {
+        minRemovalNewV = minRemovalNewV - 1;
+        minApprovalNewV = minApprovalNewV - 1;
+      }
+    }
     const cosignatoriesList = this.cosignatoriesList.filter(x => x.type === 1 || x.type === 2).map(x => {
       return {
         publicKey: x.publicAccount.publicKey
@@ -868,11 +877,11 @@ export class EditAccountMultisigComponent implements OnInit {
         accountsWallet: this.walletService.currentWallet.accounts,
         minApprovalDelta: {
           minApprovalOld: this.currentAccountToConvert.isMultisign.minApproval,
-          minApprovalNew: this.formEditAccountMultsig.get('minApprovalDelta').value
+          minApprovalNew: minApprovalNewV
         },
         minRemovalDelta: {
           minRemovalOld: this.currentAccountToConvert.isMultisign.minRemoval,
-          minRemovalNew: this.formEditAccountMultsig.get('minRemovalDelta').value
+          minRemovalNew: minRemovalNewV
         },
       };
       this.aggregateTransaction = this.multisigService.aggregateTransactionEditModifyMultisig(this.paramConvert);

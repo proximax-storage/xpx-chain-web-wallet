@@ -464,12 +464,6 @@ export class ConvertAccountMultisigComponent implements OnInit {
    * @memberof ConvertAccountMultisignComponent
    */
   load() {
-    this.subscribe.push(this.walletService.getAccountsInfo$().subscribe(
-      next => {
-        // console.log('NUEVO VALOR', next);
-        this.validateSnapshot();
-      }
-    ));
     this.subscribe.push(
       this.transactionService
         .getAggregateBondedTransactions$()
@@ -478,9 +472,18 @@ export class ConvertAccountMultisigComponent implements OnInit {
             console.log('ESTAS SON MIS TRANSACCIONES', transactions);
             this.txOnpartial = transactions;
             this.validateSnapshot();
+          } else {
+            this.txOnpartial = [];
           }
         })
     );
+    this.subscribe.push(this.walletService.getAccountsInfo$().subscribe(
+      next => {
+        // console.log('NUEVO VALOR', next);
+        this.validateSnapshot();
+      }
+    ));
+
   }
   /**
    * Before sending an aggregate bonded transaction, the future
