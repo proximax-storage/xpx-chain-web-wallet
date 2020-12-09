@@ -21,6 +21,7 @@ import { TransactionsService, TransactionsInterface } from '../../../transaction
   templateUrl: './vote-in-poll.component.html',
   styleUrls: ['./vote-in-poll.component.css']
 })
+
 export class VoteInPollComponent implements OnInit {
   activate: boolean;
   dataTransaction: TransactionsInterface;
@@ -88,10 +89,8 @@ export class VoteInPollComponent implements OnInit {
     this.activate = false;
     this.showResultProgress = false;
     this.createForm()
-    this.activateRoute.paramMap.subscribe( paramMap => {
-      this.getPoll(paramMap.get('id'));
-    });
-    //this.getPoll(this.activateRoute.snapshot.paramMap.get('id'));
+
+    this.getPoll(this.activateRoute.snapshot.paramMap.get('id'));
 
   }
   @ViewChild('modalInfo', { static: true }) modalInfo: ModalDirective;
