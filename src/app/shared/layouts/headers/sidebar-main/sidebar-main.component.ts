@@ -149,9 +149,9 @@ export class SidebarMainComponent implements OnInit {
     };
 
     this.itemsHeader = {
-      dashboard: this.sharedService.buildHeader(paramsDashboard),
-      transfer: this.sharedService.buildHeader(paramsTransfer),
-      account: this.sharedService.buildHeader(paramsAccount),
+      //dashboard: this.sharedService.buildHeader(paramsDashboard),
+      //transfer: this.sharedService.buildHeader(paramsTransfer),
+      //account: this.sharedService.buildHeader(paramsAccount),
       services: this.sharedService.buildHeader(paramsServices)
     };
   }
