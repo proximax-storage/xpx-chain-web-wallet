@@ -176,4 +176,6 @@ ul li.active .submenu {
   border-color: #306EB5;
 }
 
-
+.scroll {
+  overflow-x: auto;
+}
