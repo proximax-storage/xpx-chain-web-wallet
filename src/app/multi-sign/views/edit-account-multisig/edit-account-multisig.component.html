@@ -18,8 +18,9 @@
                 <div class="col-6 d-flex justify-content-end align-items-center">
                   <div class="row">
                     <div class="col-6 d-flex justify-content-center align-items-center">
-                      <img src="assets/images/img/icon-flow-multisig-multilevel-button.svg" class="cursor-p"
-                        width="25">&nbsp;
+                      <img (click)="showScheme()" src="assets/images/img/icon-flow-multisig-multilevel-button.svg"
+                        class="cursor-p" width="25">&nbsp;
+                      <!-- showScheme -->
                     </div>
                     <div class="col-6 d-flex justify-content-center align-items-center">
                       <img *ngIf="!showAccount" (click)="showAccount=!showAccount"
@@ -67,13 +68,13 @@
                     <div class="row ma-0-4">
                       <div class="col-6 ">
                         <span class="fw-600"> {{item.name}}</span>
-                        <span *ngIf="item.isMultisig && item.isMultisig.isMultisig()"
+                        <span *ngIf="item.cosignatories.length > 0 "
                           class="fs-07rem color-blue-intermedio tag-account">- Multisig</span>
                         <br> <span class="fw-300 fs-08rem color-grey"> {{item.address}}</span>
                       </div>
                       <div class="col-6 d-flex justify-content-end align-items-center">
                         <div class="row">
-                          <div *ngIf="item.isMultisig && item.isMultisig.isMultisig()"
+                          <div *ngIf="item.cosignatories.length > 0 "
                             class="col-6 d-flex justify-content-center align-items-center">
                             <img (click)="showSubItem(index)" src="assets/images/img/icon-collapse-accordion-button.svg"
                               class="cursor-p" width="25">
@@ -483,6 +484,156 @@
           </div>
           <!-- </div>
                   </div> -->
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL DIAGRAM-->
+    <div class="d-flex align-items-center">
+      <div mdbModal #scheme="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="scheme"
+        aria-hidden="true">
+        <div class="modal-dialog modal-md d-flex align-items-center" role="document">
+          <div class="modal-content form-elegant bord-rad-1-5rem">
+            <div class="row">
+              <div class="col-12">
+                <div class="col-12">
+                  <span class="cursor-p d-flex justify-content-end fw-600 fs-1rem pt-04rem"
+                    (click)="scheme.hide()">x</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="modal-body" style="height: 600px;">
+              <div class="container  animated fadeIn">
+                <div class="row">
+                  <div class="col-12 d-flex justify-content-center">
+                    <span class="fs-1-4rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">Scheme</span>
+                  </div>
+                </div>
+              </div>
+              <div class="row ">
+                <div class="col-12 mx-auto">
+
+                  <!-- <div class="tree">
+                    <ul>
+                      <li>
+                        <a href="#">Parent</a>
+                        <ul>
+                          <li>
+                            <a href="#">Child</a>
+                            <ul>
+                              <li>
+                                <a href="#">Grand Child</a>
+                              </li>
+                              <li>
+                                <a href="#">Grand Child</a>
+                                <ul>
+                                  <li>
+                                    <a href="#">Grand Child</a>
+                                  </li>
+                                  <li>
+                                    <a href="#">Grand Child</a>
+                                  </li>
+                                </ul>
+                              </li>
+                            </ul>
+                          </li>
+                          <li>
+                            <a href="#">Child</a>
+                            <ul>
+                              <li>
+                                <a href="#">Grand Child</a>
+                                <ul>
+                                  <li>
+                                    <a href="#">Grand Grand Child</a>
+                                  </li>
+                                </ul>
+                              </li>
+                              <li>
+                                <a href="#">Grand Child</a>
+                              </li>
+                            </ul>
+                          </li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </div> -->
+
+
+
+                  <div class="tree">
+                    <ul>
+                      <li>
+                        <a href="#">
+                          <span class="fw-600"> {{dataCurrentAccout.name}}</span> <br>
+                          <span class="fw-300 tag-account"> Multisig Account</span>
+                          <!-- <span class="fw-200 fs-06rem color-grey "> {{dataCurrentAccout.address}}</span> -->
+                        </a>
+                        <ul>
+                          <ng-container *ngFor="let item of dataCurrentAccout.cosignatoryList; let index = index">
+
+                            <li>
+                              <a href="#">
+                                <span class="fw-600"> {{item.name}}</span> <br>
+                                <span class="fw-300 tag-account" *ngIf="item.cosignatories.length > 0"> Multisig
+                                  Account</span>
+                                <span class="fw-300 tag-account" *ngIf="item.cosignatories?.length === 0">
+                                  Account</span>
+                                <br>
+                                <!-- <span class="fw-200 fs-06rem color-grey "> {{item.address}}</span> -->
+                              </a>
+                              <ul *ngIf="item.cosignatories.length > 0">
+                                <ng-container *ngFor="let itemOnelvl of item.cosignatories; let indexOnelvl = index">
+
+                                  <li>
+                                    <a href="#">
+                                      <span class="fw-600"> {{itemOnelvl.name}}</span> <br>
+                                      <span class="fw-300 tag-account" *ngIf="itemOnelvl.cosignatorieswTow?.length > 0">
+                                        Multisig Account</span>
+                                      <span class="fw-300 tag-account"
+                                        *ngIf="itemOnelvl.cosignatorieswTow?.length === 0">
+                                        Account</span>
+                                      <br>
+                                      <!-- <span class="fw-200 fs-06rem color-grey "> {{itemOnelvl.address}}</span> -->
+                                    </a>
+                                    <ul *ngIf="itemOnelvl.cosignatorieswTow.length > 0">
+                                      <ng-container
+                                        *ngFor="let itemTowlvl of itemOnelvl.cosignatorieswTow; let itemTowlvl = index">
+
+                                        <li>
+                                          <a href="#">
+                                            <span class="fw-600"> {{itemTowlvl.name}}</span> <br>
+                                            <span class="fw-300 tag-account">
+                                              Account</span>
+                                            <br>
+                                            <!-- <span class="fw-200 fs-06rem color-grey "> {{itemOnelvl.address}}</span> -->
+                                          </a>
+
+
+                                        </li>
+
+                                        <!-- </ng-container> -->
+                                      </ng-container>
+                                    </ul>
+
+
+                                  </li>
+
+                                  <!-- </ng-container> -->
+                                </ng-container>
+                              </ul>
+                            </li>
+
+                          </ng-container>
+                        </ul>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>

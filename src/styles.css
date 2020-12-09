@@ -716,7 +716,9 @@ html, body {
 .fw-bolder {
   font-weight: bolder;
 }
-
+.fw-200 {
+  font-weight: 200;
+}
 .fw-300 {
   font-weight: 300;
 }

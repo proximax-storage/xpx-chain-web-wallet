@@ -91,7 +91,6 @@ export class VoteInPollComponent implements OnInit {
     this.createForm()
 
     this.getPoll(this.activateRoute.snapshot.paramMap.get('id'));
-
   }
   @ViewChild('modalInfo', { static: true }) modalInfo: ModalDirective;
   @ViewChild('certificationModal', { static: true }) certificationModal: ModalDirective;
