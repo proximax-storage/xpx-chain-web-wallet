@@ -59,7 +59,7 @@ export const environment = {
   },
   timeOutTransactionNis1: 20000,
   blockchainConnection: {
-    host: '3.0.175.230',
+    host: 'demo-api-1.edlx.io',
     port: 3000,
     protocol: 'http',
     useSecureMessage: false
