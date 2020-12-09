@@ -68,8 +68,8 @@
       <mdb-progress-bar *ngIf="showBarProgressone" class="progress primary-color-dark" mode="indeterminate">
       </mdb-progress-bar>
 
-      <mdb-progress *ngIf="showBarProgress" class="barlistvoting" value="{{resultLength}}" min="0" max="{{cantPolls}}"
-        aria-valuenow="{{resultLength}}" aria-valuemin="0" aria-valuemax="{{cantPolls}}">{{progressBar}}%</mdb-progress>
+      <mdb-progress *ngIf="showBarProgress" class="barlistvoting" value="{{resultLength}}" min="0" max="{{loadingPerPage}}"
+        aria-valuenow="{{resultLength}}" aria-valuemin="0" aria-valuemax="{{loadingPerPage}}">{{progressBar}}%</mdb-progress>
     </div>
 
 

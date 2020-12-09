@@ -140,6 +140,9 @@ html, body {
 .mb-1rem {
   margin-bottom: 1rem;
 }
+.mb-07rem {
+  margin-bottom: 0.7rem;
+}
 
 .mb-0 {
   margin-bottom: 0;
@@ -208,6 +211,10 @@ html, body {
 .ml-1rem {
   margin-left: 1rem !important;
 }
+.ml-1-4rem {
+  margin-left: 1.0rem !important;
+}
+
 
 .ml-2rem {
   margin-left: 2rem !important;
@@ -260,7 +267,9 @@ html, body {
 .mr-08rem {
   margin-right: .8rem !important;
 }
-
+.ma-0-4 {
+  margin: 0.4rem;
+}
 /********************* PADDING -*******************************/
 
 .p-0 {
@@ -568,7 +577,9 @@ html, body {
 .line-h-1-5em {
   line-height: 1.5em;
 }
-
+.line-h-2em {
+  line-height: 2em;
+}
 /************ HEIGHT *************************/
 
 .h-3em {
@@ -705,7 +716,9 @@ html, body {
 .fw-bolder {
   font-weight: bolder;
 }
-
+.fw-200 {
+  font-weight: 200;
+}
 .fw-300 {
   font-weight: 300;
 }
@@ -2020,4 +2033,10 @@ ul.stepper.horizontal .step-title {
 
 .ls-002rem {
   letter-spacing: .02rem !important;
+}
+
+.trash-button{
+  color: #6d6d6d!important;
+  font-size: 1.3rem !important;
+  cursor: pointer;
 }

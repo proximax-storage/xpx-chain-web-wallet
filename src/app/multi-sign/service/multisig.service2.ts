@@ -2,110 +2,32 @@ import { Injectable } from '@angular/core';
 import { ServicesModuleService } from 'src/app/servicesModule/services/services-module.service';
 import { AccountsInfoInterface, AccountsInterface, WalletService } from 'src/app/wallet/services/wallet.service';
 import {
-  Account, AggregateTransaction, Deadline, ModifyMultisigAccountTransaction, MultisigAccountGraphInfo, MultisigAccountInfo, MultisigCosignatoryModification,
+  Account, AggregateTransaction, Deadline, ModifyMultisigAccountTransaction, MultisigAccountInfo, MultisigCosignatoryModification,
   MultisigCosignatoryModificationType, SignedTransaction, TransactionType, UInt64
 } from 'tsjs-xpx-chain-sdk';
 import { environment } from '../../../environments/environment';
 import { Address } from 'tsjs-xpx-chain-sdk/dist/src/model/account/Address';
 import { PublicAccount } from 'tsjs-xpx-chain-sdk/dist/src/model/account/PublicAccount';
 import { TransactionsInterface, TransactionsService } from 'src/app/transactions/services/transactions.service';
-import { ProximaxProvider } from '../../shared/services/proximax.provider';
+
 @Injectable({
   providedIn: 'root'
 })
 
 export class MultisigService {
-  consginerFirmList: CosignatoryListInterface[] = [];
+  consginerFirmList: ConsginerFirmList[] = [];
   constructor(
-    private proximaxProvider: ProximaxProvider,
     private serviceModuleService: ServicesModuleService,
     private walletService: WalletService,
     private transactionService: TransactionsService,
   ) { }
-  /**
-   *
-   *
-   * @param {CosignatoryList[]}
-   * @returns {MultisigCosignatoryModification[]}
-   * @memberof EditAccountMultisignComponent
-   */
-  multisigCosignatoryModification (cosignatoryList: CosignatoryListInterface[]): MultisigCosignatoryModification[] {
-    const cosignatory = [];
-    if (cosignatoryList.length > 0) {
-      // tslint:disable-next-line: prefer-for-of
-      for (let index = 0; index < cosignatoryList.length; index++) {
-        const element = cosignatoryList[index];
-        const type: MultisigCosignatoryModificationType = (cosignatoryList[index].type === 1) ?
-          MultisigCosignatoryModificationType.Add : MultisigCosignatoryModificationType.Remove;
-        cosignatory.push(
-          new MultisigCosignatoryModification(
-            type,
-            cosignatoryList[index].publicAccount,
-          )
-        );
-      }
-
-    }
-    return cosignatory;
-  }
-  /**
-   * Aggregate transaction
-   * @param {ToAggregateConvertMultisigInterface} params
-   * @returns {AggregateTransaction}
-   */
-  aggregateTransactionEditModifyMultisig (params: ToAggregateTransactionEditModifyMultisig): AggregateTransaction {
-    const valor = this.calcMinDelta(
-      params.minApprovalDelta.minApprovalOld,
-      params.minRemovalDelta.minRemovalOld,
-      params.minApprovalDelta.minApprovalNew,
-      params.minRemovalDelta.minRemovalNew,
-    );
-    const modifyMultisigAccountTransaction: ModifyMultisigAccountTransaction = ModifyMultisigAccountTransaction.create(
-      Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
-      valor['minApprovalDelta'],
-      valor['minRemovalDelta'],
-      this.multisigCosignatoryModification(params.cosignatoryLis),
-      environment.typeNetwork.value
-    );
-    let aggregateTransaction: AggregateTransaction = null;
-
-    const typeTX = this.typeSignTxEdit(params.cosignatoryLis,
-      params.minRemovalDelta.minRemovalOld,
-      params.minApprovalDelta.minApprovalOld,
-      params.cosignerFirmList,
-      params.accountsWallet);
-    if (typeTX === TransactionType.AGGREGATE_BONDED) {
-      aggregateTransaction = AggregateTransaction.createBonded(
-        Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
-        [modifyMultisigAccountTransaction.toAggregate(params.account)],
-        params.account.address.networkType
-      );
-
-    } else {
-      aggregateTransaction = AggregateTransaction.createComplete(
-        Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
-        [modifyMultisigAccountTransaction.toAggregate(params.account)],
-        params.account.address.networkType,
-        []
-      );
-
-    }
-    return aggregateTransaction;
-  }
-
-  calcMinDelta (minApprovalDeltaE: number, minRemovalDeltaE: number, minApprovalDeltaM: number, minRemovalDeltaM: number) {
-    return new Object({
-      minApprovalDelta: minApprovalDeltaM - minApprovalDeltaE,
-      minRemovalDelta: minRemovalDeltaM - minRemovalDeltaE
-    });
-  }
-
   /**
    * Aggregate transaction
    * @param {ToAggregateConvertMultisigInterface} params
    * @returns {AggregateTransaction}
    */
   aggregateTransactionModifyMultisig (params: ToAggregateConvertMultisigInterface): AggregateTransaction {
+    // console.log('params', params);
     const cosignatoriesPublicAccount: PublicAccount[] = params.othersCosignatories.concat(params.ownCosignatories);
     const cosignatoriesList = cosignatoriesPublicAccount.map(publicAccount => {
       return new MultisigCosignatoryModification(
@@ -123,6 +45,7 @@ export class MultisigService {
     );
     const typeTX = this.validateTypeSignTxn(params.ownCosignatories, cosignatoriesPublicAccount);
     if (typeTX === TransactionType.AGGREGATE_BONDED) {
+      // console.log('AGGREGATE_BONDED  AggregateTransaction');
       aggregateTransaction = AggregateTransaction.createBonded(
         Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
         [modifyMultisigAccountTransaction.toAggregate(params.account)],
@@ -130,6 +53,7 @@ export class MultisigService {
       );
 
     } else {
+      // console.log('AGGREGATE_COMPLETE  AggregateTransaction');
       aggregateTransaction = AggregateTransaction.createComplete(
         Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
         [modifyMultisigAccountTransaction.toAggregate(params.account)],
@@ -190,6 +114,7 @@ export class MultisigService {
     for (const i of ownCosignatories) {
       const accountInfo = this.walletService.filterAccountInfo(i.address.pretty(), true);
       if (accountInfo) {
+        // console.log('ACCOUNT INFO', accountInfo);
         ban = (accountInfo.multisigInfo !== null && accountInfo.multisigInfo !== undefined && accountInfo.multisigInfo.isMultisig());
         if (ban) {
           break;
@@ -243,15 +168,6 @@ export class MultisigService {
    */
   filterOwnCosignatory (cosignatoryList: CosignatoryInterface, accounts: AccountsInterface[]): AccountsInterface {
     return accounts.find(x => x.publicAccount.publicKey === cosignatoryList.publicKey);
-  }
-  filterOtherCosignerFirmAccountList (cosignerFirmListOne: CosignerFirmList[], cosignerFirmListOtwo: CosignerFirmList[]): CosignerFirmList[] {
-    const cosignerFirmListOnes: CosignerFirmList[] = [];
-    for (const list of cosignerFirmListOne) {
-      if (!cosignerFirmListOtwo.find(items => list.account.address === items.account.address)) {
-        cosignerFirmListOnes.push(list);
-      }
-    }
-    return cosignerFirmListOnes;
   }
 
   /**
@@ -307,6 +223,7 @@ export class MultisigService {
    */
   validateTypeSignTxn (ownCosignatories: PublicAccount[], allCosignatories: PublicAccount[]) {
     const accountsFilter = allCosignatories.filter(r => ownCosignatories.find(e => e.publicKey === r.publicKey));
+    // console.log('accountsFilter', accountsFilter);
     // validar si tengo los minímos necesarios para generar una transacción
     if (accountsFilter === null || accountsFilter === undefined || accountsFilter.length === 0) {
       return TransactionType.AGGREGATE_BONDED;
@@ -317,86 +234,6 @@ export class MultisigService {
     }
   }
 
-  multisigAccountGraphInfoMap (multisigAccountGraphInfo: MultisigAccountGraphInfo) {
-    console.log('multisigAccountGraphInfo', multisigAccountGraphInfo)
-    const multisigGraph: MultisigAccountInfo[] = [];
-    multisigAccountGraphInfo.multisigAccounts.forEach((x: any) => {
-      if (x.length > 0) {
-        for (let i of x) {
-          multisigGraph.push(i);
-        }
-      } else {
-        multisigGraph.push(x);
-      }
-
-    });
-    return multisigGraph;
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  typeSignTxEdit (
-    cosignatoryList: CosignatoryListInterface[],
-    minRemoval: number,
-    minApproval: number,
-    consginerFirmAccountList: CosignerFirmList[],
-    accounts: AccountsInterface[]): TransactionType {
-    let cantFirm = consginerFirmAccountList.length;
-    cantFirm = (cantFirm > 0) ? cantFirm : 1;
-    const ownCosignatories = this.filterOwnCosignatories(cosignatoryList.map(x => {
-      return {
-        publicKey: x.publicAccount.publicKey
-      };
-    }), accounts);
-    if (!Boolean(ownCosignatories.length === cosignatoryList.length)) {
-      return TransactionType.AGGREGATE_BONDED;
-    }
-    const cantAdd = cosignatoryList.filter(x => x.type === 1).length;
-    const cabtRemove = cosignatoryList.filter(x => x.type === 2).length;
-    if (cantAdd > 0 && cabtRemove > 0) {
-      console.log('ADD Y REMOVE');
-      if (cantFirm >= minRemoval && cantFirm >= minApproval) {
-        return TransactionType.AGGREGATE_COMPLETE;
-      } else {
-        return TransactionType.AGGREGATE_BONDED;
-      }
-    }
-    if (cantAdd === 0 && cabtRemove === 0) {
-      console.log('NEVER');
-      if (cantFirm >= minRemoval && cantFirm >= minApproval) {
-        return TransactionType.AGGREGATE_COMPLETE;
-      } else {
-        return TransactionType.AGGREGATE_BONDED;
-      }
-    }
-    if (cantAdd > 0) {
-      console.log('ADD');
-      if (cantFirm >= minApproval) {
-        return TransactionType.AGGREGATE_COMPLETE;
-      } else {
-        return TransactionType.AGGREGATE_BONDED;
-      }
-    }
-    if (cabtRemove > 0) {
-      console.log('REMOVE');
-      if (cantFirm >= minRemoval) {
-        return TransactionType.AGGREGATE_COMPLETE;
-      } else {
-        return TransactionType.AGGREGATE_BONDED;
-      }
-    }
-  }
   /**
    * Validate public key  ownCosignatories
    * @param cosignatoryList;
@@ -423,33 +260,37 @@ export class MultisigService {
     return true;
   }
 
-  /**
-   *
-   *
-   * @param {AccountsInterface} account
-   * @param {number} feeTx
-   * @param {string} [isCosigOf]
-   * @returns
-   * @memberof MultisigService
-   */
-  private buildCosignatory (account: AccountsInterface, feeTx: number, isCosigOf?: string) {
+  recurBuildCosig (publicKey: string, accounts: AccountsInterface[], feeTx: number) {
+
+    // if (accountUni.isMultisign && accountUni.isMultisign.isMultisig()) {
+
+    //   for (let item of accountUni.isMultisign.account())
+    //   // const ownCosignatories = this.filterOwnCosignatory({ publicKey: items.publicKey }, this.walletService.currentWallet.accounts);
+
+    //  }
+
+    // this.consginerFirmList.push({
+    //   label: item.name,
+    //   value: item.address,
+    //   disabled: infValidate[0].disabled,
+    //   info: infValidate[0].info,
+    //   account: item,
+    //   isMultisig: item.isMultisign
+    // })
+
+
+  }
+
+  checkCosig(account: AccountsInterface, feeTx: number) {
     const accountFiltered: AccountsInfoInterface = this.walletService.filterAccountInfo(account.name);
     if (accountFiltered) {
       const accountIsMultisig = accountFiltered && accountFiltered.multisigInfo && accountFiltered.multisigInfo.cosignatories.length > 0;
-      let validateBalance = null;
-      if (feeTx) {
-        validateBalance = this.transactionService.validateBalanceCosignatorie(accountFiltered, Number(feeTx)).infValidate;
-      }
-
-      const label = accountIsMultisig ? `${account.name} - Multisig` : account.name;
-      // if (accountIsMultisig && isCosigOf) {
-      //   label = `${isCosigOf} > ${label}`;
-      // }
+      const infValidate = this.transactionService.validateBalanceCosignatorie(accountFiltered, Number(feeTx)).infValidate;
       return {
-        label,
+        label: accountIsMultisig ? `${account.name} - Multisig` : account.name,
         value: account.address,
-        disabled: (validateBalance && validateBalance[0].disabled) || accountIsMultisig,
-        info: validateBalance && validateBalance[0].info,
+        disabled: infValidate[0].disabled || accountIsMultisig,
+        info: infValidate[0].info,
         account,
         isMultisig: account.isMultisign,
         accountIsMultisig,
@@ -466,51 +307,103 @@ export class MultisigService {
    * @param {MultisigAccountInfo} accountConvert
    * @param {AccountsInterface[]} accounts
    * @param {number} feeTx
-   * @returns {cosignerFirmList[]}
+   * @returns {ConsginerFirmList[]}
    * @memberof MultisigService
    */
-  buildCosignerList (account: MultisigAccountInfo, accounts: AccountsInterface[], feeTx?: number): CosignerFirmList[] {
-    if (account) {
-      const list: CosignerFirmList[] = [];
-      for (const item of accounts) {
-        const publicAccount: PublicAccount = PublicAccount.createFromPublicKey(item.publicAccount.publicKey, item.network);
-        if (account.hasCosigner(publicAccount)) {
-          const response = this.buildCosignatory(item, feeTx);
-          if (response) {
-            list.push(response);
-            if (response.accountIsMultisig) {
-              response.accountFiltered.multisigInfo.cosignatories.forEach(e => {
-                const cosignatoryLevel1Filtered = this.walletService.filterAccountWallet('', null, e.address.pretty());
-                if (cosignatoryLevel1Filtered) {
-                  const responseCosigLevel1 = this.buildCosignatory(cosignatoryLevel1Filtered, feeTx, response.account.name);
-                  if (responseCosigLevel1) {
-                    if (!list.find(d => d.account.publicAccount.publicKey === responseCosigLevel1.account.publicAccount.publicKey)) {
-                      list.push(responseCosigLevel1);
-                    }
-                    if (responseCosigLevel1.accountIsMultisig) {
-                      responseCosigLevel1.accountFiltered.multisigInfo.cosignatories.forEach(b => {
-                        const cosignatoryLevel2Filtered = this.walletService.filterAccountWallet('', null, b.address.pretty());
-                        if (cosignatoryLevel2Filtered) {
-                          const responseCosigLevel2 = this.buildCosignatory(cosignatoryLevel2Filtered, feeTx, responseCosigLevel1.account.name);
-                          if (responseCosigLevel2) {
-                            if (!list.find(d => d.account.publicAccount.publicKey === responseCosigLevel2.account.publicAccount.publicKey)) {
-                              list.push(responseCosigLevel2);
-                            }
-                          }
+  buildCosignerList(accountConvert: MultisigAccountInfo, accounts: AccountsInterface[], feeTx: number): ConsginerFirmList[] {
+    const list: ConsginerFirmList[] = [];
+    for (const item of accounts) {
+      const publicAccount: PublicAccount = PublicAccount.createFromPublicKey(item.publicAccount.publicKey, item.network);
+      if (accountConvert.hasCosigner(publicAccount)) {
+        const response = this.checkCosig(item, feeTx);
+        if (response) {
+          list.push(response);
+          if (response.accountIsMultisig) {
+            response.accountFiltered.multisigInfo.cosignatories.forEach(e => {
+              const cosignatoryLevel1Filtered = this.walletService.filterAccountWallet('', null, e.address.pretty());
+              if (cosignatoryLevel1Filtered) {
+                const responseCosigLevel1 = this.checkCosig(cosignatoryLevel1Filtered, feeTx);
+                if (responseCosigLevel1) {
+                  list.push(responseCosigLevel1);
+                  if (responseCosigLevel1.accountIsMultisig) {
+                    responseCosigLevel1.accountFiltered.multisigInfo.cosignatories.forEach(b => {
+                      const cosignatoryLevel2Filtered = this.walletService.filterAccountWallet('', null, b.address.pretty());
+                      if (cosignatoryLevel2Filtered) {
+                        const responseCosigLevel2 = this.checkCosig(cosignatoryLevel2Filtered, feeTx);
+                        if (responseCosigLevel2) {
+                          list.push(responseCosigLevel2);
                         }
-                      });
-                    }
+                      }
+                    });
                   }
                 }
-              });
-            }
+              }
+            });
           }
         }
+        /* const accountFiltered: AccountsInfoInterface = this.walletService.filterAccountInfo(item.name);
+        const accountIsMultisig = accountFiltered && accountFiltered.multisigInfo && accountFiltered.multisigInfo.cosignatories.length > 0;
+        console.log('###### accountFiltered', accountFiltered);
+        const infValidate = this.transactionService.validateBalanceCosignatorie(accountFiltered, Number(feeTx)).infValidate;
+        list.push({
+          label: accountIsMultisig ? `${item.name} - Multisig` : item.name,
+          value: item.address,
+          disabled: infValidate[0].disabled || accountIsMultisig,
+          info: infValidate[0].info,
+          account: item,
+          isMultisig: item.isMultisign
+        });
+
+        // Check is Multisig
+        if (accountIsMultisig) {
+          console.log('Cosig is Multisig', accountFiltered.name);
+          accountFiltered.multisigInfo.cosignatories.forEach(e => {
+            const cosignatoryLevel1Filtered = this.walletService.filterAccountWallet('', false, e.address.pretty());
+            console.log('\n cosignatoryFiltered -->', cosignatoryLevel1Filtered);
+            if (cosignatoryLevel1Filtered) {
+              const cosignatoryAccountInfo: AccountsInfoInterface = this.walletService.filterAccountInfo(cosignatoryLevel1Filtered.name);
+              const hasBalance = this.transactionService.validateBalanceCosignatorie(cosignatoryAccountInfo, Number(feeTx)).infValidate;
+              const cosignatoryIsMultisig = cosignatoryAccountInfo && cosignatoryAccountInfo.multisigInfo && cosignatoryAccountInfo.multisigInfo.cosignatories.length > 0;
+              console.log('\n --> Cosignatory has balance', hasBalance);
+              list.push({
+                label: cosignatoryAccountInfo.name + ' --> Is cosignatory -->' + item.name + ' - Multisig',
+                value: cosignatoryAccountInfo.accountInfo.address.plain(),
+                disabled: hasBalance[0].disabled || cosignatoryIsMultisig,
+                info: hasBalance[0].info,
+                account: cosignatoryLevel1Filtered,
+                isMultisig: cosignatoryAccountInfo.multisigInfo
+              });
+
+              if (cosignatoryIsMultisig) {
+                console.log('cosignatory is multisig', cosignatoryAccountInfo.multisigInfo.cosignatories);
+                cosignatoryAccountInfo.multisigInfo.cosignatories.forEach(publicAccountLevel2 => {
+                  console.log('###### publicAccountLevel2 ######', publicAccountLevel2);
+                  const cosigOfMultisigLevel2Filtered = this.walletService.filterAccountWallet('', null, publicAccountLevel2.address.pretty());
+                  console.log('cosigOfMultisigLevel2Filtered', cosigOfMultisigLevel2Filtered);
+                  if (cosigOfMultisigLevel2Filtered) {
+                    const cosigLevel2: AccountsInfoInterface = this.walletService.filterAccountInfo(cosigOfMultisigLevel2Filtered.name);
+                    console.log('cosigLevel2', cosigLevel2);
+                    const hasBalanceLevel2 = this.transactionService.validateBalanceCosignatorie(cosigLevel2, Number(feeTx)).infValidate;
+                    // const cosignatoryIsMultisig = cosigLevel2 && cosigLevel2.multisigInfo && cosigLevel2.multisigInfo.cosignatories.length > 0;
+                    console.log('\n --> Cosignatory has balance', hasBalanceLevel2);
+                    list.push({
+                      label: cosigLevel2.name,
+                      value: cosigLevel2.accountInfo.address.plain(),
+                      disabled: hasBalanceLevel2[0].disabled,
+                      info: hasBalanceLevel2[0].info,
+                      account: cosignatoryLevel1Filtered,
+                      isMultisig: cosigLevel2.multisigInfo
+                    });
+                  }
+                });
+              }
+            }
+          });
+        } */
       }
-      return list;
-    } else {
-      return [];
     }
+
+    return list;
   }
 
   /**
@@ -577,7 +470,10 @@ export class MultisigService {
    * @memberof MultisigService
    */
   removeContactList (contactList: ContactsListInterface[], cosignatoryList: CosignatoryListInterface[]): ContactsListInterface[] {
+    console.log('contactList', contactList);
+    console.log('cosignatoryList', cosignatoryList);
     return contactList.map(x => {
+      console.log('cosignatoryList', cosignatoryList.find(i => i.address === x.value));
       if (!cosignatoryList.find(i => i.address === x.value)) {
         return x;
       }
@@ -601,15 +497,6 @@ export interface CosignatoryInterface {
   publicKey: string;
   type?: number;
 }
-
-/**
- * cosignatory List
- * @param publicAccount
- * @param action - event (Add or delete)
- * @param type - 1 = Add , 2 = remove , 3 = view
- * @param disableItem - Disable item list
- * @param id - Address in cosignatory
- */
 export interface CosignatoryListInterface extends CosignatoriesInterface {
   loading?: boolean;
   action: string;
@@ -624,7 +511,6 @@ export interface CosignatoriesInterface {
   address?: string;
   publicAccount?: PublicAccount;
   ownCosignatories?: boolean;
-  cosignatorieswTow?: CosignatoriesInterface[];
 }
 export interface ToAggregateConvertMultisigInterface {
   account: PublicAccount;
@@ -633,21 +519,6 @@ export interface ToAggregateConvertMultisigInterface {
   minApprovalDelta: number;
   minRemovalDelta: number;
 }
-export interface ToAggregateTransactionEditModifyMultisig {
-  account: PublicAccount;
-  cosignerFirmList: CosignerFirmList[];
-  cosignatoryLis: CosignatoryListInterface[];
-  accountsWallet: AccountsInterface[];
-  minApprovalDelta: {
-    minApprovalOld: number,
-    minApprovalNew: number
-  };
-  minRemovalDelta: {
-    minRemovalOld: number,
-    minRemovalNew: number
-  };
-}
-
 export interface ToConvertMultisigInterface {
   account: Account;
   ownCosignatories: Account[];
@@ -656,14 +527,11 @@ export interface ToConvertMultisigInterface {
   minRemovalDelta: number;
 }
 
-export interface CosignerFirmList {
+export interface ConsginerFirmList {
   label: string;
   value: any;
   disabled: boolean;
   info: string;
   account: AccountsInterface;
-  isMultisig: MultisigAccountInfo;
-  accountIsMultisig: boolean;
-  accountFiltered: AccountsInfoInterface;
-  selected?: boolean;
+  isMultisig: MultisigAccountInfo
 }
