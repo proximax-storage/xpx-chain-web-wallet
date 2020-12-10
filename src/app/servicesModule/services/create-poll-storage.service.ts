@@ -26,6 +26,7 @@ export class CreatePollStorageService {
   uploader: Uploader;
   downloader: Downloader;
   pollResult: any = [];
+  allPollResult: any = [];
   publicAccount: PublicAccount;
   @BlockUI() blockUI: NgBlockUI;
 
@@ -178,6 +179,7 @@ export class CreatePollStorageService {
               // resultData.push();
 
               this.pollResult.push(this.ab2str(dataBuffer));
+              this.allPollResult.push(this.ab2str(dataBuffer));
               resolve({ result: this.ab2str(dataBuffer), size: searchResult.results.length, 
                 fromTransactionId: searchResult.fromTransactionId, toTransactionId: searchResult.toTransactionId });
 
@@ -215,7 +217,17 @@ export class CreatePollStorageService {
    * @memberof WalletService
    */
   filterPoll(byId: number): PollInterface {
-    return this.pollResult.find(elm => elm.id === byId);
+    return this.allPollResult.find(elm => elm.id === byId);
+  }
+
+  /**
+   *
+   *
+   * @returns
+   * @memberof WalletService
+   */
+  resetPoll(): void {
+    this.allPollResult = [];
   }
 }
 export interface FileInterface {

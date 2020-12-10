@@ -52,6 +52,7 @@ export class PollsComponent implements OnInit {
   lastTransactionId: string = "";
   isLoadMore = false;
   isLoading = false;
+  loadingPerPage = 10;
 
   constructor(
     private router: Router,
@@ -208,6 +209,7 @@ export class PollsComponent implements OnInit {
     this.lastTransactionId = null;
     this.isLoadMore = false;
     this.pollResult = [];
+    this.createPollStorageService.resetPoll();
     this.cantPolls = 0;
   }
 
