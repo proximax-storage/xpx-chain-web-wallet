@@ -81,7 +81,7 @@ export class ViewAllAccountsComponent implements OnInit, OnDestroy{
         }
       }
       this.currentWallet = currentWallet;
-      console.log(this.currentWallet)
+      // console.log(this.currentWallet)
     }
   }
 

@@ -21,7 +21,7 @@ export const environment = {
   nameKeyWalletTransactionsNis: 'sw-transactions-nis-mainnet',
   activeModulesBox: {
     voting: {
-      viewChildrenParam: true,
+      viewChildrenParam: true,  
       createPoll: false,
       vote: false,
       viewResult: false,
