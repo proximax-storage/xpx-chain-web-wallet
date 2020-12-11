@@ -484,7 +484,8 @@ export class ConvertAccountMultisignComponent implements OnInit {
         this.convertAccountMultsignForm.get('minApprovalDelta').value,
         this.convertAccountMultsignForm.get('minRemovalDelta').value,
         this.multisigCosignatoryModification(this.getCosignatoryList()),
-        this.currentAccountToConvert.network)
+        this.currentAccountToConvert.network, 
+        UInt64.fromUint(0))
       const innerTransaction = [{
         signer: this.currentAccountToConvert.publicAccount, tx: convertIntoMultisigTransaction
       }]

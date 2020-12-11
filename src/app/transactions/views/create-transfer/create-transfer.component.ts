@@ -16,7 +16,7 @@ import {
   TransactionHttp,
   PlainMessage,
   EncryptedMessage,
-  TransferTransaction
+  TransferTransaction,
 } from 'tsjs-xpx-chain-sdk';
 import { Subscription } from 'rxjs';
 import { ModalDirective } from 'ng-uikit-pro-standard';
@@ -443,7 +443,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
   calculateFee(message: number) {
     this.mosaicsToSend = this.validateMosaicsToSend();
     const x = TransferTransaction.calculateSize(PlainMessage.create(this.formTransfer.get('message').value).size(), this.mosaicsToSend.length);
-    const b = FeeCalculationStrategy.calculateFee(x);
+    const b = FeeCalculationStrategy.calculateFee(x, FeeCalculationStrategy.FeeCalculationStrategy.ZeroFeeCalculationStrategy);
     if (message > 0) {
       this.fee = this.transactionService.amountFormatterSimple(b.compact());
     } else if (message === 0 && this.mosaicsToSend.length === 0) {
@@ -949,7 +949,8 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
                 recipientAddress,
                 allMosaics,
                 params.message,
-                params.network
+                params.network,
+                UInt64.fromUint(0)
               );
 
               const innerTxn = [{

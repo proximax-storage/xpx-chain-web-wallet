@@ -502,7 +502,8 @@ export class VoteInPollComponent implements OnInit {
       Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
       this.transactionToAggregate(publicAccount, message),
       publicAccount.address.networkType,
-      []);
+      [],
+      UInt64.fromUint(0));
 
     const generationHash = this.dataBridge.blockInfo.generationHash;
     this.signedTransaction = accountsign.sign(aggregateTransaction, generationHash); //Update-sdk-dragon

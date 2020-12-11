@@ -307,7 +307,8 @@ export class TransactionsService {
       recipientAddress,
       allMosaics,
       params.message,
-      params.network
+      params.network,
+      UInt64.fromUint(0)
     );
 
     // console.log(this.generationHash);
@@ -337,7 +338,8 @@ export class TransactionsService {
       new Mosaic(new MosaicId(environment.mosaicXpxInfo.id), UInt64.fromUint(Number(10000000))),
       UInt64.fromUint(environment.lockFundDuration),
       signedTransaction,
-      this.walletService.currentAccount.network
+      this.walletService.currentAccount.network,
+      UInt64.fromUint(0)
     );
 
     // console.log('\n hashLockTransaction --> ', hashLockTransaction);
@@ -363,7 +365,9 @@ export class TransactionsService {
     const bondedCreated = AggregateTransaction.createBonded(
       Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
       innerTxn,
-      this.walletService.currentAccount.network
+      this.walletService.currentAccount.network,
+      [],
+      UInt64.fromUint(0)
     );
 
     if (otherCosigners.length > 0) {

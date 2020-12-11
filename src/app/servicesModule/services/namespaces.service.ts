@@ -10,7 +10,8 @@ import {
   Deadline,
   SignedTransaction,
   AddressAliasTransaction,
-  Account
+  Account,
+  UInt64
 } from 'tsjs-xpx-chain-sdk';
 import { ProximaxProvider } from '../../shared/services/proximax.provider';
 import { WalletService } from '../../wallet/services/wallet.service';
@@ -53,7 +54,8 @@ export class NamespacesService {
       param.aliasActionType,
       param.namespaceId,
       param.address,
-      network
+      network,
+      UInt64.fromUint(0)
     );
 
     return addressAliasTransaction;

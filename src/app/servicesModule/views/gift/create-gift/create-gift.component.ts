@@ -870,7 +870,8 @@ export class CreateGiftComponent implements OnInit {
         account.address,
         [new Mosaic(new MosaicId(mosaicsToSend.id), UInt64.fromUint(Number(this.sum(mosaicsToSend.amount, this.feeCover))))],
         PlainMessage.create(''),
-        network);
+        network,
+        UInt64.fromUint(0));
       this.accountList.push(account)
       return aggregateTransaction
     }
@@ -882,7 +883,8 @@ export class CreateGiftComponent implements OnInit {
           account.address,
           [new Mosaic(new MosaicId(mosaicsToSend.id), UInt64.fromUint(Number(this.sum(mosaicsToSend.amount, this.feeCover))))],
           PlainMessage.create(''),
-          network);
+          network,
+          UInt64.fromUint(0));
         innerTransaction.push(transferTransaction.toAggregate(this.sender.publicAccount))
         this.accountList.push(account)
       }
@@ -890,7 +892,8 @@ export class CreateGiftComponent implements OnInit {
         Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
         innerTransaction,
         this.sender.network,
-        []
+        [],
+        UInt64.fromUint(0)
       )
     }
 

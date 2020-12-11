@@ -173,7 +173,7 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
   calculateFee(message?) {
     const mosaicsToSend = [];
     const x = TransferTransaction.calculateSize(PlainMessage.create(message).size(), mosaicsToSend.length);
-    const b = FeeCalculationStrategy.calculateFee(x);
+    const b = FeeCalculationStrategy.calculateFee(x, FeeCalculationStrategy.FeeCalculationStrategy.ZeroFeeCalculationStrategy);
     if (message > 0) {
       this.fee = this.transactionService.amountFormatterSimple(b.compact());
     } else if (message === 0 && mosaicsToSend.length === 0) {

@@ -227,7 +227,8 @@ export class CreateMosaicComponent implements OnInit, OnDestroy {
         mosaicSupplyChangeTransaction.toAggregate(publicAccount)
       ],
       this.walletService.currentAccount.network,
-      []
+      [],
+      UInt64.fromUint(0)
     );
     this.fee = this.transactionService.amountFormatterSimple(this.aggregateTransaction.maxFee.compact());
   }
@@ -515,7 +516,8 @@ export class CreateMosaicComponent implements OnInit, OnDestroy {
         transactions.supplyChange.toAggregate(account.publicAccount)
       ],
       this.walletService.currentAccount.network,
-      []
+      [],
+      UInt64.fromUint(0)
     );
 
     // I SIGN THE TRANSACTION

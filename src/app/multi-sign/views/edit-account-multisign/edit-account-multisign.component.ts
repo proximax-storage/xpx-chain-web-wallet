@@ -797,7 +797,8 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
       modifyobject.minApprovalDelta,
       modifyobject.minRemovalDelta,
       modifyobject.modifications,
-      modifyobject.networkType
+      modifyobject.networkType,
+      UInt64.fromUint(0)
     );
   }
 

@@ -43,12 +43,12 @@ import {
   BlockInfo,
   MosaicAliasTransaction,
   Convert,
-  RawAddress
+  RawAddress,
+  MosaicDefinitionTransaction
 } from 'tsjs-xpx-chain-sdk';
 import { BlockchainNetworkType } from 'tsjs-chain-xipfs-sdk';
 import { Observable } from 'rxjs/internal/Observable';
 import { mergeMap } from 'rxjs/operators';
-import { MosaicDefinitionTransaction } from 'tsjs-xpx-chain-sdk/dist/src/model/transaction/MosaicDefinitionTransaction';
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 
@@ -107,7 +107,8 @@ export class ProximaxProvider {
       address,
       mosaics,
       message,
-      network
+      network,
+      UInt64.fromUint(0)
     );
   }
 
@@ -132,7 +133,8 @@ export class ProximaxProvider {
       mosaicId,
       mosaicSupplyType,
       delta,
-      network
+      network,
+      UInt64.fromUint(0)
     );
   }
 
@@ -162,7 +164,8 @@ export class ProximaxProvider {
         divisibility: params.divisibility,
         duration: (params.duration) ? UInt64.fromUint(params.duration) : undefined
       }),
-      params.network
+      params.network,
+      UInt64.fromUint(0)
     );
     return mosaicDefinitionTransaction;
   }
@@ -663,7 +666,8 @@ export class ProximaxProvider {
       aliasActionType,
       namespaceId,
       mosaicId,
-      network
+      network,
+      UInt64.fromUint(0)
     );
   }
 
@@ -683,7 +687,8 @@ export class ProximaxProvider {
       new MosaicId(mosaicId),
       mosaicSupplyType,
       UInt64.fromUint(supply),
-      network
+      network,
+      UInt64.fromUint(0)
     );
   }
 
@@ -701,7 +706,8 @@ export class ProximaxProvider {
       Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
       name,
       UInt64.fromUint(duration),
-      network
+      network,
+      UInt64.fromUint(0)
     );
   }
 
@@ -720,7 +726,8 @@ export class ProximaxProvider {
       Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
       subnamespaceName,
       rootNamespace,
-      network
+      network,
+      UInt64.fromUint(0)
     );
   }
 

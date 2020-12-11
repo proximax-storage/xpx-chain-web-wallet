@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AggregateTransaction, PublicAccount, Transaction, Deadline, TransactionType, Address, SignedTransaction, Account, MultisigAccountInfo } from 'tsjs-xpx-chain-sdk';
+import { AggregateTransaction, PublicAccount, Transaction, Deadline, TransactionType, Address, SignedTransaction, Account, MultisigAccountInfo, UInt64 } from 'tsjs-xpx-chain-sdk';
 import { environment } from 'src/environments/environment';
 import { AccountsInterface } from 'src/app/wallet/services/wallet.service';
 
@@ -27,7 +27,9 @@ export class MultiSignService {
         aggregateTransaction = AggregateTransaction.createBonded(
           Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
           innerTxn,
-          currentAccountToConvert.network
+          currentAccountToConvert.network,
+          [],
+          UInt64.fromUint(0)
         );
         break
       case TransactionType.AGGREGATE_COMPLETE:
@@ -36,7 +38,8 @@ export class MultiSignService {
           Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
           innerTxn,
           currentAccountToConvert.network,
-          []
+          [],
+          UInt64.fromUint(0)
         );
 
         break

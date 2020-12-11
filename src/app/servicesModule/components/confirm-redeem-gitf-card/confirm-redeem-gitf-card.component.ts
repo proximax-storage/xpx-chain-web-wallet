@@ -73,7 +73,8 @@ export class ConfirmRedeemGitfCardComponent implements OnInit {
         address,
         [new Mosaic(new MosaicId(moisacID), UInt64.fromUint(Number(this.giftDecodeConfirm.amount.compact())))],
         PlainMessage.create(''),
-        this.recipientConfirm.publicAccount.address.networkType);
+        this.recipientConfirm.publicAccount.address.networkType,
+        UInt64.fromUint(0));
       const account: Account = Account.createFromPrivateKey(this.giftDecodeConfirm.privatekey, this.recipientConfirm.publicAccount.address.networkType);
       const signedTransaction = account.sign(
         transferTransaction,
