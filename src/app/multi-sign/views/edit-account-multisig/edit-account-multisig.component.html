@@ -1,0 +1,641 @@
+<app-header [params]="paramsHeader"></app-header>
+
+<div class="container-fluid mb-2rem animated fadeIn">
+  <form [formGroup]="formEditAccountMultsig" (ngSubmit)="editIntoMultisigTransaction()">
+    <div class="row mt-2rem">
+      <div class="col-8 col-md-8 col-lg-8 col-xl-8 mx-auto">
+
+        <!-- LIST COSIGNATORY -->
+        <div class="box-multisig">
+          <div class="row">
+            <div class="col-12 mb-07rem">
+              <div class="row">
+                <div class="col-6">
+                  <img class="w-30px" src="assets/images/img/icon-account-green-16h-proximax-sirius-wallet.svg">
+                  <span class="fw-600"> {{dataCurrentAccout.name}}</span> <br>
+                  <span class="fw-300 fs-08rem color-grey pl-2rem"> {{dataCurrentAccout.address}}</span>
+                </div>
+                <div class="col-6 d-flex justify-content-end align-items-center">
+                  <div class="row">
+                    <div class="col-6 d-flex justify-content-center align-items-center">
+                      <img (click)="showScheme()" src="assets/images/img/icon-flow-multisig-multilevel-button.svg"
+                        class="cursor-p" width="25">&nbsp;
+                      <!-- showScheme -->
+                    </div>
+                    <div class="col-6 d-flex justify-content-center align-items-center">
+                      <img *ngIf="!showAccount" (click)="showAccount=!showAccount"
+                        src="assets/images/img/icon-collapse-accordion-button.svg" class="cursor-p" width="25"> &nbsp;
+                      <img *ngIf="showAccount" (click)="showAccount=!showAccount"
+                        src="assets/images/img/icon-expand-accordion-button.svg" class="cursor-p" width="25"> &nbsp;
+                    </div>
+                  </div>
+
+                </div>
+
+                <div class="col-12 pl-3rem">
+                  <div class="row">
+
+
+                    <!-- COSIGNATORY ACCOUNT -->
+                    <!-- {{consignerFirm}} -->
+                    <ng-container *ngIf="!showCosignerFirmList &&  consignerFirm">
+                      <div class="col-12 mx-auto d-flex justify-content-start pt-05rem pb-05rem">
+                        <span class="fs-08rem fw-600">Cosignatory Account:&nbsp;</span>
+                        <span class="fs-08rem">{{consignerFirm?.label}}</span>
+                      </div>
+                    </ng-container>
+
+                    <!-- INSUFFICIENT BALANCE -->
+                    <!-- <ng-container *ngIf="!showCosignerFirmList &&  consignerFirm?.disabled">
+                      <div class="col-12 mx-auto d-flex justify-content-start pt-05rem pb-05rem">
+                        <span class="fs-08rem fw-600 color-error-message">
+                          Cosignatory {{consignerFirm.info}}
+                        </span>
+                      </div>
+                    </ng-container> -->
+                  </div>
+                </div>
+              </div>
+            </div>
+            <ng-container *ngIf="showAccount">
+              <div class="col-12 d-flex justify-content-center ">
+                <span class="fs-1-3rem fw-300 mt-2rem mb-7rem mb-06rem"> Cosignatories for this account</span>
+
+              </div>
+              <ng-container *ngFor="let item of dataCurrentAccout.cosignatoryList; let index = index">
+                <div class="col-12">
+                  <div class="box-multisig-l1">
+                    <div class="row ma-0-4">
+                      <div class="col-6 ">
+                        <span class="fw-600"> {{item.name}}</span>
+                        <span *ngIf="item.cosignatories.length > 0 "
+                          class="fs-07rem color-blue-intermedio tag-account">- Multisig</span>
+                        <br> <span class="fw-300 fs-08rem color-grey"> {{item.address}}</span>
+                      </div>
+                      <div class="col-6 d-flex justify-content-end align-items-center">
+                        <div class="row">
+                          <div *ngIf="item.cosignatories.length > 0 "
+                            class="col-6 d-flex justify-content-center align-items-center">
+                            <img (click)="showSubItem(index)" src="assets/images/img/icon-collapse-accordion-button.svg"
+                              class="cursor-p" width="25">
+                            &nbsp;
+
+                          </div>
+                          <div class="col-6 d-flex justify-content-center align-items-center">
+                            <i [class.disabled]="isDisabledList" [style.color]="getColor(item.type)"
+                              (click)="deleteCosignatory(item.id ,item.disableItem, item.type)" style="cursor: pointer;"
+                              class="fa fa-trash fs-1rem" aria-hidden="true"></i>
+                          </div>
+                        </div>
+                      </div>
+                      <ng-container *ngIf="visibleIndex === index && item.cosignatories.length > 0 ">
+                        <div class="col-12 flash">
+                          <div class="box-multisig-l2">
+                            <div class="row">
+                              <div class="col-12">
+                                <span class="fw-600 fs-09rem ml-1-4rem color-blue-intermedio">
+                                  Cosignatories of {{item.name}}
+                                </span>
+
+                              </div>
+                              <div class="col-12">
+                                <ul>
+                                  <li *ngFor="let itemOnelvl of item.cosignatories; let indexOnelvl = index">
+                                    <div class="col-12">
+                                      <!-- <div class="box-grey-invert"> -->
+                                      <div class="row ma-0-4">
+                                        <div class="col-6 ">
+                                          <span class="fw-600"> {{itemOnelvl.name}}</span>
+                                          <span *ngIf="itemOnelvl.isMultisig && itemOnelvl.isMultisig.isMultisig()"
+                                            class="fs-07rem color-blue-intermedio tag-account">- Multisig</span>
+                                          <br> <span class="fw-300 fs-08rem color-grey">
+                                            {{itemOnelvl.address}}</span>
+                                        </div>
+                                        <div class="col-6 d-flex justify-content-end align-items-center">
+                                          <div class="row">
+                                            <div *ngIf="itemOnelvl.isMultisig && itemOnelvl.isMultisig.isMultisig()"
+                                              class="col-6 d-flex justify-content-center align-items-center">
+                                              <img (click)="showSubItemOnelvl(indexOnelvl)"
+                                                src="assets/images/img/icon-collapse-accordion-button.svg"
+                                                class="cursor-p" width="25">
+                                              &nbsp;
+                                              <!-- showSubItemOnelvl -->
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <ng-container
+                                          *ngIf="visibleIndexOnelvl === indexOnelvl && itemOnelvl.cosignatorieswTow.length > 0 ">
+                                          <div class="col-12 flash">
+                                            <div class="box-multisig-l3">
+                                              <div class="row">
+                                                <div class="col-12 line-h-2em">
+                                                  <span class="fw-600 fs-09rem ml-1-4rem color-blue-intermedio">
+                                                    Inner level cosignatories
+                                                  </span>
+                                                  <ul>
+                                                    <li *ngFor="let itemTowlvl of itemOnelvl.cosignatorieswTow"
+                                                      style="font-size: x-small;">
+                                                      <span class="fw-600"> {{itemTowlvl.name}}</span>
+                                                      ({{itemTowlvl.address}})
+                                                    </li>
+                                                  </ul>
+
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </ng-container>
+                                      </div>
+                                      <!-- </div> -->
+                                    </div>
+                                  </li>
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </ng-container>
+
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+            </ng-container>
+
+          </div>
+        </div>
+        <div class="row" *ngIf="validateAccountAlert.show">
+          <div class="col-8 mx-auto mb-1rem  box-transparent-border-red"
+            *ngIf='validateAccountAlert.info !== "Partial"'>
+            <div class="txt-a-center">
+              <img src="assets/images/img/icon-restriction-white.svg" style="filter: invert(50%)" alt="" width="30">
+            </div>
+            <h6 *ngIf="validateAccountAlert.info !==''" class="fw-600">{{validateAccountAlert.info}}</h6>
+            <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em" [innerHtml]="validateAccountAlert.subInfo">
+
+            </p>
+          </div>
+          <div class="col-8 mx-auto mb-1rem  box-transparent-border-orange"
+            *ngIf='validateAccountAlert.info === "Partial"'>
+            <div class="txt-a-center">
+              <!-- <img src="assets/images/img/icon-restriction-white.svg" style="filter: invert(50%)" alt="" width="30"> -->
+              <i title="On partial" style="color:#f2a917" class="fa fa-bell"></i>
+            </div>
+            <h6 *ngIf="validateAccountAlert.info !==''" class="fw-600">{{validateAccountAlert.info}}</h6>
+            <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em" [innerHtml]="validateAccountAlert.subInfo">
+
+            </p>
+          </div>
+        </div>
+        <!-- DYNAMIC FORM -->
+        <div formArrayName="cosignatories">
+          <div *ngFor="let cosignatory of cosignatories.controls; let i=index">
+            <!-- COSIGNATORY -->
+            <div [formGroupName]="i" class="row mt-1rem">
+              <div class="col-12">
+                <div class="row">
+                  <!-- COSIGNATORY INPUT-->
+                  <div class="col-12">
+                    <!-- Remove user -->
+                    <div class="d-flex justify-content-center align-items-center">
+                      <div class="pt-2">
+                        <i (click)="removeCosignatory(i)" class="trash-button fa fa-trash"></i> &nbsp;
+                      </div>
+                      <!-- Input Public Key -->
+                      <div class="md-form form-sm mt-1rem mb-0rem flex-fill">
+                        <img class="form-control-feedback"
+                          src="assets/images/img/icon-public-key-green-16h-proximax-sirius-wallet.svg" width="43"
+                          height="43">
+                        <input [maxlength]="configurationForm.publicKey.maxLength"
+                          [minlength]="configurationForm.publicKey.minLength" formControlName="cosignatory" required
+                          mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
+                          id="cosignatory" class="form-control form-control-sm input-border"
+                          placeholder="Cosignatory Account Public Key "
+                          onkeyup="javascript:this.value=this.value.toUpperCase();">
+                        <!-- VALIDATION -->
+                        <mdb-error
+                          *ngIf="validateInputCosignatory(i).invalid && (validateInputCosignatory(i).dirty || validateInputCosignatory(i).touched)">
+                          <span>Invalid Key</span>
+                        </mdb-error>
+                      </div>
+                      <!--SHOW CONTACT-->
+                      <div [attr.disabled]="contactList.length === 0" class="ml-2 cursor-p" (click)="showContact(i)"
+                        [title]="(!showContacts) ? 'Show contacts': 'Hide contacts'">
+                        <img class="w-25px"
+                          [src]="(!showContacts && contactList.length === 0) ? imageActiveBook : imageInactiveBook">
+                      </div>
+                    </div>
+
+                    <!-- Progress -->
+                    <div *ngIf="searchContact[i]" class="d-flex justify-content-center align-items-center">
+                      <div class="col-12">
+                        <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate">
+                        </mdb-progress-bar>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ADD COSIGNATORY -->
+        <div class="row mt-1-5rem">
+          <div class="col-12 d-flex justify-content-center">
+            <button mdbBtn type="button" rounded="true" [disabled]="validateAccountAlert.show" mdbWavesEffect
+              class="background-btn-inverse pl-2rem pr-2rem" size="sm" (click)="addCosignatory()">
+              <span class="fs-1-2em color-blue-intermedio fw-700">(+) Add Cosignatory</span>
+            </button>
+          </div>
+        </div>
+        <hr>
+
+        <!-- SCHEME NODE -->
+        <div class="row mt-2rem">
+          <div class="col-12 mx-auto">
+            <div class="d-flex align-items-center flex-wrap">
+              <!-- SCHEME -->
+              <div class="mr-1">
+                <h5 class="h5-responsive fw-600">
+                  Scheme for
+                  <span class="ml-2 fw-600">></span>
+                </h5>
+              </div>
+
+              <!-- MIN APROVE -->
+              <div class="d-flex align-items-center justify-content-center flex-fill ">
+                <div>
+                  <span class="fw-bold">Approve transactions: &nbsp;</span>
+                </div>
+
+                <div class="md-form form-sm mt-03rem mb-0rem">
+                  <input (keypress)="preventNumbers($event)" onkeydown="return false" max="{{maxDelta}}"
+                    min="{{minDelta}}" formControlName="minApprovalDelta" required mdbInputDirective mdbValidate
+                    [validateSuccess]="true" [validateError]="true" type="number" id="minApprovalDelta"
+                    class="form-control form-control-sm input-border text-center" placeholder="Min approval"
+                    onkeyup="javascript:this.value=this.value.toLowerCase();">
+                  <!-- VALIDATION -->
+                  <mdb-error
+                    *ngIf="validateInput('minApprovalDelta').invalid && (validateInput('minApprovalDelta').dirty || validateInput('minApprovalDelta').touched)">
+                    <span>Invalid value</span>
+                  </mdb-error>
+                </div>
+                <div class="ml-2">
+                  <span></span>
+                  <span>of {{dataCurrentAccout.cosignatoryList.length}} cosignatories</span>
+                </div>
+              </div>
+
+              <!-- SEPARATOR -->
+              <div class=" d-sm-flex justify-content-center flex-fill mr-0rem">
+                <span>|</span>
+              </div>
+
+              <!-- MIN REMOVE-->
+              <div class="d-flex align-items-center justify-content-center flex-fill">
+                <div>
+                  <span class="fw-bold">Delete users: &nbsp;</span>
+                </div>
+                <div class="md-form form-sm mt-03rem mb-0rem">
+                  <input (keypress)="preventNumbers($event)" onkeydown="return false" max="{{maxDelta}}"
+                    min="{{minDelta}}" formControlName="minRemovalDelta" required mdbInputDirective mdbValidate
+                    [validateSuccess]="true" [validateError]="true" type="number" id="minRemovalDelta"
+                    class="form-control form-control-sm input-border text-center" placeholder="Min removal"
+                    onkeyup="javascript:this.value=this.value.toLowerCase();">
+                  <!-- VALIDATION -->
+                  <mdb-error
+                    *ngIf="validateInput('minRemovalDelta').invalid && (validateInput('minRemovalDelta').dirty || validateInput('minRemovalDelta').touched)">
+                    <span>Invalid value</span>
+                  </mdb-error>
+                </div>
+                <div class="ml-2">
+                  <span>of {{dataCurrentAccout.cosignatoryList.length}} cosignatories</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-1-5rem">
+          <div class="col-11 col-md-10 col-lg-8 mx-auto">
+            <div class="row">
+              <div class="col-12 col-md-6 mx-auto">
+                <div class="box-grey d-flex justify-content-center pt-08rem pb-08rem">
+                  <div class="row">
+                    <div class="col-12 text-center">
+                      <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
+                        width="20" alt="">
+                      <!-- {{feeConfig.fee}} -->
+                      <span class="fs-07rem">Unconfirmed/Recommended Fee: {{feeConfig.fee}} XPX <br></span>
+                      <!-- <span class="fs-07rem">Unconfirmed/Recommended Fee:
+                        {{transactionService.amountFormatterSimple(feeConfig.fee)}} XPX <br></span> -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-12 col-md-6 mx-auto">
+                <!-- <div *ngIf="showLockfund" class="col-12 col-md-6 mx-auto"></div> -->
+                <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
+                  <div class="row">
+                    <div class="col-12 d-flex align-items-center">
+                      <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
+                        width="20" alt="">
+                      <span class="fs-07rem">LockFund: 10.000000 XPX <br> Unconfirmed/Recommended Fee: 0.044500
+                        XPX</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- COSIGNATORIES -->
+        <ng-container *ngIf="showCosignerFirmList">
+          <div class="row mt-1-5rem">
+            <div class="col-12 mx-auto">
+              <div class="class row">
+                <div class="col-12 mx-auto">
+                  <!-- ssss -->
+                  <ng-select class="selectWrapper mt-06rem" [items]="consignerFirmList" bindLabel="label"
+                    labelForId="cosignatorieSign" bindValue="value" placeholder="Main Cosignatory To Sign"
+                    formControlName="cosignatorieSign">
+                    <ng-template ng-option-tmp let-item="item" let-index="index">
+                      <b>{{item.label}}</b>
+                      &nbsp;<b class="color-error-message">{{item.info}}</b>
+                    </ng-template>
+                    <ng-template ng-footer-tmp>
+                      <span class="fs-08rem color-error-message">
+                        Cosignatory has sufficient balance
+                        ({{transactionService.amountFormatterSimple(feeConfig.totalFee)}} XPX) to cover LockFund Fee
+                      </span>
+
+                    </ng-template>
+                  </ng-select>
+                  <ng-container *ngIf="showSignCosignatory">
+                    <span *ngIf="infoBalance.disabled" class="fs-07rem color-error-message">
+                      - {{infoBalance.info}}
+                    </span>
+                  </ng-container>
+                </div>
+                <div class="col-12 mx-auto">
+                  <ng-select class="selectWrapper" [items]="otherCosignatorieList" [maxSelectedItems]="limitSelect-1"
+                    bindLabel="label" labelForId="otherCosignatorie" [multiple]="true"
+                    formControlName="otherCosignatorie" bindValue="value"
+                    placeholder="Also I Will Sign Sith This Consignatories">
+
+                  </ng-select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <!-- Passowrd -->
+        <div class="row mt-1-5rem">
+          <div class="col-12">
+            <div class="md-form form-sm">
+              <img class="form-control-feedback"
+                src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
+              <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
+                src="assets/images/img/icon-show-hide-password.svg" *ngIf="passwordMain === 'password'">
+              <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
+                src="assets/images/img/icon-show-hide-password-grey.svg" *ngIf="passwordMain === 'text'">
+              <input [maxlength]="configurationForm.passwordWallet.maxLength"
+                [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
+                mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" [type]="passwordMain"
+                id="password" class="form-control form-control-sm input-border" placeholder="Enter Wallet Password">
+              <mdb-error
+                *ngIf="validateInput('password').invalid && (validateInput('password').dirty || validateInput('password').touched)">
+                <span>Password Required </span>
+              </mdb-error>
+            </div>
+          </div>
+        </div>
+        <!-- Buttons -->
+        <div class="row mt-1-5rem">
+          <div class="col-12">
+            <div class="row">
+              <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+                <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="md"
+                  (click)="clearForm()">
+                  <span class="fs-1-2em color-white">Clear</span>
+                </button>
+              </div>
+              <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+                <button
+                  [disabled]="formEditAccountMultsig.invalid || cosignatories.status === 'INVALID' || cosignatoriesList.length === 0 || isRepeatCosignatoryVal || validateAccountAlert.show"
+                  mdbBtn type="submit" rounded="true" mdbWavesEffect class="btn-proximax" size="md">
+                  <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+                    *ngIf="blockSend"></span>
+                  <span class="fs-1-2em color-white">Send</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- MODAL SELECT CONTACT -->
+    <div class="d-flex align-items-center">
+      <div mdbModal #modalContact="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+        aria-labelledby="modalContact" aria-hidden="true">
+        <div class="modal-dialog modal-md d-flex align-items-center" role="document">
+          <div class="modal-content form-elegant bord-rad-1-5rem">
+            <div class="row">
+              <div class="col-12">
+                <div class="col-12">
+                  <span class="cursor-p d-flex justify-content-end fw-600 fs-1rem pt-04rem"
+                    (click)="modalContact.hide()">x</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="modal-body" style="height: 250px;">
+              <div class="container  animated fadeIn">
+                <div class="row">
+                  <div class="col-12 d-flex justify-content-center">
+                    <span class="fs-1-4rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">Contacts</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- CONTACTS -->
+              <!-- <div class="row">
+                        <div class="col-12 col-md-10 mx-auto"> -->
+              <div class="row ">
+                <div class="col-10 mx-auto">
+                  <ng-select mdbInputDirective mdbValidate formControlName="contact" class="selectWrapper"
+                    [searchable]="false" [items]="contactList" bindLabel="label" bindValue="value"
+                    placeholder="Select an contact" (change)="selectContact($event)">
+                    <ng-template ng-option-tmp let-item="item" let-index="index">
+                      <ng-container *ngIf="item.disabled">
+                        <b>
+                          <i class="fa fa-users"> </i>
+                        </b>&nbsp;
+                      </ng-container>
+                      <b>{{item.label}}</b>
+                    </ng-template>
+                  </ng-select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- </div>
+                  </div> -->
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL DIAGRAM-->
+    <div class="d-flex align-items-center">
+      <div mdbModal #scheme="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="scheme"
+        aria-hidden="true">
+        <div class="modal-dialog modal-md d-flex align-items-center " role="document">
+          <div class="modal-content form-elegant bord-rad-1-5rem ">
+            <div class="row">
+              <div class="col-12">
+                <div class="col-12">
+                  <span class="cursor-p d-flex justify-content-end fw-600 fs-1rem pt-04rem"
+                    (click)="scheme.hide()">x</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="modal-body ">
+              <div class="container  animated fadeIn">
+                <div class="row">
+                  <div class="col-12 d-flex justify-content-center">
+                    <span class="fs-1-4rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">Scheme</span>
+                  </div>
+                </div>
+              </div>
+              <div class="row ">
+                <div class="col-12 mx-auto">
+
+                  <!-- <div class="tree">
+                    <ul>
+                      <li>
+                        <a href="#">Parent</a>
+                        <ul>
+                          <li>
+                            <a href="#">Child</a>
+                            <ul>
+                              <li>
+                                <a href="#">Grand Child</a>
+                              </li>
+                              <li>
+                                <a href="#">Grand Child</a>
+                                <ul>
+                                  <li>
+                                    <a href="#">Grand Child</a>
+                                  </li>
+                                  <li>
+                                    <a href="#">Grand Child</a>
+                                  </li>
+                                </ul>
+                              </li>
+                            </ul>
+                          </li>
+                          <li>
+                            <a href="#">Child</a>
+                            <ul>
+                              <li>
+                                <a href="#">Grand Child</a>
+                                <ul>
+                                  <li>
+                                    <a href="#">Grand Grand Child</a>
+                                  </li>
+                                </ul>
+                              </li>
+                              <li>
+                                <a href="#">Grand Child</a>
+                              </li>
+                            </ul>
+                          </li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </div> -->
+
+
+
+                  <div class="tree scroll">
+                    <ul>
+                      <li>
+                        <a href="#">
+                          <span class="fw-600"> {{dataCurrentAccout.name}}</span> <br>
+                          <span class="fw-300 tag-account"> Multisig Account</span>
+                          <!-- <span class="fw-200 fs-06rem color-grey "> {{dataCurrentAccout.address}}</span> -->
+                        </a>
+                        <ul>
+                          <ng-container *ngFor="let item of dataCurrentAccout.cosignatoryList; let index = index">
+
+                            <li>
+                              <a href="#">
+                                <span class="fw-600"> {{item.name}}</span> <br>
+                                <span class="fw-300 tag-account" *ngIf="item.cosignatories.length > 0"> Multisig
+                                  Account</span>
+                                <span class="fw-300 tag-account" *ngIf="item.cosignatories?.length === 0">
+                                  Account</span>
+                                <br>
+                                <!-- <span class="fw-200 fs-06rem color-grey "> {{item.address}}</span> -->
+                              </a>
+                              <ul *ngIf="item.cosignatories.length > 0">
+                                <ng-container *ngFor="let itemOnelvl of item.cosignatories; let indexOnelvl = index">
+
+                                  <li>
+                                    <a href="#">
+                                      <span class="fw-600"> {{itemOnelvl.name}}</span> <br>
+                                      <span class="fw-300 tag-account" *ngIf="itemOnelvl.cosignatorieswTow?.length > 0">
+                                        Multisig Account</span>
+                                      <span class="fw-300 tag-account"
+                                        *ngIf="itemOnelvl.cosignatorieswTow?.length === 0">
+                                        Account</span>
+                                      <br>
+                                      <!-- <span class="fw-200 fs-06rem color-grey "> {{itemOnelvl.address}}</span> -->
+                                    </a>
+                                    <ul *ngIf="itemOnelvl.cosignatorieswTow.length > 0">
+                                      <ng-container
+                                        *ngFor="let itemTowlvl of itemOnelvl.cosignatorieswTow; let itemTowlvl = index">
+
+                                        <li>
+                                          <a href="#">
+                                            <span class="fw-600"> {{itemTowlvl.name}}</span> <br>
+                                            <span class="fw-300 tag-account">
+                                              Account</span>
+                                            <br>
+                                            <!-- <span class="fw-200 fs-06rem color-grey "> {{itemOnelvl.address}}</span> -->
+                                          </a>
+
+
+                                        </li>
+
+                                        <!-- </ng-container> -->
+                                      </ng-container>
+                                    </ul>
+
+
+                                  </li>
+
+                                  <!-- </ng-container> -->
+                                </ng-container>
+                              </ul>
+                            </li>
+
+                          </ng-container>
+                        </ul>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

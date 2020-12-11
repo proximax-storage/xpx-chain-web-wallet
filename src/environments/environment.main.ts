@@ -9,7 +9,7 @@ export const environment = {
   production: false,
   routeNodesJson: 'mainnet',
   itemBooksAddress: 'sw-books-mainnet',
-  version: '0.5.2',
+  version: '0.5.4',
   cacheVersion: '01-MAINNET',
   nameKeyBlockStorage: `sw-blocks`,
   nameKeyNodeSelected: `sw-selected-node-mainnet`,
@@ -21,7 +21,7 @@ export const environment = {
   nameKeyWalletTransactionsNis: 'sw-transactions-nis-mainnet',
   activeModulesBox: {
     voting: {
-      viewChildrenParam: true,
+      viewChildrenParam: true,  
       createPoll: false,
       vote: false,
       viewResult: false,

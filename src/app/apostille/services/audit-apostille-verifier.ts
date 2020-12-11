@@ -1,7 +1,6 @@
 import * as CryptoJS from 'crypto-js'
-import { PublicAccount } from 'tsjs-xpx-chain-sdk';
+import { PublicAccount, KeyPair, Convert } from 'tsjs-xpx-chain-sdk';
 import { Errors } from './Errors';
-import { KeyPair, convert } from 'js-xpx-chain-library';
 
 /**
  * @description - a class with diffrent verifier function utilities
@@ -46,8 +45,8 @@ class Verifier {
         const contentHash = Verifier.retrieveHash(payload, data);
         this.Hash = contentHash;
         const fileHash = this.hexStringToByte(contentHash.toString());
-        const contentHashSig = convert.hexToUint8(payload.substring(10));
-        const publicKey = convert.hexToUint8(signer.publicKey);
+        const contentHashSig = Convert.hexToUint8(payload.substring(10));
+        const publicKey = Convert.hexToUint8(signer.publicKey);
         return KeyPair.verify(publicKey, fileHash, contentHashSig);
       }
       throw new Error(Errors[Errors.NOT_PRIVATE_APOSTILLE]);

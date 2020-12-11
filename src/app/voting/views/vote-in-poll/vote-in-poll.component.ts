@@ -21,6 +21,7 @@ import { TransactionsService, TransactionsInterface } from '../../../transaction
   templateUrl: './vote-in-poll.component.html',
   styleUrls: ['./vote-in-poll.component.css']
 })
+
 export class VoteInPollComponent implements OnInit {
   activate: boolean;
   dataTransaction: TransactionsInterface;
@@ -35,6 +36,7 @@ export class VoteInPollComponent implements OnInit {
   pollResultVoting: any = [];
   pollResultVotingChar: any = [];
   headResults = ['Options', 'Total'];
+  statHeadResults = ['Statistic', 'Total'];
   searching: boolean;
   incrementOption = 0;
   memberVoted: boolean;
@@ -59,6 +61,10 @@ export class VoteInPollComponent implements OnInit {
   updateFlag = false;
   passwordMain: string = 'password';
   signedTransaction: SignedTransaction;
+  votedPublicKey: any = [];
+  votedPublicKeyCount = 0;
+  totalVoteCount = 0;
+  stopResultLoading = false;
 
   constructor(
     private nodeService: NodeService,
@@ -83,9 +89,8 @@ export class VoteInPollComponent implements OnInit {
     this.activate = false;
     this.showResultProgress = false;
     this.createForm()
+
     this.getPoll(this.activateRoute.snapshot.paramMap.get('id'));
-
-
   }
   @ViewChild('modalInfo', { static: true }) modalInfo: ModalDirective;
   @ViewChild('certificationModal', { static: true }) certificationModal: ModalDirective;
@@ -214,10 +219,21 @@ export class VoteInPollComponent implements OnInit {
 
   countNewVoteTransaction(array: Transaction[], voteTransaction: any): number {
     var newVoteTransactions = array.filter(function (current) {
+      if(this.indexOf(current.signer.publicKey) < 0){
+        this.push(current.signer.publicKey); 
+      }
       var isNew = !voteTransaction[current.signer.publicKey] || false;
       voteTransaction[current.signer.publicKey] = true;
       return isNew;
-    });
+    }, this.votedPublicKey);
+
+    /*
+    for(var i = 0; newVoteTransactions.length > i ;++i){
+      if(this.votedPublicKey.indexOf(current.signer.publicKey) < 0){
+        this.votedPublicKey.push(current.signer.publicKey); 
+      }
+    }
+    */
     
     return newVoteTransactions.length;
   }
@@ -236,10 +252,29 @@ export class VoteInPollComponent implements OnInit {
     });
   }
 
+  closeResultModal(){
+    this.stopResultLoading = true;
+    this.modalInfo.hide();
+  }
+
   getResult(param: string) {
 
+    if(this.stopResultLoading){
+      this.totalVoteCount = 0;
+      this.incrementOptionV = 0;
+      this.stopResultLoading = false;
+      return;
+    }
+
     if (param === 'RESULTS') {
-      this.modalInfo.show()
+      this.modalInfo.show();
+      this.showResultProgress = false;
+    }
+    
+    if(this.incrementOptionV === 0){
+      this.totalVoteCount = 0;
+      this.votedPublicKeyCount = 0;
+      this.votedPublicKey = [];
     }
     if (this.incrementOptionV < this.pollSelected.options.length) {
       this.showResultProgress = true;
@@ -268,7 +303,7 @@ export class VoteInPollComponent implements OnInit {
 
               lengthVote += this.countNewVoteTransaction(next, allVoteTransactions);
 
-              while(transactionsLengthFromResponse === 100 && lastId != ""){
+              while(transactionsLengthFromResponse === 100 && lastId != "" && this.stopResultLoading === false){
                 var newTransaction = [];
                 newTransaction = await this.getMoreTransaction(publicAccountOfSelectedOption, lastId);
                 transactionsLengthFromResponse = newTransaction.length;
@@ -292,9 +327,11 @@ export class VoteInPollComponent implements OnInit {
               element.y = lengthVote
             })
 
+            this.totalVoteCount += lengthVote;
             this.pollResultVotingChar = this.pollResultVoting
             this.setcreatecharts(this.pollResultVotingChar);
             this.incrementOptionV++;
+            this.votedPublicKeyCount = this.votedPublicKey.length;
             this.getResult(param);
           }, dataError => {
             if (dataError && dataError.error.message) {

@@ -43,13 +43,15 @@ export class ServicesBoxComponent implements OnInit {
           '',
           '',
           AppConfig.routes.viewAllAccount,
-        ), multiSign: this.services.buildStructureService(
+        ),
+         multiSign: this.services.buildStructureService(
           'Multisig',
           true,
           '',
           '',
-          AppConfig.routes.MultiSign,
-        ), restrinctions: this.services.buildStructureService(
+          AppConfig.routes.MultisigMultiLevel,
+        )
+        , restrinctions: this.services.buildStructureService(
           'Restrictions',
           false,
           '',
