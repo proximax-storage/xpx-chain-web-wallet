@@ -1,142 +1,139 @@
 import { ServerConfig, NetworkTypes } from 'nem-library';
-import { NetworkType } from 'tsjs-xpx-chain-sdk';
-import { ChronoUnit } from 'js-joda';
-// This file can be replaced during build by using the `fileReplacements` array.
-// `ng build ---prod` replaces `environment.ts` with `environment.prod.ts`.
-// The list of file replacements can be found in `angular.json`.
-
-export const environment = {
-  production: true,
-  routeNodesJson: 'testnet',
-  itemBooksAddress: 'sw-books-testnet',
-  version: '0.5.4',
-  cacheVersion: '01',
-  nameKeyBlockStorage: `sw-blocks`,
-  nameKeyNodeSelected: `sw-selected-node-testnet`,
-  nameKeyWalletStorage: `sw-testnet`,
-  nameKeyNodeStorage: `sw-nodes-testnet`,
-  nameKeyNamespaces: `sw-namespaces-testnet`,
-  nameKeyMosaicStorage: `sw-mosaics-testnet`,
-  nameKeyVersion: 'sw-version-testnet',
-  nameKeyWalletTransactionsNis: 'sw-transactions-nis',
-  activeModulesBox: {
-    voting: {
-      viewChildrenParam: true,
-      createPoll: true,
-      vote: true,
-      viewResult: false,
-      classNameParam: ''
+export const environment: any = {
+    production: '#{production}#',
+    routeNodesJson: '#{routeNodesJson}#',
+    itemBooksAddress: '#{itemBooksAddress}#',
+    version: '#{version}#',
+    cacheVersion: '#{cacheVersion}#',
+    nameKeyBlockStorage: '#{nameKeyBlockStorage}#',
+    nameKeyNodeSelected: '#{nameKeyNodeSelected}#',
+    nameKeyWalletStorage: '#{nameKeyWalletStorage}#',
+    nameKeyNodeStorage: '#{nameKeyNodeStorage}#',
+    nameKeyNamespaces: '#{nameKeyNamespaces}#',
+    nameKeyMosaicStorage: '#{nameKeyMosaicStorage}#',
+    nameKeyVersion: '#{nameKeyVersion}#',
+    nameKeyWalletTransactionsNis: '#{nameKeyWalletTransactionsNis}#',
+    activeModulesBox: {
+        voting: {
+            viewChildrenParam: '#{activeModulesBox-voting-viewChildrenParam}#',
+            createPoll: '#{activeModulesBox-voting-createPoll}#',
+            vote: '#{activeModulesBox-voting-vote}#',
+            viewResult: '#{activeModulesBox-voting-viewResult}#',
+            classNameParam: '#{activeModulesBox-voting-classNameParam}#'
+        },
+        storage: {
+            viewChildrenParam: '#{activeModulesBox-storage-viewChildrenParam}#',
+            files: '#{activeModulesBox-storage-files}#',
+            uploadFiles: '#{activeModulesBox-storage-uploadFiles}#',
+            sendShare: '#{activeModulesBox-storage-sendShare}#',
+            classNameParam: '#{activeModulesBox-storage-classNameParam}#'
+        },
+        notarization: {
+            viewChildrenParam: '#{activeModulesBox-notarization-viewChildrenParam}#',
+            attest: '#{activeModulesBox-notarization-attest}#',
+            audit: '#{activeModulesBox-notarization-audit}#',
+            classNameParam: '#{activeModulesBox-notarization-classNameParam}#'
+        },
     },
-    storage: {
-      viewChildrenParam: true,
-      files: true,
-      uploadFiles: true,
-      sendShare: false,
-      classNameParam: ''
+    protocol: '#{protocol}#',
+    protocolWs: '#{protocolWs}#',
+    nodeExplorer: '#{nodeExplorer}#',
+    mosaicXpxInfo: {
+        name: '#{mosaicXpxInfo-name}#',
+        coin: '#{mosaicXpxInfo-coin}#',
+        id: '#{mosaicXpxInfo-id}#',
+        mosaicIdUint64: '#{mosaicXpxInfo-mosaicIdUint64}#',
+        namespaceIdUint64: '#{mosaicXpxInfo-namespaceIdUint64}#',
+        namespaceId: '#{mosaicXpxInfo-namespaceId}#',
+        divisibility: '#{mosaicXpxInfo-divisibility}#'
     },
-    notarization: {
-      viewChildrenParam: true,
-      attest: true,
-      audit: true,
-      classNameParam: ''
+    deadlineTransfer: {
+        deadline: '#{deadlineTransfer-deadline}#',
+        chronoUnit: '#{deadlineTransfer-chronoUnit}#'
     },
-  },
-  protocol: `https`,
-  protocolWs: `wss`,
-  nodeExplorer: 'http://bctestnetexplorer.xpxsirius.io/#/result/hash',
-  mosaicXpxInfo: {
-    name: 'prx.xpx',
-    coin: 'XPX',
-    id: '13bfc518e40549d7',
-    mosaicIdUint64: [3825551831, 331334936],
-    namespaceIdUint64: [2434186742, 3220914849],
-    namespaceId: 'bffb42a19116bdf6',
-    divisibility: 6
-  },
-  deadlineTransfer: {
-    deadline: 1439,
-    chronoUnit: ChronoUnit.MINUTES
-  },
-  timeOutTransactionNis1: 20000,
-  blockchainConnection: {
-    host: 'bctestnet1.brimstone.xpxsirius.io',
-    port: 443,
-    protocol: 'https',
-    useSecureMessage: false
-  },
-  storageConnection: {
-    host: 'ipfs1-dev.xpxsirius.io',
-    port: 443,
-    options: {
-      protocol: 'https'
-    }
+    timeOutTransactionNis1: '#{timeOutTransactionNis1}#',
+    blockchainConnection: {
+        host: '#{blockchainConnection-host}#',
+        port: '#{blockchainConnection-port}#',
+        protocol: '#{blockchainConnection-protocol}#',
+        useSecureMessage: '#{blockchainConnection-useSecureMessage}#'
+    },
+    storageConnection: {
+        host: '#{storageConnection-host}#',
+        port: '#{storageConnection-port}#',
+        options: {
+            protocol: '#{storageConnection-options-protocol}#'
+        }
 
-  },
-  storageConnectionUnload: {
-    host: 'ipfs1-dev.xpxsirius.io',
-    port: 5443,
-    options: {
-      protocol: 'https'
-    }
+    },
+    storageConnectionUnload: {
+        host: '#{storageConnectionUnload-host}#',
+        port: '#{storageConnectionUnload-port}#',
+        options: {
+            protocol: '#{storageConnectionUnload-options-protocol}#'
+        }
 
-  },
-  namespaceRentalFeeSink: {
-    public_key: 'F3B8194C36CC55500DCB8CD3734DFA07FE8B649219BE315C8DFAE1DAC59F3595',
-    address_public_test: 'VBH4NR-KUNINP-7HW6ZB-OECMIN-X3BCB4-ZDXKDM-KIWG'
-  },
-  mosaicRentalFeeSink: {
-    public_key: '640A0DA89F6F57E43C526520AD05C59E185D19ADC95788D8611EBAEC94DEBBA1',
-    address_public_test: 'VD6AXC-3QBCFT-SLKHT6-2UPGTN-V5Z63I-YZKJI3-YGMD'
-  },
-  pollsContent: {
-    public_key: 'A32CC719A9C4524B952F8A357E8103015EB9CA12B08A31497464398D53206669',
-    address_public_test: 'VDB52J-IIE4SA-CUNOOP-N44H66-47O42B-XTPWJH-LPGW'
-  },
-  attestation: {
-    address_public_test: 'VDYN53-XXEGKK-3XHQYE-K6ZBMN-JPXN57-ZBHXA3-AW55'
-  },
-  nis1: {
-    url: 'https://bctestnetswap.xpxsirius.io:7890',
-    // url: 'http://192.168.3.217:7890',
-    urlExplorer: 'http://testnet-explorer.nemtool.com/#/s_tx?hash=',
-    networkType: NetworkTypes.TEST_NET,
-    burnAddress: 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN',
-    nodes: [
-      { protocol: 'https', domain: 'bctestnetswap.xpxsirius.io', port: 7890 } as ServerConfig
+    },
+    namespaceRentalFeeSink: {
+        public_key: '#{namespaceRentalFeeSink-public_key}#',
+        address_public_test: '#{namespaceRentalFeeSink-address_public_test}#'
+    },
+    mosaicRentalFeeSink: {
+        public_key: '#{mosaicRentalFeeSink-public_key}#',
+        address_public_test: '#{mosaicRentalFeeSink-address_public_test}#'
+    },
+    pollsContent: {
+        public_key: '#{pollsContent-public_key}#',
+        address_public_test: '#{pollsContent-address_public_test}#'
+    },
+    attestation: {
+        address_public_test: '#{attestation-address_public_test}#'
+    },
+    nis1: {
+        url: '#{nis1-url}#',
+        urlExplorer: '#{nis1-urlExplorer}#',
+        networkType: '#{nis1-networkType}#',
+        burnAddress: '#{nis1-burnAddress}#',
+        nodes: [
+            {
+                protocol: '#{nodes-protocol}#',
+                domain: '#{nodes-domain}#',
+                port: '#{nodes-port}#'
+            } as ServerConfig | any],
+    },
+    swapAccount: {
+        addressAccountMultisig: '#{swapAccount-addressAccountMultisig}#',
+        addressAccountSimple: '#{swapAccount-addressAccountSimple}#'
+    },
+    swapAllowedMosaics: [
+        {
+            namespaceId: '#{swapAllowedMosaics-namespaceId-01}#',
+            name: '#{swapAllowedMosaics-name-01}#',
+            divisibility: '#{swapAllowedMosaics-divisibility-01}#'
+        },
+        {
+            namespaceId: '#{swapAllowedMosaics-namespaceId-02}#',
+            name: '#{swapAllowedMosaics-name-02}#',
+            divisibility: '#{swapAllowedMosaics-divisibility-02}#'
+        }
     ],
-  },
-  swapAccount: {
-    addressAccountMultisig: 'VAWOEOWTABXR7O3ZAK2XNA5GIBNE6PZIXDAFDWBU',
-    addressAccountSimple: 'VCWAHAMZRKWU4T3MSBEV7CJVYN7TGX5ZCYMVTUJW'
-  },
-  swapAllowedMosaics: [
-    { namespaceId: 'zarcade', name: 'xar', divisibility: 4 },
-    { namespaceId: 'prx', name: 'xpx', divisibility: 6 }
-  ],
-  typeNetwork: {
-    value: NetworkType.TEST_NET,
-    label: 'PUBLIC TEST'
-  },
-  coingecko: {
-    url: 'https://api.coingecko.com/api/v3/coins/',
-  },
-  blockHeightMax: {
-    heightMax: 172800
-  },
-  lockFundDuration: 11520,
-  delayBetweenLockFundABT: 20000,
-  peerHosting: {
-    host: 'demo-sc-api-1.ssi.xpxsirius.io',
-    port: 443,
-    path: '/peerjs',
-    secure: true,
-    debug: 3
-  }
+    typeNetwork: {
+        value: '#{typeNetwork-value}#',
+        label: '#{typeNetwork-label}#'
+    },
+    coingecko: {
+        url: '#{coingecko-url}#',
+    },
+    blockHeightMax: {
+        heightMax: '#{blockHeightMax-heightMax}#'
+    },
+    lockFundDuration: '#{lockFundDuration}#',
+    delayBetweenLockFundABT: '#{delayBetweenLockFundABT}#',
+    peerHosting: {
+        host: '#{peerHosting-host}#',
+        port: '#{peerHosting-port}#',
+        path: '#{peerHosting-path}#',
+        secure: '#{peerHosting-secure}#',
+        debug: '#{peerHosting-debug}#'
+    }
 };
-/*
- * In development mode, to ignore zone related error stack frames such as
- * `zone.run`, `zoneDelegate.invokeTask` for easier debugging, you can
- * import the following file, but please comment it out in production mode
- * because it will have performance impact when throw error
- */
-// import 'zone.js/dist/zone-error';  // Included with Angular CLI.
