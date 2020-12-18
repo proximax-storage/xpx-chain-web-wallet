@@ -45,8 +45,10 @@ pipeline {
 
     stage('Promotion to Staging') {
       steps {
-        env.DEPLOY_TO_STAGING = input message: "User Input Required",
+        script {
+          env.DEPLOY_TO_STAGING = input message: "User Input Required",
             parameters: [choice(name: 'Deploy to Staging', choices: 'no\nyes', description: 'Choose yes if you want to deploy to Staging')]
+        }
       }
     }
 
