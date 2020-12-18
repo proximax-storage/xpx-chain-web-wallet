@@ -1,9 +1,5 @@
 pipeline {
-  agent {
-    node {
-      label 'docker-c5-xlarge'
-    }
-  }
+  agent none
 
   environment {
     npm_config_cache = "npm-cache"
@@ -15,6 +11,7 @@ pipeline {
 
   stages {
     stage('Build') {
+      agent { label 'docker-c5-xlarge' }
       steps {
         echo 'Starting Docker Container'
         withDockerContainer(image: 'node:10.16') {
@@ -26,19 +23,18 @@ pipeline {
           echo 'Patching dependency'
           sh 'sed -i "/node:/c\\\\node: { crypto: true, stream: true, fs: \\\'empty\\\', net: \\\'empty\\\', tls: \\\'empty\\\'}" ./node_modules/@angular-devkit/build-angular/src/angular-cli-files/models/webpack-configs/browser.js'
 
-          echo 'Building for Testnet'
+          echo 'Building Sirius Wallet'
           sh 'node --max_old_space_size=5048 ./node_modules/@angular/cli/bin/ng build --aot --prod --build-optimizer=true --vendor-chunk=true'
-          sh 'mv dist/proximax-sirius-wallet/ dist/proximax-testnet-sirius-wallet'
           
-          echo 'Building for Mainnet'
-          sh 'node --max_old_space_size=5048 ./node_modules/@angular/cli/bin/ng build --aot --prod --build-optimizer=true --vendor-chunk=true --configuration=main'
-          sh 'mv dist/proximax-sirius-wallet/ dist/proximax-mainnet-sirius-wallet'
           sh "tar cJfv proximax-web-wallet-${env.GIT_BRANCH}.tar.xz dist"
         }
         echo 'Leaving Container'
       }
 
       post {
+        always {
+          archiveArtifacts "proximax-web-wallet-${env.GIT_BRANCH}.tar.xz"
+        }
         failure {
           slackSend channel: '#devops',
             color: 'bad',
@@ -47,16 +43,22 @@ pipeline {
       }
     }
 
-    stage('Archive Artifact') {
+    stage('Promotion to Staging') {
       steps {
-        echo 'Archiving Artifact'
-        archiveArtifacts "proximax-web-wallet-${env.GIT_BRANCH}.tar.xz"
+        env.DEPLOY_TO_STAGING = input message: "User Input Required",
+            parameters: [choice(name: 'Deploy to Staging', choices: 'no\nyes', description: 'Choose yes if you want to deploy to Staging')]
       }
-      post {
-        success {
-          slackSend channel: '#devops',
-            color: 'good',
-            message:  "Branch *${env.GIT_BRANCH}* build of *${currentBuild.fullDisplayName}* completed successfully :100:\nArtifact stored in S3"
+    }
+
+    stage('Deploy to Staging') {
+      agent any
+      steps {
+        script {
+          sh """
+            ls -al dist/proximax-sirius-wallet
+            cat dist/proximax-sirius-wallet/configuration.js
+            echo "this is just a test"
+          """
         }
       }
     }
@@ -79,6 +81,7 @@ pipeline {
     }
 
     stage('Deploy to Testnet') {
+      agent any
       when {
         environment name: 'DEPLOY_TO_TESTNET', value: 'yes'
       }
@@ -137,6 +140,7 @@ pipeline {
     }
 
     stage('Deploy to Mainnet') {
+      agent any
       when {
         environment name: 'DEPLOY_TO_MAINNET', value: 'yes'
       }
