@@ -126,9 +126,9 @@ export const environment = {
   lockFundDuration: 11520,
   delayBetweenLockFundABT: 20000,
   peerHosting: {
-    host: 'demo-sc-api-1.ssi.xpxsirius.io',
+    host: 'siriusid-peerjs.xpxsirius.io',
     port: 443,
-    path: '/peerjs',
+    path: '/',
     secure: true,
     debug: 3
   }
