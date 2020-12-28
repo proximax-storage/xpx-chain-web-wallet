@@ -310,7 +310,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
         await this.buildCurrentAccountInfo(accountFiltered.accountInfo);
       }
 
-      if (!this.haveBalance) {
+      if (!this.haveBalance && this.proximaxProvider.getFeeStrategy() !== FeeCalculationStrategy.FeeCalculationStrategy.ZeroFeeCalculationStrategy) {
         this.insufficientBalance = true;
         this.formTransfer.controls['amountXpx'].disable();
       } else if (!this.disabledAllField) {
@@ -443,11 +443,15 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
   calculateFee(message: number) {
     this.mosaicsToSend = this.validateMosaicsToSend();
     const x = TransferTransaction.calculateSize(PlainMessage.create(this.formTransfer.get('message').value).size(), this.mosaicsToSend.length);
-    const b = FeeCalculationStrategy.calculateFee(x, FeeCalculationStrategy.FeeCalculationStrategy.ZeroFeeCalculationStrategy);
+    const b = FeeCalculationStrategy.calculateFee(x, this.proximaxProvider.getFeeStrategy());
     if (message > 0) {
       this.fee = this.transactionService.amountFormatterSimple(b.compact());
     } else if (message === 0 && this.mosaicsToSend.length === 0) {
-      this.fee = '0.037250';
+      if(this.proximaxProvider.getFeeStrategy() === FeeCalculationStrategy.FeeCalculationStrategy.ZeroFeeCalculationStrategy)
+        this.fee = '0.000000';
+      else  
+        this.fee = TransferTransaction.calculateSize(message, this.mosaicsToSend.length) * this.proximaxProvider.getFeeStrategy() / 1000000;
+      //this.fee = '0.037250';
     } else {
       this.fee = this.transactionService.amountFormatterSimple(b.compact());
     }
@@ -531,24 +535,26 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
    * @memberof CreateTransferComponent
    */
   clearForm(custom?: string | (string | number)[], formControl?: string | number) {
+    this.charRest = 0;
+    if(this.proximaxProvider.getFeeStrategy() === FeeCalculationStrategy.FeeCalculationStrategy.ZeroFeeCalculationStrategy)
+      this.fee = '0.000000';
+    else  
+      this.fee = TransferTransaction.calculateSize(0, 0) * this.proximaxProvider.getFeeStrategy() / 1000000;
+
+    console.log(this.fee);
+
     if (custom !== undefined) {
       this.cosignatorie = null;
       if (formControl !== undefined) {
-        this.charRest = 0;
         this.formTransfer.controls[formControl].get(custom).reset();
-        this.fee = '0.037250';
         return;
       }
 
-      this.charRest = 0;
       this.formTransfer.get(custom).reset();
-      this.fee = '0.037250';
       return;
     }
 
-    this.charRest = 0;
     this.formTransfer.reset();
-    this.fee = '0.037250';
     return;
   }
 
@@ -910,16 +916,22 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
     if (this.formTransfer.valid && (!this.blockSendButton || !this.errorOtherMosaics)) {
       this.reloadBtn = true;
       this.blockSendButton = true;
-      if (this.transactionService.validateBuildSelectAccountBalance(Number(this.balanceXpx.split(',').join('')), Number(this.fee), Number(this.formTransfer.get('amountXpx').value))) {
+      console.log(this.fee);
+      var amountXpx = '0.000000';
+      if(this.formTransfer.get('amountXpx').value){
+        amountXpx = this.formTransfer.get('amountXpx').value;
+      }
+      console.log(amountXpx);
+      if (this.transactionService.validateBuildSelectAccountBalance(Number(this.balanceXpx.split(',').join('')), Number(this.fee), Number(amountXpx))) {
         const common = { password: this.formTransfer.get('password').value };
         const mosaicsToSend = this.validateMosaicsToSend();
+        const generationHash = this.dataBridge.blockInfo.generationHash;
         const type = (this.cosignatorie) ? true : false;
         switch (type) {
           case true:
             /*console.log('TRANSFIERE CON COSIGNATARIO');
             // console.log('ACCOUNT SENDER ----> ', this.sender);
-            // console.log('COSIGNATARIO SELECCIONADO ----> ', this.cosignatorie);*/
-            const generationHash = this.dataBridge.blockInfo.generationHash;
+            // console.log('COSIGNATARIO SELECCIONADO ----> ', this.cosignatorie);*/    
             if (this.walletService.decrypt(common, this.cosignatorie)) {
               // console.log(this.typeMessage, common);
 
@@ -944,13 +956,12 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
                 );
               });
 
-              const transferBuilder = TransferTransaction.create(
-                Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
-                recipientAddress,
-                allMosaics,
-                params.message,
+              const transferBuilder = this.proximaxProvider.buildTransferTransaction(
                 params.network,
-                UInt64.fromUint(0)
+                recipientAddress,
+                params.message,
+                0,
+                allMosaics
               );
 
               const innerTxn = [{
@@ -987,9 +998,11 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
 
               // console.log('False', params);
 
-              const transferBuilder = this.transactionService.buildTransferTransaction(params);
+              const transferBuilder = this.transactionService.buildTransferTransaction(params, generationHash);
 
               this.transactionSigned.push(transferBuilder.signedTransaction);
+              console.log(transferBuilder.signedTransaction.hash);
+              console.log(transferBuilder);
               this.saveContactFn();
               this.clearForm();
               this.transactionService.buildTransactionHttp().announce(transferBuilder.signedTransaction).subscribe(
@@ -1132,7 +1145,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
         let validateAmount = false;
         if (this.sender) {
           const accountInfo = this.walletService.filterAccountInfo(this.sender.name);
-          // console.log('Account INfo- ---->', accountInfo);
+          console.log('Account INfo- ---->', accountInfo);
           if (accountInfo !== undefined && accountInfo !== null && Object.keys(accountInfo).length > 0) {
             if (accountInfo.accountInfo.mosaics.length > 0) {
               const filtered = accountInfo.accountInfo.mosaics.find(element => {

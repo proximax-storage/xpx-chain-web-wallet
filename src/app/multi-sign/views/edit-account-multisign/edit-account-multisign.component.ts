@@ -792,14 +792,14 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
       modifications: this.multisigCosignatoryModification(this.getCosignatoryListFilter(1, 2)),
       networkType: this.currentAccountToConvert.network
     };
-    return ModifyMultisigAccountTransaction.create(
-      modifyobject.deadline,
+
+    return this.proximaxProvider.buildModifyMultisigAccountTransaction(
       modifyobject.minApprovalDelta,
       modifyobject.minRemovalDelta,
       modifyobject.modifications,
-      modifyobject.networkType,
-      UInt64.fromUint(0)
+      modifyobject.networkType
     );
+
   }
 
   /**

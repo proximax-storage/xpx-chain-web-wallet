@@ -3,9 +3,10 @@ import { DataDececode, RecipientData } from '../../services/gift.service';
 import { TransactionsService } from '../../../transactions/services/transactions.service';
 import { DataBridgeService } from '../../../shared/services/data-bridge.service';
 import { Subscription } from 'rxjs';
-import { SignedTransaction, TransferTransaction, Deadline, Mosaic, Address, MosaicId, PlainMessage, UInt64, Account } from 'tsjs-xpx-chain-sdk';
+import { SignedTransaction, Deadline, Mosaic, Address, MosaicId, PlainMessage, UInt64, Account } from 'tsjs-xpx-chain-sdk';
 import { environment } from '../../../../environments/environment';
 import { SharedService } from '../../../shared/services/shared.service';
+import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 
 @Component({
   selector: 'app-confirm-redeem-gitf-card',
@@ -28,7 +29,7 @@ export class ConfirmRedeemGitfCardComponent implements OnInit {
   mosaicXpx: { id: string; name: string; divisibility: number; };
   constructor(private transactionService: TransactionsService,
     private dataBridge: DataBridgeService,
-    private sharedService: SharedService, ) {
+    private sharedService: SharedService, private proximaxProvider: ProximaxProvider) {
     this.reloadBtn = false;
     this.blockSendButton = false;
     this.mosaicXpx = {
@@ -68,13 +69,14 @@ export class ConfirmRedeemGitfCardComponent implements OnInit {
       this.blockSendButton = true;
       const moisacID = this.mosaicXpx.id
       const address: Address = Address.createFromPublicKey(this.recipientConfirm.publicAccount.publicKey, this.recipientConfirm.publicAccount.address.networkType)
-      const transferTransaction = TransferTransaction.create(
-        Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
-        address,
-        [new Mosaic(new MosaicId(moisacID), UInt64.fromUint(Number(this.giftDecodeConfirm.amount.compact())))],
-        PlainMessage.create(''),
+      const transferTransaction = this.proximaxProvider.buildTransferTransaction(
         this.recipientConfirm.publicAccount.address.networkType,
-        UInt64.fromUint(0));
+        address,
+        PlainMessage.create(''),
+        0,
+        [new Mosaic(new MosaicId(moisacID), UInt64.fromUint(Number(this.giftDecodeConfirm.amount.compact())))],
+      );
+
       const account: Account = Account.createFromPrivateKey(this.giftDecodeConfirm.privatekey, this.recipientConfirm.publicAccount.address.networkType);
       const signedTransaction = account.sign(
         transferTransaction,

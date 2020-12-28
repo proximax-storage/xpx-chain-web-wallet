@@ -13,7 +13,6 @@ import {
   NetworkType,
   Address,
   MultisigCosignatoryModificationType,
-  HashLockTransaction,
   TransactionHttp,
   SignedTransaction,
   AggregateTransaction,
@@ -402,22 +401,23 @@ export class CreateMultiSignatureComponent implements OnInit {
         /**
          * Create Bonded
          */
-        const aggregateTransaction = AggregateTransaction.createBonded(
-          Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
+        const aggregateTransaction = this.proximaxProvider.buildAggregateBonded(
           [convertIntoMultisigTransaction.toAggregate(this.currentAccountToConvert.publicAccount)],
-          this.currentAccountToConvert.network);
+          this.currentAccountToConvert.network
+        ); 
+
         const generationHash = this.dataBridge.blockInfo.generationHash;
         const signedTransaction = this.accountToConvertSign.sign(aggregateTransaction, generationHash) //Update-sdk-dragon
 
         // /**
         // * Create Hash lock transaction
         // */
-        const hashLockTransaction = HashLockTransaction.create(
-          Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
+        const hashLockTransaction = this.proximaxProvider.buildHashLockTransaction(
           new Mosaic(new MosaicId(environment.mosaicXpxInfo.id), UInt64.fromUint(Number(10000000))),
           UInt64.fromUint(environment.lockFundDuration),
           signedTransaction,
-          this.currentAccountToConvert.network);
+          this.currentAccountToConvert.network
+        );
 
         this.hashLock(this.accountToConvertSign.sign(hashLockTransaction, generationHash), signedTransaction) //Update-sdk-dragon
       }
@@ -453,12 +453,13 @@ export class CreateMultiSignatureComponent implements OnInit {
         networkType: this.currentAccountToConvert.network
       }
     }
-    return ModifyMultisigAccountTransaction.create(
-      modifyobject.deadline,
+
+    return this.proximaxProvider.buildModifyMultisigAccountTransaction(
       modifyobject.minApprovalDelta,
       modifyobject.minRemovalDelta,
       modifyobject.modifications,
-      modifyobject.networkType);
+      modifyobject.networkType
+    );
   }
 
 

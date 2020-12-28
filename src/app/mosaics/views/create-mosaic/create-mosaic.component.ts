@@ -220,16 +220,14 @@ export class CreateMosaicComponent implements OnInit, OnDestroy {
       this.walletService.currentAccount.network
     );
 
-    this.aggregateTransaction = AggregateTransaction.createComplete(
-      Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
+    this.aggregateTransaction = this.proximaxProvider.buildAggregateComplete(
       [
         mosaicDefinitionTransaction.toAggregate(publicAccount),
         mosaicSupplyChangeTransaction.toAggregate(publicAccount)
       ],
-      this.walletService.currentAccount.network,
-      [],
-      UInt64.fromUint(0)
+      this.walletService.currentAccount.network
     );
+
     this.fee = this.transactionService.amountFormatterSimple(this.aggregateTransaction.maxFee.compact());
   }
 
@@ -509,15 +507,13 @@ export class CreateMosaicComponent implements OnInit, OnDestroy {
    */
   sendTxSimple(account: Account, transactions: { definition: MosaicDefinitionTransaction, supplyChange: MosaicSupplyChangeTransaction }) {
     this.blockSend = true;
-    const aggregateTransaction = AggregateTransaction.createComplete(
-      Deadline.create(),
+
+    const aggregateTransaction = this.proximaxProvider.buildAggregateComplete(
       [
         transactions.definition.toAggregate(account.publicAccount),
         transactions.supplyChange.toAggregate(account.publicAccount)
       ],
       this.walletService.currentAccount.network,
-      [],
-      UInt64.fromUint(0)
     );
 
     // I SIGN THE TRANSACTION

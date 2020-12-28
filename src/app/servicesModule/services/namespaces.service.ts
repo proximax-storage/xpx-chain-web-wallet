@@ -49,13 +49,11 @@ export class NamespacesService {
    */
   addressAliasTransaction(param: AddressAliasTransactionInterface): AddressAliasTransaction {
     const network = (param.network !== undefined) ? param.network : this.walletService.currentAccount.network;
-    const addressAliasTransaction = AddressAliasTransaction.create(
-      Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
+    const addressAliasTransaction = this.proximaxProvider.buildAddressAliasTransaction(
       param.aliasActionType,
       param.namespaceId,
       param.address,
       network,
-      UInt64.fromUint(0)
     );
 
     return addressAliasTransaction;

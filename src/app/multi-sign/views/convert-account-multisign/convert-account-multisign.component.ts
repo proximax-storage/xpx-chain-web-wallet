@@ -479,13 +479,13 @@ export class ConvertAccountMultisignComponent implements OnInit {
     this.typeTx = this.multiSignService.typeSignTxConvert(this.getCosignatoryList(), this.walletService.currentWallet.accounts)
     let convertIntoMultisigTransaction: ModifyMultisigAccountTransaction;
     if (this.currentAccountToConvert !== undefined && this.currentAccountToConvert !== null) {
-      convertIntoMultisigTransaction = ModifyMultisigAccountTransaction.create(
-        Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
+      convertIntoMultisigTransaction = this.proximaxProvider.buildModifyMultisigAccountTransaction(
         this.convertAccountMultsignForm.get('minApprovalDelta').value,
         this.convertAccountMultsignForm.get('minRemovalDelta').value,
         this.multisigCosignatoryModification(this.getCosignatoryList()),
-        this.currentAccountToConvert.network, 
-        UInt64.fromUint(0))
+        this.currentAccountToConvert.network
+      ); 
+
       const innerTransaction = [{
         signer: this.currentAccountToConvert.publicAccount, tx: convertIntoMultisigTransaction
       }]

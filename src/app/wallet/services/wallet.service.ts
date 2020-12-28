@@ -14,7 +14,6 @@ import { first } from 'rxjs/operators';
 })
 export class WalletService {
 
-
   canVote = true;
   subscribeLogged = undefined;
   accountWalletCreated: AccountCreatedInterface = null;
@@ -47,7 +46,8 @@ export class WalletService {
   constructor(
     private sharedService: SharedService,
     private proximaxProvider: ProximaxProvider
-  ) { }
+  ) { 
+  }
 
   /**
    *

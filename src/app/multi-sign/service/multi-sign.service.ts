@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { AggregateTransaction, PublicAccount, Transaction, Deadline, TransactionType, Address, SignedTransaction, Account, MultisigAccountInfo, UInt64 } from 'tsjs-xpx-chain-sdk';
 import { environment } from 'src/environments/environment';
 import { AccountsInterface } from 'src/app/wallet/services/wallet.service';
+import { ProximaxProvider } from '../../shared/services/proximax.provider';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,7 @@ export class MultiSignService {
 
   minApprovaMaxCalc: number;
   minApprovaMinCalc: number;
-  constructor() { }
+  constructor(private proximaxProvider: ProximaxProvider) { }
 
 
 
@@ -24,22 +25,16 @@ export class MultiSignService {
     switch (transactionType.transactionType) {
       case TransactionType.AGGREGATE_BONDED:
         console.log('AGGREGATE_BONDED  AggregateTransaction')
-        aggregateTransaction = AggregateTransaction.createBonded(
-          Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
+        aggregateTransaction = this.proximaxProvider.buildAggregateBonded(
           innerTxn,
-          currentAccountToConvert.network,
-          [],
-          UInt64.fromUint(0)
+          currentAccountToConvert.network
         );
         break
       case TransactionType.AGGREGATE_COMPLETE:
         console.log('AGGREGATE_COMPLETE  AggregateTransaction')
-        aggregateTransaction = AggregateTransaction.createComplete(
-          Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
+        aggregateTransaction = this.proximaxProvider.buildAggregateComplete(
           innerTxn,
-          currentAccountToConvert.network,
-          [],
-          UInt64.fromUint(0)
+          currentAccountToConvert.network
         );
 
         break

@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { PublicAccount, Address, InnerTransaction, UInt64, Account, AggregateTransaction, Deadline, TransactionHttp, SignedTransaction, Transaction } from 'tsjs-xpx-chain-sdk';
+import { PublicAccount, Address, InnerTransaction, UInt64, Account, TransactionHttp, SignedTransaction, Transaction } from 'tsjs-xpx-chain-sdk';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import * as qrcode from 'qrcode-generator';
 import { Subscription } from 'rxjs';
@@ -498,12 +498,10 @@ export class VoteInPollComponent implements OnInit {
       datetime: (new Date).getTime(),
       name: this.pollSelected.name
     }
-    const aggregateTransaction = AggregateTransaction.createComplete(
-      Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
+    const aggregateTransaction = this.proximaxProvider.buildAggregateComplete(
       this.transactionToAggregate(publicAccount, message),
-      publicAccount.address.networkType,
-      [],
-      UInt64.fromUint(0));
+      publicAccount.address.networkType
+    );
 
     const generationHash = this.dataBridge.blockInfo.generationHash;
     this.signedTransaction = accountsign.sign(aggregateTransaction, generationHash); //Update-sdk-dragon

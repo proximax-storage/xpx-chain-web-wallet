@@ -9,7 +9,7 @@ import { environment } from 'src/environments/environment';
 import { MosaicService } from '../../../../servicesModule/services/mosaic.service';
 import { TransactionsService } from '../../../../transactions/services/transactions.service';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
-import { AccountInfo, UInt64, AggregateTransaction, Deadline, InnerTransaction, TransferTransaction, PlainMessage, Mosaic, MosaicId, Address, Account, SignedTransaction, Transaction } from 'tsjs-xpx-chain-sdk';
+import { AccountInfo, UInt64, InnerTransaction, PlainMessage, Mosaic, MosaicId, Address, Account, SignedTransaction, Transaction } from 'tsjs-xpx-chain-sdk';
 import { DataBridgeService } from '../../../../shared/services/data-bridge.service';
 import * as JSZip from 'jszip';
 import * as qrcode from 'qrcode-generator';
@@ -865,36 +865,34 @@ export class CreateGiftComponent implements OnInit {
 
     if (cantCard === 1) {
       const account: Account = Account.generateNewAccount(network)
-      aggregateTransaction = TransferTransaction.create(
-        Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
-        account.address,
-        [new Mosaic(new MosaicId(mosaicsToSend.id), UInt64.fromUint(Number(this.sum(mosaicsToSend.amount, this.feeCover))))],
-        PlainMessage.create(''),
+      aggregateTransaction = this.proximaxProvider.buildTransferTransaction(
         network,
-        UInt64.fromUint(0));
+        account.address,
+        PlainMessage.create(''),
+        0,
+        [new Mosaic(new MosaicId(mosaicsToSend.id), UInt64.fromUint(Number(this.sum(mosaicsToSend.amount, this.feeCover))))],
+      );
       this.accountList.push(account)
       return aggregateTransaction
     }
     if (cantCard > 1) {
       for (let index = 0; index < cantCard; index++) {
         const account: Account = Account.generateNewAccount(network)
-        const transferTransaction = TransferTransaction.create(
-          Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
-          account.address,
-          [new Mosaic(new MosaicId(mosaicsToSend.id), UInt64.fromUint(Number(this.sum(mosaicsToSend.amount, this.feeCover))))],
-          PlainMessage.create(''),
+        const transferTransaction = this.proximaxProvider.buildTransferTransaction(
           network,
-          UInt64.fromUint(0));
+          account.address,
+          PlainMessage.create(''),
+          0,
+          [new Mosaic(new MosaicId(mosaicsToSend.id), UInt64.fromUint(Number(this.sum(mosaicsToSend.amount, this.feeCover))))],
+        );
+        
         innerTransaction.push(transferTransaction.toAggregate(this.sender.publicAccount))
         this.accountList.push(account)
       }
-      return aggregateTransaction = AggregateTransaction.createComplete(
-        Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
+      return aggregateTransaction = this.proximaxProvider.buildAggregateComplete(
         innerTransaction,
-        this.sender.network,
-        [],
-        UInt64.fromUint(0)
-      )
+        this.sender.network
+      );
     }
 
   }

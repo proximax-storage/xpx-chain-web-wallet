@@ -289,7 +289,7 @@ export class TransactionsService {
    *
    * @param params
    */
-  buildTransferTransaction(params: TransferInterface) {
+  buildTransferTransaction(params: TransferInterface, generationHash: string) {
     const recipientAddress = this.proximaxProvider.createFromRawAddress(params.recipient);
     const mosaics = params.mosaic;
     const allMosaics = [];
@@ -302,13 +302,12 @@ export class TransactionsService {
       );
     });
 
-    const transferTransaction = TransferTransaction.create(
-      Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
-      recipientAddress,
-      allMosaics,
-      params.message,
+    const transferTransaction = this.proximaxProvider.buildTransferTransaction(
       params.network,
-      UInt64.fromUint(0)
+      recipientAddress,
+      params.message,
+      0,
+      allMosaics
     );
 
     // console.log(this.generationHash);
@@ -318,7 +317,7 @@ export class TransactionsService {
     );
     const signedTransaction = account.sign(
       transferTransaction,
-      this.generationHash
+      generationHash
     );
     const transactionHttp = this.buildTransactionHttp();
     return {
@@ -333,14 +332,13 @@ export class TransactionsService {
    * @param signedTransaction
    */
   buildHashLockTransaction(signedTransaction: SignedTransaction, signer: Account, generationHash: string): SignedTransaction {
-    const hashLockTransaction = HashLockTransaction.create(
-      Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
+
+    const hashLockTransaction = this.proximaxProvider.buildHashLockTransaction(
       new Mosaic(new MosaicId(environment.mosaicXpxInfo.id), UInt64.fromUint(Number(10000000))),
       UInt64.fromUint(environment.lockFundDuration),
       signedTransaction,
-      this.walletService.currentAccount.network,
-      UInt64.fromUint(0)
-    );
+      this.walletService.currentAccount.network
+    )
 
     // console.log('\n hashLockTransaction --> ', hashLockTransaction);
     return signer.sign(hashLockTransaction, generationHash);
@@ -362,12 +360,9 @@ export class TransactionsService {
       innerTxn.push(element.tx.toAggregate(element.signer));
     });
 
-    const bondedCreated = AggregateTransaction.createBonded(
-      Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
+    const bondedCreated = this.proximaxProvider.buildAggregateBonded(
       innerTxn,
-      this.walletService.currentAccount.network,
-      [],
-      UInt64.fromUint(0)
+      this.walletService.currentAccount.network
     );
 
     if (otherCosigners.length > 0) {

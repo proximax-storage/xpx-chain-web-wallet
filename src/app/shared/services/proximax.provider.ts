@@ -44,9 +44,17 @@ import {
   MosaicAliasTransaction,
   Convert,
   RawAddress,
-  MosaicDefinitionTransaction
+  MosaicDefinitionTransaction,
+  TransactionBuilderFactory,
+  FeeCalculationStrategy,
+  InnerTransaction,
+  HashLockTransaction,
+  ModifyMultisigAccountTransaction,
+  MultisigCosignatoryModification,
+  AddressAliasTransaction
 } from 'tsjs-xpx-chain-sdk';
 import { BlockchainNetworkType } from 'tsjs-chain-xipfs-sdk';
+import { WalletService } from '../../wallet/services/wallet.service';
 import { Observable } from 'rxjs/internal/Observable';
 import { mergeMap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
@@ -69,8 +77,18 @@ export class ProximaxProvider {
   mosaicService: MosaicService;
   namespaceService: NamespaceService;
   transactionStatusError: TransactionStatusError;
+  walletService : WalletService;
+  transactionBuilderFactory: TransactionBuilderFactory;
 
   constructor(public http: HttpClient, ) {
+    this.transactionBuilderFactory = new TransactionBuilderFactory();
+    if(environment.typeNetwork.value === NetworkType.PRIVATE || environment.typeNetwork.value === NetworkType.PRIVATE_TEST){
+      this.transactionBuilderFactory.feeCalculationStrategy = FeeCalculationStrategy.ZeroFeeCalculationStrategy;
+    }
+    else{
+      this.transactionBuilderFactory.feeCalculationStrategy = FeeCalculationStrategy.MiddleFeeCalculationStrategy;
+    }
+    
   }
 
   /**
@@ -91,25 +109,29 @@ export class ProximaxProvider {
    * @param {Address} address
    * @param {*} [message]
    * @param {number} [amount=0]
+   * @param {Mosaic[]} sendingMosaics
    * @returns {TransferTransaction}
    * @memberof ProximaxProvider
    */
-  buildTransferTransaction(network: NetworkType, address: Address, message?: any, amount: number = 0): TransferTransaction {
+  buildTransferTransaction(network: NetworkType, address: Address, message?: any, amount: number = 0, sendingMosaics?: Mosaic[] ): TransferTransaction {
     let mosaics: any = [];
-    if (amount > 0) {
-      mosaics = new Mosaic(new MosaicId(environment.mosaicXpxInfo.id), UInt64.fromUint(Number(amount)));
-    } else {
-      mosaics = [];
+
+    if(sendingMosaics){
+      if(sendingMosaics.length)
+        mosaics = sendingMosaics;
     }
 
-    return TransferTransaction.create(
-      Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
-      address,
-      mosaics,
-      message,
-      network,
-      UInt64.fromUint(0)
-    );
+    if (amount > 0) {
+      mosaics.push(new Mosaic(new MosaicId(environment.mosaicXpxInfo.id), UInt64.fromUint(Number(amount))));
+    }
+
+    return this.transactionBuilderFactory.transfer()
+            .deadline(Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit))
+            .recipient(address)
+            .mosaics(mosaics)
+            .message(message)
+            .networkType(network)
+            .build();
   }
 
   /**
@@ -128,14 +150,15 @@ export class ProximaxProvider {
     delta: UInt64,
     network: NetworkType
   ): MosaicSupplyChangeTransaction {
-    return MosaicSupplyChangeTransaction.create(
-      Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
-      mosaicId,
-      mosaicSupplyType,
-      delta,
-      network,
-      UInt64.fromUint(0)
-    );
+
+    return this.transactionBuilderFactory.mosaicSupplyChange()
+              .deadline(Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit))
+              .mosaicId(mosaicId)
+              .direction(mosaicSupplyType)
+              .delta(delta)
+              .networkType(network)
+              .build();
+
   }
 
 
@@ -154,20 +177,119 @@ export class ProximaxProvider {
    */
   buildMosaicDefinition(params: any): MosaicDefinitionTransaction {
     const nonce = this.createNonceRandom();
-    const mosaicDefinitionTransaction = MosaicDefinitionTransaction.create(
-      Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
-      nonce,
-      MosaicId.createFromNonce(nonce, params.owner),
-      MosaicProperties.create({
-        supplyMutable: params.supplyMutable,
-        transferable: params.transferable,
-        divisibility: params.divisibility,
-        duration: (params.duration) ? UInt64.fromUint(params.duration) : undefined
-      }),
-      params.network,
-      UInt64.fromUint(0)
-    );
-    return mosaicDefinitionTransaction;
+
+    return this.transactionBuilderFactory.mosaicDefinition()
+          .deadline(Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit))
+          .mosaicNonce(nonce)
+          .mosaicId(MosaicId.createFromNonce(nonce, params.owner))
+          .mosaicProperties(
+            MosaicProperties.create({
+              supplyMutable: params.supplyMutable,
+              transferable: params.transferable,
+              divisibility: params.divisibility,
+              duration: (params.duration) ? UInt64.fromUint(params.duration) : undefined
+            })
+          )
+          .networkType(params.network)
+          .build();
+  }
+
+  /**
+   *
+   *
+   * @param {innerTxn} innerTxn
+   * @param {InnerTransaction[]} network
+   * @returns {AggregateTransaction}
+   * @memberof ProximaxProvider
+   */
+  buildAggregateBonded(innerTxn: InnerTransaction[], network: NetworkType): AggregateTransaction {
+
+    return this.transactionBuilderFactory.aggregateBonded()
+          .deadline(Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit))
+          .innerTransactions(innerTxn)
+          .networkType(network)
+          .build();
+  }
+
+  /**
+   *
+   *
+   * @param {innerTxn} innerTxn
+   * @param {InnerTransaction[]} network
+   * @returns {AggregateTransaction}
+   * @memberof ProximaxProvider
+   */
+  buildAggregateComplete(innerTxn: InnerTransaction[], network: NetworkType): AggregateTransaction {
+
+    return this.transactionBuilderFactory.aggregateComplete()
+          .deadline(Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit))
+          .innerTransactions(innerTxn)
+          .networkType(network)
+          .build();
+  }
+
+  /**
+   *
+   *
+   * @param {UInt64} duration
+   * @param {Mosaic} mosaic
+   * @param {SignedTransaction} signedTransaction
+   * @param {NetworkType} network
+   * @returns {HashLockTransaction}
+   * @memberof ProximaxProvider
+   */
+  buildHashLockTransaction(mosaic: Mosaic, duration: UInt64, signedTransaction: SignedTransaction, network: NetworkType): HashLockTransaction {
+
+    return this.transactionBuilderFactory.hashLock()
+          .deadline(Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit))
+          .duration(duration)
+          .mosaic(mosaic)
+          .signedTransaction(signedTransaction)
+          .networkType(network)
+          .build();
+  }
+
+  /**
+   *
+   *
+   * @param {number} minApprovalDelta
+   * @param {number} minRemovalDelta
+   * @param {MultisigCosignatoryModification} modifications
+   * @param {NetworkType} network
+   * @returns {ModifyMultisigAccountTransaction}
+   * @memberof ProximaxProvider
+   */
+  buildModifyMultisigAccountTransaction(minApprovalDelta: number, minRemovalDelta: number, modifications: MultisigCosignatoryModification[], network: NetworkType): ModifyMultisigAccountTransaction {
+
+    return this.transactionBuilderFactory.modifyMultisig()
+      .deadline(Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit))
+      .minApprovalDelta(minApprovalDelta)
+      .minRemovalDelta(minRemovalDelta)
+      .modifications(modifications)
+      .networkType(network)
+      .build(); 
+  }
+
+  /**
+   *
+   *
+   * @param {AliasActionType} aliasActionType
+   * @param {NamespaceId} namespaceId
+   * @param {Address} address
+   * @param {NetworkType} network
+   * @returns {AddressAliasTransaction}
+   * @memberof ProximaxProvider
+   */
+
+  buildAddressAliasTransaction(aliasActionType: AliasActionType, namespaceId: NamespaceId, address: Address, network: NetworkType): AddressAliasTransaction {
+
+    return this.transactionBuilderFactory.addressAlias()
+      .deadline(Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit))
+      .actionType(aliasActionType)
+      .address(address)
+      .namespaceId(namespaceId)
+      .networkType(network)
+      .build(); 
   }
 
   /**
@@ -729,6 +851,15 @@ export class ProximaxProvider {
       network,
       UInt64.fromUint(0)
     );
+  }
+
+  /**
+   *
+   * @returns
+   * @memberof ProximaxProvider
+   */
+  getFeeStrategy(): FeeCalculationStrategy{
+    return this.transactionBuilderFactory.feeCalculationStrategy;
   }
 
   /**
