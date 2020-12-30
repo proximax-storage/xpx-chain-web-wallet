@@ -1001,8 +1001,6 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
               const transferBuilder = this.transactionService.buildTransferTransaction(params, generationHash);
 
               this.transactionSigned.push(transferBuilder.signedTransaction);
-              console.log(transferBuilder.signedTransaction.hash);
-              console.log(transferBuilder);
               this.saveContactFn();
               this.clearForm();
               this.transactionService.buildTransactionHttp().announce(transferBuilder.signedTransaction).subscribe(

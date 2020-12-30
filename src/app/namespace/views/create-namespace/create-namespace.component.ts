@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { SignedTransaction, RegisterNamespaceTransaction, Account, TransactionHttp } from 'tsjs-xpx-chain-sdk';
+import { SignedTransaction, RegisterNamespaceTransaction, Account, TransactionHttp, FeeCalculationStrategy } from 'tsjs-xpx-chain-sdk';
 import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { Router } from '@angular/router';
@@ -78,6 +78,7 @@ export class CreateNamespaceComponent implements OnInit, OnDestroy {
   typeNamespace = 1;
   typeTx = 1; // 1 simple, 2 multisig
   validateForm = false;
+  isZeroFee = false;
 
   constructor(
     private nodeService: NodeService,
@@ -89,7 +90,14 @@ export class CreateNamespaceComponent implements OnInit, OnDestroy {
     private namespaceService: NamespacesService,
     private transactionService: TransactionsService,
     private dataBridge: DataBridgeService
-  ) { }
+  ) {
+    if(this.proximaxProvider.getFeeStrategy() === FeeCalculationStrategy.ZeroFeeCalculationStrategy){
+      this.minimiumFeeRentalFeeToRoot = 0;
+      this.minimiumFeeRentalFeeToSub = 0;
+      this.rentalFee = 0;
+      this.isZeroFee = true;
+    }
+   }
 
 
   ngOnInit() {
@@ -99,6 +107,7 @@ export class CreateNamespaceComponent implements OnInit, OnDestroy {
     this.subscribeValueChange();
     this.showSelectAccount = true;
     this.transactionHttp = new TransactionHttp(environment.protocol + '://' + `${this.nodeService.getNodeSelected()}`);
+    this.getConfig();
     /*
     this.amountAccount = this.walletService.getAmountAccount();
     this.durationByBlock = this.transactionService.calculateDurationforDay(this.namespaceForm.get('duration').value).toString();
@@ -111,6 +120,16 @@ export class CreateNamespaceComponent implements OnInit, OnDestroy {
     this.subscription.forEach(subscription => {
       subscription.unsubscribe();
     });
+  }
+
+  getConfig(){
+    this.proximaxProvider.getBlockchainHeight().subscribe(async (height)=>{
+      var config = await this.proximaxProvider.getChainConfig(height.compact());
+
+      this.rentalFee = config.rootNamespaceRentalFeePerBlock;
+      this.minimiumFeeRentalFeeToRoot = this.rentalFee * parseInt(this.durationByBlock);
+      this.minimiumFeeRentalFeeToSub = config.childNamespaceRentalFee;
+    })
   }
 
   /**
@@ -490,7 +509,7 @@ export class CreateNamespaceComponent implements OnInit, OnDestroy {
         this.namespaceForm.get('duration').updateValueAndValidity();
         this.showDuration = false;
         this.durationByBlock = '0';
-        this.calculateRentalFee = '10.000000';
+        this.calculateRentalFee = this.transactionService.amountFormatterSimple(this.minimiumFeeRentalFeeToSub);;
         this.validateRentalFee();
       }
 
@@ -602,18 +621,19 @@ export class CreateNamespaceComponent implements OnInit, OnDestroy {
       }
     } else {
       const invalidBalance = this.amountAccount < Number(this.transactionService.amountFormatterSimple(this.minimiumFeeRentalFeeToSub));
-      if (invalidBalance) {
+      if (invalidBalance && !this.isZeroFee) {
         // **********DURATION INSUFFICIENT BALANCE*************
         this.insufficientBalance = true;
         this.insufficientBalanceDuration = false;
       } else {
-        if (!this.insufficientBalanceCosignatory) {
-          this.calculateRentalFee = '10,000.000000';
+        if (!this.insufficientBalanceCosignatory && !this.isZeroFee) {
+          
           this.insufficientBalance = false;
           this.insufficientBalanceDuration = false;
           this.enableForm();
         }
       }
+      this.calculateRentalFee = this.transactionService.amountFormatterSimple(this.minimiumFeeRentalFeeToSub);
     }
   }
 

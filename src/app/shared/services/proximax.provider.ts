@@ -5,6 +5,7 @@ import {
   SimpleWallet,
   MosaicInfo,
   TransactionHttp,
+  ChainConfigHttp,
   AccountHttp,
   MosaicHttp,
   NamespaceHttp,
@@ -69,6 +70,7 @@ export class ProximaxProvider {
   url: any;
   infoMosaic: MosaicInfo;
   transactionHttp: TransactionHttp;
+  chainConfigHttp: ChainConfigHttp;
   websocketIsOpen = false;
   accountHttp: AccountHttp;
   mosaicHttp: MosaicHttp;
@@ -770,6 +772,7 @@ export class ProximaxProvider {
     this.mosaicService = new MosaicService(this.accountHttp, this.mosaicHttp);
     this.namespaceService = new NamespaceService(this.namespaceHttp);
     this.transactionHttp = new TransactionHttp(this.url);
+    this.chainConfigHttp = new ChainConfigHttp(this.url);
   }
 
   /**
@@ -783,14 +786,13 @@ export class ProximaxProvider {
    * @memberof ProximaxProvider
    */
   linkingNamespaceToMosaic(aliasActionType: AliasActionType, namespaceId: NamespaceId, mosaicId: MosaicId, network: NetworkType) {
-    return MosaicAliasTransaction.create(
-      Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
-      aliasActionType,
-      namespaceId,
-      mosaicId,
-      network,
-      UInt64.fromUint(0)
-    );
+    return this.transactionBuilderFactory.mosaicAlias()
+      .deadline(Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit))
+      .actionType(aliasActionType)
+      .namespaceId(namespaceId)
+      .mosaicId(mosaicId)
+      .networkType(network)
+      .build();
   }
 
   /**
@@ -803,15 +805,14 @@ export class ProximaxProvider {
    * @returns {MosaicSupplyChangeTransaction}
    * @memberof ProximaxProvider
    */
-  mosaicSupplyChangeTransaction(mosaicId: string, supply: number, mosaicSupplyType: number, network: NetworkType): MosaicSupplyChangeTransaction {
-    return MosaicSupplyChangeTransaction.create(
-      Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
-      new MosaicId(mosaicId),
-      mosaicSupplyType,
-      UInt64.fromUint(supply),
-      network,
-      UInt64.fromUint(0)
-    );
+  mosaicSupplyChangeTransaction(mosaicId: string, supply: number, mosaicSupplyType: number, network: NetworkType): MosaicSupplyChangeTransaction {    
+    return this.transactionBuilderFactory.mosaicSupplyChange()
+      .deadline(Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit))
+      .mosaicId(new MosaicId(mosaicId))
+      .direction(mosaicSupplyType)
+      .delta(UInt64.fromUint(supply))
+      .networkType(network)
+      .build();
   }
 
   /**
@@ -824,13 +825,13 @@ export class ProximaxProvider {
    * @memberof ProximaxProvider
    */
   registerRootNamespaceTransaction(name: string, network: NetworkType, duration: number = 100): RegisterNamespaceTransaction {
-    return RegisterNamespaceTransaction.createRootNamespace(
-      Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
-      name,
-      UInt64.fromUint(duration),
-      network,
-      UInt64.fromUint(0)
-    );
+    return this.transactionBuilderFactory.registerRootNamespace()
+      .deadline(Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit))
+      .namespaceName(name)
+      .duration(UInt64.fromUint(duration))
+      .networkType(network)
+      .build();
+
   }
 
   /**
@@ -844,13 +845,12 @@ export class ProximaxProvider {
    */
   registersubNamespaceTransaction(rootNamespace: string, subnamespaceName: string, network: NetworkType): RegisterNamespaceTransaction {
     // Crear namespace transaction
-    return RegisterNamespaceTransaction.createSubNamespace(
-      Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
-      subnamespaceName,
-      rootNamespace,
-      network,
-      UInt64.fromUint(0)
-    );
+    return this.transactionBuilderFactory.registerSubNamespace()
+      .deadline(Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit))
+      .namespaceName(subnamespaceName)
+      .parentNamespace(rootNamespace)
+      .networkType(network)
+      .build();
   }
 
   /**
@@ -941,10 +941,180 @@ export class ProximaxProvider {
       }
     }
   }
+
+  /**
+   * 
+   * @param {number} chainHeight
+   * @returns
+   * @memberof ProximaxProvider
+   */
+   async getChainConfig(chainHeight: number): Promise<ChainConfigInterface>{
+    
+    return new Promise((resolve, reject)=>{
+      this.chainConfigHttp.getChainConfig(chainHeight).subscribe((configString)=>{
+
+        var regex = /[^=\n{1}]+=\s*(.*)/g;
+
+        var configs = configString.networkConfig.match(regex);
+
+        var networkConfig = configs.reduce((result, data)=>{
+          var [config, value] = data.split("=");
+          result[config.trim()] = value.trim();
+          return result;
+        }, {});
+
+        const chainConfig: ChainConfigInterface = {
+          publicKey: networkConfig['publicKey'],
+          blockGenerationTargetTime: networkConfig['blockGenerationTargetTime'],
+          blockTimeSmoothingFactor: this._convertConfigNumberToInteger(networkConfig['blockTimeSmoothingFactor']),
+          greedDelta: Number(networkConfig['greedDelta']),
+          greedExponent: Number(networkConfig['greedExponent']),
+          importanceGrouping: this._convertConfigNumberToInteger(networkConfig['importanceGrouping']),
+          maxRollbackBlocks: this._convertConfigNumberToInteger(networkConfig['maxRollbackBlocks']),
+          maxDifficultyBlocks: this._convertConfigNumberToInteger(networkConfig['maxDifficultyBlocks']),
+          maxTransactionLifetime: networkConfig['maxTransactionLifetime'],
+          maxBlockFutureTime: networkConfig['maxBlockFutureTime'],
+          maxMosaicAtomicUnits: this._convertConfigNumberToInteger(networkConfig['maxMosaicAtomicUnits']),
+          totalChainImportance: this._convertConfigNumberToInteger(networkConfig['totalChainImportance']),
+          minHarvesterBalance: this._convertConfigNumberToInteger(networkConfig['minHarvesterBalance']),
+          harvestBeneficiaryPercentage: this._convertConfigNumberToInteger(networkConfig['harvestBeneficiaryPercentage']),
+          blockPruneInterval: this._convertConfigNumberToInteger(networkConfig['blockPruneInterval']),
+          maxTransactionsPerBlock: this._convertConfigNumberToInteger(networkConfig['maxTransactionsPerBlock']),
+          maxTransactionsPerAggregate: this._convertConfigNumberToInteger(networkConfig['maxTransactionsPerAggregate']),
+          maxCosignaturesPerAggregate: this._convertConfigNumberToInteger(networkConfig['maxCosignaturesPerAggregate']),
+          enableStrictCosignatureCheck: networkConfig['enableStrictCosignatureCheck'] === 'true' ? true : false,
+          enableBondedAggregateSupport: networkConfig['enableBondedAggregateSupport'] === 'true' ? true : false,
+          maxBondedTransactionLifetime: networkConfig['maxBondedTransactionLifetime'],
+          maxBlockChainConfigSize: networkConfig['maxBlockChainConfigSize'],
+          maxSupportedEntityVersionsSize: networkConfig['maxSupportedEntityVersionsSize'],
+          minPercentageOfApproval: this._convertConfigNumberToInteger(networkConfig['minPercentageOfApproval']),
+          minPercentageOfRemoval: this._convertConfigNumberToInteger(networkConfig['minPercentageOfRemoval']),
+          maxOfferDuration: this._convertConfigNumberToInteger(networkConfig['maxOfferDuration']),
+          longOfferKey: networkConfig['longOfferKey'],
+          lockedFundsPerAggregate: this._convertConfigNumberToInteger(networkConfig['lockedFundsPerAggregate']),
+          maxHashLockDuration: networkConfig['maxHashLockDuration'],
+          maxSecretLockDuration: networkConfig['maxSecretLockDuration'],
+          minProofSize: this._convertConfigNumberToInteger(networkConfig['minProofSize']),
+          maxProofSize: this._convertConfigNumberToInteger(networkConfig['maxProofSize']),
+          maxFields: this._convertConfigNumberToInteger(networkConfig['maxFields']),
+          maxFieldKeySize: this._convertConfigNumberToInteger(networkConfig['maxFieldKeySize']),
+          maxFieldValueSize: this._convertConfigNumberToInteger(networkConfig['maxFieldValueSize']),
+          maxMosaicsPerAccount: this._convertConfigNumberToInteger(networkConfig['maxMosaicsPerAccount']),
+          maxMosaicDuration: networkConfig['maxMosaicDuration'],
+          maxMosaicDivisibility: this._convertConfigNumberToInteger(networkConfig['maxMosaicDivisibility']),
+          mosaicRentalFeeSinkPublicKey: networkConfig['mosaicRentalFeeSinkPublicKey'],
+          mosaicRentalFee: this._convertConfigNumberToInteger(networkConfig['mosaicRentalFee']),
+          maxMultisigDepth: this._convertConfigNumberToInteger(networkConfig['maxMultisigDepth']),
+          maxCosignersPerAccount: this._convertConfigNumberToInteger(networkConfig['maxCosignersPerAccount']),
+          maxCosignedAccountsPerAccount: this._convertConfigNumberToInteger(networkConfig['maxCosignedAccountsPerAccount']),
+          newCosignersMustApprove: networkConfig['newCosignersMustApprove'] === 'true' ? true : false,
+          maxNameSize: this._convertConfigNumberToInteger(networkConfig['maxNameSize']),
+          maxNamespaceDuration: networkConfig['maxNamespaceDuration'],
+          namespaceGracePeriodDuration: networkConfig['namespaceGracePeriodDuration'],
+          reservedRootNamespaceNames: networkConfig['reservedRootNamespaceNames'],  
+          namespaceRentalFeeSinkPublicKey: networkConfig['namespaceRentalFeeSinkPublicKey'],
+          rootNamespaceRentalFeePerBlock: this._convertConfigNumberToInteger(networkConfig['rootNamespaceRentalFeePerBlock']),
+          childNamespaceRentalFee: this._convertConfigNumberToInteger(networkConfig['childNamespaceRentalFee']),
+          maxChildNamespaces: this._convertConfigNumberToInteger(networkConfig['maxChildNamespaces']),
+          maxOperationDuration: networkConfig['maxOperationDuration'],
+          maxPropertyValues: this._convertConfigNumberToInteger(networkConfig['maxPropertyValues']),
+          maxMessageSize: this._convertConfigNumberToInteger(networkConfig['maxMessageSize']),
+          maxMosaicsSize: this._convertConfigNumberToInteger(networkConfig['maxMosaicsSize']),
+          minUpgradePeriod: this._convertConfigNumberToInteger(networkConfig['minUpgradePeriod']),
+          maxFilesOnDrive: this._convertConfigNumberToInteger(networkConfig['maxFilesOnDrive']),
+          verificationFee: this._convertConfigNumberToInteger(networkConfig['verificationFee']),
+          verificationDuration: this._convertConfigNumberToInteger(networkConfig['verificationDuration']),
+          downloadDuration: this._convertConfigNumberToInteger(networkConfig['downloadDuration']),
+          downloadCacheEnabled: networkConfig['downloadCacheEnabled'] === 'true' ? true : false,
+          maxSuperContractsOnDrive: this._convertConfigNumberToInteger(networkConfig['maxSuperContractsOnDrive']),
+        };
+
+        resolve(chainConfig);
+      },
+      (error)=>{
+        reject(error);
+      });
+    });
+  }
+
+  _convertConfigNumberToInteger(amount: string): number{
+
+    if(!amount){
+      return 0;
+    }
+
+    return parseInt(amount.split("'").join(""));
+  }
 }
 
 // tslint:disable-next-line: class-name
 export interface commonInterface {
   password: string;
   privateKey: string;
+}
+
+export interface ChainConfigInterface{
+  publicKey: string,
+  blockGenerationTargetTime: string,
+  blockTimeSmoothingFactor: number,
+  greedDelta: number,
+  greedExponent: number,
+  importanceGrouping: number,
+  maxRollbackBlocks: number,
+  maxDifficultyBlocks: number,
+  maxTransactionLifetime: string,
+  maxBlockFutureTime: string,
+  maxMosaicAtomicUnits: number,
+  totalChainImportance: number,
+  minHarvesterBalance: number,
+  harvestBeneficiaryPercentage: number,
+  blockPruneInterval: number,
+  maxTransactionsPerBlock: number,
+  maxTransactionsPerAggregate: number,
+  maxCosignaturesPerAggregate: number,
+  enableStrictCosignatureCheck: boolean,
+  enableBondedAggregateSupport: boolean,
+  maxBondedTransactionLifetime: string,
+  maxBlockChainConfigSize: string,
+  maxSupportedEntityVersionsSize: string,
+  minPercentageOfApproval: number,
+  minPercentageOfRemoval: number,
+  maxOfferDuration: number,
+  longOfferKey: string,
+  lockedFundsPerAggregate: number,
+  maxHashLockDuration: string,
+  maxSecretLockDuration: string,
+  minProofSize: number,
+  maxProofSize: number,
+  maxFields: number,
+  maxFieldKeySize: number,
+  maxFieldValueSize: number,
+  maxMosaicsPerAccount: number,
+  maxMosaicDuration: string,
+  maxMosaicDivisibility: number,
+  mosaicRentalFeeSinkPublicKey: string,
+  mosaicRentalFee: number,
+  maxMultisigDepth: number,
+  maxCosignersPerAccount: number,
+  maxCosignedAccountsPerAccount: number,
+  newCosignersMustApprove: boolean,
+  maxNameSize: number,
+  maxNamespaceDuration: string,
+  namespaceGracePeriodDuration: string,
+  reservedRootNamespaceNames: string,  
+  namespaceRentalFeeSinkPublicKey: string,
+  rootNamespaceRentalFeePerBlock: number,
+  childNamespaceRentalFee: number,
+  maxChildNamespaces: number,
+  maxOperationDuration: string,
+  maxPropertyValues: number,
+  maxMessageSize: number,
+  maxMosaicsSize: number,
+  minUpgradePeriod: number,
+  maxFilesOnDrive: number,
+  verificationFee: number,
+  verificationDuration: number,
+  downloadDuration: number,
+  downloadCacheEnabled: boolean,
+  maxSuperContractsOnDrive: number
 }

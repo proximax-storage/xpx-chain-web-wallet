@@ -13,7 +13,8 @@ import {
   Account,
   MosaicDefinitionTransaction,
   MosaicSupplyChangeTransaction,
-  PublicAccount
+  PublicAccount,
+  FeeCalculationStrategy
 } from 'tsjs-xpx-chain-sdk';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { SharedService, ConfigurationForm } from '../../../shared/services/shared.service';
@@ -24,6 +25,7 @@ import { environment } from '../../../../environments/environment';
 import { HeaderServicesInterface } from '../../../servicesModule/services/services-module.service';
 import { MosaicService } from '../../../servicesModule/services/mosaic.service';
 import { NodeService } from 'src/app/servicesModule/services/node.service';
+import { stringToBytes } from 'qrcode-generator';
 
 
 @Component({
@@ -94,6 +96,7 @@ export class CreateMosaicComponent implements OnInit, OnDestroy {
   showSelectAccount = true;
   isMultisig = false;
   transactionHttp: TransactionHttp = null;
+  isZeroFee = false;
 
   constructor(
     private fb: FormBuilder,
@@ -105,6 +108,10 @@ export class CreateMosaicComponent implements OnInit, OnDestroy {
     private mosaicServices: MosaicService,
     private nodeService: NodeService
   ) {
+    if(this.proximaxProvider.getFeeStrategy() === FeeCalculationStrategy.ZeroFeeCalculationStrategy){
+      this.rentalFee = 0;
+      this.isZeroFee = true;
+    }
   }
 
   ngOnInit() {
@@ -118,6 +125,8 @@ export class CreateMosaicComponent implements OnInit, OnDestroy {
       x => this.validateBalance()
     );
 
+    this.getConfig();
+
     // this.calculateRentalFee = this.transactionService.amountFormatterSimple(Number(this.rentalFee));
     // this.mosaicForm.disable();
   }
@@ -128,6 +137,17 @@ export class CreateMosaicComponent implements OnInit, OnDestroy {
         this.subscribe[element].unsubscribe();
       }
     });
+  }
+
+  getConfig(){
+    this.proximaxProvider.getBlockchainHeight().subscribe(async (height)=>{
+      var config = await this.proximaxProvider.getChainConfig(height.compact());
+
+      var networkMosaicDivisibility = environment.mosaicXpxInfo.divisibility;
+      var emptyNum = '0' + (networkMosaicDivisibility > 0 ? '.' : '') + '0'.repeat(networkMosaicDivisibility);
+
+      this.calculateRentalFee = config.mosaicRentalFee > 0 ? (config.mosaicRentalFee/ Math.pow(10, networkMosaicDivisibility)).toLocaleString() : emptyNum;
+    })
   }
 
   /**
@@ -275,7 +295,6 @@ export class CreateMosaicComponent implements OnInit, OnDestroy {
       });
     }
 
-    this.calculateRentalFee = '10,000.000000';
     this.optionsSuply = {
       prefix: '',
       thousands: ',',
@@ -318,7 +337,6 @@ export class CreateMosaicComponent implements OnInit, OnDestroy {
       this.sender.publicAccount.publicKey,
       this.walletService.currentAccount.network
     );
-
     // tslint:disable-next-line: radix
     const duration = (this.mosaicForm.get('duration').enabled) ? parseInt(this.durationByBlock) : undefined;
     return {
@@ -696,7 +714,18 @@ export class CreateMosaicComponent implements OnInit, OnDestroy {
             this.mosaicForm.enable();
             return;
           }
+          else{
+            this.insufficientBalance = true;
+            this.mosaicForm.disable();
+            return;
+          }
         }
+      }
+      
+      if(this.isZeroFee){
+        this.insufficientBalance = false;
+        this.mosaicForm.enable();
+        return;
       }
 
       this.insufficientBalance = true;

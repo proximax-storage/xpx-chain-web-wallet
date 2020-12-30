@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject, Subscription } from 'rxjs';
 import {
   UInt64,
-  TransferTransaction,
   Deadline,
   NetworkType,
   TransactionHttp,
@@ -17,9 +16,6 @@ import {
   Address,
   AggregateTransaction,
   SignedTransaction,
-  HashLockTransaction,
-  LockFundsTransaction,
-  InnerTransaction,
   TransactionStatus
 } from 'tsjs-xpx-chain-sdk';
 import { ProximaxProvider } from '../../shared/services/proximax.provider';
