@@ -207,6 +207,13 @@
               <mdb-error *ngIf="msgErrorUnsupported !== ''">
                 <span class="fs-08rem fw-600 color-error-message">{{msgErrorUnsupported}}</span>
               </mdb-error>
+
+              <mdb-error *ngIf="recipientPublicKeyNotFound">
+                <span class="fs-08rem fw-600 color-warn-message">
+                  Recipient's public key not found from chain. 
+                  Please send a transaction with that recipient account to enable encrypted message.
+                </span>
+              </mdb-error>
             </div>
           </div>
 

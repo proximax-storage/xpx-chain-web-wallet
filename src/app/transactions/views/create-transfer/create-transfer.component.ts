@@ -105,6 +105,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
   encryptedMsgDisable = true;
   messageWillBeEncrypted = false;
   messageMaxLength: number;
+  recipientPublicKeyNotFound = false;
 
   constructor(
     private dataBridge: DataBridgeService,
@@ -338,16 +339,20 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
       if ([null].includes(recipient) === false) {
         const accountInfo = await this.proximaxProvider.getAccountInfo(address).toPromise();
         if (accountInfo.publicKey === invalidPublicKey) {
+          this.recipientPublicKeyNotFound = true;
+          this.encryptedMsgDisable = true;
           throw new Error(`The receiver's public key is not valid for sending encrypted messages`);
         }
         this.recipientInfo = accountInfo;
         this.encryptedMsgDisable = false;
+        this.recipientPublicKeyNotFound = false;
         // console.log(this.recipientInfo, this.encryptedMsgDisable);
       }
     } catch (error) {
       console.warn(error);
       if (error.statusCode && error.statusCode === 404) {
         this.encryptedMsgDisable = true;
+        this.recipientPublicKeyNotFound = true;
       } else if ([undefined, null].includes(error.statusCode) && typeof error === 'string') {
         this.sharedService.showError('', error);
         this.encryptedMsgDisable = true;
@@ -1077,6 +1082,12 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
 
       const accountRecipient = (valueWithoutSpaces !== undefined && valueWithoutSpaces !== null && valueWithoutSpaces !== '') ? valueWithoutSpaces.split('-').join('') : '';
       //  const accountSelected = (value) ? value.split('-').join('') : '';
+
+      if(accountRecipient.length === 0){
+        this.encryptedMsgDisable = true;
+        this.recipientPublicKeyNotFound = false;
+      }
+
       const contact = this.formTransfer.get('contact').value;
       const accountSelected = (contact !== undefined && contact !== null && contact !== '') ? contact.value.split('-').join('') : '';
       if ((accountSelected !== '') && (accountSelected !== accountRecipient)) {
@@ -1121,7 +1132,11 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
       if (val && val !== null) {
         if (this.typeMessage === '1') {
           if (this.messageWillBeEncrypted === true) {
-            let REGEX = /[^a-zA-Z0-9 ]\s*/;
+
+            //let REGEX = /[^a-zA-Z0-9 ]\s*/;
+
+            // REGEX for ASCII
+            let REGEX = /[^\x00-\x7F]/g;
             if (val.search(REGEX) > -1) {
               let subStr = val.replace(REGEX, '');
               this.formTransfer.get('message').setValue(subStr);

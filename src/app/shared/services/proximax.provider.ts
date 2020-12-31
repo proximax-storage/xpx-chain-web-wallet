@@ -864,6 +864,15 @@ export class ProximaxProvider {
 
   /**
    *
+   * @returns {boolean}
+   * @memberof ProximaxProvider
+   */
+  isPrivateNet(network: NetworkType): boolean{
+    return network === NetworkType.PRIVATE || network === NetworkType.PRIVATE_TEST;
+  }
+
+  /**
+   *
    *
    * @param {string} data
    * @returns
