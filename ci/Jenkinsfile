@@ -7,6 +7,7 @@ pipeline {
 
   options {
     timestamps()
+    copyArtifactPermission("/${env.JOB_NAME}");
   }
 
   stages {
@@ -14,8 +15,9 @@ pipeline {
       agent { label 'docker-c5-xlarge' }
       steps {
         echo 'Starting Docker Container'
-        withDockerContainer(image: 'node:10.16') {
+        withDockerContainer(image: 'proximax/xpx-chain-web-wallet-deps-build-image:node-10.16') {
           echo 'Installing dependencies'
+          sh 'cp -r /node_modules ./'
           sh 'npm install'
 
           // Required dependency patch to build
@@ -56,11 +58,29 @@ pipeline {
       agent any
       steps {
         script {
-          sh """
-            ls -al dist/proximax-sirius-wallet
-            cat dist/proximax-sirius-wallet/configuration.js
-            echo "this is just a test"
-          """
+          echo 'Copy Artifact'
+          step([
+              $class: 'CopyArtifact',
+              filter: "proximax-web-wallet-${env.GIT_BRANCH}.tar.xz",
+              projectName: "/${env.JOB_NAME}",
+              selector: [$class: 'SpecificBuildSelector', buildNumber: "${env.BUILD_NUMBER}"]
+          ])
+          echo 'Extract Artifact'
+        sh "tar -xvf proximax-web-wallet-${env.GIT_BRANCH}.tar.xz"
+        sh "cp dist/proximax-sirius-wallet/assets/configuration.mainnet.js dist/proximax-sirius-wallet/assets/configuration.js"
+
+        
+
+        sh """
+          sudo apt-install zip
+          cd dist
+          zip -r proximax-sirius-wallet.zip proximax-sirius-wallet
+        """
+        
+        withAWS(credentials: 'jenkins-sirius-wallet'){
+          echo 'Uploading universal wallet'
+          s3Upload bucket: 'proximax-files-dist', acl: 'PublicRead', path: 'sirius-wallet/universal/latest' file: 'dist/proximax-sirius-wallet.zip', sseAlgorithm: 'AES256'
+          s3Upload bucket: 'proximax-files-dist', acl: 'PublicRead', path: 'sirius-wallet/universal/${env.GIT_BRANCH}' file: 'dist/proximax-sirius-wallet.zip', sseAlgorithm: 'AES256'
         }
       }
     }
@@ -89,6 +109,17 @@ pipeline {
       }
 
       steps {
+        echo 'Copy Artifact'
+        step([
+            $class: 'CopyArtifact',
+            filter: "proximax-web-wallet-${env.GIT_BRANCH}.tar.xz",
+            projectName: "/${env.JOB_NAME}",
+            selector: [$class: 'SpecificBuildSelector', buildNumber: "${env.BUILD_NUMBER}"]
+        ])
+        
+        echo 'Extract Artifact'
+        sh "tar -xvf proximax-web-wallet-${env.GIT_BRANCH}.tar.xz"
+        
         echo 'Deploying'
 
         echo 'Managing S3'
@@ -148,6 +179,17 @@ pipeline {
       }
 
       steps {
+        echo 'Copy Artifact'
+        step([
+            $class: 'CopyArtifact',
+            filter: "proximax-web-wallet-${env.GIT_BRANCH}.tar.xz",
+            projectName: "/${env.JOB_NAME}",
+            selector: [$class: 'SpecificBuildSelector', buildNumber: "${env.BUILD_NUMBER}"]
+        ])
+        
+        echo 'Extract Artifact'
+        sh "tar -xvf proximax-web-wallet-${env.GIT_BRANCH}.tar.xz"
+        sh "cp dist/proximax-sirius-wallet/assets/configuration.mainnet.js dist/proximax-sirius-wallet/assets/configuration.js"
 
         echo 'Managing S3'
 
@@ -165,6 +207,17 @@ pipeline {
         withAWS(credentials: 'jenkins-ecr') {
           echo 'Invalidating CloudFront'
           cfInvalidate distribution: 'EB05IZSH5L7L5', paths: ['/*']
+        }
+
+        sh """
+          sudo apt-install zip
+          cd dist
+          zip -r proximax-sirius-wallet.zip proximax-sirius-wallet
+        """
+        withAWS(credentials: 'jenkins-sirius-wallet'){
+          echo 'Uploading new files'
+          s3Upload bucket: 'proximax-files-dist', acl: 'PublicRead', path: 'sirius-wallet/universal/latest' file: 'dist/proximax-sirius-wallet.zip', sseAlgorithm: 'AES256'
+          s3Upload bucket: 'proximax-files-dist', acl: 'PublicRead', path: 'sirius-wallet/universal/${env.GIT_BRANCH}' file: 'dist/proximax-sirius-wallet.zip', sseAlgorithm: 'AES256'
         }
       }
     
