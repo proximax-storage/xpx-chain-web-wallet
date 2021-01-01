@@ -54,39 +54,6 @@ pipeline {
       }
     }
 
-    stage('Deploy to Staging') {
-      agent any
-      steps {
-        script {
-          echo 'Copy Artifact'
-          step([
-              $class: 'CopyArtifact',
-              filter: "proximax-web-wallet-${env.GIT_BRANCH}.tar.xz",
-              projectName: "/${env.JOB_NAME}",
-              selector: [$class: 'SpecificBuildSelector', buildNumber: "${env.BUILD_NUMBER}"]
-          ])
-        
-          echo 'Extract Artifact'
-          sh "tar -xvf proximax-web-wallet-${env.GIT_BRANCH}.tar.xz"
-          sh "cp dist/proximax-sirius-wallet/assets/configuration.mainnet.js dist/proximax-sirius-wallet/assets/configuration.js"
-
-        
-
-          sh """
-            sudo apt-install zip
-            cd dist
-            zip -r proximax-sirius-wallet.zip proximax-sirius-wallet
-          """
-        
-          withAWS(credentials: 'jenkins-sirius-wallet'){
-            echo 'Uploading universal wallet'
-            s3Upload bucket: 'proximax-files-dist', acl: 'PublicRead', path: 'sirius-wallet/universal/latest', file: 'dist/proximax-sirius-wallet.zip', sseAlgorithm: 'AES256'
-            s3Upload bucket: 'proximax-files-dist', acl: 'PublicRead', path: 'sirius-wallet/universal/${env.GIT_BRANCH}', file: 'dist/proximax-sirius-wallet.zip', sseAlgorithm: 'AES256'
-          }
-        }
-      }
-    }
-
     stage('Promotion to Testnet') {
       when {
         tag 'release-v*'
@@ -212,14 +179,14 @@ pipeline {
         }
 
         sh """
-          sudo apt-install zip
+          sudo apt-get install -y zip
           cd dist
           zip -r proximax-sirius-wallet.zip proximax-sirius-wallet
         """
         withAWS(credentials: 'jenkins-sirius-wallet'){
-          echo 'Uploading new files'
-          s3Upload bucket: 'proximax-files-dist', acl: 'PublicRead', path: 'sirius-wallet/universal/latest', file: 'dist/proximax-sirius-wallet.zip', sseAlgorithm: 'AES256'
-          s3Upload bucket: 'proximax-files-dist', acl: 'PublicRead', path: 'sirius-wallet/universal/${env.GIT_BRANCH}', file: 'dist/proximax-sirius-wallet.zip', sseAlgorithm: 'AES256'
+          echo 'Uploading universal wallet'
+          s3Upload bucket: 'proximax-files-dist', acl: 'PublicRead', path: 'sirius-wallet/universal/latest/', file: 'dist/proximax-sirius-wallet.zip', sseAlgorithm: 'AES256'
+          s3Upload bucket: 'proximax-files-dist', acl: 'PublicRead', path: "sirius-wallet/universal/${env.GIT_BRANCH}/", file: 'dist/proximax-sirius-wallet.zip', sseAlgorithm: 'AES256'
         }
       }
     
