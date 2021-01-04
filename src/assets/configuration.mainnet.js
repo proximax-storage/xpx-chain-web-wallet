@@ -124,5 +124,17 @@ dynamic_configuration = {
       path: '/peerjs',
       secure: true,
       debug: 3
-    }
+    },
+    nodes: [
+      "arcturus.xpxsirius.io",
+      "aldebaran.xpxsirius.io",
+      "betelgeuse.xpxsirius.io",
+      "bigcalvin.xpxsirius.io",
+      "westerlund.xpxsirius.io",
+      "canismajor.xpxsirius.io",
+      "coronaborealis.xpxsirius.io",
+      "delphinus.xpxsirius.io",
+      "eridanus.xpxsirius.io",
+      "lyrasithara.xpxsirius.io"
+    ]
   };

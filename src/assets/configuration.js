@@ -126,5 +126,10 @@ dynamic_configuration = {
       path: '/peerjs',
       secure: true,
       debug: 3
-    }
+    },
+    nodes:[
+      "bctestnet1.brimstone.xpxsirius.io",
+      "bctestnet2.brimstone.xpxsirius.io",
+      "bctestnet3.brimstone.xpxsirius.io"
+    ]
   };
