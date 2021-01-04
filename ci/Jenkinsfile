@@ -45,15 +45,6 @@ pipeline {
       }
     }
 
-    stage('Promotion to Staging') {
-      steps {
-        script {
-          env.DEPLOY_TO_STAGING = input message: "User Input Required",
-            parameters: [choice(name: 'Deploy to Staging', choices: 'no\nyes', description: 'Choose yes if you want to deploy to Staging')]
-        }
-      }
-    }
-
     stage('Promotion to Testnet') {
       when {
         tag 'release-v*'
