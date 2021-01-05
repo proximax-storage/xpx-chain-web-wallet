@@ -1,3 +1,76 @@
+<!-- RELEASE TESTNET v0.5.4 -->
+## [Version: 0.5.4](https://github.com/proximax-storage/xpx-chain-web-wallet/releases/tag/release-v0.5.4)
+ <h2>Update</h2>
+<ul>
+<h3>Multisig-multilevel</h3>
+ <li>Add an account as a consignee of an account</li>
+<li>Add a multi-signature account as a consignee of an account</li>
+<li>Pre-visualization of the entire multi-signature scheme</li>
+<li>Edit a multi-signature account</li>
+<li>Multi-level support </li>
+<h3>Account</h3>
+<li>Identify and label multi-level accounts</li>
+
+<h3>Vote</h3>
+  <li>Add load more in poll list</li>
+  <li>Add total unique voter and total vote in vote result</li>
+</ul>
+
+<h2>Fix bug</h2>
+<ul>
+<h3>Multisig-Account</h3>
+  <li>Import an existing multi-signature account into the wallet</li>
+<h3>Multisig convert</h3>
+<li>Partial tx validate</li>
+
+<h3>Multisig edit</h3>
+<li>Name in multisig schema</li>
+<li>Partial tx validate</li>
+<li>Account to sign (with consignee)</li>
+<li>Scroll css schema multisig</li>
+
+<h3>Poll vote result</h3>
+<li>Able to close modal and stop result loading</li>
+<li>Accurate vote count per option, can be more that 100</li>
+</ul>
+
+<h2>Features</h2>
+<ul>
+<h3>Partial</h3>
+  <li>Sign transactions with multi-level accounts</li>
+<h3>Trasfer</h3>
+  <li>Sign transactions with multi-level accounts</li>
+
+</ul>
+
+<!-- RELEASE TESTNET v0.5.3 -->
+## [Version: 0.5.3](https://github.com/proximax-storage/xpx-chain-web-wallet/releases/tag/release-v0.5.3)
+<h2>Update</h2>
+<ul>
+<h3>Multisig-multilevel</h3>
+ <li>Add an account as a consignee of an account</li>
+<li>Add a multi-signature account as a consignee of an account</li>
+<li>Pre-visualization of the entire multi-signature scheme</li>
+<li>Edit a multi-signature account</li>
+<li>Multi-level support </li>
+<h3>Account</h3>
+<li>Identify and label multi-level accounts</li>
+</ul>
+
+<h2>Fix bug</h2>
+<ul>
+<h3>Multisig-Account</h3>
+  <li>Import an existing multi-signature account into the wallet</li>
+</ul>
+
+<h2>Feateures</h2>
+<ul>
+<h3>Partial</h3>
+  <li>Sign transactions with multi-level accounts</li>
+<h3>Trasfer</h3>
+  <li>Sign transactions with multi-level accounts</li>
+</ul>
+
 <!-- RELEASE TESTNET v0.1.7 -->
 ## [Version: 0.1.7](https://github.com/proximax-storage/xpx-chain-web-wallet/releases/tag/0.1.7)
 

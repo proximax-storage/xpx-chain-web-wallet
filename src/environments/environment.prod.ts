@@ -9,8 +9,8 @@ export const environment = {
   production: true,
   routeNodesJson: 'testnet',
   itemBooksAddress: 'sw-books-testnet',
-  version: '0.4.17',
-  cacheVersion: '05',
+  version: '0.5.4',
+  cacheVersion: '01',
   nameKeyBlockStorage: `sw-blocks`,
   nameKeyNodeSelected: `sw-selected-node-testnet`,
   nameKeyWalletStorage: `sw-testnet`,
@@ -25,7 +25,7 @@ export const environment = {
       createPoll: false,
       vote: false,
       viewResult: false,
-      classNameParam: 'disable-module'
+      classNameParam: ''
     },
     storage: {
       viewChildrenParam: true,
@@ -70,6 +70,15 @@ export const environment = {
     options: {
       protocol: 'http'
     }
+
+  },
+  storageConnectionUnload: {
+    host: 'ipfs1-dev.xpxsirius.io',
+    port: 5443,
+    options: {
+      protocol: 'https'
+    }
+
   },
   namespaceRentalFeeSink: {
     public_key: '6F4416CA9AE06AF4DDDE4A30132C55B47740C0262568BEE99D59CF3A92BD04D1',
@@ -112,7 +121,14 @@ export const environment = {
     heightMax: 172800
   },
   lockFundDuration: 11520,
-  delayBetweenLockFundABT: 20000
+  delayBetweenLockFundABT: 20000,
+  peerHosting: {
+    host: 'demo-sc-api-1.ssi.xpxsirius.io',
+    port: 443,
+    path: '/peerjs',
+    secure: true,
+    debug: 3
+  }
 };
 /*
  * In development mode, to ignore zone related error stack frames such as

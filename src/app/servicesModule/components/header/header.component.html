@@ -1,6 +1,6 @@
 <div class="container mt-3rem mb-1rem animated fadeIn">
   <div class="row">
-    <div class="col-12 col-md-6 col-sm-12 d-flex align-items-end">
+    <div class="col-12 col-md-6 col-sm-12">
       <span class="fs-1rem txt-a-center line-h-1-2em color-grey">{{params.moduleName}}&nbsp;</span>
       <span class="fs-1rem txt-a-center line-h-1-2em color-grey">></span>
       <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">&nbsp;{{params.componentName}}</span>
@@ -15,7 +15,7 @@
       </span>
       <span class="pr-1rem-left-right line-h-1-2em fs-09rem" *ngIf="params.extraButton">|</span>
       <span class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">
-        <a  class="color-blue-intermedio" [routerLink]="[goBack]">
+        <a class="color-blue-intermedio" [routerLink]="[goBack]">
           <span>Back to Services</span>
         </a>
       </span>

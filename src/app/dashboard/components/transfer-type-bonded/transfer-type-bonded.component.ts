@@ -93,13 +93,18 @@ export class TransferTypeBondedComponent implements OnInit, OnChanges {
    */
   async build(id: any) {
     let d = 6;
-    const n = await this.namesapceService.getNamespaceFromId([id]);
-    this.namespaceName = id.toHex();
-    if ((n.length > 0)) {
-      this.namespaceName = (n[0].namespaceName.name === 'prx.xpx') ? 'XPX' : n[0].namespaceName.name;
-      const x = environment.swapAllowedMosaics.find(r => `${r.namespaceId}.${r.name}` === n[0].namespaceName.name);
-      if (x) { d = x.divisibility; }
+    if (id.toHex() === environment.mosaicXpxInfo.namespaceId || id.toHex() === environment.mosaicXpxInfo.id) {
+      this.namespaceName = 'XPX';
+    } else {
+      const n = await this.namesapceService.getNamespaceFromId([id]);
+      this.namespaceName = id.toHex();
+      if ((n.length > 0)) {
+        this.namespaceName = (n[0].namespaceName.name === 'prx.xpx') ? 'XPX' : n[0].namespaceName.name;
+        const x = environment.swapAllowedMosaics.find(r => `${r.namespaceId}.${r.name}` === n[0].namespaceName.name);
+        if (x) { d = x.divisibility; }
+      }
     }
+
     const amount = this.transactionService.amountFormatterSimple(this.transactionBuilder.data['mosaics'][0].amount.compact(), d);
     this.amountTwoPart = this.transactionService.getDataPart(amount.toString(), d);
     this.isSwap = true;

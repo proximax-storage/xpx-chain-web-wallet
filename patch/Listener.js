@@ -79,11 +79,11 @@ class Listener {
           this.webSocket = new WebSocket(this.url);
         }
         this.webSocket.onopen = () => {
-          console.log('connection open');
+          console.debug('connection open');
         };
         this.webSocket.onerror = (err) => {
-          console.log('WebSocket Error ');
-          console.log(err);
+          console.debug('WebSocket Error ');
+          console.debug(err);
           reject(err);
         };
         this.webSocket.onmessage = (msg) => {

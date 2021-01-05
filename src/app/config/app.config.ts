@@ -14,7 +14,7 @@ export const AppConfig: Config = {
     blockchain: 'nodes',
     createAccount: 'create-account',
     createApostille: 'create-attestation',
-    createGift :'create-gift',
+    createGift : 'create-gift',
     convertToAccountMultisign: 'convert-account-multisign',
     createMosaic: 'create-mosaic',
     createNamespace: 'create-namespace',
@@ -23,6 +23,7 @@ export const AppConfig: Config = {
     createWallet: 'create-wallet',
     dashboard: 'dashboard',
     deleteAccount:'delete-account',
+    delegate: 'delegate',
     deleteAccountConfirm:'delete-account-confirm',
     deleteWallet:'delete-wallet',
     deleteWalletConfirm:'delete-wallet-confirm',
@@ -41,12 +42,13 @@ export const AppConfig: Config = {
     linkTheNamespaceToAnAddress: 'alias-namespace-to-an-address',
     MosaicSupplyChange: 'mosaic-supply-change',
     MultiSign: 'multi-signatures',
+    MultisigMultiLevel: 'multisig-multi-level',
     notification: 'notifications',
     partial: 'partial',
     polls: 'polls',
     renewNamespace: 'renew-namespace',
     renovateNamespace: 'renovate-namespace',
-    redeemGiftCard:'redeem-gift-card',
+    redeemGiftCard: 'redeem-gift-card',
     swapAccountFound: 'swap-account-found',
     swapAccountNis1Found: 'swap-account-nis1-found',
     swapTransactions: 'swap-transactions',
@@ -65,7 +67,7 @@ export const AppConfig: Config = {
     selectTypeCreationAccount: 'select-type-creation-account',
     signMultiSigTransactions: 'sign-multisignature-transactions',
     viewAllAccount: 'view-all-account',
-    viewAllWallets:'view-all-wallets',
+    viewAllWallets: 'view-all-wallets',
     voteInPoll: 'vote-poll',
     walletCreated: 'wallet-created',
     nis1AccountList: 'nis1-account-list',
@@ -103,10 +105,11 @@ export interface Config {
     createApostille: string;
     createGift: string
     dashboard: string;
+    delegate:string;
     deleteAccount:string;
     deleteAccountConfirm:string;
     deleteWallet: string;
-    deleteWalletConfirm:string;
+    deleteWalletConfirm: string;
     editAccountMultisign: string;
     explorer: string;
     extendMosaics: string;
@@ -122,12 +125,13 @@ export interface Config {
     linkTheNamespaceToAnAddress: string;
     MosaicSupplyChange: string;
     MultiSign: string;
+    MultisigMultiLevel: string;
     notification: string;
     partial: string;
     polls: string;
     renewNamespace: string;
     renovateNamespace: string;
-    redeemGiftCard:string;
+    redeemGiftCard: string;
     swapAccountFound: string;
     swapAccountNis1Found: string;
     swapTransactions: string;

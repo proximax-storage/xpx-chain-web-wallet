@@ -1,10 +1,9 @@
-import { Component, OnInit, ViewChild, HostListener, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import { first } from 'rxjs/operators';
+import { Component, OnInit, ViewChild, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { MdbTablePaginationComponent, MdbTableService, MdbTableDirective, ModalDirective } from 'ng-uikit-pro-standard';
 import { Address, UInt64 } from 'tsjs-xpx-chain-sdk';
-import { first } from "rxjs/operators";
-import { AppConfig } from '../../../config/app.config';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
-import { NodeService } from "../../services/node.service";
+import { NodeService } from '../../services/node.service';
 import { TransactionsInterface, TransactionsService } from '../../../transactions/services/transactions.service';
 import { WalletService } from '../../../wallet/services/wallet.service';
 import { SharedService } from '../../../shared/services/shared.service';
@@ -31,7 +30,7 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
   };
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Transaction Explorer',
-    componentName: 'Explore'
+    componentName: 'Explorer'
   };
   searching = false;
   objectKeys = Object.keys;
@@ -42,28 +41,26 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
   typeSearch = '';
   paramSearch = '';
   previous: any = '';
-  searchText: string = '';
+  searchText = '';
   elements: any = [];
   dataSelected: TransactionsInterface = null;
   headElements = ['Type', 'In/Out', 'Sender', 'Recipient'];
   optionTypeSearch = [
     {
-      'value': 'address',
-      'label': 'Address'
+      value: 'address',
+      label: 'Address'
     }, {
-      'value': 'publickey',
-      'label': 'Public Key'
+      value: 'publickey',
+      label: 'Public Key'
     }, {
-      'value': 'hash',
-      'label': 'Hash'
+      value: 'hash',
+      label: 'Hash'
     }
   ];
 
 
 
   constructor(
-    private tableService: MdbTableService,
-    private cdRef: ChangeDetectorRef,
     private walletService: WalletService,
     private proximaxProvider: ProximaxProvider,
     private nodeService: NodeService,
@@ -86,7 +83,7 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
         this.sharedService.showError('', 'Please select a search type');
         return;
       } else if (this.paramSearch === '') {
-        var tp = '';
+        let tp = '';
         if (this.typeSearch === 'address') {
           tp = 'a address';
         } else if (this.typeSearch === 'hash') {
@@ -103,7 +100,7 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
       this.elements = this.mdbTable.getDataSource();
       this.searching = true;
       if (this.typeSearch === 'address') {
-        //from address
+        // from address
         if (this.paramSearch.length === 40 || this.paramSearch.length === 46) {
           this.proximaxProvider.getAccountInfo(Address.createFromRawAddress(this.paramSearch)).pipe(first()).subscribe(
             accountInfo => {
@@ -126,7 +123,7 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
         }
 
       } else if (this.typeSearch === 'publickey') {
-        //From publickey
+        // From publickey
         if (this.paramSearch.length === 64) {
           const publicAccount = this.proximaxProvider.createPublicAccount(this.paramSearch, this.walletService.currentAccount.network);
           this.proximaxProvider.getTransactionsFromAccount(publicAccount, this.nodeService.getNodeSelected()).subscribe(
@@ -144,7 +141,7 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
           this.searching = false;
         }
       } else if (this.typeSearch === 'hash') {
-        //From hash
+        // From hash
         if (this.paramSearch.length === 64) {
           this.proximaxProvider.getTransactionInformation(this.paramSearch, this.nodeService.getNodeSelected()).subscribe(
             resp => {
@@ -170,7 +167,7 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
   buildTransaction(param) {
     const data = [];
     param.forEach(element => {
-      const builderTransactions = this.transactionService.getStructureDashboard(element);
+      const builderTransactions = this.transactionService.getStructureDashboard(element, [], 'confirmed');
       if (builderTransactions !== null) {
         data.push(builderTransactions);
       }
@@ -197,16 +194,16 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
 
   openModal(transaction: TransactionsInterface) {
     const height = transaction.data['transactionInfo'].height.compact();
-    //console.log('height -->', height);
+    // console.log('height -->', height);
     if (typeof (height) === 'number') {
       const existBlock = this.dataBridge.filterBlockStorage(height);
       if (existBlock) {
         transaction.timestamp = `${this.transactionService.dateFormatUTC(new UInt64([existBlock.timestamp.lower, existBlock.timestamp.higher]))} - UTC`;
-        //console.log('feeMultiplier ----> ', existBlock.feeMultiplier);
-        //console.log('Transaction data size ----> ', transaction.data.size);
-        const calculateEffectiveFee = this.transactionService.amountFormatterSimple(existBlock.feeMultiplier * transaction.data.size)
+        // console.log('feeMultiplier ----> ', existBlock.feeMultiplier);
+        // console.log('Transaction data size ----> ', transaction.data.size);
+        const calculateEffectiveFee = this.transactionService.amountFormatterSimple(existBlock.feeMultiplier * transaction.data.size);
         transaction.effectiveFee = this.transactionService.getDataPart(calculateEffectiveFee, 6);
-      }else {
+      } else {
         this.proximaxProvider.getBlockInfo(height).subscribe(
           next => {
             this.dataBridge.validateBlock(next);

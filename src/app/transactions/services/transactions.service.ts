@@ -97,6 +97,10 @@ export class TransactionsService {
     lock: {
       id: TransactionType.LOCK,
       name: 'LockFund'
+    },
+    accountLink: {
+      id: TransactionType.LINK_ACCOUNT,
+      name: 'Account Link'
     }
     /*secretLock: {
        id: TransactionType.SECRET_LOCK,
@@ -132,21 +136,29 @@ export class TransactionsService {
    * @param amount Amount to add zeros
    */
   addZeros(cant: any, amount = 0) {
-    let decimal: any;
     let realAmount: any;
-    if (amount === 0) {
-      decimal = this.addDecimals(cant);
-      realAmount = `0${decimal}`;
-    } else {
-      const arrAmount = amount.toString().replace(/,/g, '').split('.');
-      if (arrAmount.length < 2) {
+    if (cant > 0) {
+      let decimal: any;
+      if (amount === 0) {
         decimal = this.addDecimals(cant);
+        realAmount = `0${decimal}`;
       } else {
-        const arrDecimals = arrAmount[1].split('');
-        decimal = this.addDecimals(cant - arrDecimals.length, arrAmount[1]);
+        const arrAmount = amount.toString().replace(/,/g, '').split('.');
+        if (arrAmount.length < 2) {
+          decimal = this.addDecimals(cant);
+          console.debug('decimal 1', decimal);
+        } else {
+          const arrDecimals = arrAmount[1].split('');
+          decimal = this.addDecimals(cant - arrDecimals.length, arrAmount[1]);
+          console.debug('decimal 2', decimal);
+        }
+        realAmount = `${arrAmount[0]}${decimal}`;
       }
-      realAmount = `${arrAmount[0]}${decimal}`;
+    } else {
+      realAmount = amount;
     }
+
+    console.debug('realAmount', realAmount);
     return realAmount;
   }
 
@@ -157,6 +169,7 @@ export class TransactionsService {
    * @param amount Amount to add zeros
    */
   addDecimals(cant: any, amount = '0') {
+    console.debug('cant', cant);
     const x = '0';
     if (amount === '0') {
       for (let index = 0; index < cant - 1; index++) {
@@ -167,6 +180,8 @@ export class TransactionsService {
         amount += x;
       }
     }
+
+    console.debug(amount);
     return amount;
   }
 
@@ -588,10 +603,6 @@ export class TransactionsService {
     return null;
   }
 
-  // viewPartial(partial){
-  //   this.lengthParcial = partial.length;
-  //   this.viewParcial = (partial && partial.length > 0) ? true : false
-  // }
   /**
    *
    *
@@ -854,7 +865,7 @@ export class TransactionsService {
       if (data.mosaicsId && data.mosaicsId.length > 0) {
         this.mosaicServices.searchInfoMosaics(data.mosaicsId);
       }
-    }).catch(error => console.log(error));
+    }).catch(error => console.error(error));
   }
 
   /**
@@ -1043,7 +1054,7 @@ export class TransactionsService {
       accountInfo.accountInfo !== null;
     // Validate account info
     if (!disabled) {
-      return { infValidate: [{ disabled: true, info: "Not Valid" }] };
+      return { infValidate: [{ disabled: true, info: 'Not Valid' }] };
     }
     // Validate mosaics
     if (
@@ -1052,14 +1063,14 @@ export class TransactionsService {
       )
     ) {
       return {
-        infValidate: [{ disabled: true, info: "Insufficient Balance" }]
+        infValidate: [{ disabled: true, info: 'Insufficient Balance' }]
       };
     }
     // Validate balance account
     const balanceAccount = accountInfo.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id).amount.compact();
     if (!(balanceAccount >= feeTotal)) {
       return {
-        infValidate: [{ disabled: true, info: "Insufficient Balance" }]
+        infValidate: [{ disabled: true, info: 'Insufficient Balance' }]
       };
     }
 

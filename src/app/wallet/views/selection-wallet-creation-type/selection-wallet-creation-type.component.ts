@@ -13,7 +13,6 @@ import { ServicesModuleService, StructureService } from '../../../servicesModule
 import { SharedService } from '../../../shared/services/shared.service';
 import { WalletService } from '../../../wallet/services/wallet.service';
 
-
 @Component({
   selector: 'app-selection-wallet-creation-type',
   templateUrl: './selection-wallet-creation-type.component.html',

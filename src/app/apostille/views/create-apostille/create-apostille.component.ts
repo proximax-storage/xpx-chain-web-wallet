@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators, FormGroup, AbstractControl } from '@angular/forms';
 import * as crypto from 'crypto-js';
-import { Account, UInt64, TransferTransaction, PlainMessage } from 'tsjs-xpx-chain-sdk';
-import { KeyPair, convert } from 'js-xpx-chain-library';
+import { Account, UInt64, TransferTransaction, PlainMessage, KeyPair, Convert } from 'tsjs-xpx-chain-sdk';
 import { PaginationInstance } from 'ngx-pagination';
 import { Subscription } from 'rxjs';
 import * as FeeCalculationStrategy from 'tsjs-xpx-chain-sdk/dist/src/model/transaction/FeeCalculationStrategy';
@@ -419,13 +418,13 @@ export class CreateApostilleComponent implements OnInit {
     // create a prefix hash
     const apostilleHashPrefix = 'fe4e545983';
     // Concatenates the hash prefix and the result gives the apostille hash
-    const apostilleHash = apostilleHashPrefix + convert.uint8ToHex(contentHashSig).toLowerCase();
+    const apostilleHash = apostilleHashPrefix + Convert.uint8ToHex(contentHashSig).toLowerCase();
     // Encrypt the title
     const fileNameHash = this.apostilleService.encryptData(this.nameFile);
     // Sign the fileNameHash with the ownerKeypair
     const fileNameHashSign = KeyPair.sign(ownerKeypair, this.apostilleService.hexStringToByte(fileNameHash.toString()));
     // Take the first 32 UINT8 to get the private key
-    const dedicatedPrivateKey = convert.uint8ToHex(fileNameHashSign.slice(0, 32));
+    const dedicatedPrivateKey = Convert.uint8ToHex(fileNameHashSign.slice(0, 32));
     // Create an account from the dedicatedPrivateKey to send a transaction with apostilleHash message
     const dedicatedAccount = Account.createFromPrivateKey(dedicatedPrivateKey, this.walletService.currentAccount.network);
     // Build the transfer type transaction

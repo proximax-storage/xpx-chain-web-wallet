@@ -1,5 +1,5 @@
 import { Router, NavigationEnd } from '@angular/router';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import { ItemsHeaderInterface, SharedService, MenuInterface } from '../../../services/shared.service';
 import { AppConfig } from '../../../../config/app.config';
 import { environment } from '../../../../../environments/environment';
@@ -64,6 +64,7 @@ export class SidebarMainComponent implements OnInit {
     private walletService: WalletService,
     private nodeService: NodeService,
     private namespaces: NamespacesService,
+    private ngZone: NgZone
   ) {
     this.version = environment.version;
     this.netType = environment.typeNetwork.value;
@@ -350,7 +351,8 @@ export class SidebarMainComponent implements OnInit {
     this.walletService.setSwapTransactions$([]);
     this.walletService.setNis1AccountsWallet$([]);
     this.namespaces.setNamespaceChanged(null);
-    this.route.navigate([`/${AppConfig.routes.auth}`]);
+    //this.route.navigate([`/${AppConfig.routes.auth}`]);
+    this.ngZone.run(() => this.route.navigate([`/${AppConfig.routes.auth}`])).then();
   }
 
   /**

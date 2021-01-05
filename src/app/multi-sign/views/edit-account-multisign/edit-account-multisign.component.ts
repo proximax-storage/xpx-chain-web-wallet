@@ -194,7 +194,7 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
   /**
    *
    * @memberof EditAccountMultisignComponent
-   *  @param {String} amount  - 
+   *  @param {String} amount  -
    */
   amountFormatterSimple(amount): string {
     return this.transactionService.amountFormatterSimple(amount);
@@ -267,11 +267,11 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
 
   /**
    *
-   * @param {AccountsInterface[]} accounts  - 
+   * @param {AccountsInterface[]} accounts  -
    * @returns {ConsginerFirmList[]}
    * @memberof EditAccountMultisignComponent
    */
-  builConsginerList(accounts: AccountsInterface[]): ConsginerFirmList[] {
+  buildCosignerList(accounts: AccountsInterface[]): ConsginerFirmList[] {
     let list: ConsginerFirmList[] = []
     for (let index = 0; index < accounts.length; index++) {
       const publicAccount: PublicAccount = PublicAccount.createFromPublicKey(accounts[index].publicAccount.publicKey, accounts[index].network);
@@ -317,7 +317,7 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
     if (!this.consginerFirmAccount)
       return
     const consginerFirmAccountList = this.updateConsginerFirmList([this.consginerFirmAccount], this.otherConsginerFirmAccountList)
-    console.log('consginer Firm Account List:', consginerFirmAccountList)
+    console.debug('consginer Firm Account List:', consginerFirmAccountList)
     this.typeTx = this.multiSignService.typeSignTxEdit(this.getCosignatoryListFilter(1, 2), this.accountInfo.multisigInfo, consginerFirmAccountList, this.walletService.currentWallet.accounts, this.signType)
     if (this.typeTx.transactionType === TransactionType.AGGREGATE_BONDED) {
       this.totalFee = this.feeTransaction + this.feeLockfund;
@@ -340,7 +340,7 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
   /**
    *
    * @memberof EditAccountMultisignComponent
-   *  @param {any} value  - 
+   *  @param {any} value  -
    */
   cleanArray(value: any) {
     const newArray = new Array();
@@ -389,7 +389,7 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
 
   /**
    * Clean select content - defined empty by default
-   * @param {any} item 
+   * @param {any} item
    * @memberof EditAccountMultisignComponent
    */
   clearItemSelect(item: any) {
@@ -431,7 +431,7 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
   * @memberof CreateMultiSignatureComponent
   * @param {Address} id  - Address in cosignatory.
   * @param {Boolean} disableItem
-  * @param {number} type 
+  * @param {number} type
   */
   deleteCosignatory(id: Address, disableItem: boolean, type: number) {
     if (!disableItem) {
@@ -458,7 +458,7 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
    */
   editIntoMultisigTransaction() {
     if (this.editAccountMultsignForm.valid && this.cosignatoryList.length > 0 && !this.blockSend) {
-      console.log('entron entro')
+      console.debug('entron entro')
       if (this.infoBalance.disabled)
         return this.sharedService.showWarning('LockFund', this.infoBalance.info);
       this.blockSend = true;
@@ -490,11 +490,11 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
           }
         }
         common = '';
-        console.log('consginerFirmAccount', this.consginerFirmAccount)
-        console.log('AccountMyCosigners', AccountMyCosigners)
-        console.log('accountToConvertSign', accountToConvertSign)
-        console.log('typeCosi', this.signType)
-        console.log('this.typeTx.transactionType', this.typeTx.transactionType)
+        console.debug('consginerFirmAccount', this.consginerFirmAccount)
+        console.debug('AccountMyCosigners', AccountMyCosigners)
+        console.debug('accountToConvertSign', accountToConvertSign)
+        console.debug('typeCosi', this.signType)
+        console.debug('this.typeTx.transactionType', this.typeTx.transactionType)
         const signedTransaction = this.multiSignService.signedTransaction(
           accountToConvertSign,
           this.aggregateTransaction,
@@ -521,8 +521,8 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
    * Array of duplicated filters
    * @memberof CreateMultiSignatureComponent
    * @param {Array<object>} value1  - Address in cosignatory.
-   * @param {Array<object>} value2 
-   * @param {string} key 
+   * @param {Array<object>} value2
+   * @param {string} key
    */
   filterArrayUnic(value1: any, value2: any, key: string) {
     let newArray = new Array();
@@ -881,7 +881,7 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * 
+   *
    * @memberof EditAccountMultisignComponent
    */
   selectCosignatorieSign() {
@@ -904,7 +904,7 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * 
+   *
    * @memberof EditAccountMultisignComponent
    */
   selectOtherCosignatorieSign() {
@@ -1071,9 +1071,10 @@ export class EditAccountMultisignComponent implements OnInit, OnDestroy {
     if (!this.accountInfo.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id)) {
       return this.sharedService.showError('', 'Insufficient Balance');
     }
+    //validate actual  consginerFirmList
     if (this.hasCosigner() && !validateBuildAccount.disabledItem) {
       this.consginerFirmList = []
-      this.consginerFirmList = this.builConsginerList(this.walletService.currentWallet.accounts)
+      this.consginerFirmList = this.buildCosignerList(this.walletService.currentWallet.accounts)
       if (this.consginerFirmList.length === 1) {
         this.signType = 1;
         this.consginerFirmAccount = this.consginerFirmList[0]

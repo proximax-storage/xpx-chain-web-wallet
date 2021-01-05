@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { PublicAccount, Address, InnerTransaction, UInt64, Account, TransactionHttp, SignedTransaction, Transaction } from 'tsjs-xpx-chain-sdk';
+import { PublicAccount, Address, InnerTransaction, UInt64, Account, TransactionHttp, SignedTransaction, Transaction, PlainMessage } from 'tsjs-xpx-chain-sdk';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import * as qrcode from 'qrcode-generator';
 import { Subscription } from 'rxjs';
@@ -21,6 +21,7 @@ import { TransactionsService, TransactionsInterface } from '../../../transaction
   templateUrl: './vote-in-poll.component.html',
   styleUrls: ['./vote-in-poll.component.css']
 })
+
 export class VoteInPollComponent implements OnInit {
   activate: boolean;
   dataTransaction: TransactionsInterface;
@@ -35,6 +36,7 @@ export class VoteInPollComponent implements OnInit {
   pollResultVoting: any = [];
   pollResultVotingChar: any = [];
   headResults = ['Options', 'Total'];
+  statHeadResults = ['Statistic', 'Total'];
   searching: boolean;
   incrementOption = 0;
   memberVoted: boolean;
@@ -59,6 +61,10 @@ export class VoteInPollComponent implements OnInit {
   updateFlag = false;
   passwordMain: string = 'password';
   signedTransaction: SignedTransaction;
+  votedPublicKey: any = [];
+  votedPublicKeyCount = 0;
+  totalVoteCount = 0;
+  stopResultLoading = false;
 
   constructor(
     private nodeService: NodeService,
@@ -83,9 +89,8 @@ export class VoteInPollComponent implements OnInit {
     this.activate = false;
     this.showResultProgress = false;
     this.createForm()
+
     this.getPoll(this.activateRoute.snapshot.paramMap.get('id'));
-
-
   }
   @ViewChild('modalInfo', { static: true }) modalInfo: ModalDirective;
   @ViewChild('certificationModal', { static: true }) certificationModal: ModalDirective;
@@ -212,11 +217,64 @@ export class VoteInPollComponent implements OnInit {
     return array
   }
 
+  countNewVoteTransaction(array: Transaction[], voteTransaction: any): number {
+    var newVoteTransactions = array.filter(function (current) {
+      if(this.indexOf(current.signer.publicKey) < 0){
+        this.push(current.signer.publicKey); 
+      }
+      var isNew = !voteTransaction[current.signer.publicKey] || false;
+      voteTransaction[current.signer.publicKey] = true;
+      return isNew;
+    }, this.votedPublicKey);
+
+    /*
+    for(var i = 0; newVoteTransactions.length > i ;++i){
+      if(this.votedPublicKey.indexOf(current.signer.publicKey) < 0){
+        this.votedPublicKey.push(current.signer.publicKey); 
+      }
+    }
+    */
+    
+    return newVoteTransactions.length;
+  }
+
+  async getMoreTransaction(publicAccountOfSelectedOption: PublicAccount, id: string): Promise<Transaction[]>{
+
+    return new Promise((resolve, reject) => {
+      this.proximaxProvider.getTransactionsFromAccountId(publicAccountOfSelectedOption, id).subscribe(
+        (next: Transaction[]) => {
+  
+          resolve(next);
+  
+        }, dataError => {
+          reject(dataError);
+        });
+    });
+  }
+
+  closeResultModal(){
+    this.stopResultLoading = true;
+    this.modalInfo.hide();
+  }
 
   getResult(param: string) {
 
+    if(this.stopResultLoading){
+      this.totalVoteCount = 0;
+      this.incrementOptionV = 0;
+      this.stopResultLoading = false;
+      return;
+    }
+
     if (param === 'RESULTS') {
-      this.modalInfo.show()
+      this.modalInfo.show();
+      this.showResultProgress = false;
+    }
+    
+    if(this.incrementOptionV === 0){
+      this.totalVoteCount = 0;
+      this.votedPublicKeyCount = 0;
+      this.votedPublicKey = [];
     }
     if (this.incrementOptionV < this.pollSelected.options.length) {
       this.showResultProgress = true;
@@ -230,17 +288,38 @@ export class VoteInPollComponent implements OnInit {
         //Obtiene todas las transacciones del PollOption
 
         this.proximaxProvider.getTransactionsFromAccount(publicAccountOfSelectedOption).subscribe(
-          (next: Transaction[]) => {
+          async (next: Transaction[]) => {
 
-            let lengthVote = 0
+            var lengthVote = 0
+            var allVoteTransactions = {};
+            var transactionsLengthFromResponse = 0;
             if (next.length > 0) {
-              next = next.filter(element => element.type === 16705)
-              for (var index = 0; index < this.filterTransactions(next).length; index++) {
-                const transaction = this.filterTransactions(next)[index];
-                // if (this.walletService.currentAccount.publicAccount.publicKey === transaction.signer.publicKey) {
-                lengthVote++
+              
+              transactionsLengthFromResponse = next.length;
+              var lastTransaction = next.slice(-1).pop();
+              var lastId = lastTransaction.transactionInfo.id;
 
-                // }
+              next = next.filter(element => element.type === 16705)
+
+              lengthVote += this.countNewVoteTransaction(next, allVoteTransactions);
+
+              while(transactionsLengthFromResponse === 100 && lastId != "" && this.stopResultLoading === false){
+                var newTransaction = [];
+                newTransaction = await this.getMoreTransaction(publicAccountOfSelectedOption, lastId);
+                transactionsLengthFromResponse = newTransaction.length;
+                
+                if(newTransaction.length > 0){
+                  lastTransaction = newTransaction.slice(-1).pop();
+                  lastId = lastTransaction.transactionInfo.id;
+
+                  newTransaction = newTransaction.filter(element => element.type === 16705)
+
+                  lengthVote += this.countNewVoteTransaction(newTransaction, allVoteTransactions);
+                }
+                else{
+                  transactionsLengthFromResponse = 0;
+                  lastId = "";
+                }
               }
 
             }
@@ -248,9 +327,11 @@ export class VoteInPollComponent implements OnInit {
               element.y = lengthVote
             })
 
+            this.totalVoteCount += lengthVote;
             this.pollResultVotingChar = this.pollResultVoting
             this.setcreatecharts(this.pollResultVotingChar);
             this.incrementOptionV++;
+            this.votedPublicKeyCount = this.votedPublicKey.length;
             this.getResult(param);
           }, dataError => {
             if (dataError && dataError.error.message) {
@@ -516,7 +597,7 @@ export class VoteInPollComponent implements OnInit {
       const optionData = this.pollSelected.options.find(e => e.name === this.optionsSelected[i].field);
       message.nameOption = optionData.name;
       const recipient = Address.createFromPublicKey(optionData.publicAccount.publicKey, optionData.publicAccount.address.networkType);
-      let transferTransaction: any = this.proximaxProvider.buildTransferTransaction(this.walletService.currentAccount.network, recipient, JSON.stringify(message));
+      let transferTransaction: any = this.proximaxProvider.buildTransferTransaction(this.walletService.currentAccount.network, recipient, PlainMessage.create(JSON.stringify(message)));
       transferTransaction.fee = UInt64.fromUint(0);
       innerTransaction.push(transferTransaction.toAggregate(publicAccount))
     }

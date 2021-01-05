@@ -71,7 +71,7 @@ export class CreateMosaicComponent implements OnInit, OnDestroy {
   blockButton: boolean;
   errorDivisibility: string;
   errorSupply: string;
-  maxLengthSupply = 13;
+  maxLengthSupply = 19;
   optionsSuply = {
     prefix: '',
     thousands: ',',
@@ -232,6 +232,7 @@ export class CreateMosaicComponent implements OnInit, OnDestroy {
    * @memberof CreateMosaicComponent
    */
   buildMosaicDefinition(publicAccount: PublicAccount, params: any) {
+    console.debug(this.deltaSupply);
     const mosaicDefinitionTransaction = this.proximaxProvider.buildMosaicDefinition(params);
     const mosaicSupplyChangeTransaction = this.proximaxProvider.buildMosaicSupplyChange(
       mosaicDefinitionTransaction.mosaicId,
@@ -375,7 +376,7 @@ export class CreateMosaicComponent implements OnInit, OnDestroy {
         this.buildMosaicDefinition(params.owner, params);
 
         if (divisibility > 6) {
-          this.maxLengthSupply = 13;
+          this.maxLengthSupply = 19;
           this.errorDivisibility = '-invalid';
           this.invalidDivisibility = true;
           this.blockButton = true;
@@ -387,7 +388,7 @@ export class CreateMosaicComponent implements OnInit, OnDestroy {
             precision: divisibility
           };
           this.invalidSupply = false;
-          this.maxLengthSupply = 13 + parseFloat(divisibility);
+          this.maxLengthSupply = (19 - divisibility) + parseFloat(divisibility);
           this.errorDivisibility = '';
           this.blockButton = false;
           this.invalidDivisibility = false;
@@ -406,6 +407,8 @@ export class CreateMosaicComponent implements OnInit, OnDestroy {
     });
 
     this.mosaicForm.get('deltaSupply').valueChanges.subscribe(next => {
+      console.debug('maxSupply', this.configurationForm.mosaicWallet.maxSupply);
+      console.debug('deltaSupply', parseFloat(next.toString().replace(/./g, '')));
       if (parseFloat(next) <= this.configurationForm.mosaicWallet.maxSupply) {
         if (next === 0) {
           this.invalidSupply = true;

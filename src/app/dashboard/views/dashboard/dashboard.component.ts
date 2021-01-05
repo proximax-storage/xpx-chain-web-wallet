@@ -15,6 +15,7 @@ import { AppConfig } from '../../../config/app.config';
 import { NamespacesService } from '../../../servicesModule/services/namespaces.service';
 import { DataBridgeService } from '../../../shared/services/data-bridge.service';
 import { NemProviderService } from '../../../swap/services/nem-provider.service';
+import { AuthService } from 'src/app/auth/services/auth.service';
 
 
 @Component({
@@ -35,7 +36,8 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     private transactionService: TransactionsService,
     private sharedService: SharedService,
     private proximaxProvider: ProximaxProvider,
-    private walletService: WalletService
+    private walletService: WalletService,
+    private authService: AuthService
   ) { }
 
   @ViewChild(MdbTableDirective, { static: true }) mdbTable: MdbTableDirective;
@@ -130,6 +132,11 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     ));
 
     this.currentWallet = Object.assign({}, this.walletService.currentWallet);
+
+    if(this.authService.walletNameSID){
+      this.walletService.removeWallet(this.authService.walletNameSID);
+      this.authService.walletNameSID = null;
+    }
   }
 
   ngOnDestroy(): void {

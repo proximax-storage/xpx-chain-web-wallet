@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { crypto } from 'js-xpx-chain-library';
 import {
   Password,
   SimpleWallet,
@@ -52,7 +51,12 @@ import {
   HashLockTransaction,
   ModifyMultisigAccountTransaction,
   MultisigCosignatoryModification,
-  AddressAliasTransaction
+  AddressAliasTransaction,
+  AccountLinkTransaction,
+  LinkAction,
+  Crypto, 
+  MultisigAccountGraphInfo, 
+  WalletAlgorithm
 } from 'tsjs-xpx-chain-sdk';
 import { BlockchainNetworkType } from 'tsjs-chain-xipfs-sdk';
 import { WalletService } from '../../wallet/services/wallet.service';
@@ -297,6 +301,25 @@ export class ProximaxProvider {
   /**
    *
    *
+   * @param {NetworkType} network
+   * @param {remoteAccountKey} linked account public key
+   * @param {linkAction} linkAction
+   * @returns {AccountLinkTransaction}
+   * @memberof ProximaxProvider
+   */
+  buildAccountLinkTransaction(network: NetworkType, remoteAccountKey: string, linkAction: LinkAction): AccountLinkTransaction {
+
+    return AccountLinkTransaction.create(
+      Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
+      remoteAccountKey,
+      linkAction,
+      network
+    );
+  }
+
+  /**
+   *
+   *
    * @param {string} coinId
    * @returns
    * @memberof ProximaxProvider
@@ -375,7 +398,7 @@ export class ProximaxProvider {
       iv,
     };
 
-    crypto.passwordToPrivatekey(common, wallet, 'pass:bip32');
+    Crypto.passwordToPrivateKey(common, wallet, WalletAlgorithm.Pass_bip32);
     return common.privateKey;
   }
 
@@ -567,6 +590,17 @@ export class ProximaxProvider {
    *
    *
    * @param {Address} address
+   * @returns {Observable<MultisigAccountInfo>}
+   * @memberof ProximaxProvider
+   */
+  getMultisigAccountGraphInfo(address: Address): Observable<MultisigAccountGraphInfo> {
+    return this.accountHttp.getMultisigAccountGraphInfo(address);
+  }
+
+  /**
+   *
+   *
+   * @param {Address} address
    * @memberof ProximaxProvider
    */
   getNamespaceFromAccount(address: Address): Observable<NamespaceInfo[]> {
@@ -740,7 +774,7 @@ export class ProximaxProvider {
     this.mosaicService
       .mosaicsAmountViewFromAddress(address)
       .pipe(mergeMap((_) => _))
-      .subscribe(mosaic => console.log('You have', mosaic.relativeAmount(), mosaic.fullName()),
+      .subscribe(mosaic => console.debug('You have', mosaic.relativeAmount(), mosaic.fullName()),
         err => console.error(err));
   }
 

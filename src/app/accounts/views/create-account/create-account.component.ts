@@ -61,7 +61,7 @@ export class CreateAccountComponent implements OnInit {
     private nemProvider: NemProviderService
   ) { }
 
-  ngOnInit() {
+  ngOnInit () {
     const param = this.activateRoute.snapshot.paramMap.get('id');
     this.componentName = (param === '0') ? 'Create Account' : 'Import Account';
     this.buttonSend = (param === '0') ? 'Create' : 'Import';
@@ -83,7 +83,7 @@ export class CreateAccountComponent implements OnInit {
    * @param {boolean} isPvk
    * @memberof CreateAccountComponent
    */
-  changeInputType(inputType: string, isPvk: boolean) {
+  changeInputType (inputType: string, isPvk: boolean) {
     const newType = this.sharedService.changeInputType(inputType);
     if (isPvk) {
       this.pvkMain = newType;
@@ -97,7 +97,7 @@ export class CreateAccountComponent implements OnInit {
    *
    * @memberof CreateAccountComponent
    */
-  createForm(param: string) {
+  createForm (param: string) {
     this.formCreateAccount = this.fb.group({
       nameWallet: ['', [
         Validators.required,
@@ -132,7 +132,7 @@ export class CreateAccountComponent implements OnInit {
    *
    * @memberof CreateAccountComponent
    */
-  async createAccount() {
+  async createAccount () {
     if (this.formCreateAccount.valid && this.isValid) {
       const allAccounts = this.walletService.currentWallet.accounts.slice(0);
       let walletName = this.formCreateAccount.get('nameWallet').value;
@@ -155,7 +155,7 @@ export class CreateAccountComponent implements OnInit {
             newAccount = this.proximaxProvider.createAccountFromPrivateKey(nameAccount, password, this.privateKey, network);
             //newAccount = this.proximaxProvider.createAccountFromPrivateKey(nameAccount, password, this.formCreateAccount.get('privateKey').value, network);
             const accountEqual = this.walletService.getCurrentWallet().accounts.find(el => el.publicAccount.address['address'] === newAccount.address['address']);
-            if (accountEqual && accountEqual !== undefined) {
+            if (accountEqual && accountEqual !== undefined && accountEqual.encrypted) {
               this.sharedService.showWarning('', 'This account already exists');
             } else {
               if (this.saveNis1) {
@@ -172,7 +172,12 @@ export class CreateAccountComponent implements OnInit {
                 return;
               }
 
-              this.saveAccount(newAccount, nameAccount, password, this.prefix);
+              if (accountEqual &&  !accountEqual.encrypted) {
+                this.saveAccount(newAccount, nameAccount, password, this.prefix, true);
+              } else {
+                this.saveAccount(newAccount, nameAccount, password, this.prefix);
+              }
+
             }
           } else {
             newAccount = this.proximaxProvider.createAccountSimple(nameAccount, password, network);
@@ -190,7 +195,7 @@ export class CreateAccountComponent implements OnInit {
    * @param {Password} password wallet password
    * @memberof CreateAccountComponent
    */
-  saveAccount(newAccount: SimpleWallet, nameAccount: string, password: Password, prefix: string) {
+  saveAccount (newAccount: SimpleWallet, nameAccount: string, password: Password, prefix: string, isReplace = false) {
     this.namespaceService.searchNamespacesFromAccounts([newAccount.address]);
     const accountBuilded: AccountsInterface = this.walletService.buildAccount({
       address: newAccount.address['address'],
@@ -220,7 +225,12 @@ export class CreateAccountComponent implements OnInit {
       network: newAccount.network,
       fromPrivateKey: this.fromPrivateKey
     }, accountBuilded, newAccount);
-    this.walletService.saveAccountWalletStorage(accountBuilded);
+    if (isReplace) {
+      this.walletService.saveAccountWalletStorageReplace(accountBuilded);
+    } else {
+      this.walletService.saveAccountWalletStorage(accountBuilded);
+    }
+
     this.walletService.setAccountSelectedWalletNis1(accountBuilded);
     this.serviceModuleService.saveContacts({ name: nameAccount, address: accountBuilded.address, walletContact: true, nameItem: '' });
     this.dataBridgeService.closeConection();
@@ -241,7 +251,7 @@ export class CreateAccountComponent implements OnInit {
    * @returns
    * @memberof CreateAccountComponent
    */
-  clearForm(nameInput: string = '', nameControl: string = '') {
+  clearForm (nameInput: string = '', nameControl: string = '') {
     if (nameInput !== '') {
       if (nameControl !== '') {
         this.formCreateAccount.controls[nameControl].get(nameInput).reset();
@@ -265,7 +275,7 @@ export class CreateAccountComponent implements OnInit {
    * @returns
    * @memberof CreateAccountComponent
    */
-  validateInput(nameInput: string = '', nameControl: string = '', nameValidation: string = '') {
+  validateInput (nameInput: string = '', nameControl: string = '', nameValidation: string = '') {
     let validation: AbstractControl = null;
     if (nameInput !== '' && nameControl !== '') {
       validation = this.formCreateAccount.controls[nameControl].get(nameInput);
@@ -283,7 +293,7 @@ export class CreateAccountComponent implements OnInit {
    * @returns
    * @memberof CreateAccountComponent
    */
-  validateNameAccount() {
+  validateNameAccount () {
     if (this.formCreateAccount.get('nameWallet').valid) {
       const nameAccount = this.formCreateAccount.get('nameWallet').value;
       const existWallet = Object.keys(this.walletService.currentWallet.accounts).find(elm => this.walletService.currentWallet.accounts[elm].name === nameAccount);
@@ -304,7 +314,7 @@ export class CreateAccountComponent implements OnInit {
    *
    * @memberof CreateAccountComponent
    */
-  switchSaveNis1() {
+  switchSaveNis1 () {
     this.saveNis1 = !this.saveNis1;
   }
 

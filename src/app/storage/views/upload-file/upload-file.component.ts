@@ -405,9 +405,9 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
     const blockChainPort = environment.blockchainConnection.port;
     const blockChainProtocol = environment.blockchainConnection.protocol === 'https' ? Protocol.HTTPS : Protocol.HTTP;
 
-    const storageHost = environment.storageConnection.host;
-    const storagePort = environment.storageConnection.port;
-    const storageOptions = environment.storageConnection.options;
+    const storageHost = environment.storageConnectionUnload.host;
+    const storagePort = environment.storageConnectionUnload.port;
+    const storageOptions = environment.storageConnectionUnload.options;
     const connectionConfig = ConnectionConfig.createWithLocalIpfsConnection(
       new BlockchainNetworkConnection(blockChainNetworkType, blockChainHost, blockChainPort, blockChainProtocol),
       new IpfsConnection(storageHost, storagePort, storageOptions)

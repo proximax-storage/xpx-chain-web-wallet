@@ -9,8 +9,8 @@ export const environment = {
   production: false,
   routeNodesJson: 'mainnet',
   itemBooksAddress: 'sw-books-mainnet',
-  version: '0.4.17',
-  cacheVersion: '05-MAINNET',
+  version: '0.5.4',
+  cacheVersion: '01-MAINNET',
   nameKeyBlockStorage: `sw-blocks`,
   nameKeyNodeSelected: `sw-selected-node-mainnet`,
   nameKeyWalletStorage: `sw-mainnet`,
@@ -21,7 +21,7 @@ export const environment = {
   nameKeyWalletTransactionsNis: 'sw-transactions-nis-mainnet',
   activeModulesBox: {
     voting: {
-      viewChildrenParam: true,
+      viewChildrenParam: true,  
       createPoll: false,
       vote: false,
       viewResult: false,
@@ -71,6 +71,14 @@ export const environment = {
       protocol: 'https'
     }
   },
+  storageConnectionUnload: {
+    host: 'ipfs1-dev.xpxsirius.io',
+    port: 5443,
+    options: {
+      protocol: 'https'
+    }
+
+  },
   namespaceRentalFeeSink: {
     public_key: '9FF38184F03950C09FFFF4A90C171E4C3C566985EEACA486A59CC8B607C10BF6',
     address_public_test: 'XA7KWF-N5CMLV-G7W3OH-Z5CV3G-3VYH3N-5EQQTK-OVJH'
@@ -90,7 +98,7 @@ export const environment = {
     url: 'https://swap.brimstone.xpxsirius.io:7890',
     urlExplorer: 'http://explorer.nemtool.com/#/s_tx?hash=',
     networkType: NetworkTypes.MAIN_NET,
-    burnAddress : 'ND7WVWPWNTJR75CYC3D73LSVP7WIL7BL77QNT7NZ',
+    burnAddress: 'ND7WVWPWNTJR75CYC3D73LSVP7WIL7BL77QNT7NZ',
     nodes: [{
       protocol: 'https',
       domain: 'swap.brimstone.xpxsirius.io',
@@ -116,7 +124,14 @@ export const environment = {
     heightMax: 172800
   },
   lockFundDuration: 11520,
-  delayBetweenLockFundABT: 20000
+  delayBetweenLockFundABT: 20000,
+  peerHosting: {
+    host: 'demo-sc-api-1.ssi.xpxsirius.io',
+    port: 443,
+    path: '/peerjs',
+    secure: true,
+    debug: 3
+  }
 };
 /*
  * In development mode, to ignore zone related error stack frames such as

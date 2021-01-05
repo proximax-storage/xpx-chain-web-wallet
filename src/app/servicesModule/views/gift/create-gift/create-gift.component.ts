@@ -163,7 +163,7 @@ export class CreateGiftComponent implements OnInit {
     // this.convertAccountMultsignForm.get('selectAccount').patchValue('ACCOUNT-2');
   }
   validateSave() {
-    console.log('this.giftService.typeDonwnload', this.giftService.getTypeDonwnload)
+    console.debug('this.giftService.typeDonwnload', this.giftService.getTypeDonwnload)
     if (this.giftService.typeDonwnload) {
       this.save = true
     } else {
@@ -638,7 +638,7 @@ export class CreateGiftComponent implements OnInit {
      * @memberof DataBridgeService
      */
   setTimeOutValidateTransaction(hash: string): void {
-    console.log('hash setTimeOutValidateTransaction', hash)
+    console.debug('hash setTimeOutValidateTransaction', hash)
     setTimeout(async () => {
       const exist = (this.transactionReady.find(x => x.hash === hash)) ? true : false;
       // this.subscription['transactionStatus'].unsubscribe()
@@ -747,7 +747,7 @@ export class CreateGiftComponent implements OnInit {
     this.giftService.setTypeDonwnload = null
     this.giftService.setImgFileData = null
     this.giftService.setZipFileData = null
-    console.log('builGitf builGitf')
+    console.debug('builGitf builGitf')
     const zip = new JSZip();
     // console.log(this.accountList)
     let count = 0
@@ -770,7 +770,7 @@ export class CreateGiftComponent implements OnInit {
       count++;
       const nameImg = `Gitf Card Sirius (${count}).jpeg`;
       const data = this.giftService.serializeData(this.realAmount, item.privateKey, this.descrip);
-      console.log('desceriazlizacion ', this.giftService.unSerialize(data))
+      console.debug('desceriazlizacion ', this.giftService.unSerialize(data))
       const qr = qrcode(10, 'H');
       qr.addData(data);
       qr.make();
@@ -795,7 +795,7 @@ export class CreateGiftComponent implements OnInit {
   }
 
   donwnload() {
-    console.log('giftServicegiftService', this.giftService.getImgFileData)
+    console.debug('giftServicegiftService', this.giftService.getImgFileData)
     if (this.giftService.getTypeDonwnload === 'image/jpeg') {
       saveAs(new Blob([this.giftService.getImgFileData], { type: "image/jpeg" }), "Gitf Card Sirius (copy).jpeg")
     } else {

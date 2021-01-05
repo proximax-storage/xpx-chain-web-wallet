@@ -43,13 +43,15 @@ export class ServicesBoxComponent implements OnInit {
           '',
           '',
           AppConfig.routes.viewAllAccount,
-        ), multiSign: this.services.buildStructureService(
+        ),
+         multiSign: this.services.buildStructureService(
           'Multisig',
           true,
           '',
           '',
-          AppConfig.routes.MultiSign,
-        ), restrinctions: this.services.buildStructureService(
+          AppConfig.routes.MultisigMultiLevel,
+        )
+        , restrinctions: this.services.buildStructureService(
           'Restrictions',
           false,
           '',
@@ -63,10 +65,10 @@ export class ServicesBoxComponent implements OnInit {
           ''
         ), delegate: this.services.buildStructureService(
           'Delegate',
-          false,
+          true,
           '',
           '',
-          ''
+          AppConfig.routes.delegate
         ), aliasToNamespace: this.services.buildStructureService(
           'Link to Namespace',
           true,
@@ -220,12 +222,12 @@ export class ServicesBoxComponent implements OnInit {
     const transactionExplorer = {
       title: 'Transactions',
       show: true,
-      description: 'Explore all transactions',
+      description: 'Explorer all transactions',
       image: 'icon-transaction-explorer-full-color-80h-proximax-sirius-wallet.svg',
       route: '',
       children: {
         explorer: this.services.buildStructureService(
-          'Explor',
+          'Explorer',
           true,
           '',
           '',
