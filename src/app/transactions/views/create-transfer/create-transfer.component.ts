@@ -1105,12 +1105,6 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
         valueWithoutSpaces !== undefined && valueWithoutSpaces !== null && valueWithoutSpaces !== ''
       ) ? valueWithoutSpaces.split('-').join('') : '';
       //  const accountSelected = (value) ? value.split('-').join('') : '';
-
-      if(accountRecipient.length === 0){
-        this.encryptedMsgDisable = true;
-        this.recipientPublicKeyNotFound = false;
-      }
-
       const contact = this.formTransfer.get('contact').value;
       const accountSelected = (contact !== undefined && contact !== null && contact !== '') ? contact.value.split('-').join('') : '';
       if ((accountSelected !== '') && (accountSelected !== accountRecipient)) {
@@ -1139,6 +1133,11 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
         }
         this.blockSendButton = false;
         this.msgErrorUnsupported = '';
+      }
+
+      if(accountRecipient.length === 0 || this.msgErrorUnsupported !== ''){
+        this.encryptedMsgDisable = true;
+        this.recipientPublicKeyNotFound = false;
       }
     });
 
@@ -1400,7 +1399,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
       this.formTransfer.get('accountRecipient').value.split('-').join('') :
       this.formTransfer.get('accountRecipient').value;
 
-    if (recipientValue.length === 40 || recipientValue.length === 46) {
+    if ((recipientValue.length === 40 || recipientValue.length === 46 ) && this.msgErrorUnsupported == '') {
       this.verifyRecipientInfo(recipientValue);
     }
   }
