@@ -986,6 +986,16 @@ export class ProximaxProvider {
   }
 
   /**
+   *
+   *
+   * @returns {WalletAlgorithm}
+   * @memberof ProximaxProvider
+   */
+  static getWalletAlgorithm(){
+    return WalletAlgorithm;
+  }
+
+  /**
    * 
    * @param {number} chainHeight
    * @returns
