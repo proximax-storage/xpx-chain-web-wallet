@@ -403,7 +403,7 @@ export class DataBridgeService {
       const unconfirmedSubject = await this.transactionsService.getUnconfirmedTransactions$().pipe(first()).toPromise();
       const transactionPushed = unconfirmedSubject.slice(0);
       const transactionFormatter = this.transactionsService.getStructureDashboard(unconfirmedAdded, transactionPushed, 'unconfirmed');
-      if (transactionFormatter !== null) {
+      if (transactionFormatter !== null && !this.transactionsService.checkTransactionReadyExist(unconfirmedAdded.transactionInfo.hash)) {
         audio.play();
         this.sharedService.showInfo('', 'Transaction Unconfirmed');
         transactionPushed.unshift(transactionFormatter);

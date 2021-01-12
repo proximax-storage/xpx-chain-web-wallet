@@ -907,7 +907,6 @@ export class TransactionsService {
   setTransactionsUnConfirmed$(transactions: TransactionsInterface[]) {
     if (transactions.length > 0) {
     }
-    transactions;
     this.unconfirmedTransactionsSubject.next(transactions);
   }
 
@@ -921,6 +920,19 @@ export class TransactionsService {
     if (!this.transactionsReady.find(x => x === hash)) {
       this.transactionsReady.push(hash);
     }
+  }
+
+  /**
+   *
+   *
+   * @param {string} hash
+   * @memberof TransactionsService
+   */
+  checkTransactionReadyExist(hash: string) {
+    if (this.transactionsReady.find(x => x === hash)) {
+      return true;
+    }
+    return false;
   }
 
   /**
