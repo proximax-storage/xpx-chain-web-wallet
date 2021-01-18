@@ -130,6 +130,7 @@ dynamic_configuration = {
     nodes:[
       "bctestnet1.brimstone.xpxsirius.io",
       "bctestnet2.brimstone.xpxsirius.io",
-      "bctestnet3.brimstone.xpxsirius.io"
+      "bctestnet3.brimstone.xpxsirius.io",
+      "api-1.testnet2.xpxsirius.io"
     ]
   };
