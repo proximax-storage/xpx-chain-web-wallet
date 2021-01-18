@@ -17,8 +17,9 @@ pipeline {
     stage('Build') {
       steps {
         echo 'Starting Docker Container'
-        withDockerContainer(image: 'node:10.16') {
+        withDockerContainer(image: 'proximax/xpx-chain-web-wallet-deps-build-image:node-10.16') {
           echo 'Installing dependencies'
+          sh 'cp -r /node_modules ./'
           sh 'npm install'
 
           // Required dependency patch to build
