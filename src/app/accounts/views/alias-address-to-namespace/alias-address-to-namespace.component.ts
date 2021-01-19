@@ -118,17 +118,17 @@ export class AliasAddressToNamespaceComponent implements OnInit, OnDestroy {
             let disabled = false;
             let label = namespaceStorage.namespaceName.name; // await this.namespaceService.getNameParentNamespace(namespaceStorage);
             const name = label;
-            if (namespaceStorage.namespaceInfo.alias.type === 1) {
-              this.mosaicstoHex = new MosaicId([namespaceStorage.namespaceInfo.alias.mosaicId[0], namespaceStorage.namespaceInfo.alias.mosaicId[1]]);
-
-            }
             const type = namespaceStorage.namespaceInfo.alias.type;
+            
             if (type === 2) {
               isLinked = true;
               disabled = (this.LinkToNamespaceForm.get('typeAction').value === 0) ? true : false;
-              label = `${label} - (Linked to Address)`;
-              address = this.proximaxProvider.createAddressFromEncode(namespaceStorage.namespaceInfo.alias.address).plain();
+              //label = `${label} - (Linked to Address)`;
+              address = this.proximaxProvider.createFromRawAddress(namespaceStorage.namespaceInfo.alias.address['address']).plain();
+              label = `${label} - (Linked to Address) - ${address}`;
+              
             } else if (type === 1) {
+              this.mosaicstoHex = new MosaicId(namespaceStorage.id);
               isLinked = true;
               disabled = true;
               label = `${label} - (Linked to Mosaic) - ${this.mosaicstoHex.toHex()}`;
@@ -136,7 +136,8 @@ export class AliasAddressToNamespaceComponent implements OnInit, OnDestroy {
               disabled = (this.LinkToNamespaceForm.get('typeAction').value === 1) ? true : false;
             }
 
-            namespaceSelect.push({
+            namespaceSelect
+            .push({
               label: `${label}`,
               value: `${name}`,
               selected: false,
