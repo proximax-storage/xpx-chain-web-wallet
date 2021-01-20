@@ -254,12 +254,6 @@
         <div class="modal-body">
           <ng-container *ngIf="dataSelected">
 
-            <!-- TYPE MOSAIC DEFINITION TRANSACTION -->
-            <!-- <app-mosaic-definition-type [mosaicDefinition]="dataSelected"
-              *ngIf="dataSelected.data.type === typeTransactions.mosaicDefinition.id">
-            </app-mosaic-definition-type> -->
-
-
             <!-- TRANSFER -->
             <ng-container *ngIf="dataSelected.data.type === typeTransactions.transfer.id">
               <app-transfer-type [transferTransaction]="dataSelected"></app-transfer-type>
@@ -280,6 +274,25 @@
                     <div class="col-12 col-md-6 col-lg-5 box-modal-grey pt-01rem">
                       <app-box-data-signer-hash [dataSelected]="dataSelected">
                       </app-box-data-signer-hash>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+
+            <!-- TYPE MOSAIC SUPPLY CHANGE TRANSACTION -->
+            <ng-container *ngIf="dataSelected.data.type === typeTransactions.mosaicDefinition.id">
+              <div class="row">
+                <div class="col-11 mx-auto">
+                  <div class="row">
+                    <!-- TYPE Mosaic Definition -->
+                    <div class="col-12 col-md-6 col-lg-7">
+                      <app-mosaic-definition-type [mosaicDefinition]="dataSelected">
+                      </app-mosaic-definition-type>
+                    </div>
+                    <!-- BOX DATA SIGNER HASH -->
+                    <div class="col-12 col-md-6 col-lg-5 box-modal-grey pt-01rem">
+                      <app-box-data-signer-hash [dataSelected]="dataSelected"></app-box-data-signer-hash>
                     </div>
                   </div>
                 </div>

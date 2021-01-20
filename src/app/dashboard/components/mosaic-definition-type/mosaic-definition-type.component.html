@@ -1,4 +1,185 @@
-<ng-container *ngIf="!viewBox">
+<ng-container *ngIf="viewBox; else: viewInnerTransaction">
+  <div class="row mt-04rem mr-1rem ml-1rem">
+    <!-- Data -->
+    <div class="col-12 col-lg-12 d-flex align-items-start">
+      <div class="row">
+        <!-- Type transfer -->
+        <div class="col-12 overflow-ellipsis-nowrap">
+          <span class="color-black fw-bold fs-1-2rem">{{mosaicDefinition.nameType}}</span>
+        </div>
+
+        <!-- Timestamp -->
+        <div class="col-12" *ngIf="mosaicDefinition?.timestamp">
+          <span class="color-black fs-07rem fw-500 w-w-b-w">{{mosaicDefinition?.timestamp}}</span>
+        </div>
+
+        <!-- Fee -->
+        <ng-container *ngIf="mosaicDefinition?.effectiveFee">
+          <div class="col-12 mt-03rem">
+            <span class="fw-600 fs-095rem color-black">Effective Fee:&nbsp;&nbsp;</span>
+            <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
+            <span class="fs-095rem color-black">{{mosaicDefinition?.effectiveFee.part1}}</span>
+            <span class="fs-075rem color-black">{{mosaicDefinition?.effectiveFee.part2}}</span>
+            <span class="fs-095rem color-black"> XPX </span>
+          </div>
+        </ng-container>
+
+        <!-- HEIGHT -->
+        <ng-container *ngIf="mosaicDefinition?.data.transactionInfo.height.compact() > 0">
+          <div class="col-12">
+            <div class="row">
+              <div class="col-12 col-sm-4 col-md-3 overflow-ellipsis-nowrap">
+                <span class="color-black fw-bold fs-08rem">Height: </span>
+              </div>
+              <div class="col-12 col-sm-8 col-md-9 overflow-ellipsis-nowrap">
+                <span class="color-black fw-400 fs-08rem">{{mosaicDefinition?.data.transactionInfo.height.compact()}}</span>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <!-- Type-->
+        <div class="col-12">
+          <div class="row">
+            <div class="col-12 col-sm-4 col-md-3 overflow-ellipsis-nowrap">
+              <span class="color-black fw-bold fs-08rem">Type: </span>
+            </div>
+            <div class="col-12 col-sm-8 col-md-9 overflow-ellipsis-nowrap">
+              <span class="color-black fw-400 fs-08rem">{{ typeTransactionHex }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mosaic Id-->
+        <div class="col-12">
+          <div class="row">
+            <div class="col-12 col-sm-4 col-md-3 overflow-ellipsis-nowrap">
+              <span class="color-black fw-bold fs-08rem">Mosaic ID: </span>
+            </div>
+            <div class="col-12 col-sm-8 col-md-9 overflow-ellipsis-nowrap">
+              <span class="color-black fw-400 fs-08rem">{{ mosaicId }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mosaic name -->
+        <ng-container *ngIf="
+                    mosaicDefinition['mosaicsStorage'] !== null &&
+                    mosaicDefinition['mosaicsStorage']['mosaicNames']['names'].lenght > 0;">
+          <!-- Mosaic Name-->
+          <div class="col-12">
+            <div class="row">
+              <div class="col-12 col-sm-4 col-md-3 overflow-ellipsis-nowrap">
+                <span class="color-black fw-bold fs-08rem">Mosaic: </span>
+              </div>
+              <div class="col-12 col-sm-8 col-md-9 overflow-ellipsis-nowrap">
+                <span class="color-black fw-400 fs-08rem">
+                  {{ mosaicDefinition.mosaicsStorage['mosaicNames']['names'][0] }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <!-- MOSAIC NONCE -->
+        <ng-container *ngIf="mosaicDefinition['nonce'] !== undefined">
+          <div class="col-12">
+            <div class="row">
+              <div class="col-12 col-sm-4 col-md-3 overflow-ellipsis-nowrap">
+                <span class="color-black fw-bold fs-08rem">Nonce: </span>
+              </div>
+              <div class="col-12 col-sm-8 col-md-9 overflow-ellipsis-nowrap">
+                <span class="color-black fw-400 fs-08rem"> {{ mosaicDefinition.data['nonce'] }}</span>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <div class="col-12">
+          <div class="row">
+            <div class="col-12 col-sm-4 col-md-3 overflow-ellipsis-nowrap">
+              <span class="color-black fw-bold fs-08rem">Divisibility: </span>
+            </div>
+            <div class="col-12 col-sm-8 col-md-9 overflow-ellipsis-nowrap">
+              <span class="color-black fw-400 fs-08rem">{{mosaicDefinition.data['mosaicProperties'].divisibility}}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12">
+          <div class="row">
+            <div class="col-12 col-sm-4 col-md-3 overflow-ellipsis-nowrap">
+              <span class="color-black fw-bold fs-08rem">Version: </span>
+            </div>
+            <div class="col-12 col-sm-8 col-md-9 overflow-ellipsis-nowrap">
+              <span class="color-black fw-400 fs-08rem">{{mosaicDefinition.data['version']}}</span>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- Duration -->
+        <div class="col-12">
+          <div class="row">
+            <div class="col-12 col-sm-4 col-md-3 overflow-ellipsis-nowrap">
+              <span class="color-black fw-bold fs-08rem">Duration: </span>
+            </div>
+            <div class="col-12 col-sm-8 col-md-9">
+              <ng-container *ngIf="mosaicDefinition.data['mosaicProperties'].duration; else durationUndefined">
+                <span class="color-black fw-400 fs-08rem">
+                  <strong>
+                    (Blocks: {{mosaicDefinition.data['mosaicProperties'].duration.compact()}})
+                  </strong> -
+                  {{transactionService.calculateDuration(mosaicDefinition.data['mosaicProperties'].duration)}}
+                </span>
+              </ng-container>
+              <ng-template #durationUndefined>
+                <span class="color-black fw-400 fs-08rem">
+                  <strong>Does not expire</strong>
+                </span>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+
+        <!-- Supply Mutable -->
+        <div class="col-12">
+          <div class="row">
+            <div class="col-12 col-sm-4 col-md-3 overflow-ellipsis-nowrap">
+              <span class="color-black fw-bold fs-08rem">Supply Mutable: </span>
+            </div>
+            <div class="col-12 col-sm-8 col-md-9">
+              <span *ngIf="mosaicDefinition.data['mosaicProperties'].supplyMutable === true"><i
+                  class="fa fa-check-circle green-c" aria-hidden="true"></i></span>
+              <span *ngIf="mosaicDefinition.data['mosaicProperties'].supplyMutable !== true"><i
+                  class="fa fa-minus-circle color-red" aria-hidden="true"></i></span>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- Transferable -->
+        <div class="col-12">
+          <div class="row">
+            <div class="col-12 col-sm-4 col-md-3 overflow-ellipsis-nowrap">
+              <span class="color-black fw-bold fs-08rem">Transferable: </span>
+            </div>
+            <div class="col-12 col-sm-8 col-md-9">
+              <span *ngIf="mosaicDefinition.data['mosaicProperties'].transferable === true"><i class="fa fa-check-circle green-c"
+                  aria-hidden="true"></i>
+              </span>
+              <span *ngIf="mosaicDefinition.data['mosaicProperties'].transferable !== true"><i
+                  class="fa fa-minus-circle color-red" aria-hidden="true"></i></span>
+            </div>
+          </div>
+        </div>
+       
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #viewInnerTransaction>
   <div class="row">
     <!-- Type-->
     <div class="col-12">
@@ -137,4 +318,4 @@
     </div>
 
   </div>
-</ng-container>
+</ng-template>
