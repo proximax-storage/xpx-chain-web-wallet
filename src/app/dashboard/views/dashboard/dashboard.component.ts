@@ -372,6 +372,8 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.subscription.push(this.transactionService.getConfirmedTransactions$().subscribe((next: TransactionsInterface[]) => {
       this.cantConfirmed = next.length;
       this.transactionsConfirmed = next;
+
+      this.transactionsConfirmed.sort((a,b)=>{ return b.data.transactionInfo.height.compact() - a.data.transactionInfo.height.compact() } );
       this.transactions = next;
 
       // Datatable
