@@ -66,13 +66,14 @@ export class TransferTypeBondedComponent implements OnInit, OnChanges {
    */
   async verifyRecipientInfo() {
     const address = this.proximaxProvider.createFromRawAddress(this.transactionBuilder.recipient['address']);
-    this.senderPublicAccount = this.signer.sender;
     try {
       const accountInfo = await this.proximaxProvider.getAccountInfo(address).toPromise();
       this.recipientPublicAccount = accountInfo.publicAccount;
     } catch (e) {
       console.warn(e);
     }
+
+    this.senderPublicAccount = this.transferTransactionBonded.signer;
 
     if (this.recipientPublicAccount) {
       const firstAccount = this.walletService.currentAccount;
