@@ -31,6 +31,8 @@ export class TransferTypeBondedComponent implements OnInit, OnChanges {
   isSwap = null;
   namespaceName = '';
   amountTwoPart: { part1: string; part2: string; };
+  needRecipientPublicKey = false;
+  recipientPublicKey: string = ''; 
 
   constructor(
     public transactionService: TransactionsService,
@@ -65,24 +67,31 @@ export class TransferTypeBondedComponent implements OnInit, OnChanges {
    * @memberof TransferTypeBondedComponent
    */
   async verifyRecipientInfo() {
-    const address = this.proximaxProvider.createFromRawAddress(this.transactionBuilder.recipient['address']);
-    this.senderPublicAccount = this.signer.sender;
+    const recipientAddress = this.proximaxProvider.createFromRawAddress(this.transactionBuilder.recipient['address']);
+
     try {
-      const accountInfo = await this.proximaxProvider.getAccountInfo(address).toPromise();
-      this.recipientPublicAccount = accountInfo.publicAccount;
+      const accountInfo = await this.proximaxProvider.getAccountInfo(recipientAddress).toPromise();
+      if(accountInfo.publicAccount.publicKey !== "0000000000000000000000000000000000000000000000000000000000000000"){
+        this.recipientPublicAccount = accountInfo.publicAccount;
+      }
     } catch (e) {
       console.warn(e);
     }
 
-    if (this.recipientPublicAccount) {
-      const firstAccount = this.walletService.currentAccount;
-      const availableAddress = [
-        this.recipientPublicAccount.address.address,
-        this.senderPublicAccount.address.address
-      ];
+    this.senderPublicAccount = this.transferTransactionBonded.signer;
 
-      if (availableAddress.includes(firstAccount.address)) {
-        this.showEncryptedMessage = true;
+    const firstAccount = this.walletService.currentAccount;
+
+    const availableAddress = [
+      recipientAddress.plain(),
+      this.senderPublicAccount.address.address
+    ];
+
+    if (availableAddress.includes(firstAccount.address)) {
+      this.showEncryptedMessage = true;
+
+      if(this.recipientPublicAccount === null && this.senderPublicAccount.address.address === firstAccount.address){
+        this.needRecipientPublicKey = true;
       }
     }
   }
@@ -128,22 +137,53 @@ export class TransferTypeBondedComponent implements OnInit, OnChanges {
    * @memberof TransferTypeBondedComponent
    */
   decryptMessage() {
+    if(this.password === ''){
+      this.sharedService.showError('', 'Please fill in your password');
+      return;
+    }
     const common = { password: this.password };
     const firstAccount = this.walletService.currentAccount;
     if (this.walletService.decrypt(common, firstAccount)) {
-      let recipientMsg = EncryptedMessage.decrypt(this.message, common['privateKey'], this.senderPublicAccount);
-      let senderMsg = EncryptedMessage.decrypt(this.message, common['privateKey'], this.recipientPublicAccount);
-      if (firstAccount.address === this.recipientPublicAccount.address.address) {
+      let recipientMsg: any;
+      let senderMsg: any;
+
+      if (this.recipientPublicAccount !== null && firstAccount.address === this.recipientPublicAccount.address.address) {
         recipientMsg = EncryptedMessage.decrypt(this.message, common['privateKey'], this.senderPublicAccount);
         this.decryptedMessage = recipientMsg;
-      } else {
-        senderMsg = EncryptedMessage.decrypt(this.message, common['privateKey'], this.recipientPublicAccount);
-        this.decryptedMessage = senderMsg;
+      } 
+      else if(firstAccount.address === this.transactionBuilder.recipient['address']){
+        recipientMsg = EncryptedMessage.decrypt(this.message, common['privateKey'], this.senderPublicAccount);
+        this.decryptedMessage = recipientMsg;
+      }else {
+        if(this.recipientPublicAccount){
+          senderMsg = EncryptedMessage.decrypt(this.message, common['privateKey'], this.recipientPublicAccount);
+          this.decryptedMessage = senderMsg;
+        }
+        else{
+          if(this.recipientPublicKey){
+
+            try {
+              senderMsg = EncryptedMessage.decrypt(this.message, common['privateKey'], this.proximaxProvider.createPublicAccount( this.recipientPublicKey));
+              this.decryptedMessage = senderMsg;
+            } catch (error) {
+              this.sharedService.showError('', 'Please fill in a valid public key');
+              return;
+            }
+          }
+          else{
+            this.sharedService.showError('', 'Please fill in recipient public key');
+            return;
+          }
+        }
+      }
+
+      if(this.decryptedMessage.payload === ''){
+        this.sharedService.showError('', 'Invalid recipient public key, decrypt failed');
+        return;
       }
 
       this.panelDecrypt = 2;
     } else {
-      this.sharedService.showError('', 'Password Invalid');
       this.panelDecrypt = 0;
     }
   }

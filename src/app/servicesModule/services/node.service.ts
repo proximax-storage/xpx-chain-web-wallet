@@ -3,8 +3,6 @@ import { BehaviorSubject } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { SharedService } from '../../shared/services/shared.service';
 import { ProximaxProvider } from '../../shared/services/proximax.provider';
-import * as testnet from '../../../assets/json/nodes.json';
-import * as mainnet from '../../../assets/json/nodes-mainnet.json';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +12,7 @@ export class NodeService {
   nodeObsSelected: BehaviorSubject<any>;
   nameItemsArrayStorage = environment.nameKeyNodeStorage;
   nameItemSelectedStorage = environment.nameKeyNodeSelected;
-  listNodes = (environment.routeNodesJson === 'testnet') ? testnet['nodes'] : mainnet['nodes'];
+  listNodes = environment.nodes;
 
   constructor(
     private sharedService: SharedService,
