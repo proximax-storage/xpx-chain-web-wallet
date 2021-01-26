@@ -1,3 +1,27 @@
+<!-- RELEASE TESTNET v0.5.5 -->
+## [Version: 0.5.5](https://github.com/proximax-storage/xpx-chain-web-wallet/releases/tag/release-v0.5.5)
+ <h2>Update</h2>
+<ul>
+<h3>Dashboard</h3>
+ <li>Confirmed transaction will now be sorted based on block height</li>
+
+<h3>Decrypt message</h3>
+<li>Sender can now decrypt message by manually fill in the recipient public key when recipient public key not found from blockchain</li>
+<li>Better UX for decrypt message flow</li>
+</ul>
+<h2>Fix bug</h2>
+<ul>
+<h3>Recipient Address</h3>
+<li>Fixed recipient address for transfer transaction when recipient public key is null</li>
+<h3>Recipient decrypt message issue</h3>
+  <li>Fixed condition checking for recipient where mistakenly decrypting message as sender</li>
+</ul>
+<h2>Feature</h2>
+<ul>
+<h3>Decrypt message</h3>
+  <li>Decrypt message by manually fill in the recipient public key (sender)</li>
+</ul>
+
 <!-- RELEASE TESTNET v0.5.4 -->
 ## [Version: 0.5.4](https://github.com/proximax-storage/xpx-chain-web-wallet/releases/tag/release-v0.5.4)
  <h2>Update</h2>
