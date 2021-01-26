@@ -68,6 +68,7 @@ export class TransferTypeBondedComponent implements OnInit, OnChanges {
    */
   async verifyRecipientInfo() {
     const recipientAddress = this.proximaxProvider.createFromRawAddress(this.transactionBuilder.recipient['address']);
+
     try {
       const accountInfo = await this.proximaxProvider.getAccountInfo(recipientAddress).toPromise();
       if(accountInfo.publicAccount.publicKey !== "0000000000000000000000000000000000000000000000000000000000000000"){
