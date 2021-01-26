@@ -4,7 +4,7 @@ dynamic_configuration = {
     production: false,
     routeNodesJson: 'testnet',
     itemBooksAddress: 'sw-books-testnet',
-    version: '0.5.4',
+    version: '0.5.5',
     cacheVersion: '01',
     nameKeyBlockStorage: `sw-blocks`,
     nameKeyNodeSelected: `sw-selected-node-testnet`,
