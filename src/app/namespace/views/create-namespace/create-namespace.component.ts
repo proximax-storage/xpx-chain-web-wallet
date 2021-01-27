@@ -547,7 +547,7 @@ export class CreateNamespaceComponent implements OnInit, OnDestroy {
         this.blockBtnSend = false;
         this.sharedService.showWarning('', 'An error has occurred');
       }
-    }, 5000);
+    }, environment.transactionStatusWaitTime);
   }
 
   /**

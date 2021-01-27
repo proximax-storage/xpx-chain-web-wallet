@@ -534,7 +534,7 @@ export class ExtendDurationNamespaceComponent implements OnInit, OnDestroy {
 
       // tslint:disable-next-line: no-unused-expression
       (exist) ? '' : this.sharedService.showWarning('', 'An error has occurred');
-    }, 5000);
+    }, environment.transactionStatusWaitTime);
   }
 
   /**

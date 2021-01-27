@@ -615,7 +615,7 @@ export class CreateMosaicComponent implements OnInit, OnDestroy {
       if (!exist) {
         this.sharedService.showWarning('', 'Error connecting to the node');
       }
-    }, 5000);
+    }, environment.transactionStatusWaitTime);
   }
 
   /**

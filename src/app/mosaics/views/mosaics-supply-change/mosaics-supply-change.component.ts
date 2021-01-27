@@ -644,7 +644,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
       if (!exist) {
         this.sharedService.showWarning('', 'An error has occurred')
       }
-    }, 5000);
+    }, environment.transactionStatusWaitTime);
   }
 
   /**
