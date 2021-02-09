@@ -7,6 +7,7 @@ dynamic_configuration = {
     version: '0.5.5',
     cacheVersion: '01',
     nameKeyBlockStorage: `sw-blocks`,
+    nameKeyBlockTimestamp: `sw-blocks-timestamp`,
     nameKeyNodeSelected: `sw-selected-node-testnet`,
     nameKeyWalletStorage: `sw-testnet`,
     nameKeyNodeStorage: `sw-nodes-testnet`,
