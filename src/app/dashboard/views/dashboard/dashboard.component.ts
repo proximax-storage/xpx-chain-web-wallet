@@ -65,6 +65,10 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   };
   dataSelected: TransactionsInterface = null;
   headElements = ['Type', 'In/Out', 'Sender', 'Recipient'];
+  confirmedPageHeaders = ['Type', 'In/Out', 'Sender', 'Recipient', 'Block Height'];
+  mainHeaders = this.confirmedPageHeaders;
+  viewType = 1;
+  displayTimestamp = false;
   iconReloadDashboard = false;
   objectKeys = Object.keys;
   partialTransactions = 0;
@@ -326,7 +330,10 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
           // Sets the data structure of the dashboard
           transactions.forEach(element => {
             const builderTransactions = this.transactionService.getStructureDashboard(element, this.transactions, 'confirmed');
-            (builderTransactions !== null) ? this.transactions.push(builderTransactions) : '';
+
+            if(builderTransactions !== null){
+              this.transactions.push(builderTransactions);
+            }
           });
 
           this.transactionService.setTransactionsConfirmed$(this.transactions);
@@ -374,12 +381,9 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       this.transactionsConfirmed = next;
 
       this.transactionsConfirmed.sort((a,b)=>{ return b.data.transactionInfo.height.compact() - a.data.transactionInfo.height.compact() } );
-      this.transactions = next;
 
-      // Datatable
-      this.mdbTable.setDataSource(this.transactionsConfirmed);
-      this.transactions = this.mdbTable.getDataSource();
-      this.previous = this.mdbTable.getDataSource();
+      this.updateTimestamp();
+      this.selectTransactions(1);
     }));
 
     this.subscription.push(this.transactionService.getUnconfirmedTransactions$().subscribe((next: TransactionsInterface[]) => {
@@ -432,14 +436,45 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   selectTransactions(type: number) {
     if (type === 1) {
       // Confirmed
+      this.viewType = 1;
       this.mdbTable.setDataSource(this.transactionsConfirmed);
       this.transactions = this.mdbTable.getDataSource();
       this.previous = this.mdbTable.getDataSource();
+      this.mainHeaders = this.confirmedPageHeaders;
     } else {
       // Unconfirmed
+      this.viewType = 0;
       this.mdbTable.setDataSource(this.transactionsUnconfirmed);
       this.transactions = this.mdbTable.getDataSource();
       this.previous = this.mdbTable.getDataSource();
+      this.mainHeaders = this.headElements;
+    }
+  }
+
+  /**
+   * @memberof DashboardComponent
+   */
+  updateTimestamp(){
+
+    if(this.transactionService.generationHash !== ''){
+
+      for (const tx of this.transactionsConfirmed) {
+
+        var timestamp = this.dashboardService.getStorageBlockTimestamp(this.transactionService.generationHash, tx.height);
+  
+        if(timestamp){
+          tx.timestamp = timestamp;
+        }
+      }
+
+      if(this.viewType === 1){
+        this.selectTransactions(1);
+      }
+    }
+    else{
+      setTimeout(()=>{
+        this.updateTimestamp();
+      }, 3000);
     }
   }
 
@@ -457,6 +492,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         if (existBlock) {
           // console.log('In cache', existBlock);
           transaction.timestamp = `${this.transactionService.dateFormatUTC(new UInt64([existBlock.timestamp.lower, existBlock.timestamp.higher]))} - UTC`;
+          this.dashboardService.saveBlockTimestamp(this.dataBridge.blockInfo.generationHash, height, transaction.timestamp);
           const calculateEffectiveFee = this.transactionService.amountFormatterSimple(existBlock.feeMultiplier * transaction.data.size);
           transaction.effectiveFee = this.transactionService.getDataPart(calculateEffectiveFee, 6);
           // console.log('Effective fee ---> ', transaction.effectiveFee);
@@ -466,6 +502,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
               // console.log('Http', next);
               this.dataBridge.validateBlock(next);
               transaction.timestamp = `${this.transactionService.dateFormatUTC(next.timestamp)} - UTC`;
+              this.dashboardService.saveBlockTimestamp(this.dataBridge.blockInfo.generationHash, height, transaction.timestamp);
               const calculateEffectiveFee = this.transactionService.amountFormatterSimple(next.feeMultiplier * transaction.data.size);
               transaction.effectiveFee = this.transactionService.getDataPart(calculateEffectiveFee, 6);
               // console.log('Effective fee ---> ', transaction.effectiveFee);

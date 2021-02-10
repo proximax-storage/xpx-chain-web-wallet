@@ -592,7 +592,8 @@ export class TransactionsService {
       const feeFormatter = this.amountFormatterSimple(dataTransaction.transaction.maxFee.compact());
       const rentalFeeSink = this.getRentalFeeSink(dataTransaction.transaction);
       const responseIsRecipient = this.validateIsRecipient(dataTransaction.transaction);
-      return {
+
+      var responseTransaction = {
         data: dataTransaction.transaction,
         nameType: dataTransaction.nameType,
         fee: feeFormatter,
@@ -602,8 +603,14 @@ export class TransactionsService {
         recipient: responseIsRecipient.recipient,
         recipientAddress: responseIsRecipient.recipientPretty,
         receive: responseIsRecipient.isReceive,
-        senderAddress: dataTransaction.transaction['signer'].address.pretty()
+        senderAddress: dataTransaction.transaction['signer'].address.pretty(),
       };
+
+      if(group === "confirmed" && dataTransaction.transaction.transactionInfo.height){
+        responseTransaction['height'] = dataTransaction.transaction.transactionInfo.height.compact();
+      }
+
+      return responseTransaction;
     }
     return null;
   }
@@ -1110,5 +1117,6 @@ export interface TransactionsInterface {
   privateFile?: boolean;
   name?: string;
   hash?: string;
+  height?: number;
 }
 
