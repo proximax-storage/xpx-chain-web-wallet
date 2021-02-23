@@ -118,7 +118,7 @@ export class DelegateComponent implements OnInit, OnDestroy {
       const accountInfo = await this.directGetAccountInfo(linkingAccount.address.plain());
 
       if(accountInfo.account.accountType !== 3){
-        this.sharedService.showError('', `You must use a clean account`);
+        this.sharedService.showError('', `You must use an empty account with no funds or transactions`);
         return;
       }
 
