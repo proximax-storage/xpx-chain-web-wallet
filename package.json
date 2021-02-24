@@ -1,0 +1,74 @@
+{
+  "name": "proximax-sirius-wallet",
+  "version": "0.6.1",
+  "description": "ProximaX Sirius Wallet",
+  "private": true,
+  "scripts": {
+    "start": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint --fix",
+    "test": "vue-cli-service test:unit",
+    "e2e": "testcafe all tests/*.test.js --app \"yarn run serve\" --app-init-delay 10000 -S -s screenshots"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/proximax-storage/xpx-chain-web-wallet.git"
+  },
+  "keywords": [
+    "proximax",
+    "sirius",
+    "xpx",
+    "wallet",
+    "web wallet"
+  ],
+  "author": "ProximaX",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/proximax-foundry/xpx-storage-explorer/issues"
+  },
+  "homepage": "https://github.com/proximax-foundry/xpx-storage-explorer#readme",
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.26-2",
+    "@fortawesome/free-brands-svg-icons": "^5.15.1",
+    "@fortawesome/free-solid-svg-icons": "^5.15.1",
+    "@fortawesome/vue-fontawesome": "^3.0.0-3",
+    "axios": "^0.21.1",
+    "core-js": "^3.8.2",
+    "spectre.css": "^0.5.9",
+    "tsjs-xpx-chain-sdk": "^0.8.0",
+    "url-parse": "^1.4.7",
+    "vue": "^3.0.5",
+    "vue-router": "^4.0.2"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^4.5.7",
+    "@vue/cli-plugin-eslint": "^4.5.7",
+    "@vue/cli-plugin-unit-jest": "^4.5.7",
+    "@vue/cli-service": "^4.5.4",
+    "@vue/compiler-sfc": "^3.0.5",
+    "@vue/eslint-config-prettier": "^6.0.0",
+    "@vue/eslint-config-standard": "^5.1.2",
+    "@vue/test-utils": "^2.0.0-beta.13",
+    "eslint": "^7.17.0",
+    "eslint-plugin-prettier": "^3.3.1",
+    "eslint-plugin-vue": "^7.4.1",
+    "prettier": "^2.1.2",
+    "sass": "^1.32.0",
+    "sass-loader": "^10.0.3",
+    "testcafe": "^1.10.1",
+    "vue-jest": "^5.0.0-0"
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {}
+    }
+  },
+  "browserslist": [
+    "last 4 Chrome versions",
+    "Edge >= 12",
+    "Firefox ESR",
+    "last 4 Safari versions",
+    "last 4 Opera versions",
+    "Explorer >= 10"
+  ]
+}

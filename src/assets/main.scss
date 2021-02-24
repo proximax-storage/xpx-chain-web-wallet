@@ -1,0 +1,15 @@
+@charset "utf-8";
+
+// ProximaX Brand Colors
+$primary-color: #78B6E4 !default;
+$secondary-color: lighten($primary-color, 10%) !default;
+$success-color: #20B5AC !default;
+$warning-color: #F4A900 !default;
+$error-color: #EB6000 !default;
+
+$fallback-font-family: sans-serif;
+$base-font-family: "Open Sans", $fallback-font-family !default;
+$title-font-family: "Poppins", $fallback-font-family !default;
+
+$border-radius: .4rem !default;
+$link-color: #404040 !default;
