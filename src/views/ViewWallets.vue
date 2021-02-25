@@ -1,5 +1,8 @@
 <template>
-  <div class="columns">
+  <div v-if="appStore.state.wallets == 0" class="text-center h4 my-2">
+    No wallets found
+  </div>
+  <div v-else class="columns">
     <div
       v-for="item in appStore.state.wallets"
       :key="item.name"

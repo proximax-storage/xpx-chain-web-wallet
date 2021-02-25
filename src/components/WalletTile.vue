@@ -14,16 +14,46 @@
       </div>
     </div>
     <div class="tile-action">
-      <button class="btn btn-secondary btn-action" @click="$emit('delete')">
+      <button class="btn btn-secondary btn-action" @click="showModal = true">
         <i class="icon icon-delete"></i>
       </button>
+    </div>
+  </div>
+  <div class="modal" :class="{ active: showModal }">
+    <a class="modal-overlay" aria-label="Close" @click="showModal = false"></a>
+    <div class="modal-container">
+      <div class="modal-header">
+        <a
+          class="btn btn-clear float-right"
+          aria-label="Close"
+          @click="showModal = false"
+        ></a>
+        <div class="modal-title h5">Delete Wallet</div>
+      </div>
+      <div class="modal-body">
+        <div class="content">
+          <DeleteConfirmation
+            @confirm="
+              $emit('delete');
+              showModal = false;
+            "
+            @cancel="showModal = false"
+          />
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import DeleteConfirmation from "@/components/DeleteConfirmation.vue";
+import { ref } from "vue";
+
 export default {
   name: "WalletTile",
+  components: {
+    DeleteConfirmation,
+  },
   props: {
     wallet: {
       type: Object,
@@ -31,6 +61,13 @@ export default {
     },
   },
   emits: ["delete"],
+  setup() {
+    const showModal = ref(false);
+
+    return {
+      showModal,
+    };
+  },
 };
 </script>
 
@@ -39,6 +76,7 @@ export default {
 @import "spectre.css/src/variables";
 @import "spectre.css/src/mixins/shadow";
 @import "spectre.css/src/mixins/text";
+@import "spectre.css/src/modals";
 @import "spectre.css/src/tiles";
 
 .tile {

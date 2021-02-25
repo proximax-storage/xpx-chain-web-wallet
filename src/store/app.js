@@ -14,15 +14,17 @@ const name = "Sirius Wallet";
 
 const currentWallet = ref(null);
 
+function getWallets() {
+  if (!localStorage.getItem(config.localStorage.walletKey)) {
+    localStorage.setItem(config.localStorage.walletKey, "[]");
+  }
+
+  return JSON.parse(localStorage.getItem(config.localStorage.walletKey));
+}
+
 const state = reactive({
   darkTheme: false,
-  wallets: computed(() => {
-    if (!localStorage.getItem(config.localStorage.walletKey)) {
-      localStorage.setItem(config.localStorage.walletKey, "[]");
-    }
-
-    return JSON.parse(localStorage.getItem(config.localStorage.walletKey));
-  }),
+  wallets: getWallets(),
   currentLoggedInWallet: computed(() => currentWallet.value),
   loggedInWalletFirstAccount: computed(() => {
     if (!currentWallet.value) {
@@ -124,10 +126,18 @@ function addNewWallet(walletName, password, networkType, privateKey) {
   });
 
   state.wallets.push(newWallet);
-  localStorage.setItem(
-    config.localStorage.walletKey,
-    JSON.stringify(state.wallets)
-  );
+  try {
+    localStorage.setItem(
+      config.localStorage.walletKey,
+      JSON.stringify(state.wallets)
+    );
+  } catch (err) {
+    if (config.debug) {
+      console.error("addNewWallet error caught", err);
+    }
+    return 0;
+  }
+
   return 1;
 }
 

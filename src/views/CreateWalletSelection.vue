@@ -7,13 +7,7 @@
         width="150"
       />
       <h4>New Wallet</h4>
-      <button
-        class="btn btn-primary btn-lg"
-        @click="
-          usePrivateKey = false;
-          showCreateModal = true;
-        "
-      >
+      <button class="btn btn-primary btn-lg" @click="showNewModal = true">
         Create
       </button>
     </div>
@@ -24,13 +18,7 @@
         width="150"
       />
       <h4>From a Private Key</h4>
-      <button
-        class="btn btn-primary btn-lg"
-        @click="
-          usePrivateKey = true;
-          showCreateModal = true;
-        "
-      >
+      <button class="btn btn-primary btn-lg" @click="showKeyModal = true">
         Create
       </button>
     </div>
@@ -44,26 +32,46 @@
       <button class="btn btn-primary btn-lg">Import</button>
     </div>
   </div>
-  <div class="modal" :class="{ active: showCreateModal }">
+  <div class="modal" :class="{ active: showNewModal }">
     <a
       class="modal-overlay"
       aria-label="Close"
-      @click="showCreateModal = false"
+      @click="showNewModal = false"
     ></a>
     <div class="modal-container">
       <div class="modal-header">
         <a
           class="btn btn-clear float-right"
           aria-label="Close"
-          @click="showCreateModal = false"
+          @click="showNewModal = false"
         ></a>
-        <div class="modal-title h5">
-          Create Wallet {{ usePrivateKey ? "(with Private Key)" : "(New)" }}
-        </div>
+        <div class="modal-title h5">Create Wallet (New)</div>
       </div>
       <div class="modal-body">
         <div class="content">
-          <CreateWalletForm :use-private-key="usePrivateKey" />
+          <CreateWalletForm @close="showNewModal = false" />
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal" :class="{ active: showKeyModal }">
+    <a
+      class="modal-overlay"
+      aria-label="Close"
+      @click="showKeyModal = false"
+    ></a>
+    <div class="modal-container">
+      <div class="modal-header">
+        <a
+          class="btn btn-clear float-right"
+          aria-label="Close"
+          @click="showKeyModal = false"
+        ></a>
+        <div class="modal-title h5">Create Wallet (with Private Key)</div>
+      </div>
+      <div class="modal-body">
+        <div class="content">
+          <CreateWalletForm use-private-key @close="showKeyModal = false" />
         </div>
       </div>
     </div>
@@ -80,12 +88,12 @@ export default {
     CreateWalletForm,
   },
   setup() {
-    const showCreateModal = ref(false);
-    const usePrivateKey = ref(false);
+    const showNewModal = ref(false);
+    const showKeyModal = ref(false);
 
     return {
-      showCreateModal,
-      usePrivateKey,
+      showNewModal,
+      showKeyModal,
     };
   },
 };

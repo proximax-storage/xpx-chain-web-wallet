@@ -11,12 +11,17 @@ import {
 
 const config = require("@/../config/config.json");
 
+function getChainNodes() {
+  const existingNodes = localStorage.getItem(config.localStorage.chainNodesKey);
+  return existingNodes ? JSON.parse(existingNodes) : config.chainNodes;
+}
+
 // ALWAYS use function selectNewChainNode to change currentChainNode value, to avoid web socket listening on old node
-const currentChainNode = ref(config.chainNodes[0]);
+const currentChainNode = ref(getChainNodes()[0]);
 const listenerChainWS = ref(null);
 
 const state = reactive({
-  chainNodes: config.chainNodes,
+  chainNodes: getChainNodes(),
   network: config.network,
   selectedChainNode: computed(() =>
     utils.parseNodeConfig(currentChainNode.value)
@@ -68,11 +73,16 @@ async function addChainNode(nodeConfigString) {
     ) {
       return 0;
     }
-    state.chainNodes.push({
+
+    state.chainNodes.unshift({
       protocol: newNodeConfig.protocol,
       hostname: newNodeConfig.hostname,
       port: newNodeConfig.port,
     });
+    localStorage.setItem(
+      config.localStorage.chainNodesKey,
+      JSON.stringify(state.chainNodes)
+    );
     return 1;
   } catch (err) {
     if (config.debug) {
