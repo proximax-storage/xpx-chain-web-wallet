@@ -133,6 +133,12 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
             const encryptionMethod = this.uploadForm.get('encryptionMethod').value;
 
             switch (encryptionMethod) {
+              case PrivacyType.CUSTOM:
+                const encryptionPass= this.uploadForm.controls.encryptionPasswords.get('password').value;
+                uploadParams.withPasswordPrivacy(encryptionPass);
+                // uploadParams.withRecipientPublicKey('48F73FC8EF1C030D552EB3A9479B58BE0E7BAEADBBF2779CFA70BEA2481B943C');
+                uploadParams.withUseBlockchainSecureMessage(true)
+                break;
               case PrivacyType.PLAIN:
                 uploadParams.withPlainPrivacy();
                 break;
