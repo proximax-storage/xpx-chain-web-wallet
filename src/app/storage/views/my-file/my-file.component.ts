@@ -34,7 +34,7 @@ export class MyFileComponent implements OnInit, AfterViewInit {
   @ViewChild(MdbTablePaginationComponent, { static: true }) mdbTablePagination: MdbTablePaginationComponent;
   @ViewChild(MdbTableDirective, { static: true }) mdbTable: MdbTableDirective;
   @ViewChild(ModalDirective, { static: true }) basicModal: ModalDirective;
-
+  @ViewChild('mdbModalPassword', { static: true }) mdbModalPassword: ModalDirective;
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Storage',
     componentName: 'Files',
@@ -43,18 +43,22 @@ export class MyFileComponent implements OnInit, AfterViewInit {
   };
   configurationForm: ConfigurationForm = {};
   downloadForm: FormGroup;
+  passwordForm: FormGroup;
   searching = false;
   downloading = false;
   objectKeys = Object.keys;
   resultSize = 10;
   typeTransactions: any;
   fromTransactionId: string;
+  downloadPrivate = false;
   typeNode = '';
   typeSearch = '';
   paramSearch = '';
   previous: any = '';
   searchText: string = '';
   elements: any = [];
+  common: any;
+  passwordMain = 'password';
   dataSelected: SearchResultInterface = null;
   headElements = ['Timestamp', 'Name', 'Action'];
   optionTypeSearch = [{
@@ -63,6 +67,9 @@ export class MyFileComponent implements OnInit, AfterViewInit {
   }, {
     value: 'dataHash',
     label: 'Data Hash'
+  }, {
+    value: 'custom',
+    label: 'Private (Encrypted)'
   }];
   searcher: Searcher;
   downloader: Downloader;
@@ -89,12 +96,24 @@ export class MyFileComponent implements OnInit, AfterViewInit {
     this.initialiseStorage();
     this.getFiles();
   }
+  ngOnDestroy(): void {
+    this.common = undefined
+  }
 
   ngAfterViewInit() {
 
     this.cdRef.detectChanges();
   }
-
+  /**
+    *
+    *
+    * @param {*} inputType
+    * @memberof AuthComponent
+    */
+  changeInputType(inputType) {
+    let newType = this.sharedService.changeInputType(inputType)
+    this.passwordMain = newType;
+  }
   createForm() {
     this.downloadForm = this.fb.group({
       encryptionPassword: ['', [
@@ -102,6 +121,11 @@ export class MyFileComponent implements OnInit, AfterViewInit {
         Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
       ]],
     });
+    this.passwordForm = this.fb.group({
+      password: ['']
+    });
+
+    // cosignatorieSign: [''],
   }
 
   clearForm(nameInput: string = '', nameControl: string = '') {
@@ -118,7 +142,26 @@ export class MyFileComponent implements OnInit, AfterViewInit {
     this.downloadForm.reset();
     return;
   }
-
+  /**
+     *
+     *
+     * @param {string} [nameInput='']
+     * @param {string} [nameControl='']
+     * @param {string} [nameValidation='']
+     * @returns
+     * @memberof AuthComponent
+     */
+  validateInputPasswordForm(nameInput: string = '', nameControl: string = '', nameValidation: string = '') {
+    let validation: AbstractControl = null;
+    if (nameInput !== '' && nameControl !== '') {
+      validation = this.passwordForm.controls[nameControl].get(nameInput);
+    } else if (nameInput === '' && nameControl !== '' && nameValidation !== '') {
+      validation = this.passwordForm.controls[nameControl].getError(nameValidation);
+    } else if (nameInput !== '') {
+      validation = this.passwordForm.get(nameInput);
+    }
+    return validation;
+  }
   validateInput(nameInput: string = '', nameControl: string = '', nameValidation: string = '') {
     let validation: AbstractControl = null;
     if (nameInput !== '' && nameControl !== '') {
@@ -153,13 +196,21 @@ export class MyFileComponent implements OnInit, AfterViewInit {
     this.downloader = new Downloader(connectionConfig);
   }
 
-  async getFiles(dataHash?: string, title?: string) {
+  async getFiles(dataHash?: string, title?: string, downloadPrivate: Boolean = false) {
 
     // console.log(this.fromTransactionId);
-
-    const param = SearchParameter.createForPublicKey(
-      this.walletService.currentAccount.publicAccount.publicKey
-    );
+    // if
+    let param = null
+    if (!downloadPrivate) {
+      param = SearchParameter.createForPublicKey(
+        this.walletService.currentAccount.publicAccount.publicKey
+      );
+    } else {
+      param = SearchParameter.createForPrivateKey(this.common.privateKey);
+    }
+    // const param = SearchParameter.createForPublicKey(
+    //   this.walletService.currentAccount.publicAccount.publicKey
+    // );
     param.withResultSize(this.resultSize);
 
     if (dataHash) {
@@ -208,8 +259,25 @@ export class MyFileComponent implements OnInit, AfterViewInit {
     this.fromTransactionId = undefined;
     await this.getFiles();
   }
+  mdbModalPasswordClose() {
+    this.mdbModalPassword.hide() 
+    this.passwordForm.reset()
+  }
+  async getFilesCustom() {
+    this.common = { password: this.passwordForm.get('password').value };
+    this.searching = true;
+    // const decrypt = ;
+    if (this.walletService.decrypt(this.common)) {
+      this.passwordForm.reset()
+      this.mdbModalPassword.hide()
+      const response = await this.getFiles(undefined, this.paramSearch, this.downloadPrivate);
+      this.searching = false;
+    }
 
+  }
   async searchData() {
+    this.passwordForm.controls['password'].setValidators([]);
+    this.passwordForm.controls['password'].updateValueAndValidity({ emitEvent: false, onlySelf: true });
     if (!this.searching) {
 
       this.elements = [];
@@ -224,9 +292,11 @@ export class MyFileComponent implements OnInit, AfterViewInit {
         } else if (this.typeSearch === 'name') {
           tp = 'a name';
         }
+        if (this.typeSearch !== 'custom') {
+          this.sharedService.showError('', `Please, add ${tp}`);
+          return;
+        }
 
-        this.sharedService.showError('', `Please, add ${tp}`);
-        return;
       }
 
       this.mdbTable.setDataSource(this.elements);
@@ -245,6 +315,23 @@ export class MyFileComponent implements OnInit, AfterViewInit {
         try {
           const response = await this.getFiles(undefined, this.paramSearch);
           //console.log(response);
+          this.searching = false;
+        } catch (err) {
+          this.searching = false;
+          this.sharedService.showError("Warning", err);
+        }
+      } else if (this.typeSearch === 'custom') {
+        try {
+          this.downloadPrivate = true;
+          const validators = [Validators.required,
+          Validators.minLength(this.configurationForm.passwordWallet.minLength),
+          Validators.maxLength(this.configurationForm.passwordWallet.maxLength)];
+          this.passwordForm.controls['password'].setValidators(validators);
+          this.passwordForm.controls['password'].updateValueAndValidity({ emitEvent: false, onlySelf: true });
+
+          this.mdbModalPassword.show();
+
+          // const response = await this.getFiles(undefined,  this.paramSearch, this.downloadPrivate);
           this.searching = false;
         } catch (err) {
           this.searching = false;
