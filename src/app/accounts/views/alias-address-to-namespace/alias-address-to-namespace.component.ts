@@ -127,7 +127,7 @@ export class AliasAddressToNamespaceComponent implements OnInit, OnDestroy {
               isLinked = true;
               disabled = (this.LinkToNamespaceForm.get('typeAction').value === 0) ? true : false;
               label = `${label} - (Linked to Address)`;
-              address = this.proximaxProvider.createAddressFromEncode(namespaceStorage.namespaceInfo.alias.address).plain();
+              address = Address.createFromRawAddress(namespaceStorage.namespaceInfo.alias.address['address']).plain();
             } else if (type === 1) {
               isLinked = true;
               disabled = true;
