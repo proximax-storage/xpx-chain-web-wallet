@@ -196,9 +196,9 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
    */
   createForm() {
     this.optionsEncryptionMethods = [
-      { value: PrivacyType.PLAIN, name: 'Do Not Encrypt' },
-      { value: PrivacyType.PASSWORD, name: 'Password' },
-      { value: PrivacyType.CUSTOM, name: 'Private (Encrypted)' },
+      { value: PrivacyType.PLAIN, name: 'No encryption' },
+      { value: PrivacyType.PASSWORD, name: 'Encryption of file only' },
+      { value: PrivacyType.CUSTOM, name: 'Encrypt everything' },
       /* { value: PrivacyType.NEM_KEYS, name: 'KEY PAIR' }*/
     ];
 
