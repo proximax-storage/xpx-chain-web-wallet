@@ -92,3 +92,20 @@ export class DashboardService {
     this.isIncrementViewDashboard++;
   }
 }
+
+export interface DashboardNamespaceInfo {
+  id: string;
+  name: string;
+  linkType: string;
+  linkedInfo: string;
+  active: boolean;
+}
+
+export interface DashboardMosaicInfo {
+  owner: boolean;
+  id: string;
+  namespaceId: string;
+  name: string;
+  quantity: string;
+  active: boolean;
+}

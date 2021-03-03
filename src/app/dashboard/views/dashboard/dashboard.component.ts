@@ -6,13 +6,14 @@ import { Subscription } from 'rxjs';
 import { UInt64 } from 'tsjs-xpx-chain-sdk';
 import { PaginationInstance } from 'ngx-pagination';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
-import { DashboardService } from '../../services/dashboard.service';
+import { DashboardService, DashboardNamespaceInfo, DashboardMosaicInfo } from '../../services/dashboard.service';
 import { TransactionsInterface, TransactionsService } from '../../../transactions/services/transactions.service';
 import { WalletService, AccountsInterface, CurrentWalletInterface } from '../../../wallet/services/wallet.service';
 import { SharedService } from '../../../shared/services/shared.service';
 import { environment } from '../../../../environments/environment';
 import { AppConfig } from '../../../config/app.config';
 import { NamespacesService } from '../../../servicesModule/services/namespaces.service';
+import { MosaicService } from '../../../servicesModule/services/mosaic.service';
 import { DataBridgeService } from '../../../shared/services/data-bridge.service';
 import { NemProviderService } from '../../../swap/services/nem-provider.service';
 import { AuthService } from 'src/app/auth/services/auth.service';
@@ -33,6 +34,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     private dashboardService: DashboardService,
     private nemProvider: NemProviderService,
     private namespacesService: NamespacesService,
+    private mosaicService: MosaicService,
     private transactionService: TransactionsService,
     private sharedService: SharedService,
     private proximaxProvider: ProximaxProvider,
@@ -47,7 +49,6 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   nameAccount = '';
   typeTransactions: any;
   vestedBalance = null;
-
 
   currentWallet: CurrentWalletInterface;
   coinUsd: any = '0.00';
@@ -91,6 +92,12 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     viewDetails: `/${AppConfig.routes.account}/`,
     deleteAccount: `/${AppConfig.routes.deleteAccount}/`,
   };
+
+  namespaceHeaders = ['NAMESPACE ID', 'NAME', 'LINK TYPE', 'MOSAIC ID/ADDRESS', 'ACTIVE'];
+  assetHeaders = ['OWNER', 'MOSAIC ID', 'NAMESPACE ID', 'ALIAS NAME', 'QUANTITY', 'ACTIVE'];
+  namespaceAssetView = 0;
+  dashBoardNamespaceInfoList: DashboardNamespaceInfo[] = [];
+  dashBoardAssetInfoList: DashboardMosaicInfo[] = [];
 
   @HostListener('input') oninput() {
     this.searchItems();
@@ -137,6 +144,24 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       this.walletService.removeWallet(this.authService.walletNameSID);
       this.authService.walletNameSID = null;
     }
+
+    this.subscription.push(this.walletService.getAccountsInfo$().subscribe(next => {
+      if (next && next.length > 0) {
+        this.getAccountMosaicNamespace();
+      }
+    }));
+
+    this.subscription.push(this.mosaicService.getMosaicChanged().subscribe(next => {
+      if (next > 0) {
+        this.getAccountMosaicNamespace();
+      }
+    }));
+
+    this.subscription.push(this.namespacesService.getNamespaceChanged().subscribe(next => {
+      if (next.length > 0) {
+        this.getAccountMosaicNamespace();
+      }
+    }));
   }
 
   ngOnDestroy(): void {
@@ -150,6 +175,97 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.cdRef.detectChanges();
   }
 
+
+  /**
+   *
+   *
+   * @memberof DashboardComponent
+   */
+  async getAccountMosaicNamespace(){
+
+    const accountInfo = this.walletService.filterAccountInfo(this.currentAccount.address, true);
+
+    const ownedMosaics = await this.mosaicService.filterMosaics(null, this.walletService.currentAccount.name);
+    
+    const ownedNamespaces = this.namespacesService.filterNamespacesFromAccount(this.walletService.getCurrentAccount().publicAccount.publicKey);
+
+    this.dashBoardNamespaceInfoList = [];
+    this.dashBoardAssetInfoList = [];
+
+    mosaicsLoop: for(var ownedMosaic of ownedMosaics){
+
+      var mosaicNames: string[] = [];
+      var namespaceIds: string[] = [];
+      var idInHex = this.proximaxProvider.getNamespaceId(ownedMosaic.idMosaic).toHex();
+      var matchedMosaic = accountInfo.accountInfo.mosaics.find(mosaic=> mosaic.id.toHex() === idInHex);
+
+      var rawQuantity = matchedMosaic ? matchedMosaic.amount.compact() : 0;
+
+      let mosaicBalance = this.transactionService.amountFormatterSimple(rawQuantity, ownedMosaic.mosaicInfo.divisibility);
+      //let mosaicBalance = this.transactionService.getDataPart(amountFormatter, ownedMosaic.mosaicInfo.divisibility);
+
+      if(ownedMosaic.isNamespace){
+        for (const iterator of ownedMosaic.mosaicNames.names) {
+
+          var namespaceId = this.proximaxProvider.getNamespaceId([iterator.namespaceId.id.lower, iterator.namespaceId.id.higher]).toHex();
+          
+          if(namespaceId === environment.mosaicXpxInfo.namespaceId){
+            continue mosaicsLoop;
+          }
+
+          if(!namespaceIds.includes(namespaceId)){
+            mosaicNames.push(iterator.name);
+            namespaceIds.push(namespaceId);
+          }
+        }
+      }
+
+      var dashBoardMosaicInfo: DashboardMosaicInfo = {
+        id: idInHex,
+        name: mosaicNames.length > 0 ? mosaicNames.join("\n") : "-",
+        namespaceId: namespaceIds.length > 0 ? namespaceIds.join("\n") : "-",
+        owner: ownedMosaic.mosaicInfo.owner.publicKey === this.walletService.getCurrentAccount().publicAccount.publicKey,
+        quantity: mosaicBalance,
+        active: true
+      };
+
+      this.dashBoardAssetInfoList.push(dashBoardMosaicInfo); 
+    }
+
+    for(var ownedNamespace of ownedNamespaces){
+
+      var aliasType: string;
+      var linkedInfo: string;
+
+      switch (ownedNamespace.namespaceInfo.alias.type) {
+        case 0:
+          aliasType = "-";
+          linkedInfo = "-";
+          break;
+        case 1:
+          aliasType = "Mosaic";
+          linkedInfo = ownedNamespace.namespaceInfo.alias.mosaicId.toHex();
+          break;
+        case 2:
+          aliasType = "Address";
+          linkedInfo = ownedNamespace.namespaceInfo.alias.address.pretty();
+          break;
+      
+        default:
+          break;
+      }
+
+      var dashBoardNamespaceInfo: DashboardNamespaceInfo = {
+        id:ownedNamespace.idToHex,
+        name: ownedNamespace.namespaceName.name,
+        linkType: aliasType,
+        linkedInfo: linkedInfo,
+        active: ownedNamespace.namespaceInfo.active
+      };
+
+      this.dashBoardNamespaceInfoList.push(dashBoardNamespaceInfo); 
+    }
+  }
 
   /**
    *
@@ -285,6 +401,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.currentAccount = Object.assign({}, this.walletService.getCurrentAccount());
     this.currentAccount.address = this.proximaxProvider.createFromRawAddress(this.currentAccount.address).pretty();
     this.currentAccount.name = (this.currentAccount.name === 'Primary') ? `${this.currentAccount.name}_Account` : this.currentAccount.name;
+    this.getAccountMosaicNamespace();
   }
 
   /**
@@ -380,6 +497,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       this.mdbTable.setDataSource(this.transactionsConfirmed);
       this.transactions = this.mdbTable.getDataSource();
       this.previous = this.mdbTable.getDataSource();
+      this.getAccountMosaicNamespace();
     }));
 
     this.subscription.push(this.transactionService.getUnconfirmedTransactions$().subscribe((next: TransactionsInterface[]) => {
