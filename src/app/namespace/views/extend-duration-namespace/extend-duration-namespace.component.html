@@ -41,7 +41,7 @@
           <div class="col-11 mx-auto">
             <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [searchable]="false"
               [validateError]="true" class="selectWrapper" [items]="arrayselect" formControlName="namespaceRoot"
-              bindLabel="label" bindValue="value" placeholder="Select Namespace" (change)="optionSelected($event)">
+              bindLabel="label" bindValue="value" placeholder="Select namespace" (change)="optionSelected($event)">
             </ng-select>
             <mdb-error class="ml-1rem mt-05rem"
               *ngIf="validateInput('namespaceRoot').invalid && (validateInput('namespaceRoot').dirty || validateInput('namespaceRoot').touched)">

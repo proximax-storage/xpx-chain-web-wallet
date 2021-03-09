@@ -27,7 +27,7 @@
           <div class="col-11 mx-auto">
             <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
               [searchable]="false" class="selectWrapper" [items]="typeAction" formControlName="typeAction"
-              bindLabel="label" bindValue="value" placeholder="Select Action"
+              bindLabel="label" bindValue="value" placeholder="Select action"
               (change)="buildSelectNamespace($event); captureAction()"></ng-select>
             <mdb-error class="ml-1rem"
               *ngIf="validateInput('typeAction').invalid && (validateInput('typeAction').dirty || validateInput('typeAction').touched)">
@@ -40,7 +40,7 @@
           <div class="col-11 mx-auto">
             <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
               [searchable]="false" class="selectWrapper" [items]="namespaceSelect" formControlName="namespace"
-              bindLabel="label" bindValue="value" placeholder="Select Namespace" (change)="captureNamespace($event)">
+              bindLabel="label" bindValue="value" placeholder="Select namespace" (change)="captureNamespace($event)">
             </ng-select>
             <mdb-error class="ml-1rem"
               *ngIf="validateInput('namespace').invalid && (validateInput('namespace').dirty || validateInput('namespace').touched)">
@@ -54,7 +54,7 @@
             <div class="col-11 mx-auto">
               <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
                 [searchable]="false" class="selectWrapper" [items]="mosaicSelect" formControlName="mosaic"
-                bindLabel="label" bindValue="value" placeholder="Select Mosaic" (change)="captureMmosaic()"></ng-select>
+                bindLabel="label" bindValue="value" placeholder="Select mosaic" (change)="captureMmosaic()"></ng-select>
               <mdb-error class="ml-1rem"
                 *ngIf="validateInput('mosaic').invalid && (validateInput('mosaic').dirty || validateInput('mosaic').touched)">
                 <span class="fs-08rem  color-error-message">Select mosaic</span>

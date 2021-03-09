@@ -259,7 +259,7 @@ export class CreatePollComponent implements OnInit {
         options: this.option
       })
     } else {
-      this.sharedService.showError('', 'option already added');
+      this.sharedService.showError('', 'Option already added');
     }
   }
 

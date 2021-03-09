@@ -28,7 +28,7 @@ export class BlockchainComponent implements OnInit {
   };
   // arrayNodes: Array<object> = [{
   //   value: '',
-  //   label: 'Select node',
+  //   label: 'Select Node',
   //   selected: true,
   //   disabled: false
   // }];

@@ -10,14 +10,14 @@
         <!-- SELECT -->
         <div class="col-12 col-sm-6 col-md-6 col-lg-3 mx-auto mt-1rem mb-1rem">
           <ng-select mdbInputDirective mdbValidate [(ngModel)]="typeSearch" [searchable]="false" class="selectWrapper"
-            [items]="optionTypeSearch" bindLabel="label" bindValue="value" placeholder="Select Type Search">
+            [items]="optionTypeSearch" bindLabel="label" bindValue="value" placeholder="Select type search">
           </ng-select>
         </div>
 
         <!-- Keyword or number -->
         <div class="col-12 col-sm-6 col-md-6 col-lg-5 mx-auto d-flex align-items-center pt-05rem">
           <input [(ngModel)]="paramSearch" type="text" autocomplete="off" id="searchTransaction" class="form-control"
-            mdbInputDirective [validateSuccess]="false" [validateError]="false" placeholder="File Name or Data Hash" />
+            mdbInputDirective [validateSuccess]="false" [validateError]="false" placeholder="File Name Or Data Hash" />
         </div>
 
         <div

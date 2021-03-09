@@ -39,7 +39,7 @@
       <!-- COSIGNATORY ACCOUNT -->
       <ng-container *ngIf="consginerFirmList.length === 1">
         <div class="col-11 col-md-10 col-lg-8 mx-auto d-flex justify-content-start pt-05rem pb-05rem">
-          <span class="fs-08rem fw-600">Cosignatory Account:&nbsp;</span>
+          <span class="fs-08rem fw-600">Cosignatory account:&nbsp;</span>
           <span class="fs-08rem">{{consginerFirmAccount?.label}}</span>
         </div>
       </ng-container>
@@ -265,7 +265,7 @@
             <div class="col-sm-12 col-md-5 col-lg-5 col-xl-5 mx-auto">
               <ng-select class="selectWrapper" [items]="otherCosignatorieList" [maxSelectedItems]="limitSelect-1"
                 bindLabel="label" labelForId="otherCosignatorie" [multiple]="true" formControlName="otherCosignatorie"
-                bindValue="value" placeholder="Other Cosignatorie">
+                bindValue="value" placeholder="Other cosignatorie">
 
               </ng-select>
             </div>

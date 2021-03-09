@@ -40,7 +40,7 @@
                     <!-- {{consignerFirm}} -->
                     <ng-container *ngIf="!showCosignerFirmList &&  consignerFirm">
                       <div class="col-12 mx-auto d-flex justify-content-start pt-05rem pb-05rem">
-                        <span class="fs-08rem fw-600">Cosignatory Account:&nbsp;</span>
+                        <span class="fs-08rem fw-600">Cosignatory account:&nbsp;</span>
                         <span class="fs-08rem">{{consignerFirm?.label}}</span>
                       </div>
                     </ng-container>
@@ -257,9 +257,9 @@
             <div class="d-flex align-items-center flex-wrap">
               <!-- SCHEME -->
               <div class="mr-1">
-                <h5 class="h5-responsive fw-600">
+                <h5 style="margin-bottom: 0px;" class="h5-responsive fw-600">
                   Scheme for
-                  <span class="ml-2 fw-600">></span>
+                  <span class="ml-2 fw-600">:</span>
                 </h5>
               </div>
 
@@ -359,7 +359,7 @@
                 <div class="col-12 mx-auto">
                   <!-- ssss -->
                   <ng-select class="selectWrapper mt-06rem" [items]="consignerFirmList" bindLabel="label"
-                    labelForId="cosignatorieSign" bindValue="value" placeholder="Main Cosignatory To Sign"
+                    labelForId="cosignatorieSign" bindValue="value" placeholder="Main cosignatory to sign"
                     formControlName="cosignatorieSign">
                     <ng-template ng-option-tmp let-item="item" let-index="index">
                       <b>{{item.label}}</b>
@@ -383,7 +383,7 @@
                   <ng-select class="selectWrapper" [items]="otherCosignatorieList" [maxSelectedItems]="limitSelect-1"
                     bindLabel="label" labelForId="otherCosignatorie" [multiple]="true"
                     formControlName="otherCosignatorie" bindValue="value"
-                    placeholder="Also I Will Sign Sith This Consignatories">
+                    placeholder="Also i will sign sith this consignatories">
 
                   </ng-select>
                 </div>
