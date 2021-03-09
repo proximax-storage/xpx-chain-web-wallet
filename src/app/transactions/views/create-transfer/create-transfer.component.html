@@ -171,11 +171,11 @@
                 (change)="getValueAndVerify()">
               <mdb-error
                 *ngIf="validateInput('accountRecipient').invalid && (validateInput('accountRecipient').dirty || validateInput('accountRecipient').touched)">
-                <span class="fs-08rem fw-600 color-error-message">Invalid Recipient</span>
+                <span class="fs-08rem color-error-message">Invalid recipient</span>
               </mdb-error>
 
               <mdb-error *ngIf="msgErrorUnsupported !== ''">
-                <span class="fs-08rem fw-600 color-error-message">{{msgErrorUnsupported}}</span>
+                <span class="fs-08rem color-error-message">{{msgErrorUnsupported}}</span>
               </mdb-error>
             </div>
           </div>
@@ -234,12 +234,12 @@
 
                 <mdb-error
                   *ngIf="validateInput('amountXpx').invalid && (validateInput('amountXpx').dirty || validateInput('amountXpx').touched)">
-                  <span class="fs-08rem fw-600 color-error-message">Invalid Amount</span>
+                  <span class="fs-08rem  color-error-message">Invalid amount</span>
                 </mdb-error>
 
                 <!-- Message Error Insufficient balance-->
                 <mdb-error *ngIf="insufficientBalance">
-                  <span class="fs-08rem fw-600 color-error-message">Insufficient Balance</span>
+                  <span class="fs-08rem  color-error-message">Insufficient balance</span>
                 </mdb-error>
               </div>
             </div>
@@ -284,7 +284,7 @@
 
                       <!-- Message Error Insufficient balance-->
                       <mdb-error *ngIf="otherMosaic.errorBalance">
-                        <span class="fs-08rem fw-600 color-error-message">Insufficient Balance</span>
+                        <span class="fs-08rem  color-error-message">Insufficient balance</span>
                       </mdb-error>
                     </div>
                   </div>
@@ -384,7 +384,7 @@
           <span class="fs-08rem text-cl-m d-flex justify-content-end">{{ charRest }} / {{ messageMaxLength }}</span>
           <mdb-error
             *ngIf="validateInput('message').invalid && (validateInput('message').dirty || validateInput('message').touched)">
-            <span>Invalid Recipient</span>
+            <span>Invalid recipient</span>
           </mdb-error>
         </div>
       </div>
@@ -475,7 +475,7 @@
           <!-- VALIDATION -->
           <mdb-error
             *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
-            <span>Password Required</span>
+            <span>Password required</span>
           </mdb-error>
         </div>
       </div>

@@ -31,7 +31,7 @@
               (change)="buildSelectNamespace($event); captureAction()"></ng-select>
             <mdb-error class="ml-1rem"
               *ngIf="validateInput('typeAction').invalid && (validateInput('typeAction').dirty || validateInput('typeAction').touched)">
-              <span class="fs-08rem fw-600 color-error-message">Select Action</span>
+              <span class="fs-08rem  color-error-message">Select action</span>
             </mdb-error>
           </div>
         </div>
@@ -44,7 +44,7 @@
             </ng-select>
             <mdb-error class="ml-1rem"
               *ngIf="validateInput('namespace').invalid && (validateInput('namespace').dirty || validateInput('namespace').touched)">
-              <span class="fs-08rem fw-600 color-error-message">Select Namespace</span>
+              <span class="fs-08rem  color-error-message">Select namespace</span>
             </mdb-error>
           </div>
         </div>
@@ -57,7 +57,7 @@
                 bindLabel="label" bindValue="value" placeholder="Select Mosaic" (change)="captureMmosaic()"></ng-select>
               <mdb-error class="ml-1rem"
                 *ngIf="validateInput('mosaic').invalid && (validateInput('mosaic').dirty || validateInput('mosaic').touched)">
-                <span class="fs-08rem fw-600 color-error-message">Select Mosaic</span>
+                <span class="fs-08rem  color-error-message">Select mosaic</span>
               </mdb-error>
             </div>
           </div>

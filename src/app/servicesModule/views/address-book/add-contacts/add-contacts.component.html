@@ -15,7 +15,7 @@
           <!-- VALIDATION -->
           <mdb-error
             *ngIf="validateInput('user', '').invalid && (validateInput('address', '').dirty || validateInput('address', '').touched)">
-            <span>Name Required</span>
+            <span>Name required</span>
           </mdb-error>
         </div>
       </div>
@@ -32,7 +32,7 @@
           <!-- VALIDATION -->
           <mdb-error
             *ngIf="validateInput('address', '').invalid && (validateInput('address', '').dirty || validateInput('address', '').touched)">
-            <span>Address Required</span>
+            <span>Address required</span>
           </mdb-error>
           <mdb-error *ngIf="msgErrorUnsupported !== ''">
             <span>{{msgErrorUnsupported}}</span>

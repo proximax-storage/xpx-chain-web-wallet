@@ -60,7 +60,7 @@
               bindLabel="label" bindValue="value" placeholder="Select Namespace"></ng-select>
             <mdb-error class="ml-1rem"
               *ngIf="validateInput('namespaceRoot').invalid && (validateInput('namespaceRoot').dirty || validateInput('namespaceRoot').touched)">
-              <span>Select Namespace</span>
+              <span>Select namespace</span>
             </mdb-error>
           </div>
         </div>
@@ -83,7 +83,7 @@
               </mdb-error>
 
               <mdb-error *ngIf="validateInput('duration', '').valid && insufficientBalanceDuration">
-                <span class="fs-08rem fw-600 color-error-message">Insufficient Balance</span>
+                <span class="fs-08rem color-error-message">Insufficient balance</span>
               </mdb-error>
             </div>
           </div>
@@ -162,7 +162,7 @@
               <!-- VALIDATION -->
               <mdb-error
                 *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
-                <span>Password Required</span>
+                <span>Password required</span>
               </mdb-error>
             </div>
           </div>

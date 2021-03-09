@@ -28,7 +28,7 @@
                   <!-- VALIDATION -->
                   <mdb-error class="ml-1rem mt-06rem">
                      <span *ngIf="validateInput('selectAccount').invalid && (validateInput('selectAccount').dirty || validateInput('selectAccount').touched)"
-                        class="fs-08rem fw-600 color-error-message">Select your account</span>
+                        class="fs-08rem color-error-message">Select your account</span>
                   </mdb-error>
                </div>
             </div>
@@ -56,7 +56,7 @@
 
                      <!-- VALIDATION -->
                      <mdb-error *ngIf="validateInput('cantCard', '').invalid && (validateInput('cantCard', '').dirty || validateInput('cantCard', '').touched)">
-                        <span>Number Required</span>
+                        <span>Number required</span>
                      </mdb-error>
 
 
@@ -74,7 +74,7 @@
                      <span class="label-i-icon pl-2rem"></span>
 
                      <mdb-error *ngIf="validateInput('amountXpx').invalid && (validateInput('amountXpx').dirty || validateInput('amountXpx').touched)">
-                        <span class="fs-08rem fw-600 color-error-message">Invalid Amount</span>
+                        <span class="fs-08rem  color-error-message">Invalid amount</span>
                      </mdb-error>
 
                   </div>
@@ -92,7 +92,7 @@
                      <span class="fs-08rem text-cl-m d-flex justify-content-end">{{ charRest }} / {{ messageMaxLength
                         }}</span>
                      <mdb-error *ngIf="validateInput('message').invalid && (validateInput('message').dirty || validateInput('message').touched)">
-                        <span>Message Required</span>
+                        <span>Message required</span>
                      </mdb-error>
                   </div>
                </div>
@@ -134,7 +134,7 @@
 
                      <!-- VALIDATION -->
                      <mdb-error *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
-                        <span>Password Required</span>
+                        <span>Password required</span>
                      </mdb-error>
                   </div>
                </div>

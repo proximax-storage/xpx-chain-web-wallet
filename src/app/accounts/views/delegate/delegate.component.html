@@ -123,7 +123,7 @@
                         [validateError]="true" [type]="passwordMain" id="password" class="form-control form-control-sm input-border"
                         placeholder="Enter Wallet Password">
                       <mdb-error *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
-                        <span>Password Required</span>
+                        <span>Password required</span>
                       </mdb-error>
                     </div>
                   </div>
@@ -152,7 +152,7 @@
                     <button [disabled]="btnDisabled" (click)="linkDelegate()" mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
                       size="md">
                       <span *ngIf="btnDisabled" class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"></span>
-                      <span class="fs-1-2em color-white">Link new account</span>
+                      <span class="fs-1-2em color-white">Link New Account</span>
                     </button>
                   </div>
                 </div>
