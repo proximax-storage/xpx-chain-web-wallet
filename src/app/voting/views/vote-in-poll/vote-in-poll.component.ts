@@ -398,7 +398,7 @@ export class VoteInPollComponent implements OnInit {
   verifyVote() {
     this.btnResult = true;
     // if (this.statusPoll(this.pollSelected.endDate, this.pollSelected.startDate) === 'Ongoing') {
-    if (this.validateWitheList(this.pollSelected.witheList, this.pollSelected.type)) {
+    if (this.validateWhiteList(this.pollSelected.whitelist, this.pollSelected.type)) {
       if (this.walletService.canVote) {
         if (this.incrementOption < this.pollSelected.options.length) {
           if (
@@ -423,7 +423,7 @@ export class VoteInPollComponent implements OnInit {
 
                       let transaction = this.transactionService.getStructureDashboard(transactionnext['innerTransactions'][0]);
                       transaction.name = this.pollSelected.name;
-                      transaction.description = this.pollSelected.desciption;
+                      transaction.description = this.pollSelected.description;
                       transaction.hash = transactionnext.transactionInfo.hash
                       this.activate = true;
                       this.dataTransaction = transaction;
@@ -478,7 +478,7 @@ export class VoteInPollComponent implements OnInit {
 
     } else {
       this.votingInPoll.disable()
-      this.statusValidate = 'noWitheList'
+      this.statusValidate = 'noWhiteList'
     }
     // } else if (this.statusPoll(this.pollSelected.endDate, this.pollSelected.startDate) === 'Future') {
     //   this.votingInPoll.disable()
@@ -504,12 +504,12 @@ export class VoteInPollComponent implements OnInit {
     return { STATUS: true }
   }
 
-  validateWitheList(witheList: any, type: number): boolean {
+  validateWhiteList(whitelist: any, type: number): boolean {
     const addressCompare: Address = Address.createFromPublicKey(this.walletService.currentAccount.publicAccount.publicKey, this.walletService.currentAccount.publicAccount.address.networkType)
     if (type == 1)
       return true
     if (type == 0) {
-      const valor = witheList.find(elemnt => elemnt.address === addressCompare.plain());
+      const valor = whitelist.find(elemnt => elemnt.address === addressCompare.plain());
       if (valor) {
         return true;
       } else {
@@ -627,7 +627,7 @@ export class VoteInPollComponent implements OnInit {
         const poll = JSON.parse(transactionData['data']['innerTransactions'][0].message.payload);
         transaction.name = poll.name;
         transaction.hash = transactionData['data'].transactionInfo.hash;
-        transaction.description = poll.desciption;
+        transaction.description = poll.description;
         this.dataTransaction = transaction;
         this.activate = true;
       }

@@ -1,13 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { PublicAccount, Account, Address } from 'tsjs-xpx-chain-sdk';
+import { PublicAccount, Account, Address, PlainMessage, AggregateTransaction, InnerTransaction, TransferTransaction, DefaultMaxFee, FeeCalculationStrategy } from 'tsjs-xpx-chain-sdk';
 import { MdbStepperComponent } from 'ng-uikit-pro-standard';
 import { Subscription } from 'rxjs';
-
 import { environment } from '../../../../environments/environment';
 import { WalletService, AccountsInterface } from '../../../wallet/services/wallet.service';
 import { FormBuilder, FormGroup, Validators, AbstractControl, FormControl, } from '@angular/forms';
 import { ConfigurationForm, SharedService } from '../../../shared/services/shared.service';
 import { AppConfig } from '../../../config/app.config';
+import { DataBridgeService } from '../../../shared/services/data-bridge.service';
 import { CreatePollStorageService } from '../../../servicesModule/services/create-poll-storage.service';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { ServicesModuleService } from '../../../servicesModule/services/services-module.service';
@@ -26,7 +26,7 @@ export class CreatePollComponent implements OnInit {
   isPrivate: any;
   endDate: any;
   index: any;
-  desciption: any;
+  description: any;
   name: any;
   validateformDateEnd: boolean;
   form: FormGroup;
@@ -50,6 +50,14 @@ export class CreatePollComponent implements OnInit {
   listContacts: any = [];
   showContacts = false;
   subscription: Subscription[] = [];
+  fee:number = 0.000000;
+  displayFee: string = '0.000000'; 
+  transferTransactions: InnerTransaction[] = [];
+  pollId = Math.floor(Math.random() * 1455654).toString();
+  startDate = new Date();
+  createdDate = new Date();
+  firstTransfer: TransferTransaction;
+  aggregateHash: string = '0'.repeat(64);
 
   routes = {
     backToService: `/${AppConfig.routes.service}`
@@ -71,6 +79,7 @@ export class CreatePollComponent implements OnInit {
   vestedBalance: { part1: string; part2: string; };
   amountAccount: number;
   insufficientBalance: boolean;
+  aggregateTransaction: AggregateTransaction;
 
   constructor(
     private fb: FormBuilder,
@@ -80,6 +89,7 @@ export class CreatePollComponent implements OnInit {
     private proximaxProvider: ProximaxProvider,
     private serviceModuleService: ServicesModuleService,
     private transactionService: TransactionsService,
+    private dataBridge: DataBridgeService
   ) {
     this.configurationForm = this.sharedService.configurationForm;
     this.btnBlock = false;
@@ -93,6 +103,7 @@ export class CreatePollComponent implements OnInit {
     this.invalidMoment = this.minDate.setHours(this.minDate.getHours() + 1)
     this.listContacts = this.validateAccountListContact();
     this.createForms();
+    this.calculateFee();
     this.balance();
   }
 
@@ -107,8 +118,8 @@ export class CreatePollComponent implements OnInit {
     ));
     let vestedBalance = this.vestedBalance.part1.concat(this.vestedBalance.part2).replace(/,/g,'');
     this.amountAccount = Number(vestedBalance);
-    if(this.amountAccount < 0.098250){
-      this.firstFormGroup.disable();
+    if(this.amountAccount < this.fee){
+      //this.firstFormGroup.disable();
       this.insufficientBalance = true;
     }
 
@@ -174,9 +185,13 @@ export class CreatePollComponent implements OnInit {
 
   get1() {
     this.name = this.firstFormGroup.get('title').value;
-    this.desciption = this.firstFormGroup.get('message').value;
+    this.description = this.firstFormGroup.get('message').value;
     this.isPrivate = this.firstFormGroup.get('isPrivate').value;
     this.endDate = new Date(this.firstFormGroup.get('PollEndDate').value);
+    if(this.endDate.toString() === "Invalid Date"){
+      this.endDate = new Date();
+      this.endDate.setUTCDate(this.endDate.getUTCDate() + 1);
+    }
     if (!this.isPrivate){
       this.account = PublicAccount.createFromPublicKey(environment.pollsContent.public_key, this.walletService.currentAccount.network);
     }else {
@@ -213,10 +228,12 @@ export class CreatePollComponent implements OnInit {
         options: ''
       })
     }
+    this.calculateFee();
   }
 
-  deleteAccaunt(item) {
+  deleteAccount(item) {
     this.listaBlanca = this.listaBlanca.filter(white => white.address != item.address);
+    this.calculateFee();
   }
 
   selectType($event: Event) {
@@ -258,6 +275,8 @@ export class CreatePollComponent implements OnInit {
       this.secondFormGroup.patchValue({
         options: this.option
       })
+
+      this.calculateFee();
     } else {
       this.sharedService.showError('', 'option already added');
     }
@@ -282,10 +301,12 @@ export class CreatePollComponent implements OnInit {
             this.cleanThirForm();
           } else {
             this.listaBlanca.push(Address.createFromRawAddress(address))
+            this.calculateFee();
             this.cleanThirForm();
           }
         } else {
           this.listaBlanca.push(Address.createFromRawAddress(address))
+          this.calculateFee();
           this.cleanThirForm();
         }
       }
@@ -315,45 +336,118 @@ export class CreatePollComponent implements OnInit {
 
   async preparepoll(common) {
     this.btnBlock = true;
-    this.Poll = {
+    
+    this.prepareAggregateTransactions();
+    
+    const generationHash = this.dataBridge.blockInfo.generationHash;
+    const signingAccount = Account.createFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
+    const signedAggregateTransaction = signingAccount.sign(this.aggregateTransaction, generationHash);
+
+    this.aggregateHash = signedAggregateTransaction.hash;
+    this.prepareFirstTransaction();
+
+    const signedTransferTransaction = signingAccount.sign(this.firstTransfer, generationHash);
+
+    this.proximaxProvider.announce(signedTransferTransaction).subscribe(
+      msg => {
+        this.proximaxProvider.announce(signedAggregateTransaction).subscribe(
+          msg=>{
+            this.btnBlock = false;
+            this.stepper.resetAll()
+            this.listaBlanca = [];
+            this.option = [];
+            this.createForms();
+        },
+        err => {
+          this.btnBlock = false;
+        });
+      },
+      err => {
+        this.btnBlock = false;
+      }
+    );
+  }
+
+  calculateFee(){
+    this.get1();
+    this.get2();
+    this.get3();
+
+    this.prepareAggregateTransactions();
+    this.prepareFirstTransaction();
+
+    let aggregateAbsoluteFee = FeeCalculationStrategy.MiddleFeeCalculationStrategy * AggregateTransaction.calculateSize(this.aggregateTransaction.innerTransactions); 
+    let firstTransferAbsoluteFee = this.firstTransfer.maxFee.compact();
+
+    if(aggregateAbsoluteFee > DefaultMaxFee){
+      aggregateAbsoluteFee = DefaultMaxFee;
+    }
+    
+    this.fee = this.transactionService.amountFormatterSimpleReturnNumber(aggregateAbsoluteFee) + this.transactionService.amountFormatterSimpleReturnNumber(firstTransferAbsoluteFee);
+
+    this.displayFee = this.transactionService.amountFormatterSimple(aggregateAbsoluteFee + firstTransferAbsoluteFee);
+
+    this.balance();
+  }
+
+  prepareAggregateTransactions(){
+    this.Poll = this.getPollContent();
+
+    const pollString = JSON.stringify(this.Poll);
+
+    let buf = Buffer.from(pollString);
+
+    let maximumSizePerTx = 1023;
+
+    let txNumToSpill = Math.ceil(buf.byteLength/maximumSizePerTx);
+    this.transferTransactions = [];
+
+    for(var i = 0; i < txNumToSpill; i++){
+      var bufChunk = buf.slice(i * maximumSizePerTx, (i + 1) * maximumSizePerTx);
+      var bufChunkHex = bufChunk.toString('hex');
+      this.transferTransactions.push(this.proximaxProvider.buildTransferTransactionDirectHexMessage(this.walletService.currentAccount.network, this.account.address, bufChunkHex).toAggregate(this.walletService.currentAccount.publicAccount));
+    }
+
+    this.aggregateTransaction = this.proximaxProvider.buildAggregateTransactionComplete(
+      this.walletService.currentAccount.network,
+      this.transferTransactions
+    );
+  }
+
+  prepareFirstTransaction(){
+
+    const pollBriefContent = this.getPollBriefContentSimply();
+
+    this.firstTransfer = this.proximaxProvider.buildTransferTransaction(this.walletService.currentAccount.network, this.account.address, PlainMessage.create(JSON.stringify(pollBriefContent)));
+  }
+
+  getPollBriefContentSimply() : object{
+    const pollBriefContent = {
       name: this.name,
-      desciption: this.desciption,
-      id: Math.floor(Math.random() * 1455654).toString(),
+      type: 'poll',
+      hash: this.aggregateHash
+    };
+
+    return pollBriefContent;
+  }
+
+  getPollContent(): PollInterface{
+    return {
+      name: this.name,
+      description: this.description,
+      id:this.pollId,
       type: this.type,
       isPrivate: this.isPrivate,
       isMultiple: this.isMultiple,
       options: this.option,
-      witheList: this.listaBlanca,
-      startDate: new Date(),
+      whiteList: this.listaBlanca,
+      startDate: this.startDate,
       endDate: this.endDate,
-      createdDate: new Date(),
+      createdDate: this.createdDate,
       quantityOption: this.option.length
-    }
-
-    const nameFile = `voting-ProximaxSirius-${this.formtDate(new Date())}`;
-    const fileObject: FileInterface = {
-      name: nameFile,
-      content: this.Poll,
-      type: 'application/json',
-      extension: 'json',
     };
-    const descripcion = 'poll';
-
-    await this.createPollStorageService.sendFileStorage(
-      fileObject,
-      'poll',
-      this.account,
-      common.privateKey
-    ).then(resp => {
-      this.btnBlock = false;
-      this.stepper.resetAll()
-      this.listaBlanca = [];
-      this.option = [];
-      this.createForms();
-    }, error => {
-      this.btnBlock = false;
-    });
   }
+
   /**
  *
  *
@@ -437,7 +531,7 @@ export class CreatePollComponent implements OnInit {
 /**
  * poll JSON
  * @param name - name poll
- * @param desciption - desciption poll
+ * @param description - description poll
  * @param id - identifier
  * @param type - 0 = withe list , 1 = public,
  * @param startDate - poll start date
@@ -448,13 +542,13 @@ export class CreatePollComponent implements OnInit {
 */
 export interface PollInterface {
   name: string;
-  desciption: string;
+  description: string;
   id: string;
   type: number;
   isPrivate: boolean,
   isMultiple: boolean,
   options: optionsPoll[];
-  witheList: Object[];
+  whiteList: Object[];
   blacklist?: Object[];
   startDate: Date;
   endDate: Date;
