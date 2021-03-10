@@ -22,6 +22,7 @@ import {
   MosaicId,
   UInt64,
   PlainMessage,
+  EncryptedMessage,
   Address,
   Transaction,
   MosaicSupplyChangeTransaction,
@@ -47,7 +48,8 @@ import {
   LinkAction,
   Crypto, 
   MultisigAccountGraphInfo, 
-  WalletAlgorithm
+  WalletAlgorithm,
+  InnerTransaction
 } from 'tsjs-xpx-chain-sdk';
 import { BlockchainNetworkType } from 'tsjs-chain-xipfs-sdk';
 import { Observable } from 'rxjs/internal/Observable';
@@ -112,6 +114,51 @@ export class ProximaxProvider {
       mosaics,
       message,
       network
+    );
+  }
+
+  /**
+   *
+   *
+   * @param {NetworkType} network
+   * @param {Address} address
+   * @param {*} [message]
+   * @param {number} [amount=0]
+   * @returns {TransferTransaction}
+   * @memberof ProximaxProvider
+   */
+  buildTransferTransactionDirectHexMessage(network: NetworkType, address: Address, hexMessage: string, amount: number = 0): TransferTransaction {
+    let mosaics: any = [];
+    if (amount > 0) {
+      mosaics = new Mosaic(new MosaicId(environment.mosaicXpxInfo.id), UInt64.fromUint(Number(amount)));
+    } else {
+      mosaics = [];
+    }
+
+    return TransferTransaction.create(
+      Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
+      address,
+      mosaics,
+      EncryptedMessage.createFromPayload(hexMessage),
+      network
+    );
+  }
+
+  /**
+   *
+   *
+   * @param {NetworkType} network
+   * @param {InnerTransaction[]} InnerTransaction
+   * @returns {AggregateTransaction}
+   * @memberof ProximaxProvider
+   */
+  buildAggregateTransactionComplete(network: NetworkType, transactions: InnerTransaction[]): AggregateTransaction {
+
+    return AggregateTransaction.createComplete(
+      Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
+      transactions,
+      network,
+      []
     );
   }
 

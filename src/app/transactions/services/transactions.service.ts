@@ -287,9 +287,8 @@ export class TransactionsService {
   /**
    * Formatter Amount
    *
-   * @param {UInt64} amount
-   * @param {MosaicId} mosaicId
-   * @param {MosaicInfo[]} mosaics
+   * @param {number} amount
+   * @param {number} decimal
    * @returns
    * @memberof TransactionsService
    */
@@ -298,6 +297,19 @@ export class TransactionsService {
     return amountDivisibility.toLocaleString('en-us', {
       minimumFractionDigits: d
     });
+  }
+
+  /**
+   * Formatter Amount
+   *
+   * @param {number} amount
+   * @param {number} decimal
+   * @returns
+   * @memberof TransactionsService
+   */
+  amountFormatterSimpleReturnNumber(amount: number, d = 6) {
+    const amountDivisibility = Number(amount) / Math.pow(10, d);
+    return amountDivisibility;
   }
 
   /**

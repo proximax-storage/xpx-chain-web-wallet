@@ -100,7 +100,7 @@ export class PollsComponent implements OnInit {
 
     this.isLoading = true;
 
-    this.promosePoadTransactions = this.createPollStorageService.loadTransactions(publicAccount, address, fromTransactionId).then(resp => {
+    this.promosePoadTransactions = this.createPollStorageService.loadPollTransactions(publicAccount, this.proximaxProvider.createFromRawAddress(address), fromTransactionId).then(resp => {
       // console.log("respondio aqui", resp)
       this.showBarProgressone = false;
       if (this.getPoll) {
@@ -305,7 +305,7 @@ export class PollsComponent implements OnInit {
       const address = environment.pollsContent.address_public_test
       this.currentSearchingAddress = address;
       // const publicAccount = PublicAccount.createFromPublicKey(environment.pollsContent.public_key, this.walletService.currentAccount.network)
-      this.createPollStorageService.loadTransactions(null, this.proximaxProvider.createFromRawAddress(address).pretty()).then(resp => {
+      this.createPollStorageService.loadPollTransactions(null, this.proximaxProvider.createFromRawAddress(address)).then(resp => {
         this.showBarProgressone = false;
         this.getPollStorage();
       });
@@ -366,14 +366,14 @@ export class PollsComponent implements OnInit {
 }
 export interface PollInterface {
   name: string;
-  desciption: string;
+  description: string;
   id: string;
   type: number;
   typeName: string;
   isPrivate: boolean,
   isMultiple: boolean,
   options: optionsPoll[];
-  witheList: Object[];
+  whiteList: Object[];
   blacklist?: Object[];
   startDate: Date;
   endDate: Date;

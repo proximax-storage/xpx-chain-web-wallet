@@ -41,7 +41,7 @@
                 height="43">
               <input formControlName="title" required mdbInputDirective mdbValidate [validateSuccess]="true"
                 [validateError]="true" type="text" id="title" class="form-control form-control-sm input-border"
-                placeholder="Enter Title">
+                placeholder="Enter Title" maxlength="50" (change)="calculateFee()">
               <mdb-error
                 *ngIf="validateInput('title', '1', '').invalid && (validateInput('title', '1', '').dirty || validateInput('title', '1', '').touched)">
                 <span>Title required</span>
@@ -49,7 +49,7 @@
             </div>
             <!-- IS PRIVATE -->
             <div class="form-check form-check-inline">
-              <mdb-checkbox [default]="true" formControlName="isPrivate">Send to Private Poll Index</mdb-checkbox>
+              <mdb-checkbox [default]="true" formControlName="isPrivate"  (change)="calculateFee()">Send to Private Poll Index</mdb-checkbox>
             </div>
             <!-- DESCRIPTION -->
             <div class="md-form">
@@ -59,7 +59,7 @@
               <textarea mdbInputDirective mdbValidate required [validateSuccess]="true" [validateError]="true"
                 type="text" id="message" class="md-textarea form-control" mdbInput
                 placeholder="Write your description here" formControlName="message"
-                [maxlength]="configurationForm.message.maxLength"></textarea>
+                [maxlength]="configurationForm.message.maxLength"  (change)="calculateFee()"></textarea>
               <mdb-error
                 *ngIf="validateInput('message', '1', '').invalid && (validateInput('message','1', '').dirty || validateInput('message', '1', '').touched)">
                 <span>Invalid message</span>
@@ -69,7 +69,7 @@
             <div class="md-form">
               <img class="form-control-feedback"
                 src="assets/images/img/icon-duration-green-16h-proximax-sirius-wallet.svg" alt="">
-              <input formControlName="PollEndDate" required mdbInputDirective mdbValidate type="text"
+              <input formControlName="PollEndDate" required mdbInputDirective mdbValidate type="text" 
                 [owlDateTimeTrigger]="dt" [owlDateTime]="dt" [min]="minDate" [dateTime]="invalidMoment"
                 class="form-control form-control-sm input-border" placeholder="End Date">
               <owl-date-time [pickerMode]="'dialog'" #dt></owl-date-time>
@@ -88,7 +88,7 @@
                     <div class="col-12">
                       <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
                         alt="">
-                      <span>Unconfirmed/Recommended Fee: 0.098250 XPX</span>
+                      <span>Unconfirmed/Recommended Fee: {{ displayFee }} XPX</span>
                     </div>
                   </div>
                 </div>
@@ -114,6 +114,16 @@
     <!-- VOTE OPTIONS -->
     <mdb-step name="Vote options" [stepForm]="secondFormGroup">
       <form [formGroup]="secondFormGroup">
+        <div class="row">
+          <div class="col-11 mb-1rem mx-auto box-transparent-border-red" *ngIf="insufficientBalance">
+            <div class="txt-a-center">
+              <img src="assets/images/img/icon-restriction-white.svg" style="filter: invert(50%)" alt="" width="30">
+            </div>
+            <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
+              Insufficient Balance.
+            </p>
+          </div>
+        </div>
         <div class="row mt-1rem">
           <div class="col-7 col-md-8 col-xl-7 mb-2rem">
             <!-- TITLE -->
@@ -128,7 +138,7 @@
             </div>
             <!-- IS multiple -->
             <div class="md-form">
-              <mdb-checkbox formControlName="isMultiple" [inline]="true">Allow Multiple Response</mdb-checkbox>
+              <mdb-checkbox formControlName="isMultiple" [inline]="true"  (change)="calculateFee()">Allow Multiple Response</mdb-checkbox>
             </div>
             <!-- LIST OPTIONS -->
             <div class="md-form" *ngIf='option.length > 0'>
@@ -181,7 +191,7 @@
                     <div class="col-12">
                       <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
                         alt="">
-                      <span>Unconfirmed/Recommended Fee: 0.098250 XPX</span>
+                      <span>Unconfirmed/Recommended Fee: {{ displayFee }} XPX</span>
                     </div>
                   </div>
                 </div>
@@ -206,6 +216,16 @@
     <!-- TYPE-->
     <mdb-step name="Type" [stepForm]="thirdFormGroup">
       <form [formGroup]="thirdFormGroup">
+        <div class="row">
+          <div class="col-11 mb-1rem mx-auto box-transparent-border-red" *ngIf="insufficientBalance">
+            <div class="txt-a-center">
+              <img src="assets/images/img/icon-restriction-white.svg" style="filter: invert(50%)" alt="" width="30">
+            </div>
+            <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
+              Insufficient Balance.
+            </p>
+          </div>
+        </div>
         <div class="row mt-1rem">
           <div class="col-7 col-md-8 col-xl-7 mb-2rem">
             <!-- TITLE -->
@@ -222,7 +242,7 @@
             <div class="">
               <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
                 [searchable]="false" class="selectWrapper" [items]="voteType" formControlName="voteType"
-                bindLabel="label" bindValue="value" placeholder="Type of vote" (change)="selectType($event)">
+                bindLabel="label" bindValue="value" placeholder="Type of Vote" (change)="selectType($event)" (change)="calculateFee()">
               </ng-select>
               <mdb-error class="ml-1rem"
                 *ngIf="validateInput('voteType','3', '').invalid && (validateInput('voteType', '3', '').dirty || validateInput('voteType', '3', '').touched)">
@@ -237,7 +257,7 @@
                   <ng-container *ngFor="let el of listaBlanca">
                     <div class="col-11 d-flex justify-content-center">
                       <i style="cursor: pointer;" class="fa fa-trash fs-1rem text-right" aria-hidden="true"
-                        (click)="deleteAccaunt(el)"></i>
+                        (click)="deleteAccount(el)"></i>
                       <span class="font-small "> {{el.address}} </span>
                     </div>
                   </ng-container>
@@ -318,7 +338,7 @@
                     <div class="col-12">
                       <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
                         alt="">
-                      <span>Unconfirmed/Recommended Fee: 0.098250 XPX</span>
+                      <span>Unconfirmed/Recommended Fee: {{ displayFee }} XPX</span>
                     </div>
                   </div>
                 </div>
@@ -364,6 +384,16 @@
     <!-- ACTIVATE -->
     <mdb-step name="Activate" [stepForm]="quarterFormGroup">
       <form [formGroup]="quarterFormGroup">
+        <div class="row">
+          <div class="col-11 mb-1rem mx-auto box-transparent-border-red" *ngIf="insufficientBalance">
+            <div class="txt-a-center">
+              <img src="assets/images/img/icon-restriction-white.svg" style="filter: invert(50%)" alt="" width="30">
+            </div>
+            <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
+              Insufficient Balance.
+            </p>
+          </div>
+        </div>
         <div class="row mt-1rem">
           <div class="col-7 col-md-8 col-xl-7 mb-2rem">
             <!-- TITLE -->
@@ -440,7 +470,7 @@
                     <div class="col-12">
                       <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
                         alt="">
-                      <span>Unconfirmed/Recommended Fee: 0.098250 XPX</span>
+                      <span>Unconfirmed/Recommended Fee: {{ displayFee }} XPX</span>
                     </div>
                   </div>
                 </div>
@@ -483,7 +513,7 @@
           </div>
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
             <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="btn-proximax" (click)="sendPoll()"
-              [disabled]="!quarterFormGroup.valid">
+              [disabled]="!quarterFormGroup.valid || insufficientBalance">
               <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
                 *ngIf="btnBlock"></span>
               <span class="fs-1-2em color-white">Create</span>
