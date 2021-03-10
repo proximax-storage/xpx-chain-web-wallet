@@ -70,7 +70,7 @@
                      <input pattern="^[+]?([0-9]*[.])?[0-9]+$" currencyMask [options]="optionsXPX" mdbInputDirective
                         mdbValidate [validateSuccess]="true" [maxlength]="configurationForm.amount.maxLength"
                         [validateError]="true" type="text" class="form-control form-control-sm input-border input-amount"
-                        placeholder="Amount per Gift Card" formControlName="amountXpx">
+                        placeholder="Amount Per Gift Card" formControlName="amountXpx">
                      <span class="label-i-icon pl-2rem"></span>
 
                      <mdb-error *ngIf="validateInput('amountXpx').invalid && (validateInput('amountXpx').dirty || validateInput('amountXpx').touched)">
@@ -87,7 +87,7 @@
                      <img class="form-control-feedback" src="assets/images/img/icon-messenger-green-16h-proximax-sirius-wallet.svg"
                         alt="">
                      <input mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
-                        id="message" class="form-control form-control-sm input-border" mdbInput placeholder="Message on Gift Cards"
+                        id="message" class="form-control form-control-sm input-border" mdbInput placeholder="Message On Gift Cards"
                         formControlName="message" [maxlength]="messageMaxLength">
                      <span class="fs-08rem text-cl-m d-flex justify-content-end">{{ charRest }} / {{ messageMaxLength
                         }}</span>

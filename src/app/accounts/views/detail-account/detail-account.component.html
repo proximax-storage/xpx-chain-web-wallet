@@ -13,7 +13,7 @@
 
           <ng-container *ngIf="editNameAccount">
             <input mdbInputDirective mdbValidate type="text" id="newNameAccount"
-              class="form-control form-control-sm input-border" [(ngModel)]="newNameAccount" title="New name account">
+              class="form-control form-control-sm input-border" [(ngModel)]="newNameAccount" title="New Aame account">
           </ng-container>
         </div>
         <div class="col-2 text-right">
@@ -181,9 +181,7 @@
                           placeholder="Enter Wallet Password" style="background: #ffffff;">
 
                         <mdb-error
-                          *ngIf="
-                                                                  validateInput('password', '').invalid &&
-                                                                  (validateInput('password', '').dirty || validateInput('password', '').touched)">
+                          *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
                           <span>Required to change your setting</span>
                         </mdb-error>
                       </div>
@@ -241,9 +239,7 @@
                           placeholder="Enter Wallet Password" style="background: #ffffff;">
 
                         <mdb-error
-                          *ngIf="
-                                                                  validateInput('password', '').invalid &&
-                                                                  (validateInput('password', '').dirty || validateInput('password', '').touched)">
+                          *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
                           <span>Required to download your paper wallet</span>
                         </mdb-error>
                       </div>

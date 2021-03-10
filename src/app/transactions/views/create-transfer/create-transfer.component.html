@@ -279,7 +279,7 @@
                         class="form-control form-control-sm input-border input-amount"
                         [(ngModel)]="boxOtherMosaics[i].amount" [ngModelOptions]="{standalone: true}"
                         (ngModelChange)="amountOtherMosaicChanged($event, otherMosaic.id, i)"
-                        placeholder="Enter quantity" [disabled]="disabledAllField">
+                        placeholder="Enter Quantity" [disabled]="disabledAllField">
                       <span class="label-i fw-600 pl-2rem">Send</span>
 
                       <!-- Message Error Insufficient balance-->
@@ -569,7 +569,7 @@
                 <div class="md-form form-sm">
                   <input required mdbInputDirective readonly mdbValidate [validateSuccess]="true" [validateError]="true"
                     type="text" [(ngModel)]="formContact.address" [ngModelOptions]="{standalone: true}" id="address"
-                    class="form-control form-control-sm input-border" placeholder="address">
+                    class="form-control form-control-sm input-border" placeholder="Address">
                 </div>
               </div>
             </div>
