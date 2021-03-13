@@ -15,6 +15,7 @@ import { environment } from '../../../../environments/environment';
 import { NodeService } from '../../../servicesModule/services/node.service';
 import { DataBridgeService } from '../../../shared/services/data-bridge.service';
 import { TransactionsService, TransactionsInterface } from '../../../transactions/services/transactions.service';
+import { DashboardService } from '../../../dashboard/services/dashboard.service';
 
 @Component({
   selector: 'app-vote-in-poll',
@@ -65,6 +66,7 @@ export class VoteInPollComponent implements OnInit {
   votedPublicKeyCount = 0;
   totalVoteCount = 0;
   stopResultLoading = false;
+  timestamp = '';
 
   constructor(
     private nodeService: NodeService,
@@ -75,7 +77,8 @@ export class VoteInPollComponent implements OnInit {
     private fb: FormBuilder,
     private proximaxProvider: ProximaxProvider,
     private dataBridge: DataBridgeService,
-    private transactionService: TransactionsService
+    private transactionService: TransactionsService,
+    private dashboardService: DashboardService
 
   ) {
     this.transactionHttp = new TransactionHttp(environment.protocol + "://" + `${this.nodeService.getNodeSelected()}`);
@@ -398,7 +401,7 @@ export class VoteInPollComponent implements OnInit {
   verifyVote() {
     this.btnResult = true;
     // if (this.statusPoll(this.pollSelected.endDate, this.pollSelected.startDate) === 'Ongoing') {
-    if (this.validateWhiteList(this.pollSelected.whitelist, this.pollSelected.type)) {
+    if (this.validateWhiteList(this.pollSelected.whiteList, this.pollSelected.type)) {
       if (this.walletService.canVote) {
         if (this.incrementOption < this.pollSelected.options.length) {
           if (
@@ -432,6 +435,10 @@ export class VoteInPollComponent implements OnInit {
                       this.sharedService.showWarning('', `Sorry, you already voted in this poll`);
                       this.searching = false;
                       this.btnResult = false;
+
+                      const height = transaction.data['transactionInfo'].height.compact();
+                      this.assignBlockHeightTime(height, this.dataTransaction);
+
                       this.viewCertificate(this.transaction.transactionInfo.hash, this.pollSelected.name, 'memberVoted', this.transaction)
                       break;
                     }
@@ -629,6 +636,8 @@ export class VoteInPollComponent implements OnInit {
         transaction.hash = transactionData['data'].transactionInfo.hash;
         transaction.description = poll.description;
         this.dataTransaction = transaction;
+        this.assignBlockHeightTime(transactionData.height, this.dataTransaction);
+
         this.activate = true;
       }
     })
@@ -701,6 +710,30 @@ export class VoteInPollComponent implements OnInit {
 
       }
 
+    }
+    
+  }
+
+  assignBlockHeightTime(height: number, transaction: TransactionsInterface){
+    if (typeof (height) === 'number') {
+      const existBlock = this.dataBridge.filterBlockStorage(height);
+
+      if(this.timestamp){
+        transaction.timestamp = this.timestamp;
+      }else if (existBlock) {
+
+        this.timestamp = this.transactionService.dateFormatUTC(new UInt64([existBlock.timestamp.lower, existBlock.timestamp.higher]));
+        transaction.timestamp = this.timestamp;
+
+      } else {
+        this.proximaxProvider.getBlockInfo(height).subscribe(
+          (blockInfo) =>{
+            this.dataBridge.validateBlock(blockInfo);
+            this.timestamp = this.transactionService.dateFormatUTC(blockInfo.timestamp);
+            transaction.timestamp = this.timestamp;
+            this.dashboardService.saveBlockTimestamp(this.dataBridge.blockInfo.generationHash, height, this.timestamp);
+          });
+      }
     }
   }
 }
