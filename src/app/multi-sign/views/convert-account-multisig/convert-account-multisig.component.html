@@ -14,7 +14,7 @@
             <mdb-error class="ml-1rem">
               <span
                 *ngIf="validateInput('selectAccount').invalid && (validateInput('selectAccount').dirty || validateInput('selectAccount').touched)"
-                class="fs-08rem fw-600 color-error-message">Select an Account</span>
+                class="fs-08rem  color-error-message">Select an account</span>
             </mdb-error>
           </div>
         </div>
@@ -67,9 +67,9 @@
             <div class="d-flex align-items-center flex-wrap">
               <!-- SCHEME -->
               <div class="mr-1">
-                <h5 class="h5-responsive fw-600">
+                <h5 style="margin-bottom: 0px;"  class="h5-responsive fw-600">
                   Scheme for
-                  <span class="ml-2 fw-600">></span>
+                  <span class="ml-2 fw-600">:</span>
                 </h5>
               </div>
 
@@ -82,7 +82,7 @@
                   <input (keypress)="preventNumbers($event)" onkeydown="return false" max="{{maxDelta}}"
                     min="{{minDelta}}" formControlName="minApprovalDelta" required mdbInputDirective mdbValidate
                     [validateSuccess]="true" [validateError]="true" type="number" id="minApprovalDelta"
-                    class="form-control form-control-sm input-border text-center" placeholder="Min approval"
+                    class="form-control form-control-sm input-border text-center" placeholder="Min Approval"
                     onkeyup="javascript:this.value=this.value.toLowerCase();">
                   <!-- VALIDATION -->
                   <mdb-error
@@ -110,7 +110,7 @@
                   <input (keypress)="preventNumbers($event)" onkeydown="return false" max="{{maxDelta}}"
                     min="{{minDelta}}" formControlName="minRemovalDelta" required mdbInputDirective mdbValidate
                     [validateSuccess]="true" [validateError]="true" type="number" id="minRemovalDelta"
-                    class="form-control form-control-sm input-border text-center" placeholder="Min removal"
+                    class="form-control form-control-sm input-border text-center" placeholder="Min Removal"
                     onkeyup="javascript:this.value=this.value.toLowerCase();">
                   <!-- VALIDATION -->
                   <mdb-error
@@ -167,7 +167,7 @@
                         <!-- VALIDATION -->
                         <mdb-error
                           *ngIf="validateInputCosignatory(i).invalid && (validateInputCosignatory(i).dirty || validateInputCosignatory(i).touched)">
-                          <span>Invalid Key</span>
+                          <span>Invalid key</span>
                         </mdb-error>
                       </div>
                       <!--SHOW CONTACT-->
@@ -252,7 +252,7 @@
                 id="password" class="form-control form-control-sm input-border" placeholder="Enter Wallet Password">
               <mdb-error
                 *ngIf="validateInput('password').invalid && (validateInput('password').dirty || validateInput('password').touched)">
-                <span>Password Required </span>
+                <span>Password required </span>
               </mdb-error>
             </div>
           </div>

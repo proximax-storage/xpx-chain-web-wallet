@@ -44,7 +44,7 @@
                 placeholder="Enter Title" maxlength="50" (change)="calculateFee()">
               <mdb-error
                 *ngIf="validateInput('title', '1', '').invalid && (validateInput('title', '1', '').dirty || validateInput('title', '1', '').touched)">
-                <span>Title Required</span>
+                <span>Title required</span>
               </mdb-error>
             </div>
             <!-- IS PRIVATE -->
@@ -62,7 +62,7 @@
                 [maxlength]="configurationForm.message.maxLength"  (change)="calculateFee()"></textarea>
               <mdb-error
                 *ngIf="validateInput('message', '1', '').invalid && (validateInput('message','1', '').dirty || validateInput('message', '1', '').touched)">
-                <span>Invalid Message</span>
+                <span>Invalid message</span>
               </mdb-error>
             </div>
             <!-- DATE END  -->
@@ -112,7 +112,7 @@
       </form>
     </mdb-step>
     <!-- VOTE OPTIONS -->
-    <mdb-step name="Vote Options" [stepForm]="secondFormGroup">
+    <mdb-step name="Vote options" [stepForm]="secondFormGroup">
       <form [formGroup]="secondFormGroup">
         <div class="row">
           <div class="col-11 mb-1rem mx-auto box-transparent-border-red" *ngIf="insufficientBalance">
@@ -164,7 +164,7 @@
                 placeholder="Option">
               <mdb-error
                 *ngIf="validateInput('option', '2', '').invalid && (validateInput('option', '2', '').dirty || validateInput('option', '2', '').touched)">
-                <span>Required Field</span>
+                <span>Required field</span>
               </mdb-error>
             </div>
             <!-- OPTIONS VALIDATE -->
@@ -457,7 +457,7 @@
                 class="form-control form-control-sm input-border" placeholder="Enter Wallet Password">
               <mdb-error
                 *ngIf="validateInput('password','4', '').invalid && (validateInput('password','4', '').dirty || validateInput('password','', '').touched)">
-                <span>Password Required</span>
+                <span>Password required</span>
               </mdb-error>
             </div>
           </div>

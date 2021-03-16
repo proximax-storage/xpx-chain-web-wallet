@@ -34,7 +34,7 @@
                   </div>
                   <div class="col-2 text-right">
                       <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg"
-                          class="cursor-p" alt="Copy" width="20" (click)="copyMessage('Private Key')" ngxClipboard
+                          class="cursor-p" alt="Copy" width="20" (click)="copyMessage('Private key')" ngxClipboard
                           [cbContent]="linkedAccountPrivateKey">
                   </div>
               </div>
@@ -123,7 +123,7 @@
                         [validateError]="true" [type]="passwordMain" id="password" class="form-control form-control-sm input-border"
                         placeholder="Enter Wallet Password">
                       <mdb-error *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
-                        <span>Password Required</span>
+                        <span>Password required</span>
                       </mdb-error>
                     </div>
                   </div>
@@ -140,7 +140,7 @@
                     <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
                       size="md" [disabled]="btnDisabled" (click)="unlinkDelegate()">
                       <span *ngIf="btnDisabled" class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"></span>
-                      <span class="fs-1-2em color-white">Unlink linked account</span>
+                      <span class="fs-1-2em color-white">Unlink Linked Account</span>
                     </button>
                   </div>
                 </div>
@@ -152,7 +152,7 @@
                     <button [disabled]="btnDisabled" (click)="linkDelegate()" mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
                       size="md">
                       <span *ngIf="btnDisabled" class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"></span>
-                      <span class="fs-1-2em color-white">Link new account</span>
+                      <span class="fs-1-2em color-white">Link New Account</span>
                     </button>
                   </div>
                 </div>

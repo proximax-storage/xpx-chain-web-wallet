@@ -18,7 +18,7 @@
       <div class="col-11 col-sm-10 col-lg-8 mx-auto">
         <div class="file-field md-form form-sm mt-1rem mb-0rem">
           <div mdbBtn rounded="true" outline="true" class="background-btn-inverse" size="sm" mdbWavesEffect>
-            <span class="pt-1 text-cl-m">Choose file</span>
+            <span class="pt-1 text-cl-m">Choose File</span>
             <input type="file" mdbFileSelect (uploadOutput)="onUploadOutput($event)" [uploadInput]="uploadInput"
               [disabled]="insufficientBalance" />
           </div>
@@ -26,7 +26,7 @@
             <img class="form-control-feedback" src="assets/images/img/icon-storage-green-16h-proximax-sirius-wallet.svg"
               alt="">
             <input class="form-control form-control-sm input-border" [validateSuccess]="false" id="filePath" type="text"
-              placeholder="Upload your file" [value]="showFiles()" readonly mdbInputDirective>
+              placeholder="Upload Your File" [value]="showFiles()" readonly mdbInputDirective>
           </div>
         </div>
       </div>
@@ -36,7 +36,7 @@
       <div class="col-11 col-sm-10 col-lg-8 mx-auto">
         <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" [searchable]="false"
           class="selectWrapper" [items]="optionsEncryptionMethods" formControlName="encryptionMethod" bindLabel="name"
-          bindValue="value" placeholder="Select encryption method" (change)="encryptionMethodSelect($event)">
+          bindValue="value" placeholder="Select Encryption Method" (change)="encryptionMethodSelect($event)">
         </ng-select>
       </div>
     </div>
@@ -51,7 +51,7 @@
             [minlength]="configurationForm.passwordEncriptionFile.minLength" formControlName="password"
             mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
             id="password{{errorMatchPassword}}" class="form-control form-control-sm input-border"
-            placeholder="Enter file encryption password" mdbPopover="At least {{configurationForm.passwordEncriptionFile.minLength}} characters, must include UPPER CASE
+            placeholder="Enter File Encryption Password" mdbPopover="At least {{configurationForm.passwordEncriptionFile.minLength}} characters, must include UPPER CASE
               letters and numbers" placement="top" triggers="focus" mdbPopoverHeader="Password suggestion">
 
           <!-- VALIDATION -->
@@ -71,7 +71,7 @@
             [minlength]="configurationForm.passwordEncriptionFile.minLength" formControlName="confirm_password"
             mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
             id="confirm-password{{errorMatchPassword}}" class="form-control form-control-sm input-border"
-            placeholder="Confirm file encryption password" mdbPopover="At least {{configurationForm.passwordEncriptionFile.minLength}} characters, must include UPPER CASE
+            placeholder="Confirm File Encryption Password" mdbPopover="At least {{configurationForm.passwordEncriptionFile.minLength}} characters, must include UPPER CASE
                 letters and numbers" placement="top" triggers="focus" mdbPopoverHeader="Password suggestion">
 
           <!-- VALIDATION -->
@@ -109,12 +109,12 @@
           <input [maxlength]="configurationForm.passwordWallet.maxLength"
             [minlength]="configurationForm.passwordWallet.minLength" formControlName="walletPassword" required
             mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
-            id="walletPassword" class="form-control form-control-sm input-border" placeholder="Enter wallet password">
+            id="walletPassword" class="form-control form-control-sm input-border" placeholder="Enter Wallet Password">
 
           <!-- VALIDATION -->
           <mdb-error
             *ngIf="validateInput('walletPassword', '').invalid && (validateInput('walletPassword', '').dirty || validateInput('walletPassword', '').touched)">
-            <span>Required field</span>
+            <span>Password required</span>
           </mdb-error>
         </div>
       </div>

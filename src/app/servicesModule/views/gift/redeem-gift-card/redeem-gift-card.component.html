@@ -51,7 +51,7 @@
             <!-- VALIDATION -->
             <mdb-error class="ml-1rem">
               <span *ngIf="validateInput('selectAccount').invalid && (validateInput('selectAccount').dirty || validateInput('selectAccount').touched)"
-                class="fs-08rem fw-600 color-error-message">Select your account</span>
+                class="fs-08rem  color-error-message">Select your account</span>
             </mdb-error>
           </div>
         </div>
@@ -85,7 +85,7 @@
             <button [disabled]="redeemGift.invalid || !ourFile" mdbBtn type="submit" rounded="true" mdbWavesEffect
               class="btn-proximax" size="md">
               <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true" *ngIf="reloadBtn"></span>
-              <span class="fs-1-2em color-white">REDEEM</span>
+              <span class="fs-1-2em color-white">Redeem</span>
             </button>
           </div>
         </div>

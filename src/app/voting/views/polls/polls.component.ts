@@ -26,7 +26,7 @@ export class PollsComponent implements OnInit {
   progressBar: number = 0;
   objectValue: object;
   keyObjectValue: string;
-  placeholderText = 'Enter search text'
+  placeholderText = 'Enter Search Text'
   selectedSearch = 'All'
   routes = {
     backToService: `/${AppConfig.routes.service}`,
@@ -39,7 +39,7 @@ export class PollsComponent implements OnInit {
     itemsPerPage: 10,
     currentPage: 1
   };
-  headElements = ['Name', 'Poll type', 'End date', 'Status'];
+  headElements = ['Name', 'Poll Type', 'End Date', 'Status'];
   pollResult: PollInterface[] = [];
 
 

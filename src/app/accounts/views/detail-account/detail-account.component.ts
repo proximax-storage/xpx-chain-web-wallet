@@ -47,8 +47,8 @@ export class DetailAccountComponent implements OnInit {
   showPassword = true;
   subscribeAccount = null;
   titleAddress = 'Address:';
-  titlePrivateKey = 'Private Key:';
-  titlePublickey = 'Public Key:';
+  titlePrivateKey = 'Private key:';
+  titlePublickey = 'Public key:';
   validatingForm: FormGroup;
   valueInitNis: boolean;
   valueInitShow = false;

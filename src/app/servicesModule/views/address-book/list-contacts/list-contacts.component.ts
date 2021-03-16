@@ -27,7 +27,7 @@ export class ListContactsComponent {
   }
 
   previous: any = [];
-  headElements = ['Label', 'Account address', 'Actions'];
+  headElements = ['Label', 'Account Address', 'Actions'];
   contacts = [];
   searchContact = '';
   searching = false;

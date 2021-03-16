@@ -1109,7 +1109,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
             this.formTransfer.get('accountRecipient').setValue(valueWithoutSpaces);
           }
           this.blockSendButton = true;
-          this.msgErrorUnsupported = 'Recipient Address Network unsupported';
+          this.msgErrorUnsupported = 'Recipient address network unsupported';
         } else {
           console.log('00sss')
           this.blockSendButton = false;
@@ -1117,7 +1117,7 @@ export class CreateTransferComponent implements OnInit, OnDestroy {
         }
       } else if (!this.formTransfer.get('accountRecipient').getError('required') && this.formTransfer.get('accountRecipient').valid) {
         this.blockSendButton = true;
-        this.msgErrorUnsupported = 'Recipient Address Network unsupported';
+        this.msgErrorUnsupported = 'Recipient address network unsupported';
       } else {
         if (valueWithoutSpaces !== value) {
           this.formTransfer.get('accountRecipient').setValue(valueWithoutSpaces);
