@@ -44,7 +44,7 @@ export class PartialComponent implements OnInit, OnDestroy {
   multisigInfo: MultisigAccountInfo[] = [];
   nis1hash = null;
   elements: any = [];
-  headElements = ['Sign/add', 'Deadline', 'Account linked to the transaction', 'Hash'];
+  headElements = ['Sign/add', 'Deadline', 'Account Linked To The Transaction', 'Hash'];
   hideSign = false;
   objectKeys = Object.keys;
   onlySigner = false;

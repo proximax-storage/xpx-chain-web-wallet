@@ -28,11 +28,11 @@
           <div class="col-11 mx-auto">
             <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
               [searchable]="false" class="selectWrapper" [items]="parentMosaic" formControlName="parentMosaic"
-              bindLabel="label" bindValue="value" placeholder="Select Mosaic" (change)="optionSelected($event)">
+              bindLabel="label" bindValue="value" placeholder="Select mosaic" (change)="optionSelected($event)">
             </ng-select>
             <mdb-error class="mt-05rem ml-1rem"
               *ngIf="validateInput('parentMosaic').invalid && (validateInput('parentMosaic').dirty || validateInput('parentMosaic').touched)">
-              <span>Select Mosaic</span>
+              <span>Select mosaic</span>
             </mdb-error>
           </div>
         </div>
@@ -42,11 +42,11 @@
           <div class="col-11 mx-auto">
             <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
               [searchable]="false" class="selectWrapper" [items]="mosaicSupplyType" formControlName="mosaicSupplyType"
-              bindLabel="label" bindValue="value" placeholder="Increase or Decrease" (change)="type($event)">
+              bindLabel="label" bindValue="value" placeholder="Increase or decrease" (change)="type($event)">
             </ng-select>
             <mdb-error class="ml-1rem"
               *ngIf="validateInput('mosaicSupplyType').invalid && (validateInput('mosaicSupplyType').dirty || validateInput('mosaicSupplyType').touched)">
-              <span>Increase or Decrease</span>
+              <span>Increase or decrease</span>
             </mdb-error>
           </div>
         </div>
@@ -60,7 +60,7 @@
               <input formControlName="deltaSupply" currencyMask [options]="optionsSupply" mdbInputDirective mdbValidate
                 [validateSuccess]="true" [validateError]="true" type="text" id="supply{{errorSupply}}"
                 [maxlength]="maxLengthSupply" class="form-control form-control-sm input-border input-amount"
-                placeholder="Quantity of Increase/Decrease">
+                placeholder="Quantity Of Increase/Decrease">
               <span class="label-i-icon pl-2rem">Quantity of Increase/Decrease</span>
 
               <mdb-error
@@ -153,7 +153,7 @@
 
               <mdb-error
                 *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
-                <span>Password Required</span>
+                <span>Password required</span>
               </mdb-error>
             </div>
           </div>

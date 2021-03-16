@@ -1,509 +1,267 @@
 <div class="container mt-3rem mb-2rem animated fadeIn">
-    <app-header [params]="paramsHeader"></app-header>
-    <div class="col-11 col-lg-10 mx-auto">
-        <!-- Name -->
-        <div class="row">
-            <div class="col-12 mx-auto d-flex align-items-center box-grey p-1rem">
-                <div class="col-10 lh-1-1em">
-                    <span class="fw-600">Account Name:</span>
-                    <br>
-                    <ng-container *ngIf="!editNameAccount">
-                        <span class="font-small d-flex">{{accountName}}</span>
-                    </ng-container>
+  <app-header [params]="paramsHeader"></app-header>
+  <div class="col-11 col-lg-10 mx-auto">
+    <!-- Name -->
+    <div class="row">
+      <div class="col-12 mx-auto d-flex align-items-center box-grey p-1rem">
+        <div class="col-10 lh-1-1em">
+          <span class="fw-600">Account name:</span>
+          <br>
+          <ng-container *ngIf="!editNameAccount">
+            <span class="font-small d-flex">{{accountName}}</span>
+          </ng-container>
 
-                    <ng-container *ngIf="editNameAccount">
-                        <input mdbInputDirective mdbValidate type="text" id="newNameAccount"
-                            class="form-control form-control-sm input-border" [(ngModel)]="newNameAccount"
-                            title="New name account">
-                    </ng-container>
-                </div>
-                <div class="col-2 text-right">
-                    <ng-container *ngIf="!editNameAccount">
-                        <i mdbWavesEffect (click)="editNameAccount = !editNameAccount"
-                            class="fa fa-pencil-square-o cursor-p" title="Update name account"></i>
-                    </ng-container>
-
-                    <ng-container *ngIf="editNameAccount">
-                        <i mdbWavesEffect (click)="changeNameAccount(accountName, newNameAccount)"
-                            class="fa fa-check-square-o cursor-p mr-06rem" title="Update name account"></i>
-                        <i class="fa fa-window-close-o cursor-p" aria-hidden="true"
-                            (click)="editNameAccount = !editNameAccount" title="I don't want to update"></i>
-                    </ng-container>
-                </div>
-            </div>
+          <ng-container *ngIf="editNameAccount">
+            <input mdbInputDirective mdbValidate type="text" id="newNameAccount"
+              class="form-control form-control-sm input-border" [(ngModel)]="newNameAccount" title="New Aame account">
+          </ng-container>
         </div>
+        <div class="col-2 text-right">
+          <ng-container *ngIf="!editNameAccount">
+            <i mdbWavesEffect (click)="editNameAccount = !editNameAccount" class="fa fa-pencil-square-o cursor-p"
+              title="Update name account"></i>
+          </ng-container>
 
-        <!-- address -->
-        <div class="row">
-            <div class="col-12 mx-auto d-flex align-items-center box-grey p-1rem">
-                <div class="col-10 lh-1-1em">
-                    <span class="fw-600">{{ titleAddress }} </span>
-                    <br>
-                    <span class="font-small d-flex">{{address}}</span>
-                </div>
-                <div class="col-2 text-right">
-                    <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p"
-                        alt="Copy" width="20" (click)="copyMessage('Address')" ngxClipboard [cbContent]="address">
-                </div>
-            </div>
+          <ng-container *ngIf="editNameAccount">
+            <i mdbWavesEffect (click)="changeNameAccount(accountName, newNameAccount)"
+              class="fa fa-check-square-o cursor-p mr-06rem" title="Update name account"></i>
+            <i class="fa fa-window-close-o cursor-p" aria-hidden="true" (click)="editNameAccount = !editNameAccount"
+              title="I don't want to update"></i>
+          </ng-container>
         </div>
-
-        <!-- public key -->
-        <!-- <ng-container *ngIf="accountValid"> -->
-            <div class="row">
-                <div class="col-12 mx-auto d-flex align-items-center box-grey p-1rem">
-                    <div class="col-10 lh-1-1em">
-                        <span class="fw-600 ">{{ titlePublickey }} </span>
-                        <br>
-                        <span class="font-small d-flex ">{{ publicKey }}</span>
-                    </div>
-                    <div class="col-2 text-right">
-                        <!-- <i mdbWavesEffect (click)="copyMessage('Public Key')" ngxClipboard [cbContent]="publicKey"
-                    class="fa fa-copy cursor-p"></i> -->
-
-                        <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg"
-                            class="cursor-p" alt="Copy" width="20" (click)="copyMessage('Public key')" ngxClipboard
-                            [cbContent]="publicKey">
-                    </div>
-                </div>
-            </div>
-        <!-- </ng-container> -->
-
-        <!-- public key -->
-        <!-- <ng-container *ngIf="!accountValid">
-            <div class="row">
-                <div class="col-12  mx-auto box-transparent-border-orange">
-                    <div class="txt-a-center">
-                        <img src="assets/images/img/icon-transaction-unconfirmed-white.svg" style="filter: invert(50%)"
-                            alt="" width="30">
-                    </div>
-                    <h6 class="fw-600">{{ titlePublickey }} </h6>
-                    <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
-                        This user has not made transactions with this account.
-                    </p>
-                </div>
-            </div>
-        </ng-container> -->
-
-        <!-- DECRYPT ACCOUNT -->
-        <ng-container *ngIf="currenAccount.encrypted !== ''">
-            <!-- Information -->
-            <div class="row">
-                <div class="col-12 mx-auto  box-transparent-border-orange">
-                    <div class="txt-a-center">
-                        <img src="assets/images/img/icon-transaction-unconfirmed-white.svg" style="filter: invert(50%)"
-                            alt="" width="30">
-                    </div>
-
-                    <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
-                        {{ descriptionPrivateKey }}
-                    </p>
-                </div>
-            </div>
-
-            <!-- NEW BUTTON - PRIVATE KEY -->
-            <!-- START -->
-
-            <div class="row">
-                <div class="col-12 mx-auto box-grey p-1rem">
-                    <div class="row">
-                        <div class="col-8 lh-1-1em justify-content-sm-start align-self-center">
-                            <div class="row">
-                                <div class="col-10 lh-1-1em">
-
-                                    <span class="fw-600"> {{ titlePrivateKey }} </span>
-                                    <br>
-                                    <span class="font-small" *ngIf="showPassword && !actionBtnShowPrivateKey">************</span>
-                                    <span class="font-small d-flex" *ngIf="!showPassword">{{ privateKey }}</span>
-                                </div>
-                                <div class="col-2 text-right">
-                                    <img *ngIf="!showPassword" style="padding-top: 28px;"
-                                        src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg"
-                                        class="cursor-p" alt="Copy" width="20" (click)="copyMessage('Private Key')"
-                                        ngxClipboard [cbContent]="privateKey">
-                                </div>
-                            </div>
-                            <ng-container *ngIf="actionBtnShowPrivateKey">
-                                <form [formGroup]="validatingForm">
-                                    <div class="row pt-05rem" *ngIf="actionBtnShowPrivateKey">
-                                        <div class="col-12">
-                                            <div class="md-form form-sm m-0">
-                                                <img class="form-control-feedback"
-                                                    src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg"
-                                                    alt="">
-                                                <img class="form-control-feedback-eye cursor-p"
-                                                    (click)="changeInputType(passwordMain)"
-                                                    src="assets/images/img/icon-show-hide-password.svg"
-                                                    *ngIf="passwordMain === 'password'">
-                                                <img class="form-control-feedback-eye cursor-p"
-                                                    (click)="changeInputType(passwordMain)"
-                                                    src="assets/images/img/icon-show-hide-password-grey.svg"
-                                                    *ngIf="passwordMain === 'text'">
-                                                <input [maxlength]="configurationForm.passwordWallet.maxLength"
-                                                    [minlength]="configurationForm.passwordWallet.minLength"
-                                                    formControlName="password" mdbInputDirective mdbValidate
-                                                    [validateSuccess]="true" [validateError]="true"
-                                                    [type]="passwordMain" id="password"
-                                                    class="form-control form-control-sm input-border"
-                                                    placeholder="Enter Wallet Password" style="background: #ffffff;">
-
-                                                <mdb-error
-                                                    *ngIf="
-                                                              validateInput('password', '').invalid &&
-                                                              (validateInput('password', '').dirty || validateInput('password', '').touched)">
-                                                    <span>Required to show Private Key</span>
-                                                </mdb-error>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </ng-container>
-                            <!-- <div class="row pt-05rem" *ngIf="actionBtnShowPrivateKey === true">
-                                <div class="col-12">
-                                    <div class="md-form form-sm m-0">
-                                        <img class="form-control-feedback"
-                                            src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg"
-                                            alt="">
-                                        <img class="form-control-feedback-eye cursor-p"
-                                            (click)="changeInputType(passwordMain)"
-                                            src="assets/images/img/icon-show-hide-password.svg"
-                                            *ngIf="passwordMain === 'password'">
-                                        <img class="form-control-feedback-eye cursor-p"
-                                            (click)="changeInputType(passwordMain)"
-                                            src="assets/images/img/icon-show-hide-password-grey.svg"
-                                            *ngIf="passwordMain === 'text'">
-                                        <input [maxlength]="configurationForm.passwordWallet.maxLength"
-                                            [minlength]="configurationForm.passwordWallet.minLength"
-                                            formControlName="password" mdbInputDirective mdbValidate
-                                            [validateSuccess]="true" [validateError]="true" [type]="passwordMain"
-                                            id="password" class="form-control form-control-sm input-border"
-                                            placeholder="Enter Wallet Password" style="background: #ffffff;">
-
-                                        <mdb-error
-                                            *ngIf="
-                                          validateInput('password', '').invalid &&
-                                          (validateInput('password', '').dirty || validateInput('password', '').touched)">
-                                            <span>Required to show Private Key</span>
-                                        </mdb-error>
-                                    </div>
-                                </div>
-                            </div> -->
-                        </div>
-                        <div class="col-4 lh-1-1em txt-a-right align-self-center">
-                            <div *ngIf="!actionBtnShowPrivateKey">
-                                <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
-                                    size="md" (click)="btnShowPrivateKey()" [disabled]="blockBtnAction"
-                                    *ngIf="!toggleBtnShowPrivateKey">
-                                    <span class="color-white">Show</span>
-                                </button>
-
-                                <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
-                                    size="md" (click)="btnShowPrivateKey()" [disabled]="blockBtnAction"
-                                    *ngIf="toggleBtnShowPrivateKey">
-                                    <span class="color-white">Hide</span>
-                                </button>
-                            </div>
-                            <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="md"
-                                (click)="btnShowPrivateKey()" *ngIf="actionBtnShowPrivateKey">
-                                <span class="color-white">Accept</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- NEW BUTTON - PRIVATE KEY -->
-
-
-            <!-- NEW BUTTON - SWAP with this Private Key -->
-
-            <div class="row">
-                <div class="col-12 mx-auto box-grey p-1rem">
-                    <div class="row">
-                        <div class="col-8 lh-1-1em justify-content-sm-start align-self-center">
-                            <div class="row">
-                                <div class="col-12">
-                                    <span class="fw-600 ">Swap with this private key</span>
-                                </div>
-                            </div>
-                            <ng-container *ngIf="actionBtnSwapThisAccount">
-                                    <form [formGroup]="validatingForm">
-                                        <div class="row pt-05rem" *ngIf="actionBtnSwapThisAccount">
-                                            <div class="col-12">
-                                                <div class="md-form form-sm m-0">
-                                                    <img class="form-control-feedback"
-                                                        src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg"
-                                                        alt="">
-                                                    <img class="form-control-feedback-eye cursor-p"
-                                                        (click)="changeInputType(passwordMain)"
-                                                        src="assets/images/img/icon-show-hide-password.svg"
-                                                        *ngIf="passwordMain === 'password'">
-                                                    <img class="form-control-feedback-eye cursor-p"
-                                                        (click)="changeInputType(passwordMain)"
-                                                        src="assets/images/img/icon-show-hide-password-grey.svg"
-                                                        *ngIf="passwordMain === 'text'">
-                                                    <input [maxlength]="configurationForm.passwordWallet.maxLength"
-                                                        [minlength]="configurationForm.passwordWallet.minLength"
-                                                        formControlName="password" mdbInputDirective mdbValidate
-                                                        [validateSuccess]="true" [validateError]="true"
-                                                        [type]="passwordMain" id="password"
-                                                        class="form-control form-control-sm input-border"
-                                                        placeholder="Enter Wallet Password" style="background: #ffffff;">
-
-                                                    <mdb-error
-                                                        *ngIf="
-                                                                  validateInput('password', '').invalid &&
-                                                                  (validateInput('password', '').dirty || validateInput('password', '').touched)">
-                                                        <span>Required to change your setting</span>
-                                                    </mdb-error>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </ng-container>
-                            <!-- <div class="row pt-05rem" *ngIf="actionBtnSwapThisAccount">
-                                <div class="col-12">
-                                    <div class="md-form form-sm m-0">
-                                        <img class="form-control-feedback"
-                                            src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg"
-                                            alt="">
-                                        <img class="form-control-feedback-eye cursor-p"
-                                            (click)="changeInputType(passwordMain)"
-                                            src="assets/images/img/icon-show-hide-password.svg"
-                                            *ngIf="passwordMain === 'password'">
-                                        <img class="form-control-feedback-eye cursor-p"
-                                            (click)="changeInputType(passwordMain)"
-                                            src="assets/images/img/icon-show-hide-password-grey.svg"
-                                            *ngIf="passwordMain === 'text'">
-                                        <input [maxlength]="configurationForm.passwordWallet.maxLength"
-                                            [minlength]="configurationForm.passwordWallet.minLength"
-                                            formControlName="password" mdbInputDirective mdbValidate
-                                            [validateSuccess]="true" [validateError]="true" [type]="passwordMain"
-                                            id="password" class="form-control form-control-sm input-border"
-                                            placeholder="Enter Wallet Password" style="background: #ffffff;">
-
-                                        <mdb-error
-                                            *ngIf="
-                                          validateInput('password', '').invalid &&
-                                          (validateInput('password', '').dirty || validateInput('password', '').touched)">
-                                            <span>Required to enable/disabled this option.</span>
-                                        </mdb-error>
-                                    </div>
-                                </div>
-                            </div> -->
-                        </div>
-                        <div class="col-4 lh-1-1em txt-a-right align-self-center">
-                            <div *ngIf="!actionBtnSwapThisAccount">
-                                <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
-                                    size="md" (click)="btnSwapThisAccount(false)" [disabled]="blockBtnAction"
-                                    *ngIf="checked">
-                                    <span class="color-white">Disable</span>
-                                </button>
-                                <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
-                                    size="md" (click)="btnSwapThisAccount(true)" [disabled]="blockBtnAction"
-                                    *ngIf="!checked">
-                                    <span class="color-white" >Enable</span>
-                                </button>
-                            </div>
-                            <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="md"
-                                (click)="btnSwapThisAccount()" *ngIf="actionBtnSwapThisAccount ">
-                                <span class="color-white">Accept</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- NEW BUTTON - SAVE PAPER WALLET -->
-
-            <div class="row">
-                <div class="col-12 mx-auto box-grey p-1rem">
-                    <div class="row">
-                        <div class="col-8 lh-1-1em justify-content-sm-start align-self-center">
-                            <div class="row">
-                                <div class="col-12">
-                                    <span class="fw-600 ">Save Paper Wallet</span>
-                                </div>
-                            </div>
-                            <ng-container *ngIf="actionBtnSavePaperWallet">
-                                    <form [formGroup]="validatingForm">
-                                        <div class="row pt-05rem">
-                                            <div class="col-12">
-                                                <div class="md-form form-sm m-0">
-                                                    <img class="form-control-feedback"
-                                                        src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg"
-                                                        alt="">
-                                                    <img class="form-control-feedback-eye cursor-p"
-                                                        (click)="changeInputType(passwordMain)"
-                                                        src="assets/images/img/icon-show-hide-password.svg"
-                                                        *ngIf="passwordMain === 'password'">
-                                                    <img class="form-control-feedback-eye cursor-p"
-                                                        (click)="changeInputType(passwordMain)"
-                                                        src="assets/images/img/icon-show-hide-password-grey.svg"
-                                                        *ngIf="passwordMain === 'text'">
-                                                    <input [maxlength]="configurationForm.passwordWallet.maxLength"
-                                                        [minlength]="configurationForm.passwordWallet.minLength"
-                                                        formControlName="password" mdbInputDirective mdbValidate
-                                                        [validateSuccess]="true" [validateError]="true"
-                                                        [type]="passwordMain" id="password"
-                                                        class="form-control form-control-sm input-border"
-                                                        placeholder="Enter Wallet Password" style="background: #ffffff;">
-
-                                                    <mdb-error
-                                                        *ngIf="
-                                                                  validateInput('password', '').invalid &&
-                                                                  (validateInput('password', '').dirty || validateInput('password', '').touched)">
-                                                        <span>Required to download your paper wallet</span>
-                                                    </mdb-error>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </ng-container>
-
-                            <!-- <div class="row pt-05rem" *ngIf="actionBtnSavePaperWallet">
-                                <div class="col-12">
-                                    <div class="md-form form-sm m-0">
-                                        <img class="form-control-feedback"
-                                            src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg"
-                                            alt="">
-                                        <img class="form-control-feedback-eye cursor-p"
-                                            (click)="changeInputType(passwordMain)"
-                                            src="assets/images/img/icon-show-hide-password.svg"
-                                            *ngIf="passwordMain === 'password'">
-                                        <img class="form-control-feedback-eye cursor-p"
-                                            (click)="changeInputType(passwordMain)"
-                                            src="assets/images/img/icon-show-hide-password-grey.svg"
-                                            *ngIf="passwordMain === 'text'">
-                                        <input [maxlength]="configurationForm.passwordWallet.maxLength"
-                                            [minlength]="configurationForm.passwordWallet.minLength"
-                                            formControlName="password" mdbInputDirective mdbValidate
-                                            [validateSuccess]="true" [validateError]="true" [type]="passwordMain"
-                                            id="password" class="form-control form-control-sm input-border"
-                                            placeholder="Enter Wallet Password" style="background: #ffffff;">
-
-                                        <mdb-error
-                                            *ngIf="
-                                          validateInput('password', '').invalid &&
-                                          (validateInput('password', '').dirty || validateInput('password', '').touched)">
-                                            <span>Required to download the Paper Wallet.</span>
-                                        </mdb-error>
-                                    </div>
-                                </div>
-                            </div> -->
-                        </div>
-                        <div class="col-4 lh-1-1em txt-a-right align-self-center">
-                            <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="md"
-                                (click)="btnSavePaperWallet()" [disabled]="blockBtnAction"
-                                *ngIf="!actionBtnSavePaperWallet">
-                                <span class="color-white">Save</span>
-                            </button>
-                            <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="md"
-                                (click)="btnSavePaperWallet()" *ngIf="actionBtnSavePaperWallet">
-                                <span class="color-white">Accept</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Private Key -->
-            <!-- <ng-container *ngIf="!showPassword">
-                <div class="row animated fadeIn">
-                    <div class="col-12 mx-auto d-flex align-items-center box-grey p-1rem">
-                        <div class="col-10 lh-1-1em">
-                            <span class="fw-600"> {{ titlePrivateKey }} </span>
-                            <br>
-                            <span class="font-small d-flex">{{ privateKey }}</span>
-                        </div>
-                        <div class="col-2 text-right">
-                            <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg"
-                                class="cursor-p" alt="Copy" width="20" (click)="copyMessage('Private Key')" ngxClipboard
-                                [cbContent]="privateKey">
-                        </div>
-                    </div>
-                </div>
-            </ng-container> -->
-
-            <!-- <div class="row mt-1rem" *ngIf="privateKey === ''">
-                <div class="col-11 col-sm-10 col-lg-9 col-xl-8 mx-auto txt-a-center">
-                    <mdb-checkbox [(ngModel)]="checked" [checked]="checked"> Check this box if you wish to swap with
-                        this private key.
-                    </mdb-checkbox>
-                    {{checked}}
-                </div>
-            </div> -->
-
-            <!-- <div class="row mt-1rem" *ngIf="privateKey === ''">
-                <div class="col-11 col-sm-10 col-lg-9 col-xl-8 mx-auto txt-a-center">
-                    <mdb-checkbox [(ngModel)]="showPrivateKey" [checked]="showPrivateKey"> Show private key.
-                    </mdb-checkbox>
-                </div>
-            </div> -->
-
-            <!-- password -->
-            <!-- <ng-container *ngIf="showPassword">
-                <form [formGroup]="validatingForm">
-                    <div class="row">
-                        <div class="col-11 col-sm-10 col-md-10 mx-auto">
-                            <div class="md-form form-sm mt-1rem mb-0rem">
-                                <img class="form-control-feedback"
-                                    src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
-                                <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
-                                    src="assets/images/img/icon-show-hide-password.svg"
-                                    *ngIf="passwordMain === 'password'">
-                                <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
-                                    src="assets/images/img/icon-show-hide-password-grey.svg"
-                                    *ngIf="passwordMain === 'text'">
-                                <input [maxlength]="configurationForm.passwordWallet.maxLength"
-                                    [minlength]="configurationForm.passwordWallet.minLength" formControlName="password"
-                                    mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
-                                    [type]="passwordMain" id="password"
-                                    class="form-control form-control-sm input-border"
-                                    placeholder="Enter Wallet Password"> -->
-
-                                <!-- VALIDATION -->
-                                <!-- <mdb-error *ngIf="
-                          validateInput('password', '').invalid &&
-                          (validateInput('password', '').dirty || validateInput('password', '').touched)">
-                                    <span>Required to show Private Key</span>
-                                </mdb-error>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </ng-container> -->
-
-
-            <!-- buttons create and clear -->
-            <!-- <div class="row mt-2rem">
-                <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end mx-auto">
-                    <button mdbBtn type="button" [disabled]="showPassword" rounded="true" mdbWavesEffect
-                        class="btn-proximax" size="md" (click)="printAccountInfo()">
-                        <span class="color-white">
-                            Save Paper Wallet
-                        </span>
-                    </button>
-                </div>
-                <ng-container *ngIf="!showPassword">
-                    <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start mx-auto">
-                        <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="md"
-                            (click)="hidePrivateKey()" *ngIf="!showPassword">
-                            <span class="color-white">Hide Private Key</span>
-                        </button>
-                    </div>
-                </ng-container>
-
-                <ng-container *ngIf="showPassword">
-                    <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start mx-auto">
-                        <button mdbBtn type="button" rounded="true"
-                            [disabled]="!validatingForm.valid || checked === valueInitNis && showPrivateKey === valueInitShow"
-                            mdbWavesEffect class="btn-proximax" size="md" (click)="aceptChanges()">
-                            <span class="color-white">Accept</span>
-                        </button>
-                    </div>
-                </ng-container>
-            </div> -->
-        </ng-container>
+      </div>
     </div>
+
+    <!-- address -->
+    <div class="row">
+      <div class="col-12 mx-auto d-flex align-items-center box-grey p-1rem">
+        <div class="col-10 lh-1-1em">
+          <span class="fw-600">{{ titleAddress }} </span>
+          <br>
+          <span class="font-small d-flex">{{address}}</span>
+        </div>
+        <div class="col-2 text-right">
+          <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p" alt="Copy"
+            width="20" (click)="copyMessage('Address')" ngxClipboard [cbContent]="address">
+        </div>
+      </div>
+    </div>
+
+    <!-- public key -->
+    <!-- <ng-container *ngIf="accountValid"> -->
+    <div class="row">
+      <div class="col-12 mx-auto d-flex align-items-center box-grey p-1rem">
+        <div class="col-10 lh-1-1em">
+          <span class="fw-600 ">{{ titlePublickey }} </span>
+          <br>
+          <span class="font-small d-flex ">{{ publicKey }}</span>
+        </div>
+        <div class="col-2 text-right">
+          <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p" alt="Copy"
+            width="20" (click)="copyMessage('Public key')" ngxClipboard [cbContent]="publicKey">
+        </div>
+      </div>
+    </div>
+    <!-- </ng-container> -->
+
+    <!-- DECRYPT ACCOUNT -->
+    <ng-container *ngIf="currenAccount.encrypted !== ''">
+      <!-- Information -->
+      <div class="row">
+        <div class="col-12 mx-auto  box-transparent-border-orange">
+          <div class="txt-a-center">
+            <img src="assets/images/img/icon-transaction-unconfirmed-white.svg" style="filter: invert(50%)" alt=""
+              width="30">
+          </div>
+
+          <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
+            {{ descriptionPrivateKey }}
+          </p>
+        </div>
+      </div>
+
+      <!-- NEW BUTTON - PRIVATE KEY -->
+      <!-- START -->
+
+      <div class="row">
+        <div class="col-12 mx-auto box-grey p-1rem">
+          <div class="row">
+            <div class="col-8 lh-1-1em justify-content-sm-start align-self-center">
+              <div class="row">
+                <div class="col-10 lh-1-1em">
+
+                  <span class="fw-600"> {{ titlePrivateKey }} </span>
+                  <br>
+                  <span class="font-small" *ngIf="showPassword && !actionBtnShowPrivateKey">************</span>
+                  <span class="font-small d-flex" *ngIf="!showPassword">{{ privateKey }}</span>
+                </div>
+                <div class="col-2 text-right">
+                  <img *ngIf="!showPassword" style="padding-top: 28px;"
+                    src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p"
+                    alt="Copy" width="20" (click)="copyMessage('Private key')" ngxClipboard [cbContent]="privateKey">
+                </div>
+              </div>
+              <ng-container *ngIf="actionBtnShowPrivateKey">
+                <form [formGroup]="validatingForm">
+                  <div class="row pt-05rem" *ngIf="actionBtnShowPrivateKey">
+                    <div class="col-12">
+                      <div class="md-form form-sm m-0">
+                        <img class="form-control-feedback"
+                          src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
+                        <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
+                          src="assets/images/img/icon-show-hide-password.svg" *ngIf="passwordMain === 'password'">
+                        <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
+                          src="assets/images/img/icon-show-hide-password-grey.svg" *ngIf="passwordMain === 'text'">
+                        <input [maxlength]="configurationForm.passwordWallet.maxLength"
+                          [minlength]="configurationForm.passwordWallet.minLength" formControlName="password"
+                          mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
+                          [type]="passwordMain" id="password" class="form-control form-control-sm input-border"
+                          placeholder="Enter Wallet Password" style="background: #ffffff;">
+                        <br>
+                        <mdb-error
+                          *ngIf=" validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
+                          <span>Required to show private Key</span>
+                        </mdb-error>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </ng-container>
+            </div>
+            <div class="col-4 lh-1-1em txt-a-right align-self-center">
+              <div *ngIf="!actionBtnShowPrivateKey">
+                <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="md"
+                  (click)="btnShowPrivateKey()" [disabled]="blockBtnAction" *ngIf="!toggleBtnShowPrivateKey">
+                  <span class="color-white">Show</span>
+                </button>
+
+                <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="md"
+                  (click)="btnShowPrivateKey()" [disabled]="blockBtnAction" *ngIf="toggleBtnShowPrivateKey">
+                  <span class="color-white">Hide</span>
+                </button>
+              </div>
+              <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="md"
+                (click)="btnShowPrivateKey()" *ngIf="actionBtnShowPrivateKey">
+                <span class="color-white">Accept</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- NEW BUTTON - PRIVATE KEY -->
+
+
+      <!-- NEW BUTTON - SWAP with this Private Key -->
+
+      <div class="row">
+        <div class="col-12 mx-auto box-grey p-1rem">
+          <div class="row">
+            <div class="col-8 lh-1-1em justify-content-sm-start align-self-center">
+              <div class="row">
+                <div class="col-12">
+                  <span class="fw-600 ">Swap with this private key</span>
+                </div>
+              </div>
+              <ng-container *ngIf="actionBtnSwapThisAccount">
+                <form [formGroup]="validatingForm">
+                  <div class="row pt-05rem" *ngIf="actionBtnSwapThisAccount">
+                    <div class="col-12">
+                      <div class="md-form form-sm m-0">
+                        <img class="form-control-feedback"
+                          src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
+                        <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
+                          src="assets/images/img/icon-show-hide-password.svg" *ngIf="passwordMain === 'password'">
+                        <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
+                          src="assets/images/img/icon-show-hide-password-grey.svg" *ngIf="passwordMain === 'text'">
+                        <input [maxlength]="configurationForm.passwordWallet.maxLength"
+                          [minlength]="configurationForm.passwordWallet.minLength" formControlName="password"
+                          mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
+                          [type]="passwordMain" id="password" class="form-control form-control-sm input-border"
+                          placeholder="Enter Wallet Password" style="background: #ffffff;">
+
+                        <mdb-error
+                          *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
+                          <span>Required to change your setting</span>
+                        </mdb-error>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </ng-container>
+            </div>
+            <div class="col-4 lh-1-1em txt-a-right align-self-center">
+              <div *ngIf="!actionBtnSwapThisAccount">
+                <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="md"
+                  (click)="btnSwapThisAccount(false)" [disabled]="blockBtnAction" *ngIf="checked">
+                  <span class="color-white">Disable</span>
+                </button>
+                <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="md"
+                  (click)="btnSwapThisAccount(true)" [disabled]="blockBtnAction" *ngIf="!checked">
+                  <span class="color-white">Enable</span>
+                </button>
+              </div>
+              <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="md"
+                (click)="btnSwapThisAccount()" *ngIf="actionBtnSwapThisAccount ">
+                <span class="color-white">Accept</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- NEW BUTTON - SAVE PAPER WALLET -->
+
+      <div class="row">
+        <div class="col-12 mx-auto box-grey p-1rem">
+          <div class="row">
+            <div class="col-8 lh-1-1em justify-content-sm-start align-self-center">
+              <div class="row">
+                <div class="col-12">
+                  <span class="fw-600 ">Save paper wallet</span>
+                </div>
+              </div>
+              <ng-container *ngIf="actionBtnSavePaperWallet">
+                <form [formGroup]="validatingForm">
+                  <div class="row pt-05rem">
+                    <div class="col-12">
+                      <div class="md-form form-sm m-0">
+                        <img class="form-control-feedback"
+                          src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
+                        <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
+                          src="assets/images/img/icon-show-hide-password.svg" *ngIf="passwordMain === 'password'">
+                        <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
+                          src="assets/images/img/icon-show-hide-password-grey.svg" *ngIf="passwordMain === 'text'">
+                        <input [maxlength]="configurationForm.passwordWallet.maxLength"
+                          [minlength]="configurationForm.passwordWallet.minLength" formControlName="password"
+                          mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
+                          [type]="passwordMain" id="password" class="form-control form-control-sm input-border"
+                          placeholder="Enter Wallet Password" style="background: #ffffff;">
+
+                        <mdb-error
+                          *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
+                          <span>Required to download your paper wallet</span>
+                        </mdb-error>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </ng-container>
+
+            </div>
+            <div class="col-4 lh-1-1em txt-a-right align-self-center">
+              <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="md"
+                (click)="btnSavePaperWallet()" [disabled]="blockBtnAction" *ngIf="!actionBtnSavePaperWallet">
+                <span class="color-white">Save</span>
+              </button>
+              <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="md"
+                (click)="btnSavePaperWallet()" *ngIf="actionBtnSavePaperWallet">
+                <span class="color-white">Accept</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
 </div>

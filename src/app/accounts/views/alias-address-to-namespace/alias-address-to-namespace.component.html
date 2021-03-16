@@ -26,11 +26,11 @@
           <div class="col-11 mx-auto">
             <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
               [searchable]="false" class="selectWrapper" [items]="typeAction" formControlName="typeAction"
-              bindLabel="label" bindValue="value" placeholder="Select Action" (change)="buildSelectNamespace($event);">
+              bindLabel="label" bindValue="value" placeholder="Select action" (change)="buildSelectNamespace($event);">
             </ng-select>
             <mdb-error class="mt-05rem ml-1rem"
               *ngIf="validateInput('typeAction').invalid && (validateInput('typeAction').dirty || validateInput('typeAction').touched)">
-              <span class="fs-08rem fw-600 color-error-message">Action is Required</span>
+              <span class="fs-08rem  color-error-message">Action is required</span>
             </mdb-error>
           </div>
         </div>
@@ -39,10 +39,10 @@
           <div class="col-11 mx-auto">
             <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
               [searchable]="false" class="selectWrapper" [items]="namespaceSelect" formControlName="namespace"
-              bindLabel="label" bindValue="value" placeholder="Select Namespace"></ng-select>
+              bindLabel="label" bindValue="value" placeholder="Select namespace"></ng-select>
             <mdb-error class="mt-05rem ml-1rem"
               *ngIf="validateInput('namespace').invalid && (validateInput('namespace').dirty || validateInput('namespace').touched)">
-              <span class="fs-08rem fw-600 color-error-message">Namespace is Required</span>
+              <span class="fs-08rem color-error-message">Namespace is required</span>
             </mdb-error>
           </div>
         </div>
@@ -78,17 +78,17 @@
                   <!-- Required field -->
                   <mdb-error
                     *ngIf="validateInput('address', '').invalid && (validateInput('address', '').dirty || validateInput('address', '').touched)">
-                    <span class="fs-08rem fw-600 color-error-message mb-05rem mt-05rem">Address Required</span>
+                    <span class="fs-08rem  color-error-message mb-05rem mt-05rem">Address required</span>
                   </mdb-error>
 
                   <!-- VALIDATION -->
                   <mdb-error *ngIf="validateInput('address', '').valid && !isValidBlockchain && validFormat">
-                    <span class="fs-08rem fw-600 color-error-message mt-05rem">Address not valid in blockchain</span>
+                    <span class="fs-08rem  color-error-message mt-05rem">Address not valid in blockchain</span>
                   </mdb-error>
 
                   <!-- VALIDATION 2-->
                   <mdb-error *ngIf="validateInput('address', '').valid && !validFormat && !isValidBlockchain">
-                    <span class="fs-08rem fw-600 color-error-message mt-05rem">Address not valid</span>
+                    <span class="fs-08rem  color-error-message mt-05rem">Address not valid</span>
                   </mdb-error>
                 </div>
               </div>
@@ -162,7 +162,7 @@
               <!-- VALIDATION -->
               <mdb-error
                 *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
-                <span class="fs-08rem fw-600 color-error-message">Password Required</span>
+                <span class="fs-08rem color-error-message">Password required</span>
               </mdb-error>
             </div>
           </div>

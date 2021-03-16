@@ -6,7 +6,7 @@
         <!-- UPLOAD APOSTILLE -->
         <mdb-stepper #stepper [linear]="true">
           <!-- FIRST FORM -->
-          <mdb-step name="File for Processing" [stepForm]="apostilleFormOne" class="step1" [completed]="false">
+          <mdb-step name="File for processing" [stepForm]="apostilleFormOne" class="step1" [completed]="false">
             <form [formGroup]="apostilleFormOne">
               <div class="row">
                 <div class="col-11 mb-1rem mx-auto box-transparent-border-red" *ngIf="insufficientBalance">
@@ -209,7 +209,7 @@
                 <div class="col-12">
                   <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
                     class="selectWrapper" [items]="typeEncrypted" formControlName="typeEncrypted" bindLabel="label"
-                    bindValue="value" placeholder="Select Hashing Algorithm">
+                    bindValue="value" placeholder="Select hashing algorithm">
                   </ng-select>
                 </div>
               </div>
@@ -288,7 +288,7 @@
                     <!-- VALIDATION -->
                     <mdb-error
                       *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
-                      <span>Password Required</span>
+                      <span>Password required</span>
                     </mdb-error>
 
 
@@ -349,7 +349,7 @@
 
               <div class="col-12 col-sm-8 col-md-9 lh-1em pt-04rem">
                 <div>
-                  <span class="w-b-a fw-600">File hash</span>
+                  <span class="w-b-a fw-600">File Hash</span>
                 </div>
                 <div>
                   <span class="w-b-a w-w-b-w fs-08rem mt-1rem">{{ntyData.fileHash}}</span>

@@ -68,7 +68,7 @@
                       <input max="{{minApprovaMaxLength}}" min="{{minApprovaMinLength}}"
                         formControlName="minApprovalDelta" required mdbInputDirective mdbValidate
                         [validateSuccess]="true" [validateError]="true" type="number" id="minApprovalDelta"
-                        class="form-control form-control-sm input-border" placeholder="Min approval"
+                        class="form-control form-control-sm input-border" placeholder="Min Approval"
                         onkeyup="javascript:this.value=this.value.toLowerCase();">
 
                       <span *ngIf="isMultisig">Min Approva : {{accountInfo.multisigInfo.minApproval}}</span>
@@ -99,7 +99,7 @@
                 <div class="md-form form-sm mt-1rem mb-0rem">
                   <input max="{{minApprovaMaxLength}}" min="{{minApprovaMinLength}}" formControlName="minRemovalDelta"
                     required mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="number"
-                    id="minRemovalDelta" class="form-control form-control-sm input-border" placeholder="Min removal"
+                    id="minRemovalDelta" class="form-control form-control-sm input-border" placeholder="Min Removal"
                     onkeyup="javascript:this.value=this.value.toLowerCase();">
 
                   <span *ngIf="isMultisig">Min Removal : {{accountInfo.multisigInfo.minRemoval}}</span>

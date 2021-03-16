@@ -278,7 +278,7 @@ export class CreatePollComponent implements OnInit {
 
       this.calculateFee();
     } else {
-      this.sharedService.showError('', 'option already added');
+      this.sharedService.showError('', 'Option already added');
     }
   }
 
