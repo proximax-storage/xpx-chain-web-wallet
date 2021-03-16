@@ -278,7 +278,7 @@
         <table mdbTable mdbTableScroll scrollX="true" striped="true">
           <thead>
             <tr class="header-backg">
-              <th *ngFor="let head of headElements" scope="col" class="fs-075rem txt-a-left ">{{head}}
+              <th *ngFor="let head of mainHeaders" scope="col" class="fs-075rem txt-a-left ">{{head}}
               </th>
             </tr>
           </thead>
@@ -319,6 +319,14 @@
                     <span>{{el.recipientRentalFeeSink}}</span>
                   </td>
                 </ng-template>
+
+                <!-- block height and timestamp -->
+                <ng-container *ngIf="viewType === 1">
+                  <td class="th-md description-dark-green fs-07rem">
+                    <span>{{el.height}}</span>
+                    <span *ngIf="displayTimestamp && el.timestamp !== undefined"> ( {{ el.timestamp }} )</span>
+                  </td>
+                </ng-container>
               </tr>
             </ng-container>
 

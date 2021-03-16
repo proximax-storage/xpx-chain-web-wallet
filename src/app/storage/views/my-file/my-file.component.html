@@ -22,8 +22,8 @@
 
         <div
           class="col-12 col-md-12 col-lg-2 d-flex align-items-center justify-content-center background-dark-green-plus pt-05rem">
-          <button mdbBtn type="submit" rounded="true" mdbWavesEffect
-            class="btn-proximax" size="md" (click)="searchData()">
+          <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="btn-proximax" size="md"
+            (click)="searchData()">
             <span class="fs-1em color-white">Search</span>
           </button>
         </div>
@@ -51,8 +51,7 @@
   <div class="row mt-2rem">
 
     <div class="col-12 d-flex justify-content-center background-dark-green-plus pt-05rem">
-      <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="btn-proximax"
-        size="md" (click)="clearData()">
+      <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="btn-proximax" size="md" (click)="clearData()">
         <span class="fs-1em color-white">Refresh</span>
       </button>
     </div>
@@ -170,19 +169,86 @@
               </div>
             </div>
             <div class="row mt-2rem">
-              <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end mx-auto"  *ngIf="dataSelected.encryptionType === 1004">
-                <button mdbBtn type="button" rounded="true" mdbWavesEffect
-                  class="btn-proximax" size="md" (click)="clearForm()">
+              <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end mx-auto"
+                *ngIf="dataSelected.encryptionType === 1004">
+                <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="md"
+                  (click)="clearForm()">
                   <span class="fs-1-2em color-white">Reset</span>
                 </button>
               </div>
               <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start mx-auto">
-                <button mdbBtn type="submit" rounded="true" mdbWavesEffect
-                  class="btn-proximax"
+                <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="btn-proximax"
                   [disabled]="dataSelected.encryptionType !== 1001 && dataSelected.encryptionType !== 1004" size="md">
                   <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
                     *ngIf="downloading"></span>
                   <span class="fs-1-2em color-white">Download</span>
+                </button>
+              </div>
+            </div>
+          </form>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- MODAL PASSWORD -->
+<div mdbModal #mdbModalPassword="mdbModal" id="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="mdbModalPassword" aria-hidden="true" (open)="onDownloadFormOpen($event)">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content form-elegant b-r-08rem">
+      <div class="modal-header text-center box-modal-grey b-t-r-r-08rem b-t-l-r-08rem">
+        <h6 class="modal-title w-100 dark-grey-text" id="myModalLabel">
+          <strong class="title-modal-grey">Password</strong>
+        </h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="mdbModalPasswordClose()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <!--Body-->
+      <div class="modal-body">
+        <ng-container *ngIf="downloadPrivate">
+
+          <!-- {{configurationForm.passwordWallet | json}} -->
+          <form [formGroup]="passwordForm" (ngSubmit)="getFilesCustom()">
+            <div class="row">
+              <div class="col-11 mx-auto">
+                <div class="md-form form-sm mt-1rem mb-0rem">
+                  <img class="form-control-feedback"
+                    src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
+                  <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
+                    src="assets/images/img/icon-show-hide-password.svg" *ngIf="passwordMain === 'password'">
+                  <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
+                    src="assets/images/img/icon-show-hide-password-grey.svg" *ngIf="passwordMain === 'text'">
+                  <input [maxlength]="configurationForm.passwordWallet.maxLength"
+                    [minlength]="configurationForm.passwordWallet.minLength" formControlName="password"
+                    mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" [type]="passwordMain"
+                    id="passwordWallet" class="form-control form-control-sm input-border"
+                    placeholder="Enter Wallet Password">
+                  <mdb-error
+                    *ngIf="
+                        validateInputPasswordForm('password').invalid &&
+                        (validateInputPasswordForm('password').dirty || validateInputPasswordForm('password').touched)">
+                    <span class="fw-600">Password Required</span>
+                  </mdb-error>
+                </div>
+              </div>
+            </div>
+            <!-- buttons create and clear -->
+            <div class="row mt-2rem">
+              <div class="col-11 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+                <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="sm"
+                  (click)="passwordForm.reset()">
+                  <span class="color-white">Clear</span>
+                </button>
+              </div>
+
+              <div class="col-11 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+                <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="btn-proximax" size="sm"
+                  [disabled]="passwordForm.invalid">
+                  <!-- <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+                    *ngIf="spinnerButton"></span> -->
+                  <span class="color-white">Search</span>
                 </button>
               </div>
             </div>

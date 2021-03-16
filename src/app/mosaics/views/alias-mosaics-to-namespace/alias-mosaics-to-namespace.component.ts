@@ -234,7 +234,7 @@ export class AliasMosaicsToNamespaceComponent implements OnInit, OnDestroy {
             // let label = await this.namespaceService.getNameParentNamespace(namespaceStorage);
             let label = namespaceStorage.namespaceName.name;
             if (namespaceStorage.namespaceInfo.alias.type === 1) {
-              this.mosaicstoHex = new MosaicId([namespaceStorage.namespaceInfo.alias.mosaicId[0], namespaceStorage.namespaceInfo.alias.mosaicId[1]]);
+              this.mosaicstoHex = new MosaicId([namespaceStorage.namespaceInfo.alias.mosaicId.id.lower, namespaceStorage.namespaceInfo.alias.mosaicId.id.higher]);
 
             }
             const name = label;
