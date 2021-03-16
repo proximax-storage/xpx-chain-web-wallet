@@ -130,9 +130,9 @@ export class PollsComponent implements OnInit {
   setSelectFilter() {
     this.filterObjectSelect = [
       { value: 'All', label: 'All', disabled: false, selected: true },
-      { value: 'name', label: 'name', disabled: false },
-      { value: 'typeName', label: 'type', disabled: false },
-      { value: 'statusPoll', label: 'status', disabled: false },
+      { value: 'name', label: 'Name', disabled: false },
+      { value: 'typeName', label: 'Type', disabled: false },
+      { value: 'statusPoll', label: 'Status', disabled: false },
       { value: 'address', label: 'ID Address (private poll)', disabled: false, selected: true }
 
     ]

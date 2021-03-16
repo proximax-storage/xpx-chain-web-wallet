@@ -89,7 +89,7 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
         } else if (this.typeSearch === 'hash') {
           tp = 'a hash';
         } else if (this.typeSearch === 'publickey') {
-          tp = 'a publickey';
+          tp = 'a public key';
         }
 
         this.sharedService.showError('', `Please, add ${tp}`);
