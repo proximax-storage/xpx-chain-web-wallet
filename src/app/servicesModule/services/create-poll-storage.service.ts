@@ -287,8 +287,8 @@ export interface PollInterface {
   isPrivate: boolean,
   isMultiple: boolean,
   options: optionsPoll[];
-  whitelist: Object[];
-  blacklist?: Object[];
+  whiteList: Object[];
+  blackList?: Object[];
   startDate: Date;
   endDate: Date;
   createdDate: Date;

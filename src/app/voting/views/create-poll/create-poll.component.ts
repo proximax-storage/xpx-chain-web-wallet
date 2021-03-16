@@ -533,7 +533,7 @@ export class CreatePollComponent implements OnInit {
  * @param name - name poll
  * @param description - description poll
  * @param id - identifier
- * @param type - 0 = withe list , 1 = public,
+ * @param type - 0 = white list , 1 = public,
  * @param startDate - poll start date
  * @param endDate - poll end date
  * @param createdDate - poll creation date
@@ -549,7 +549,7 @@ export interface PollInterface {
   isMultiple: boolean,
   options: optionsPoll[];
   whiteList: Object[];
-  blacklist?: Object[];
+  blackList?: Object[];
   startDate: Date;
   endDate: Date;
   createdDate: Date;

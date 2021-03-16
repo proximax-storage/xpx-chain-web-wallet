@@ -374,7 +374,7 @@ export interface PollInterface {
   isMultiple: boolean,
   options: optionsPoll[];
   whiteList: Object[];
-  blacklist?: Object[];
+  blackList?: Object[];
   startDate: Date;
   endDate: Date;
   createdDate: Date;
