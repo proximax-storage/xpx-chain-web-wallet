@@ -15,7 +15,7 @@
         </ng-select>
         <mdb-error class="mt-03rem ml-1rem"
           *ngIf="validateInput('wallet').invalid && (validateInput('wallet').dirty || validateInput('wallet').touched)">
-          <span class="fw-600">Select a wallet</span>
+          <span >Select a wallet</span>
         </mdb-error>
       </div>
     </div>
@@ -40,7 +40,7 @@
             <mdb-error *ngIf="
                   validateInput('password', 'common').invalid &&
                   (validateInput('password', 'common').dirty || validateInput('password', 'common').touched)">
-              <span class="fw-600">Password required</span>
+              <span >Password required</span>
             </mdb-error>
           </div>
         </div>
