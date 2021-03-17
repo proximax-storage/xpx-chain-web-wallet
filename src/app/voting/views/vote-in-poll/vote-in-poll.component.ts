@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { formatDate } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { PublicAccount, Address, InnerTransaction, UInt64, Account, AggregateTransaction, Deadline, TransactionHttp, SignedTransaction, Transaction, PlainMessage } from 'tsjs-xpx-chain-sdk';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
@@ -719,22 +720,32 @@ export class VoteInPollComponent implements OnInit {
       const existBlock = this.dataBridge.filterBlockStorage(height);
 
       if(this.timestamp){
-        transaction.timestamp = this.timestamp;
+        transaction.timestamp = this.convertCertDateTime(this.timestamp);
+
       }else if (existBlock) {
 
         this.timestamp = this.transactionService.dateFormatUTC(new UInt64([existBlock.timestamp.lower, existBlock.timestamp.higher]));
-        transaction.timestamp = this.timestamp;
+        transaction.timestamp = this.convertCertDateTime(this.timestamp);
 
       } else {
         this.proximaxProvider.getBlockInfo(height).subscribe(
           (blockInfo) =>{
             this.dataBridge.validateBlock(blockInfo);
             this.timestamp = this.transactionService.dateFormatUTC(blockInfo.timestamp);
-            transaction.timestamp = this.timestamp;
+            transaction.timestamp = this.convertCertDateTime(this.timestamp);
             this.dashboardService.saveBlockTimestamp(this.dataBridge.blockInfo.generationHash, height, this.timestamp);
           });
       }
     }
+  }
+
+  convertCertDateTime(dateTime: string): string{
+    let dateFormat = "MM/dd/yyyy";
+    let date = new Date(this.timestamp);
+    let timezone = -date.getTimezoneOffset();
+    let localeTime = date.toLocaleTimeString();
+
+    return formatDate(date, dateFormat, 'en-us', timezone.toString()) + ' ' + localeTime;
   }
 }
 
