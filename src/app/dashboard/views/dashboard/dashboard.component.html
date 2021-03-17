@@ -125,6 +125,116 @@
   </div>
 </div>
 
+<div class="container-fluid mt-1rem">
+  
+  <div class="row">
+    <div class="col-9 col-lg-8 mx-auto">
+
+      <div class="row no-gutters justify-content-center mt-06rem mb-06rem">
+        <div class="btn-group" role="group">
+          <button type="button" class="btn btn-rounded btn-sm namespace-mosaic-info {{ namespaceAssetView == 0 ? 'selected': ''}}" (click)="namespaceAssetView = 0">Namespaces</button>
+          <button type="button" class="btn btn-rounded btn-sm namespace-mosaic-info {{ namespaceAssetView == 1 ? 'selected': ''}}" (click)="namespaceAssetView = 1">Other Mosaics</button>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12">
+          <div class="datatable-style max-w-table">
+            <table mdbTable mdbTableScroll scrollX="true" striped="true">
+    
+              <ng-container *ngIf="namespaceAssetView == 0">
+                <thead>
+                  <tr class="header-backg">
+                    <th *ngFor="let head of namespaceHeaders" scope="col" class="fs-075rem txt-a-left ">{{head}}
+                    </th>
+                  </tr>
+                </thead>
+    
+                <tbody>
+                  <ng-container *ngFor="let el of dashBoardNamespaceInfoList">
+                    <tr class="white-space-pre">
+    
+                      <td class="th-md fs-07rem">
+                        <span class="uppercase">{{el.id}}</span>
+                      </td>
+    
+                      <td class="th-md fs-07rem">
+                        <span>{{el.name}}</span>
+                      </td>
+    
+                      <td class="th-md fs-07rem">
+                        <span>{{el.linkType}}</span>
+                      </td>
+    
+                      <td class="th-md fs-07rem">
+                        <span class="uppercase">{{el.linkedInfo}}</span>
+                      </td>
+    
+                      <td class="th-md fs-07rem">
+                        <span class="uppercase {{ el.active ? 'green-text': 'red-text' }}" >{{el.active}}</span>
+                      </td>
+                    </tr>
+                  </ng-container>
+                  <ng-container *ngIf="dashBoardNamespaceInfoList.length === 0">
+                    <tr>
+                      <td [attr.colspan]="namespaceHeaders.length" class="txt-a-center">nothing to show</td>
+                    </tr>
+                  </ng-container>
+                </tbody>
+              </ng-container>
+    
+              <ng-container *ngIf="namespaceAssetView == 1">
+                <thead>
+                  <tr class="header-backg">
+                    <th *ngFor="let head of assetHeaders" scope="col" class="fs-075rem txt-a-left ">{{head}}
+                    </th>
+                  </tr>
+                </thead>
+    
+                <tbody>
+                  <ng-container *ngFor="let el of dashBoardAssetInfoList">
+                    <tr class="white-space-pre">
+                      <td class="th-md fs-07rem">
+                        <span class="uppercase {{ el.owner ? 'green-text': 'red-text' }}">{{el.owner}}</span>
+                      </td>
+    
+                      <td class="th-md fs-07rem">
+                        <span class="uppercase">{{el.id}}</span>
+                      </td>
+    
+                      <td class="th-md fs-07rem">
+                        <span class="uppercase">{{el.namespaceId}}</span>
+                      </td>
+    
+                      <td class="th-md fs-07rem">
+                        <span>{{el.name}}</span>
+                      </td>
+    
+                      <td class="th-md fs-07rem">
+                        <span>{{el.quantity}}</span>
+                      </td>
+    
+                      <td class="th-md fs-07rem">
+                        <span class="uppercase {{ el.active ? 'green-text': 'red-text' }}">{{el.active}}</span>
+                      </td>
+                    </tr>
+                  </ng-container>
+                  <ng-container *ngIf="dashBoardAssetInfoList.length === 0">
+                    <tr>
+                      <td [attr.colspan]="assetHeaders.length" class="txt-a-center">nothing to show</td>
+                    </tr>
+                  </ng-container>
+                </tbody>
+              </ng-container>
+    
+            </table>
+          </div>
+        </div>
+      </div> 
+    </div>
+  </div>
+</div>
+
 <!-- TABLE -->
 <div class="container-fluid">
   <!-- FIELD SEARCH -->
