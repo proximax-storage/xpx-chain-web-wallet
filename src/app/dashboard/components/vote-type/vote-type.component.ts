@@ -1,7 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { TransactionsInterface, TransactionsService } from '../../../transactions/services/transactions.service';
 import * as jsPDF from 'jspdf'
-import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-vote-type',
@@ -57,18 +56,13 @@ export class VoteTypeComponent implements OnInit {
     })
 
     doc.addImage(imgData, 'JPEG', 1, 1, 1000, 707, '', 'NONE')
-    //doc.addImage(document.getElementById("template"), 'JPEG', 1, 1, 1000, 707, '', 'NONE')
     doc.setFontSize(50)
-
-    let dateFormat = "MM/dd/yyyy";
-    let date = new Date(this.transactionInfo.timestamp);
-    let timezone = -date.getTimezoneOffset();
 
     let leftCol = 45, secCol = 190, dateCol = 380;
     let dateRow = 255, feeRow = 295, titleRow = 335, 
       signerRow = 365, signatureRow = 425, hashRow = 515;
 
-    doc.text(formatDate(date, dateFormat, 'en-us', timezone.toString()), dateCol, dateRow)
+    doc.text(this.transactionInfo.timestamp, dateCol, dateRow)
 
     doc.text('Effective Fee:', leftCol, feeRow);
     doc.text(this.transactionInfo.fee.concat(' XPX'), secCol, feeRow );
