@@ -156,13 +156,13 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     }));
 
     this.subscription.push(this.mosaicService.getMosaicChanged().subscribe(next => {
-      if (next > 0) {
+      if (next && next > 0) {
         this.getAccountMosaicNamespace();
       }
     }));
 
     this.subscription.push(this.namespacesService.getNamespaceChanged().subscribe(next => {
-      if (next.length > 0) {
+      if (next && next.length > 0) {
         this.getAccountMosaicNamespace();
       }
     }));
