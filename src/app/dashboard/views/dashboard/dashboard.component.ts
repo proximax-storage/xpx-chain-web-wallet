@@ -503,7 +503,9 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       this.mdbTable.setDataSource(this.transactionsConfirmed);
       this.transactions = this.mdbTable.getDataSource();
       this.previous = this.mdbTable.getDataSource();
-      this.getAccountMosaicNamespace();
+      if(next && next.length){
+        this.getAccountMosaicNamespace();
+      }
       this.updateTimestamp();
       this.selectTransactions(1);
     }));
