@@ -97,8 +97,8 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     deleteAccount: `/${AppConfig.routes.deleteAccount}/`,
   };
 
-  namespaceHeaders = ['NAMESPACE ID', 'NAME', 'LINK TYPE', 'MOSAIC ID/ADDRESS', 'ACTIVE'];
-  assetHeaders = ['OWNER', 'MOSAIC ID', 'NAMESPACE ID', 'ALIAS NAME', 'QUANTITY', 'ACTIVE'];
+  namespaceHeaders = ['Namespace Id', 'Name', 'Link Type', 'Mosaic Id/Address', 'Active'];
+  assetHeaders = ['Owner', 'Mosaic Id', 'Namespace Id', 'Alias Name', 'Quantity', 'Active'];
   namespaceAssetView = 0;
   dashBoardNamespaceInfoList: DashboardNamespaceInfo[] = [];
   dashBoardAssetInfoList: DashboardMosaicInfo[] = [];
@@ -205,8 +205,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
       var rawQuantity = matchedMosaic ? matchedMosaic.amount.compact() : 0;
 
-      let mosaicBalance = this.transactionService.amountFormatterSimple(rawQuantity, ownedMosaic.mosaicInfo.divisibility);
-      //let mosaicBalance = this.transactionService.getDataPart(amountFormatter, ownedMosaic.mosaicInfo.divisibility);
+      let mosaicBalance = this.transactionService.amountFormatterSimple(rawQuantity, ownedMosaic.mosaicInfo['properties'].divisibility);
 
       if(ownedMosaic.isNamespace){
         for (const iterator of ownedMosaic.mosaicNames.names) {
