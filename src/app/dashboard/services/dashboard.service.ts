@@ -100,7 +100,7 @@ export class DashboardService {
   saveBlockTimestamp(genHash: string, block: number, timestamp: string) {
 
     let blockTimestampStorage = this.getBlockTimestampStorage();
-    let blockTimestampStorageSingle = this.getBlockTimestampStorage(genHash);
+    let blockTimestampStorageSingle = this.filterBlockTimestampStorage(genHash);
 
     let blockTimestamp = blockTimestampStorageSingle ? blockTimestampStorageSingle : { genHash: genHash, blockTimestampInfo: []};
     let blockTimestampInfo = blockTimestamp['blockTimestampInfo'];
@@ -140,21 +140,54 @@ export class DashboardService {
 
   /**
    *
-   * @returns any[]
    * @memberof DashboardService
    */
-  getBlockTimestampStorage(genHash?: string): any[] {
+  saveChainTimestamp(genHash: string, blockTimestampInfo: BlockTimestamp[]) {
+
+    let blockTimestampStorage = this.getBlockTimestampStorage();
+    let blockTimestampStorageSingle = this.filterBlockTimestampStorage(genHash);
+
+    let blockTimestamp = blockTimestampStorageSingle ? blockTimestampStorageSingle : { genHash: genHash, blockTimestampInfo: []};
+
+    blockTimestamp['blockTimestampInfo'] = blockTimestampInfo;
+
+    const existGenHash = blockTimestampStorage.findIndex(b => b.genHash === genHash);
+
+    if (existGenHash < 0) {
+      blockTimestampStorage.push(blockTimestamp);
+    }
+    else{
+      blockTimestampStorage[existGenHash] = blockTimestamp;
+    }
+
+    localStorage.setItem(environment.nameKeyBlockTimestamp, JSON.stringify(blockTimestampStorage));
+  }
+
+  /**
+   *
+   * @returns BlockChainTimestamp
+   * @memberof DashboardService
+   */
+  filterBlockTimestampStorage(genHash: string): BlockChainTimestamp {
     
     let blockTimestampStorage = JSON.parse(localStorage.getItem(environment.nameKeyBlockTimestamp)) || [];
 
-    if(genHash){
-      const existGenHash = blockTimestampStorage.findIndex(b => b.genHash === genHash);
+    const existGenHash = blockTimestampStorage.findIndex(b => b.genHash === genHash);
 
-      return existGenHash >= 0 ? blockTimestampStorage[existGenHash]: null;
-    }
-    else{
-      return blockTimestampStorage;
-    }
+    return existGenHash >= 0 ? blockTimestampStorage[existGenHash]: null;
+
+  }
+
+  /**
+   *
+   * @returns BlockChainTimestamp[]
+   * @memberof DashboardService
+   */
+  getBlockTimestampStorage(): BlockChainTimestamp[]{
+    
+    let blockTimestampStorage = JSON.parse(localStorage.getItem(environment.nameKeyBlockTimestamp)) || [];
+
+    return blockTimestampStorage;
   }
 
   /**
@@ -183,6 +216,74 @@ export class DashboardService {
       return null;
     }
   }
+
+  /**
+   * @memberof DashboardService
+   */
+  resetStorageBlockTimestamp(genHash: string): any {
+    
+    let blockTimestampStorage = JSON.parse(localStorage.getItem(environment.nameKeyBlockTimestamp)) || [];
+
+    if(blockTimestampStorage.length > 0){
+      const existGenHash = blockTimestampStorage.findIndex(b => b.genHash === genHash);
+
+      if(existGenHash >= 0){
+        let chainBlockTimestamp = blockTimestampStorage[existGenHash];
+        let newChainBlockTimestamp = [];
+
+        for(var i=0; i < chainBlockTimestamp['blockTimestampInfo'].length; i++){
+          let blockTime = "";
+
+          try{
+            var date = new Date(chainBlockTimestamp['blockTimestampInfo'][i].timestamp);
+
+            blockTime = date.toISOString();
+
+            let blockTimestamp: BlockTimestamp = {
+              block: chainBlockTimestamp['blockTimestampInfo'][i].block,
+              timestamp: blockTime
+            };
+
+            newChainBlockTimestamp.push(blockTimestamp);
+
+          }catch(error){
+
+          }
+        }
+
+        this.saveChainTimestamp(genHash, newChainBlockTimestamp);
+      }
+    }
+  }
+
+  checkLocalTimestamp(dateTimeString: string){
+    let date = new Date(dateTimeString);
+
+    return date.toISOString() === dateTimeString;
+  }
+
+  checkSavedDateTimeFormat(){
+    let blockChainsTimestamp: BlockChainTimestamp[] = this.getBlockTimestampStorage();
+    
+    for (const blockChainDateTime of blockChainsTimestamp) {
+       
+        let isCorrectFormat = this.checkLocalTimestamp(blockChainDateTime.blockTimestampInfo[0].timestamp);
+
+        if(!isCorrectFormat){
+          this.resetStorageBlockTimestamp(blockChainDateTime.genHash);
+        }
+    }
+  }
+}
+
+interface BlockChainTimestamp{
+  genHash: string,
+  blockTimestampInfo: BlockTimestamp[];
+}
+
+interface BlockTimestamp{
+  block: number,
+  timestamp: string;
 }
 
 export interface DashboardNamespaceInfo {

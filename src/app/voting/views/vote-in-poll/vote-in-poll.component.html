@@ -237,15 +237,17 @@
             <div class="row">
               <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
                 <div class="row">
-                  <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+                  <div class="col-md-12 text-center">
                     <button [disabled]="btnBlock" mdbBtn type="submit" rounded="true" mdbWavesEffect class="btn-proximax"
-                      size="md">
-                      <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
-                        *ngIf="blockSend"></span>
-                      <span class="fs-1-2em color-white">Vote</span>
+                        size="md">
+                        <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+                          *ngIf="blockSend"></span>
+                        <span class="fs-1-2em color-white">Vote</span>
+                      </button>
+                    <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
+                      size="md" [disabled]="statusValidate !== 'viewCertificate'" (click)="openCertificateModal()">
+                      <span class="fs-1-2em color-white">Certificate</span>
                     </button>
-                  </div>
-                  <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
                     <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
                       size="md" [disabled]="btnResult" (click)="getResult('RESULTS')">
                       <span class="fs-1-2em color-white">Result</span>

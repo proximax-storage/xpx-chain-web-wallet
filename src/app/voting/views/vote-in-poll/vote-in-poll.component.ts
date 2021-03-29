@@ -718,20 +718,24 @@ export class VoteInPollComponent implements OnInit {
   assignBlockHeightTime(height: number, transaction: TransactionsInterface){
     if (typeof (height) === 'number') {
       const existBlock = this.dataBridge.filterBlockStorage(height);
+      const existBlockTimestamp = this.dashboardService.getStorageBlockTimestamp(this.dataBridge.blockInfo.generationHash, height);
 
       if(this.timestamp){
         transaction.timestamp = this.convertCertDateTime(this.timestamp);
 
       }else if (existBlock) {
 
-        this.timestamp = this.transactionService.dateFormatUTC(new UInt64([existBlock.timestamp.lower, existBlock.timestamp.higher]));
+        this.timestamp = this.transactionService.dateFormatPureUTC(new UInt64([existBlock.timestamp.lower, existBlock.timestamp.higher]));
         transaction.timestamp = this.convertCertDateTime(this.timestamp);
 
-      } else {
+      }else if(existBlockTimestamp){
+        this.timestamp = existBlockTimestamp;
+        transaction.timestamp = this.convertCertDateTime(this.timestamp);
+      }else {
         this.proximaxProvider.getBlockInfo(height).subscribe(
           (blockInfo) =>{
             this.dataBridge.validateBlock(blockInfo);
-            this.timestamp = this.transactionService.dateFormatUTC(blockInfo.timestamp);
+            this.timestamp = this.transactionService.dateFormatPureUTC(blockInfo.timestamp);
             transaction.timestamp = this.convertCertDateTime(this.timestamp);
             this.dashboardService.saveBlockTimestamp(this.dataBridge.blockInfo.generationHash, height, this.timestamp);
           });
@@ -740,12 +744,11 @@ export class VoteInPollComponent implements OnInit {
   }
 
   convertCertDateTime(dateTime: string): string{
-    let dateFormat = "MM/dd/yyyy";
-    let date = new Date(this.timestamp);
+    let dateFormat = "MM/dd/yyyy HH:mm:ss";
+    let date = new Date(dateTime);
     let timezone = -date.getTimezoneOffset();
-    let localeTime = date.toLocaleTimeString();
 
-    return formatDate(date, dateFormat, 'en-us', timezone.toString()) + ' ' + localeTime;
+    return formatDate(date, dateFormat, 'en-us', timezone.toString());
   }
 }
 
