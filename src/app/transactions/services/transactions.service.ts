@@ -467,6 +467,17 @@ export class TransactionsService {
 
   /**
    *
+   *
+   * @param {UInt64} date
+   * @returns
+   * @memberof TransactionsService
+   */
+  dateFormatPureUTC(date: UInt64) {
+    return new Date(date.compact() + 1459468800 * 1000).toISOString();
+  }
+
+  /**
+   *
    * @param deadline
    */
   dateFormatLocal(deadline: Deadline) {

@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef, HostListener, Inject, AfterViewInit } from '@angular/core';
 import { MdbTableDirective, ModalDirective } from 'ng-uikit-pro-standard';
 import * as qrcode from 'qrcode-generator';
+import { formatDate } from '@angular/common';
 import { first } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { UInt64 } from 'tsjs-xpx-chain-sdk';
@@ -166,6 +167,8 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         this.getAccountMosaicNamespace();
       }
     }));
+
+    this.dashboardService.checkSavedDateTimeFormat();
   }
 
   ngOnDestroy(): void {
@@ -584,9 +587,9 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       for (const tx of this.transactionsConfirmed) {
 
         var timestamp = this.dashboardService.getStorageBlockTimestamp(this.transactionService.generationHash, tx.height);
-  
+
         if(timestamp){
-          tx.timestamp = timestamp;
+          tx.timestamp = this.convertDateTimeFormat(timestamp);
         }
       }
 
@@ -601,6 +604,14 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+  convertDateTimeFormat(dateTime: string): string{
+    let dateFormat = "MM/dd/yyyy HH:mm:ss";
+    let date = new Date(dateTime);
+    let timezone = - date.getTimezoneOffset();
+
+    return formatDate(date, dateFormat, 'en-us', timezone.toString());
+  }
+
   /**
    *
    *
@@ -610,12 +621,14 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   openModal(transaction: TransactionsInterface) {
     if (transaction.data['transactionInfo'] && transaction.data['transactionInfo'].height) {
       const height = transaction.data['transactionInfo'].height.compact();
+      let UTCDateTime = "";
       if (typeof (height) === 'number') {
         const existBlock = this.dataBridge.filterBlockStorage(height);
         if (existBlock) {
           // console.log('In cache', existBlock);
-          transaction.timestamp = `${this.transactionService.dateFormatUTC(new UInt64([existBlock.timestamp.lower, existBlock.timestamp.higher]))}`;
-          this.dashboardService.saveBlockTimestamp(this.dataBridge.blockInfo.generationHash, height, transaction.timestamp);
+          UTCDateTime = `${this.transactionService.dateFormatPureUTC(new UInt64([existBlock.timestamp.lower, existBlock.timestamp.higher]))}`;
+          transaction.timestamp = this.convertDateTimeFormat(UTCDateTime);
+          this.dashboardService.saveBlockTimestamp(this.dataBridge.blockInfo.generationHash, height, UTCDateTime);
           const calculateEffectiveFee = this.transactionService.amountFormatterSimple(existBlock.feeMultiplier * transaction.data.size);
           transaction.effectiveFee = this.transactionService.getDataPart(calculateEffectiveFee, 6);
           // console.log('Effective fee ---> ', transaction.effectiveFee);
@@ -624,8 +637,9 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             next => {
               // console.log('Http', next);
               this.dataBridge.validateBlock(next);
-              transaction.timestamp = `${this.transactionService.dateFormatUTC(next.timestamp)}`;
-              this.dashboardService.saveBlockTimestamp(this.dataBridge.blockInfo.generationHash, height, transaction.timestamp);
+              UTCDateTime = `${this.transactionService.dateFormatPureUTC(next.timestamp)}`;
+              transaction.timestamp = this.convertDateTimeFormat(UTCDateTime);
+              this.dashboardService.saveBlockTimestamp(this.dataBridge.blockInfo.generationHash, height, UTCDateTime);
               const calculateEffectiveFee = this.transactionService.amountFormatterSimple(next.feeMultiplier * transaction.data.size);
               transaction.effectiveFee = this.transactionService.getDataPart(calculateEffectiveFee, 6);
               // console.log('Effective fee ---> ', transaction.effectiveFee);
