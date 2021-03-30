@@ -81,6 +81,7 @@ export class VoteTypeComponent implements OnInit {
 
     doc.text('Hash:', leftCol, hashRow);
     doc.text(this.hash, secCol, hashRow);
+    doc.setProperties({ title: 'Voting Certificate'});
 
     switch (type) {
       case 0:
@@ -88,7 +89,7 @@ export class VoteTypeComponent implements OnInit {
         break;
 
       case 1:
-        doc.output('dataurlnewwindow'); //opens the data uri in new window
+        window.open(doc.output("bloburl", {filename: 'voting_certificate.pdf'}), '_blank');
         break;  
     }
   }
