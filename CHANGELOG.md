@@ -4,6 +4,7 @@
 <ul>
 <h3>Dashboard</h3>
  <li>Confirmed transaction will now be sorted based on block height</li>
+ <li>Confirmed transaction will now display block height</li>
 
 <h3>Decrypt message</h3>
 <li>Sender can now decrypt message by manually fill in the recipient public key when recipient public key not found from blockchain</li>
