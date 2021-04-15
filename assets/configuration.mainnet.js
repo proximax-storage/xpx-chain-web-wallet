@@ -16,10 +16,10 @@ dynamic_configuration = {
     activeModulesBox: {
       voting: {
         viewChildrenParam: true,  
-        createPoll: false,
-        vote: false,
-        viewResult: false,
-        classNameParam: 'disable-module'
+        createPoll: true,
+        vote: true,
+        viewResult: true,
+        classNameParam: ''
       },
       storage: {
         viewChildrenParam: true,
@@ -33,6 +33,9 @@ dynamic_configuration = {
         attest: true,
         audit: true,
         classNameParam: ''
+      },
+      siriusid: {
+        show: false
       },
     },
     protocol: `https`,
