@@ -37,7 +37,7 @@
     <div class="col-12 col-md-10 col-lg-8 mx-auto">
       <div class="row d-flex justify-content-center">
         <ng-container *ngFor="let button of boxCreateWallet">
-          <div class="col-12 col-sm-4 d-flex justify-content-center justify-content-sm-around" *ngIf="boxCreateWallet[0].show">
+          <div class="col-12 col-sm-4 d-flex justify-content-center justify-content-sm-around">
             <button (click)="showModal()" mdbBtn type="button" rounded="true" mdbWavesEffect
               class="btn-proximax" size="sm">
               <span class="color-white">{{ button.title }}</span>
