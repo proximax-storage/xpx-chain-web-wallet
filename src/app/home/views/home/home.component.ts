@@ -39,6 +39,7 @@ export class HomeComponent implements OnInit {
   subscription: Subscription[] = [];
   walletDecryp: any;
   qrInvitation;
+  disableModules = environment.activeModulesBox;
 
   constructor(
     public authService: AuthService,
@@ -52,6 +53,7 @@ export class HomeComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    
     this.walletService.accountWalletCreated = null;
     this.receiveEventShowModal();
     this.servicesList = [
@@ -90,7 +92,7 @@ export class HomeComponent implements OnInit {
         `/${this.link.createWallet}`
       ),this.services.buildStructureService(
         'Sign In With SiriusID',
-        true,
+        this.disableModules.siriusid.show,
         '',
         'icon-add-new-blue.svg',
         ''
@@ -101,7 +103,7 @@ export class HomeComponent implements OnInit {
         'icon-wallet-import-blue.svg',
         `/${this.link.selectTypeCreationWallet}`
       )
-    ];
+    ].filter(x=> x.show);
   }
 
   /**
