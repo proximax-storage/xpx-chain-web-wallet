@@ -35,25 +35,15 @@
   <!-- CREATE A WALLET -->
   <div class="row mt-3rem pb-2rem">
     <div class="col-12 col-md-10 col-lg-8 mx-auto">
-      <div class="row">
-        <div class="col-12 col-sm-4 d-flex justify-content-center justify-content-sm-end">
-          <button (click)="showModal()" mdbBtn type="button" rounded="true" mdbWavesEffect
-            class="btn-proximax" size="sm">
-            <span class="color-white">{{ boxCreateWallet[0].title }}</span>
-          </button>
-        </div>
-        <div class="col-12 col-sm-4 d-flex justify-content-center justify-content-sm-end">
-          <button (click)="showLoginModal()" mdbBtn type="button" rounded="true" mdbWavesEffect
-            class="btn-proximax" size="sm">
-            <span class="color-white">{{ boxCreateWallet[1].title }}</span>
-          </button>
-        </div>
-        <div class="col-12 col-sm-4 d-flex justify-content-center justify-content-sm-start">
-          <button [routerLink]="['/'+boxCreateWallet[2].route]" mdbBtn type="button" rounded="true" mdbWavesEffect
-            class="btn-proximax" size="sm">
-            <span class="color-white">{{ boxCreateWallet[2].title }}</span>
-          </button>
-        </div>
+      <div class="row d-flex justify-content-center">
+        <ng-container *ngFor="let button of boxCreateWallet">
+          <div class="col-12 col-sm-4 d-flex justify-content-center justify-content-sm-around" *ngIf="boxCreateWallet[0].show">
+            <button (click)="showModal()" mdbBtn type="button" rounded="true" mdbWavesEffect
+              class="btn-proximax" size="sm">
+              <span class="color-white">{{ button.title }}</span>
+            </button>
+          </div>
+        </ng-container>
       </div>
     </div>
   </div>

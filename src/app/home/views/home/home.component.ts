@@ -90,7 +90,7 @@ export class HomeComponent implements OnInit {
         `/${this.link.createWallet}`
       ),this.services.buildStructureService(
         'Sign In With SiriusID',
-        true,
+        false,
         '',
         'icon-add-new-blue.svg',
         ''
@@ -101,7 +101,7 @@ export class HomeComponent implements OnInit {
         'icon-wallet-import-blue.svg',
         `/${this.link.selectTypeCreationWallet}`
       )
-    ];
+    ].filter(x=> x.show);
   }
 
   /**
