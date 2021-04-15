@@ -25,10 +25,10 @@ dynamic_configuration = {
       },
       storage: {
         viewChildrenParam: true,
-        files: true,
-        uploadFiles: true,
+        files: false,
+        uploadFiles: false,
         sendShare: false,
-        classNameParam: ''
+        classNameParam: 'disable-module'
       },
       notarization: {
         viewChildrenParam: true,
@@ -36,6 +36,9 @@ dynamic_configuration = {
         audit: true,
         classNameParam: ''
       },
+      siriusid: {
+        show: true
+      }
     },
     protocol: `https`,
     protocolWs: `wss`,
