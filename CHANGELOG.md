@@ -1,3 +1,30 @@
+<!-- RELEASE TESTNET v0.5.6 -->
+## [Version: 0.5.6](https://github.com/proximax-storage/xpx-chain-web-wallet/releases/tag/release-v0.5.6)
+<h2>Update</h2>
+<ul>
+<h3>Dashboard</h3>
+ <li>Added owned namespace and mosaic list</li>
+<h3>Home</h3>
+ <li>Add activeModulesBox siriusID in configuration</li>
+ <li> Added (for) for the home buttons</li>
+<h3>Voting</h3>
+<li>Remove IPFS for voting, use pure Sirius Chain features instead</li>
+<li>Added a button to view vote certificate</li>
+<li>Update the vote certificate PDF to have high resolution</li>
+
+<h3>Date and time</h3>
+<li>Fixed date and time to have a fixed format</li>
+</ul>
+<h2>Feature</h2>
+<ul>
+<h3>Vote Certificate</h3>
+  <li>View PDF in browser</li>
+</ul>
+<h2>Service and module disabled</h2>
+<ul>
+<li>SiriusID (Mainnet)</li>
+<li>Module storage</li>
+</ul>
 <!-- RELEASE TESTNET v0.5.5 -->
 ## [Version: 0.5.5](https://github.com/proximax-storage/xpx-chain-web-wallet/releases/tag/release-v0.5.5)
  <h2>Update</h2>
