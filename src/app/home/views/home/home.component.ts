@@ -89,19 +89,20 @@ export class HomeComponent implements OnInit {
         true,
         '',
         'icon-add-new-blue.svg',
-        `/${this.link.createWallet}`
+        `signIn`
       ),this.services.buildStructureService(
         'Sign In With SiriusID',
         this.disableModules.siriusid.show,
         '',
         'icon-add-new-blue.svg',
-        ''
+        'signInSiriusId'
       ),this.services.buildStructureService(
         'Create',
         true,
         '',
         'icon-wallet-import-blue.svg',
-        `/${this.link.selectTypeCreationWallet}`
+        'selectTypeCreationWallet'
+        // `/${this.link.selectTypeCreationWallet}`
       )
     ].filter(x=> x.show);
   }
@@ -283,7 +284,22 @@ export class HomeComponent implements OnInit {
     ));
   }
 
-
+/**
+   *
+   *
+   * @memberof HomeComponent
+   */
+ action(bot) {
+  if(bot.route === 'signIn') {
+    this.showModal()
+  }else if(bot.route === 'signInSiriusId') {
+    this.showLoginModal()
+  } else if(bot.route === 'selectTypeCreationWallet'){
+    this.router.navigate([`/${this.link.selectTypeCreationWallet}`]);
+    
+  }
+  console.log(bot.route)
+}
   /**
    *
    *
