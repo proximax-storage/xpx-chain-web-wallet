@@ -338,7 +338,31 @@ export class NamespacesService {
    */
   getNamespacesStorage(): NamespaceStorageInterface[] {
     const namespacesStorage = localStorage.getItem(environment.nameKeyNamespaces);
-    return (namespacesStorage !== null && namespacesStorage !== undefined) ? JSON.parse(namespacesStorage) : [];
+    let formatedNamespaceStorage: NamespaceStorageInterface[] = [];
+    let rawNamespaceStorage = (namespacesStorage !== null && namespacesStorage !== undefined) ? JSON.parse(namespacesStorage) : [];
+
+    if(rawNamespaceStorage.length > 0){
+      for (const namespaceStorage of rawNamespaceStorage) {
+        switch (namespaceStorage.namespaceInfo.alias.type) {
+          case 1:
+            namespaceStorage.namespaceInfo.alias.mosaicId.toHex = function () {
+              return new NamespaceId([namespaceStorage.namespaceInfo.alias.mosaicId.id.lower, namespaceStorage.namespaceInfo.alias.mosaicId.id.higher]).toHex();
+            };
+            break;
+          case 2:
+            namespaceStorage.namespaceInfo.alias.address.pretty = function () {
+              return Address.createFromRawAddress(namespaceStorage.namespaceInfo.alias.address.address).pretty();
+            };
+            break;
+        
+          default:
+            break;
+        }
+        formatedNamespaceStorage.push(namespaceStorage);
+      }
+    }
+
+    return formatedNamespaceStorage;
   }
 
   /**

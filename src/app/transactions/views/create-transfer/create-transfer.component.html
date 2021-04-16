@@ -171,11 +171,11 @@
                 (change)="getValueAndVerify()">
               <mdb-error
                 *ngIf="validateInput('accountRecipient').invalid && (validateInput('accountRecipient').dirty || validateInput('accountRecipient').touched)">
-                <span class="fs-08rem fw-600 color-error-message">Invalid Recipient</span>
+                <span class="fs-08rem color-error-message">Invalid recipient</span>
               </mdb-error>
 
               <mdb-error *ngIf="msgErrorUnsupported !== ''">
-                <span class="fs-08rem fw-600 color-error-message">{{msgErrorUnsupported}}</span>
+                <span class="fs-08rem color-error-message">{{msgErrorUnsupported}}</span>
               </mdb-error>
             </div>
           </div>
@@ -234,12 +234,12 @@
 
                 <mdb-error
                   *ngIf="validateInput('amountXpx').invalid && (validateInput('amountXpx').dirty || validateInput('amountXpx').touched)">
-                  <span class="fs-08rem fw-600 color-error-message">Invalid Amount</span>
+                  <span class="fs-08rem  color-error-message">Invalid amount</span>
                 </mdb-error>
 
                 <!-- Message Error Insufficient balance-->
                 <mdb-error *ngIf="insufficientBalance">
-                  <span class="fs-08rem fw-600 color-error-message">Insufficient Balance</span>
+                  <span class="fs-08rem  color-error-message">Insufficient balance</span>
                 </mdb-error>
               </div>
             </div>
@@ -261,7 +261,7 @@
                 <div class="col-12 mx-auto">
                   <ng-select class="custom" mdbInputDirective mdbValidate class="selectWrapper"
                     [items]="otherMosaic.selectOtherMosaics" bindLabel="label" bindValue="value"
-                    placeholder="Select Mosaic" (change)="otherMosaicsChange($event, i)" clearAllText="Clean"
+                    placeholder="Select mosaic" (change)="otherMosaicsChange($event, i)" clearAllText="Clean"
                     [disabled]="disabledAllField">
                   </ng-select>
                 </div>
@@ -279,12 +279,12 @@
                         class="form-control form-control-sm input-border input-amount"
                         [(ngModel)]="boxOtherMosaics[i].amount" [ngModelOptions]="{standalone: true}"
                         (ngModelChange)="amountOtherMosaicChanged($event, otherMosaic.id, i)"
-                        placeholder="Enter quantity" [disabled]="disabledAllField">
+                        placeholder="Enter Quantity" [disabled]="disabledAllField">
                       <span class="label-i fw-600 pl-2rem">Send</span>
 
                       <!-- Message Error Insufficient balance-->
                       <mdb-error *ngIf="otherMosaic.errorBalance">
-                        <span class="fs-08rem fw-600 color-error-message">Insufficient Balance</span>
+                        <span class="fs-08rem  color-error-message">Insufficient balance</span>
                       </mdb-error>
                     </div>
                   </div>
@@ -384,7 +384,7 @@
           <span class="fs-08rem text-cl-m d-flex justify-content-end">{{ charRest }} / {{ messageMaxLength }}</span>
           <mdb-error
             *ngIf="validateInput('message').invalid && (validateInput('message').dirty || validateInput('message').touched)">
-            <span>Invalid Recipient</span>
+            <span>Invalid recipient</span>
           </mdb-error>
         </div>
       </div>
@@ -475,7 +475,7 @@
           <!-- VALIDATION -->
           <mdb-error
             *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
-            <span>Password Required</span>
+            <span>Password required</span>
           </mdb-error>
         </div>
       </div>
@@ -569,7 +569,7 @@
                 <div class="md-form form-sm">
                   <input required mdbInputDirective readonly mdbValidate [validateSuccess]="true" [validateError]="true"
                     type="text" [(ngModel)]="formContact.address" [ngModelOptions]="{standalone: true}" id="address"
-                    class="form-control form-control-sm input-border" placeholder="address">
+                    class="form-control form-control-sm input-border" placeholder="Address">
                 </div>
               </div>
             </div>

@@ -41,11 +41,11 @@
           <div class="col-11 mx-auto">
             <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [searchable]="false"
               [validateError]="true" class="selectWrapper" [items]="arrayselect" formControlName="namespaceRoot"
-              bindLabel="label" bindValue="value" placeholder="Select Namespace" (change)="optionSelected($event)">
+              bindLabel="label" bindValue="value" placeholder="Select namespace" (change)="optionSelected($event)">
             </ng-select>
             <mdb-error class="ml-1rem mt-05rem"
               *ngIf="validateInput('namespaceRoot').invalid && (validateInput('namespaceRoot').dirty || validateInput('namespaceRoot').touched)">
-              <span>Select Namespace</span>
+              <span>Select namespace</span>
             </mdb-error>
           </div>
         </div>
@@ -64,15 +64,15 @@
               <!-- VALIDATION -->
               <mdb-error
                 *ngIf="validateInput('duration', '').invalid && (validateInput('duration', '').dirty || validateInput('duration', '').touched)">
-                <span class="fs-08rem fw-600 color-error-message">Required Field</span>
+                <span class="fs-08rem color-error-message">Required field</span>
               </mdb-error>
               <mdb-error *ngIf="exceededDuration">
-                <span class="fs-08rem fw-600 color-error-message">Duration Exceeded</span>
+                <span class="fs-08rem color-error-message">Duration exceeded</span>
               </mdb-error>
 
               <mdb-error
                 *ngIf="!exceededDuration && validateInput('duration', '').valid && insufficientBalanceDuration">
-                <span class="fs-08rem fw-600 color-error-message">Insufficient balance</span>
+                <span class="fs-08rem color-error-message">Insufficient balance</span>
               </mdb-error>
             </div>
           </div>
@@ -140,7 +140,7 @@
               <!-- VALIDATION -->
               <mdb-error
                 *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
-                <span>Password Required</span>
+                <span>Password required</span>
               </mdb-error>
             </div>
           </div>
@@ -161,7 +161,7 @@
               size="md">
               <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
                 *ngIf="blockBtnSend"></span>
-              <span class="fs-1-2em color-white">Create</span>
+              <span class="fs-1-2em color-white">Extend</span>
             </button>
           </div>
         </div>

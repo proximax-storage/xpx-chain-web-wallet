@@ -133,6 +133,12 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
             const encryptionMethod = this.uploadForm.get('encryptionMethod').value;
 
             switch (encryptionMethod) {
+              case PrivacyType.CUSTOM:
+                const encryptionPass = this.uploadForm.controls.encryptionPasswords.get('password').value;
+                uploadParams.withPasswordPrivacy(encryptionPass);
+                uploadParams.withRecipientPublicKey(account.publicKey);
+                uploadParams.withUseBlockchainSecureMessage(true)
+                break;
               case PrivacyType.PLAIN:
                 uploadParams.withPlainPrivacy();
                 break;
@@ -190,8 +196,9 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
    */
   createForm() {
     this.optionsEncryptionMethods = [
-      { value: PrivacyType.PLAIN, name: 'Do Not Encrypt' },
-      { value: PrivacyType.PASSWORD, name: 'Password' },
+      { value: PrivacyType.PLAIN, name: 'No encryption' },
+      { value: PrivacyType.PASSWORD, name: 'Encryption of file only' },
+      { value: PrivacyType.CUSTOM, name: 'Encrypt everything' },
       /* { value: PrivacyType.NEM_KEYS, name: 'KEY PAIR' }*/
     ];
 
@@ -344,6 +351,24 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
    */
   encryptionMethodSelect(event: { value: any; }) {
     switch (event.value) {
+      case PrivacyType.CUSTOM:
+        this.noEncripted = true;
+        this.showEncryptionPassword = true;
+        this.showEncryptionKeyPair = false;
+
+        this.uploadForm.controls.encryptionPasswords.get('password').setValidators([
+          Validators.required,
+          Validators.minLength(this.configurationForm.passwordWallet.minLength),
+          Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
+        ]);
+
+        this.uploadForm.controls.encryptionPasswords.get('confirm_password').setValidators([
+          Validators.required,
+          Validators.minLength(this.configurationForm.passwordWallet.minLength),
+          Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
+        ]);
+
+        break;
       case PrivacyType.PASSWORD:
         this.noEncripted = true;
         this.showEncryptionPassword = true;
@@ -453,7 +478,7 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
    * @memberof UploadFileComponent
    */
   readFile(file: Blob) {
-    return new Promise<Uint8Array>(function(resolve, reject) {
+    return new Promise<Uint8Array>(function (resolve, reject) {
       const reader = new FileReader();
       reader.onload = () => {
         const fileContent = reader.result as ArrayBuffer;
@@ -472,7 +497,7 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
    * @memberof UploadFileComponent
    */
   readFileToBuffer(file: Blob) {
-    return new Promise<Buffer>(function(resolve, reject) {
+    return new Promise<Buffer>(function (resolve, reject) {
       const reader = new FileReader();
       reader.onloadend = () => {
         const fileContent = Buffer.from(reader.result as ArrayBuffer);

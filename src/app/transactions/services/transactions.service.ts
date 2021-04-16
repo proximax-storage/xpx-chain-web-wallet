@@ -287,9 +287,8 @@ export class TransactionsService {
   /**
    * Formatter Amount
    *
-   * @param {UInt64} amount
-   * @param {MosaicId} mosaicId
-   * @param {MosaicInfo[]} mosaics
+   * @param {number} amount
+   * @param {number} decimal
    * @returns
    * @memberof TransactionsService
    */
@@ -298,6 +297,19 @@ export class TransactionsService {
     return amountDivisibility.toLocaleString('en-us', {
       minimumFractionDigits: d
     });
+  }
+
+  /**
+   * Formatter Amount
+   *
+   * @param {number} amount
+   * @param {number} decimal
+   * @returns
+   * @memberof TransactionsService
+   */
+  amountFormatterSimpleReturnNumber(amount: number, d = 6) {
+    const amountDivisibility = Number(amount) / Math.pow(10, d);
+    return amountDivisibility;
   }
 
   /**
@@ -455,6 +467,17 @@ export class TransactionsService {
 
   /**
    *
+   *
+   * @param {UInt64} date
+   * @returns
+   * @memberof TransactionsService
+   */
+  dateFormatPureUTC(date: UInt64) {
+    return new Date(date.compact() + 1459468800 * 1000).toISOString();
+  }
+
+  /**
+   *
    * @param deadline
    */
   dateFormatLocal(deadline: Deadline) {
@@ -592,7 +615,8 @@ export class TransactionsService {
       const feeFormatter = this.amountFormatterSimple(dataTransaction.transaction.maxFee.compact());
       const rentalFeeSink = this.getRentalFeeSink(dataTransaction.transaction);
       const responseIsRecipient = this.validateIsRecipient(dataTransaction.transaction);
-      return {
+
+      var responseTransaction = {
         data: dataTransaction.transaction,
         nameType: dataTransaction.nameType,
         fee: feeFormatter,
@@ -602,8 +626,14 @@ export class TransactionsService {
         recipient: responseIsRecipient.recipient,
         recipientAddress: responseIsRecipient.recipientPretty,
         receive: responseIsRecipient.isReceive,
-        senderAddress: dataTransaction.transaction['signer'].address.pretty()
+        senderAddress: dataTransaction.transaction['signer'].address.pretty(),
       };
+
+      if(group === "confirmed" && dataTransaction.transaction.transactionInfo.height){
+        responseTransaction['height'] = dataTransaction.transaction.transactionInfo.height.compact();
+      }
+
+      return responseTransaction;
     }
     return null;
   }
@@ -1110,5 +1140,6 @@ export interface TransactionsInterface {
   privateFile?: boolean;
   name?: string;
   hash?: string;
+  height?: number;
 }
 

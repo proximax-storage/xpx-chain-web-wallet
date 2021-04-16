@@ -7,7 +7,7 @@ import {
   PrivacyType, SearchParameter, Searcher, Downloader, TransactionFilter, Protocol
 } from 'tsjs-chain-xipfs-sdk';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { PublicAccount, Address } from 'tsjs-xpx-chain-sdk';
+import { PublicAccount, Address, AccountHttp, TransactionHttp, QueryParams, TransactionType, TransferTransaction, Transaction } from 'tsjs-xpx-chain-sdk';
 import { DirectDownloadParameter } from 'tsjs-chain-xipfs-sdk/build/main/src/lib/download/direct-download-parameter';
 import { ProximaxProvider } from '../../shared/services/proximax.provider';
 import { environment } from '../../../environments/environment';
@@ -29,6 +29,8 @@ export class CreatePollStorageService {
   allPollResult: any = [];
   publicAccount: PublicAccount;
   @BlockUI() blockUI: NgBlockUI;
+  transactionHttp: TransactionHttp;
+  accountHttp: AccountHttp;
 
   constructor(
     private proximaxProvider: ProximaxProvider,
@@ -36,6 +38,7 @@ export class CreatePollStorageService {
     private walletService: WalletService,
   ) {
     this.connectionStorage();
+    this.initHttpService();
   }
 
 
@@ -64,6 +67,11 @@ export class CreatePollStorageService {
 
     console.log('downloader', this.downloader)
     console.log('uploader', this.uploader)
+  }
+
+  initHttpService(){
+    this.transactionHttp = new TransactionHttp(this.proximaxProvider.url);
+    this.accountHttp = new AccountHttp(this.proximaxProvider.url);
   }
 
 
@@ -133,66 +141,100 @@ export class CreatePollStorageService {
     return await promise;
   }
 
-  async loadTransactions(publicAccount?: PublicAccount, address?: string, fromTransactionId?: string) {
+  async loadPollTransactions(publicAccount?: PublicAccount, address?: Address, fromTransactionId?: string) {
     this.transactionResults = [];
     this.pollResult = [];
     const promise = new Promise(async (resolve, reject) => {
       let searchParam: any
-      if (this.searcher) {
+
         if (publicAccount) {
           //console.log("search by public Acount")
-          searchParam = SearchParameter.createForPublicKey(publicAccount.publicKey);
+          searchParam = publicAccount;
         } else if (address) {
           //console.log("search by address")
-          searchParam = SearchParameter.createForAddress(address)
+          searchParam = address
         }
+
+        let queryParams: QueryParams;
+        let pageSize = 10;
 
         if(fromTransactionId){
-          searchParam.withFromTransactionId(fromTransactionId);
+          queryParams =  fromTransactionId ? new QueryParams(pageSize, fromTransactionId) : new QueryParams(pageSize);
         }
-        searchParam.withTransactionFilter(TransactionFilter.INCOMING);
-        
-        // console.log('searchParam',searchParam)
-        // searchParam.withResultSize(100);
-        const searchResult = await this.searcher.search(searchParam.build());
-        console.log('searchResult', searchResult)
-        if (searchResult.results.length > 0) {
-          for (const resultItem of searchResult.results) {
-            const encrypted = resultItem.messagePayload.privacyType !== PrivacyType.PLAIN;
+   
+        const searchResult = await this.accountHttp.incomingTransactions(searchParam, queryParams).toPromise();
+       // console.log('searchResult', searchResult)
 
-            if (resultItem.messagePayload.data.description === 'poll') {
-              this.transactionResults.push({
-                title: resultItem.messagePayload.data.name, type: resultItem.messagePayload.data.contentType,
-                privacy: resultItem.messagePayload.privacyType,
-                dataHash: resultItem.messagePayload.data.dataHash,
-                transactionHash: resultItem.transactionHash, isEncrypted: encrypted
-              });
+        let startTransactionId: string;
+        let endTransactionId: string;
+        
+        if (searchResult.length > 0) {
+
+          startTransactionId = searchResult[0].transactionInfo.id;
+          endTransactionId = searchResult[searchResult.length - 1].transactionInfo.id;
+
+          for (const resultItem of searchResult) {
+
+            if(resultItem.type !== TransactionType.TRANSFER){
+              continue;
+            }
+
+            let message = resultItem['message'].payload;
+
+            try{
+              let pollData = JSON.parse(message);
+
+              if (pollData['type'] === 'poll') {
+                this.transactionResults.push({
+                  title:pollData['name'], type: pollData['type'],
+                  transactionHash: pollData['hash']
+                });
+              }
+            }catch(err){
+              continue;
             }
           }
+
+          if(this.transactionResults.length === 0){
+            resolve(undefined);
+          }
+
           for (const data of this.transactionResults) {
-            if (data.privacy === PrivacyType.PLAIN) {
-              const paramData = DirectDownloadParameter.createFromDataHash(data.dataHash);
-              paramData.withPlainPrivacy();
-              const downloadResult = await this.downloader.directDownload(paramData.build());
-              const dataBuffer = await StreamHelper.stream2String(downloadResult);
-              const downloableFile = new Blob([dataBuffer], { type: data.type });
-              // resultData.push();
+              
+              let aggregateTransaction = await this.transactionHttp.getTransaction(data.transactionHash).toPromise();
 
-              this.pollResult.push(this.ab2str(dataBuffer));
-              this.allPollResult.push(this.ab2str(dataBuffer));
-              resolve({ result: this.ab2str(dataBuffer), size: searchResult.results.length, 
-                fromTransactionId: searchResult.fromTransactionId, toTransactionId: searchResult.toTransactionId });
+              if(aggregateTransaction && aggregateTransaction.type === TransactionType.AGGREGATE_COMPLETE){
 
-              this.setPolls$({ result: this.ab2str(dataBuffer), size: searchResult.results.length,
-                fromTransactionId: searchResult.fromTransactionId, toTransactionId: searchResult.toTransactionId });
-            }
+                let innerTransaction:Transaction[] = aggregateTransaction['innerTransactions'];
+
+                let hexString = '';
+                let pollContent = {};
+
+                for(var tx of innerTransaction){
+                  if(tx.type === TransactionType.TRANSFER){
+                    hexString += tx['message'].payload;
+                  }
+                }
+
+                if(hexString){
+                  pollContent = JSON.parse(Buffer.from(hexString, "hex").toString("utf8"));
+                }
+                
+                this.pollResult.push(pollContent);
+                this.allPollResult.push(pollContent);
+                resolve({ result: pollContent, size: this.transactionResults.length, 
+                  fromTransactionId: startTransactionId, toTransactionId: endTransactionId });
+
+                this.setPolls$({ result: pollContent, size: this.transactionResults.length,
+                  fromTransactionId: startTransactionId, toTransactionId: endTransactionId });
+                
+              }
+    
           }
         } else {
           resolve(undefined);
         }
-
-
-      }
+        
     });
     return await promise;
   }
@@ -239,14 +281,14 @@ export interface FileInterface {
 
 export interface PollInterface {
   name: string;
-  desciption: string;
+  description: string;
   id: string;
   type: number;
   isPrivate: boolean,
   isMultiple: boolean,
   options: optionsPoll[];
-  witheList: Object[];
-  blacklist?: Object[];
+  whiteList: Object[];
+  blackList?: Object[];
   startDate: Date;
   endDate: Date;
   createdDate: Date;

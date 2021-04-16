@@ -26,7 +26,7 @@ export class PollsComponent implements OnInit {
   progressBar: number = 0;
   objectValue: object;
   keyObjectValue: string;
-  placeholderText = 'Enter search text'
+  placeholderText = 'Enter Search Text'
   selectedSearch = 'All'
   routes = {
     backToService: `/${AppConfig.routes.service}`,
@@ -39,7 +39,7 @@ export class PollsComponent implements OnInit {
     itemsPerPage: 10,
     currentPage: 1
   };
-  headElements = ['Name', 'Poll type', 'End date', 'Status'];
+  headElements = ['Name', 'Poll Type', 'End Date', 'Status'];
   pollResult: PollInterface[] = [];
 
 
@@ -100,7 +100,7 @@ export class PollsComponent implements OnInit {
 
     this.isLoading = true;
 
-    this.promosePoadTransactions = this.createPollStorageService.loadTransactions(publicAccount, address, fromTransactionId).then(resp => {
+    this.promosePoadTransactions = this.createPollStorageService.loadPollTransactions(publicAccount, this.proximaxProvider.createFromRawAddress(address), fromTransactionId).then(resp => {
       // console.log("respondio aqui", resp)
       this.showBarProgressone = false;
       if (this.getPoll) {
@@ -130,9 +130,9 @@ export class PollsComponent implements OnInit {
   setSelectFilter() {
     this.filterObjectSelect = [
       { value: 'All', label: 'All', disabled: false, selected: true },
-      { value: 'name', label: 'name', disabled: false },
-      { value: 'typeName', label: 'type', disabled: false },
-      { value: 'statusPoll', label: 'status', disabled: false },
+      { value: 'name', label: 'Name', disabled: false },
+      { value: 'typeName', label: 'Type', disabled: false },
+      { value: 'statusPoll', label: 'Status', disabled: false },
       { value: 'address', label: 'ID Address (private poll)', disabled: false, selected: true }
 
     ]
@@ -305,7 +305,7 @@ export class PollsComponent implements OnInit {
       const address = environment.pollsContent.address_public_test
       this.currentSearchingAddress = address;
       // const publicAccount = PublicAccount.createFromPublicKey(environment.pollsContent.public_key, this.walletService.currentAccount.network)
-      this.createPollStorageService.loadTransactions(null, this.proximaxProvider.createFromRawAddress(address).pretty()).then(resp => {
+      this.createPollStorageService.loadPollTransactions(null, this.proximaxProvider.createFromRawAddress(address)).then(resp => {
         this.showBarProgressone = false;
         this.getPollStorage();
       });
@@ -366,15 +366,15 @@ export class PollsComponent implements OnInit {
 }
 export interface PollInterface {
   name: string;
-  desciption: string;
+  description: string;
   id: string;
   type: number;
   typeName: string;
   isPrivate: boolean,
   isMultiple: boolean,
   options: optionsPoll[];
-  witheList: Object[];
-  blacklist?: Object[];
+  whiteList: Object[];
+  blackList?: Object[];
   startDate: Date;
   endDate: Date;
   createdDate: Date;

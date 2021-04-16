@@ -1,15 +1,15 @@
 <div class="container mt-3rem mb-2rem animated fadeIn">
   <div class="row">
     <div class="col-12 col-md-8">
-      <span class="fs-1rem txt-a-center line-h-1-2em color-grey">Polls</span>
+      <span class="fs-1rem txt-a-center line-h-1-2em color-grey">Vote</span>
       <span class="fs-1rem txt-a-center line-h-1-2em color-grey">&nbsp;>&nbsp;</span>
-      <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">Vote Results</span>
+      <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">Vote/Results</span>
     </div>
 
     <div class="col-12 col-md-4 d-flex justify-content-start justify-content-md-end">
 
       <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[routes.viewAll]">
-        <span>View All Polls</span>
+        <span>View All</span>
       </a>
 
       <div class="ml-04rem mr-04rem">
@@ -35,7 +35,7 @@
             </div>
           </div>
           <div class="d-flex flex-column">
-            <div class="d-flex justify-content-center"><span class="fs-1rem">{{pollSelected.desciption}}</span>
+            <div class="d-flex justify-content-center"><span class="fs-1rem">{{pollSelected.description}}</span>
             </div>
           </div>
           <hr style="border-top: 3px solid rgba(0, 0, 0, 0.1)" class="mt-03rem mb-05rem">
@@ -76,7 +76,7 @@
             </div>
           </div>
         </div>
-        <div class="col-9 col-md-8 col-lg-6  mx-auto" *ngSwitchCase="'noWitheList'">
+        <div class="col-9 col-md-8 col-lg-6  mx-auto" *ngSwitchCase="'noWhiteList'">
 
           <div class="d-flex flex-column">
             <div class="d-flex justify-content-center">
@@ -139,7 +139,7 @@
 
                       <div class="col-12 col-sm-8 col-md-9 lh-1em pt-04rem">
                         <div>
-                          <span class="w-b-a fw-600">hash</span>
+                          <span class="w-b-a fw-600">Hash:</span>
                         </div>
                         <div>
                           <span class="w-b-a fs-08rem mt-1rem"> {{hashCertificate}}</span>
@@ -225,7 +225,7 @@
                         [validateError]="true" [type]="passwordMain" id="password" class="form-control form-control-sm input-border"
                         placeholder="Enter Wallet Password">
                       <mdb-error *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
-                        <span>Password Required</span>
+                        <span>Password required</span>
                       </mdb-error>
                     </div>
                   </div>
@@ -237,15 +237,17 @@
             <div class="row">
               <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
                 <div class="row">
-                  <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+                  <div class="col-md-12 text-center">
                     <button [disabled]="btnBlock" mdbBtn type="submit" rounded="true" mdbWavesEffect class="btn-proximax"
-                      size="md">
-                      <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
-                        *ngIf="blockSend"></span>
-                      <span class="fs-1-2em color-white">Vote</span>
+                        size="md">
+                        <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+                          *ngIf="blockSend"></span>
+                        <span class="fs-1-2em color-white">Vote</span>
+                      </button>
+                    <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
+                      size="md" [disabled]="statusValidate !== 'viewCertificate'" (click)="openCertificateModal()">
+                      <span class="fs-1-2em color-white">Certificate</span>
                     </button>
-                  </div>
-                  <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
                     <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
                       size="md" [disabled]="btnResult" (click)="getResult('RESULTS')">
                       <span class="fs-1-2em color-white">Result</span>

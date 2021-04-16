@@ -27,11 +27,11 @@
           <div class="col-11 mx-auto">
             <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
               [searchable]="false" class="selectWrapper" [items]="typeAction" formControlName="typeAction"
-              bindLabel="label" bindValue="value" placeholder="Select Action"
+              bindLabel="label" bindValue="value" placeholder="Select action"
               (change)="buildSelectNamespace($event); captureAction()"></ng-select>
             <mdb-error class="ml-1rem"
               *ngIf="validateInput('typeAction').invalid && (validateInput('typeAction').dirty || validateInput('typeAction').touched)">
-              <span class="fs-08rem fw-600 color-error-message">Select Action</span>
+              <span class="fs-08rem  color-error-message">Select action</span>
             </mdb-error>
           </div>
         </div>
@@ -40,11 +40,11 @@
           <div class="col-11 mx-auto">
             <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
               [searchable]="false" class="selectWrapper" [items]="namespaceSelect" formControlName="namespace"
-              bindLabel="label" bindValue="value" placeholder="Select Namespace" (change)="captureNamespace($event)">
+              bindLabel="label" bindValue="value" placeholder="Select namespace" (change)="captureNamespace($event)">
             </ng-select>
             <mdb-error class="ml-1rem"
               *ngIf="validateInput('namespace').invalid && (validateInput('namespace').dirty || validateInput('namespace').touched)">
-              <span class="fs-08rem fw-600 color-error-message">Select Namespace</span>
+              <span class="fs-08rem  color-error-message">Select namespace</span>
             </mdb-error>
           </div>
         </div>
@@ -54,10 +54,10 @@
             <div class="col-11 mx-auto">
               <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
                 [searchable]="false" class="selectWrapper" [items]="mosaicSelect" formControlName="mosaic"
-                bindLabel="label" bindValue="value" placeholder="Select Mosaic" (change)="captureMmosaic()"></ng-select>
+                bindLabel="label" bindValue="value" placeholder="Select mosaic" (change)="captureMmosaic()"></ng-select>
               <mdb-error class="ml-1rem"
                 *ngIf="validateInput('mosaic').invalid && (validateInput('mosaic').dirty || validateInput('mosaic').touched)">
-                <span class="fs-08rem fw-600 color-error-message">Select Mosaic</span>
+                <span class="fs-08rem  color-error-message">Select mosaic</span>
               </mdb-error>
             </div>
           </div>
@@ -125,7 +125,7 @@
               <!-- VALIDATION -->
               <mdb-error
                 *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
-                <span class="fs-08rem fw-600 color-error-message">Password Required</span>
+                <span class="fs-08rem color-error-message">Password required</span>
               </mdb-error>
             </div>
           </div>

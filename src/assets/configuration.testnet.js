@@ -4,9 +4,10 @@ dynamic_configuration = {
     production: true,
     routeNodesJson: 'testnet',
     itemBooksAddress: 'sw-books-testnet',
-    version: '0.5.5',
+    version: '0.5.6',
     cacheVersion: '01',
     nameKeyBlockStorage: `sw-blocks`,
+    nameKeyBlockTimestamp: `sw-blocks-timestamp`,
     nameKeyNodeSelected: `sw-selected-node-testnet`,
     nameKeyWalletStorage: `sw-testnet`,
     nameKeyNodeStorage: `sw-nodes-testnet`,
@@ -24,10 +25,10 @@ dynamic_configuration = {
       },
       storage: {
         viewChildrenParam: true,
-        files: true,
-        uploadFiles: true,
+        files: false,
+        uploadFiles: false,
         sendShare: false,
-        classNameParam: ''
+        classNameParam: 'disable-module'
       },
       notarization: {
         viewChildrenParam: true,
@@ -35,6 +36,9 @@ dynamic_configuration = {
         audit: true,
         classNameParam: ''
       },
+      siriusid: {
+        show: true
+      }
     },
     protocol: `https`,
     protocolWs: `wss`,

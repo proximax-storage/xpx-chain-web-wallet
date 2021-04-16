@@ -2,9 +2,10 @@ dynamic_configuration = {
     production: true,
     routeNodesJson: 'mainnet',
     itemBooksAddress: 'sw-books-mainnet',
-    version: '0.5.5',
+    version: '0.5.6',
     cacheVersion: '01-MAINNET',
     nameKeyBlockStorage: `sw-blocks`,
+    nameKeyBlockTimestamp: `sw-blocks-timestamp`,
     nameKeyNodeSelected: `sw-selected-node-mainnet`,
     nameKeyWalletStorage: `sw-mainnet`,
     nameKeyNodeStorage: `sw-nodes-mainnet`,
@@ -15,10 +16,10 @@ dynamic_configuration = {
     activeModulesBox: {
       voting: {
         viewChildrenParam: true,  
-        createPoll: false,
-        vote: false,
-        viewResult: false,
-        classNameParam: 'disable-module'
+        createPoll: true,
+        vote: true,
+        viewResult: true,
+        classNameParam: ''
       },
       storage: {
         viewChildrenParam: true,
@@ -32,6 +33,9 @@ dynamic_configuration = {
         attest: true,
         audit: true,
         classNameParam: ''
+      },
+      siriusid: {
+        show: false
       },
     },
     protocol: `https`,

@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { formatDate } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { PublicAccount, Address, InnerTransaction, UInt64, Account, AggregateTransaction, Deadline, TransactionHttp, SignedTransaction, Transaction, PlainMessage } from 'tsjs-xpx-chain-sdk';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
@@ -15,6 +16,7 @@ import { environment } from '../../../../environments/environment';
 import { NodeService } from '../../../servicesModule/services/node.service';
 import { DataBridgeService } from '../../../shared/services/data-bridge.service';
 import { TransactionsService, TransactionsInterface } from '../../../transactions/services/transactions.service';
+import { DashboardService } from '../../../dashboard/services/dashboard.service';
 
 @Component({
   selector: 'app-vote-in-poll',
@@ -65,6 +67,7 @@ export class VoteInPollComponent implements OnInit {
   votedPublicKeyCount = 0;
   totalVoteCount = 0;
   stopResultLoading = false;
+  timestamp = '';
 
   constructor(
     private nodeService: NodeService,
@@ -75,7 +78,8 @@ export class VoteInPollComponent implements OnInit {
     private fb: FormBuilder,
     private proximaxProvider: ProximaxProvider,
     private dataBridge: DataBridgeService,
-    private transactionService: TransactionsService
+    private transactionService: TransactionsService,
+    private dashboardService: DashboardService
 
   ) {
     this.transactionHttp = new TransactionHttp(environment.protocol + "://" + `${this.nodeService.getNodeSelected()}`);
@@ -398,7 +402,7 @@ export class VoteInPollComponent implements OnInit {
   verifyVote() {
     this.btnResult = true;
     // if (this.statusPoll(this.pollSelected.endDate, this.pollSelected.startDate) === 'Ongoing') {
-    if (this.validateWitheList(this.pollSelected.witheList, this.pollSelected.type)) {
+    if (this.validateWhiteList(this.pollSelected.whiteList, this.pollSelected.type)) {
       if (this.walletService.canVote) {
         if (this.incrementOption < this.pollSelected.options.length) {
           if (
@@ -423,7 +427,7 @@ export class VoteInPollComponent implements OnInit {
 
                       let transaction = this.transactionService.getStructureDashboard(transactionnext['innerTransactions'][0]);
                       transaction.name = this.pollSelected.name;
-                      transaction.description = this.pollSelected.desciption;
+                      transaction.description = this.pollSelected.description;
                       transaction.hash = transactionnext.transactionInfo.hash
                       this.activate = true;
                       this.dataTransaction = transaction;
@@ -432,6 +436,10 @@ export class VoteInPollComponent implements OnInit {
                       this.sharedService.showWarning('', `Sorry, you already voted in this poll`);
                       this.searching = false;
                       this.btnResult = false;
+
+                      const height = transaction.data['transactionInfo'].height.compact();
+                      this.assignBlockHeightTime(height, this.dataTransaction);
+
                       this.viewCertificate(this.transaction.transactionInfo.hash, this.pollSelected.name, 'memberVoted', this.transaction)
                       break;
                     }
@@ -478,7 +486,7 @@ export class VoteInPollComponent implements OnInit {
 
     } else {
       this.votingInPoll.disable()
-      this.statusValidate = 'noWitheList'
+      this.statusValidate = 'noWhiteList'
     }
     // } else if (this.statusPoll(this.pollSelected.endDate, this.pollSelected.startDate) === 'Future') {
     //   this.votingInPoll.disable()
@@ -504,12 +512,12 @@ export class VoteInPollComponent implements OnInit {
     return { STATUS: true }
   }
 
-  validateWitheList(witheList: any, type: number): boolean {
+  validateWhiteList(whitelist: any, type: number): boolean {
     const addressCompare: Address = Address.createFromPublicKey(this.walletService.currentAccount.publicAccount.publicKey, this.walletService.currentAccount.publicAccount.address.networkType)
     if (type == 1)
       return true
     if (type == 0) {
-      const valor = witheList.find(elemnt => elemnt.address === addressCompare.plain());
+      const valor = whitelist.find(elemnt => elemnt.address === addressCompare.plain());
       if (valor) {
         return true;
       } else {
@@ -627,8 +635,10 @@ export class VoteInPollComponent implements OnInit {
         const poll = JSON.parse(transactionData['data']['innerTransactions'][0].message.payload);
         transaction.name = poll.name;
         transaction.hash = transactionData['data'].transactionInfo.hash;
-        transaction.description = poll.desciption;
+        transaction.description = poll.description;
         this.dataTransaction = transaction;
+        this.assignBlockHeightTime(transactionData.height, this.dataTransaction);
+
         this.activate = true;
       }
     })
@@ -702,6 +712,43 @@ export class VoteInPollComponent implements OnInit {
       }
 
     }
+    
+  }
+
+  assignBlockHeightTime(height: number, transaction: TransactionsInterface){
+    if (typeof (height) === 'number') {
+      const existBlock = this.dataBridge.filterBlockStorage(height);
+      const existBlockTimestamp = this.dashboardService.getStorageBlockTimestamp(this.dataBridge.blockInfo.generationHash, height);
+
+      if(this.timestamp){
+        transaction.timestamp = this.convertCertDateTime(this.timestamp);
+
+      }else if (existBlock) {
+
+        this.timestamp = this.transactionService.dateFormatPureUTC(new UInt64([existBlock.timestamp.lower, existBlock.timestamp.higher]));
+        transaction.timestamp = this.convertCertDateTime(this.timestamp);
+
+      }else if(existBlockTimestamp){
+        this.timestamp = existBlockTimestamp;
+        transaction.timestamp = this.convertCertDateTime(this.timestamp);
+      }else {
+        this.proximaxProvider.getBlockInfo(height).subscribe(
+          (blockInfo) =>{
+            this.dataBridge.validateBlock(blockInfo);
+            this.timestamp = this.transactionService.dateFormatPureUTC(blockInfo.timestamp);
+            transaction.timestamp = this.convertCertDateTime(this.timestamp);
+            this.dashboardService.saveBlockTimestamp(this.dataBridge.blockInfo.generationHash, height, this.timestamp);
+          });
+      }
+    }
+  }
+
+  convertCertDateTime(dateTime: string): string{
+    let dateFormat = "MM/dd/yyyy HH:mm:ss";
+    let date = new Date(dateTime);
+    let timezone = -date.getTimezoneOffset();
+
+    return formatDate(date, dateFormat, 'en-us', timezone.toString());
   }
 }
 

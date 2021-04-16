@@ -1,18 +1,20 @@
 import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef, HostListener, Inject, AfterViewInit } from '@angular/core';
 import { MdbTableDirective, ModalDirective } from 'ng-uikit-pro-standard';
 import * as qrcode from 'qrcode-generator';
+import { formatDate } from '@angular/common';
 import { first } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { UInt64 } from 'tsjs-xpx-chain-sdk';
 import { PaginationInstance } from 'ngx-pagination';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
-import { DashboardService } from '../../services/dashboard.service';
+import { DashboardService, DashboardNamespaceInfo, DashboardMosaicInfo } from '../../services/dashboard.service';
 import { TransactionsInterface, TransactionsService } from '../../../transactions/services/transactions.service';
 import { WalletService, AccountsInterface, CurrentWalletInterface } from '../../../wallet/services/wallet.service';
 import { SharedService } from '../../../shared/services/shared.service';
 import { environment } from '../../../../environments/environment';
 import { AppConfig } from '../../../config/app.config';
 import { NamespacesService } from '../../../servicesModule/services/namespaces.service';
+import { MosaicService } from '../../../servicesModule/services/mosaic.service';
 import { DataBridgeService } from '../../../shared/services/data-bridge.service';
 import { NemProviderService } from '../../../swap/services/nem-provider.service';
 import { AuthService } from 'src/app/auth/services/auth.service';
@@ -33,6 +35,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     private dashboardService: DashboardService,
     private nemProvider: NemProviderService,
     private namespacesService: NamespacesService,
+    private mosaicService: MosaicService,
     private transactionService: TransactionsService,
     private sharedService: SharedService,
     private proximaxProvider: ProximaxProvider,
@@ -47,7 +50,6 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   nameAccount = '';
   typeTransactions: any;
   vestedBalance = null;
-
 
   currentWallet: CurrentWalletInterface;
   coinUsd: any = '0.00';
@@ -65,6 +67,10 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   };
   dataSelected: TransactionsInterface = null;
   headElements = ['Type', 'In/Out', 'Sender', 'Recipient'];
+  confirmedPageHeaders = ['Type', 'In/Out', 'Sender', 'Recipient', 'Block Height'];
+  mainHeaders = this.confirmedPageHeaders;
+  viewType = 1;
+  displayTimestamp = false;
   iconReloadDashboard = false;
   objectKeys = Object.keys;
   partialTransactions = 0;
@@ -91,6 +97,12 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     viewDetails: `/${AppConfig.routes.account}/`,
     deleteAccount: `/${AppConfig.routes.deleteAccount}/`,
   };
+
+  namespaceHeaders = ['Namespace Id', 'Name', 'Link Type', 'Mosaic Id/Address', 'Active'];
+  assetHeaders = ['Owner', 'Mosaic Id', 'Namespace Id', 'Alias Name', 'Quantity', 'Active'];
+  namespaceAssetView = 0;
+  dashBoardNamespaceInfoList: DashboardNamespaceInfo[] = [];
+  dashBoardAssetInfoList: DashboardMosaicInfo[] = [];
 
   @HostListener('input') oninput() {
     this.searchItems();
@@ -137,6 +149,26 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       this.walletService.removeWallet(this.authService.walletNameSID);
       this.authService.walletNameSID = null;
     }
+
+    this.subscription.push(this.walletService.getAccountsInfo$().subscribe(next => {
+      if (next && next.length > 0) {
+        this.getAccountMosaicNamespace();
+      }
+    }));
+
+    this.subscription.push(this.mosaicService.getMosaicChanged().subscribe(next => {
+      if (next && next > 0) {
+        this.getAccountMosaicNamespace();
+      }
+    }));
+
+    this.subscription.push(this.namespacesService.getNamespaceChanged().subscribe(next => {
+      if (next && next.length > 0) {
+        this.getAccountMosaicNamespace();
+      }
+    }));
+
+    this.dashboardService.checkSavedDateTimeFormat();
   }
 
   ngOnDestroy(): void {
@@ -150,6 +182,96 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.cdRef.detectChanges();
   }
 
+
+  /**
+   *
+   *
+   * @memberof DashboardComponent
+   */
+  async getAccountMosaicNamespace(){
+
+    const accountInfo = this.walletService.filterAccountInfo(this.currentAccount.address, true);
+
+    const ownedMosaics = await this.mosaicService.filterMosaics(null, this.walletService.currentAccount.name);
+    
+    const ownedNamespaces = this.namespacesService.filterNamespacesFromAccount(this.walletService.getCurrentAccount().publicAccount.publicKey);
+
+    this.dashBoardNamespaceInfoList = [];
+    this.dashBoardAssetInfoList = [];
+
+    mosaicsLoop: for(var ownedMosaic of ownedMosaics){
+
+      var mosaicNames: string[] = [];
+      var namespaceIds: string[] = [];
+      var idInHex = this.proximaxProvider.getNamespaceId(ownedMosaic.idMosaic).toHex();
+      var matchedMosaic = accountInfo.accountInfo.mosaics.find(mosaic=> mosaic.id.toHex() === idInHex);
+
+      var rawQuantity = matchedMosaic ? matchedMosaic.amount.compact() : 0;
+
+      let mosaicBalance = this.transactionService.amountFormatterSimple(rawQuantity, ownedMosaic.mosaicInfo['properties'].divisibility);
+
+      if(ownedMosaic.isNamespace){
+        for (const iterator of ownedMosaic.mosaicNames.names) {
+
+          var namespaceId = this.proximaxProvider.getNamespaceId([iterator.namespaceId.id.lower, iterator.namespaceId.id.higher]).toHex();
+          
+          if(namespaceId === environment.mosaicXpxInfo.namespaceId){
+            continue mosaicsLoop;
+          }
+
+          if(!namespaceIds.includes(namespaceId)){
+            mosaicNames.push(iterator.name);
+            namespaceIds.push(namespaceId);
+          }
+        }
+      }
+
+      var dashBoardMosaicInfo: DashboardMosaicInfo = {
+        id: idInHex,
+        name: mosaicNames.length > 0 ? mosaicNames.join("\n") : "-",
+        namespaceId: namespaceIds.length > 0 ? namespaceIds.join("\n") : "-",
+        owner: ownedMosaic.mosaicInfo.owner.publicKey === this.walletService.getCurrentAccount().publicAccount.publicKey,
+        quantity: mosaicBalance,
+        active: true
+      };
+
+      this.dashBoardAssetInfoList.push(dashBoardMosaicInfo); 
+    }
+
+    for(var ownedNamespace of ownedNamespaces){
+
+      var aliasType: string;
+      var linkedInfo: string;
+
+      switch (ownedNamespace.namespaceInfo.alias.type) {
+        case 0:
+          aliasType = "-";
+          linkedInfo = "-";
+          break;
+        case 1:
+          aliasType = "Mosaic";
+          linkedInfo = ownedNamespace.namespaceInfo.alias.mosaicId.toHex();
+          break;
+        case 2:
+          aliasType = "Address";
+          linkedInfo = ownedNamespace.namespaceInfo.alias.address.pretty();
+          break;
+      
+        default:
+          break;
+      }
+
+      var dashBoardNamespaceInfo: DashboardNamespaceInfo = {
+        id:ownedNamespace.idToHex,
+        name: ownedNamespace.namespaceName.name,
+        linkType: aliasType,
+        linkedInfo: linkedInfo,
+        active: ownedNamespace.namespaceInfo.active
+      };
+
+      this.dashBoardNamespaceInfoList.push(dashBoardNamespaceInfo); 
+    }
+  }
 
   /**
    *
@@ -285,6 +407,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.currentAccount = Object.assign({}, this.walletService.getCurrentAccount());
     this.currentAccount.address = this.proximaxProvider.createFromRawAddress(this.currentAccount.address).pretty();
     this.currentAccount.name = (this.currentAccount.name === 'Primary') ? `${this.currentAccount.name}_Account` : this.currentAccount.name;
+    this.getAccountMosaicNamespace();
   }
 
   /**
@@ -326,7 +449,10 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
           // Sets the data structure of the dashboard
           transactions.forEach(element => {
             const builderTransactions = this.transactionService.getStructureDashboard(element, this.transactions, 'confirmed');
-            (builderTransactions !== null) ? this.transactions.push(builderTransactions) : '';
+
+            if(builderTransactions !== null){
+              this.transactions.push(builderTransactions);
+            }
           });
 
           this.transactionService.setTransactionsConfirmed$(this.transactions);
@@ -374,12 +500,16 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       this.transactionsConfirmed = next;
 
       this.transactionsConfirmed.sort((a,b)=>{ return b.data.transactionInfo.height.compact() - a.data.transactionInfo.height.compact() } );
-      this.transactions = next;
 
       // Datatable
       this.mdbTable.setDataSource(this.transactionsConfirmed);
       this.transactions = this.mdbTable.getDataSource();
       this.previous = this.mdbTable.getDataSource();
+      if(next && next.length){
+        this.getAccountMosaicNamespace();
+      }
+      this.updateTimestamp();
+      this.selectTransactions(1);
     }));
 
     this.subscription.push(this.transactionService.getUnconfirmedTransactions$().subscribe((next: TransactionsInterface[]) => {
@@ -432,15 +562,54 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   selectTransactions(type: number) {
     if (type === 1) {
       // Confirmed
+      this.viewType = 1;
       this.mdbTable.setDataSource(this.transactionsConfirmed);
       this.transactions = this.mdbTable.getDataSource();
       this.previous = this.mdbTable.getDataSource();
+      this.mainHeaders = this.confirmedPageHeaders;
     } else {
       // Unconfirmed
+      this.viewType = 0;
       this.mdbTable.setDataSource(this.transactionsUnconfirmed);
       this.transactions = this.mdbTable.getDataSource();
       this.previous = this.mdbTable.getDataSource();
+      this.mainHeaders = this.headElements;
     }
+  }
+
+  /**
+   * @memberof DashboardComponent
+   */
+  updateTimestamp(){
+
+    if(this.transactionService.generationHash !== ''){
+
+      for (const tx of this.transactionsConfirmed) {
+
+        var timestamp = this.dashboardService.getStorageBlockTimestamp(this.transactionService.generationHash, tx.height);
+
+        if(timestamp){
+          tx.timestamp = this.convertDateTimeFormat(timestamp);
+        }
+      }
+
+      if(this.viewType === 1){
+        this.selectTransactions(1);
+      }
+    }
+    else{
+      setTimeout(()=>{
+        this.updateTimestamp();
+      }, 3000);
+    }
+  }
+
+  convertDateTimeFormat(dateTime: string): string{
+    let dateFormat = "MM/dd/yyyy HH:mm:ss";
+    let date = new Date(dateTime);
+    let timezone = - date.getTimezoneOffset();
+
+    return formatDate(date, dateFormat, 'en-us', timezone.toString());
   }
 
   /**
@@ -452,11 +621,14 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   openModal(transaction: TransactionsInterface) {
     if (transaction.data['transactionInfo'] && transaction.data['transactionInfo'].height) {
       const height = transaction.data['transactionInfo'].height.compact();
+      let UTCDateTime = "";
       if (typeof (height) === 'number') {
         const existBlock = this.dataBridge.filterBlockStorage(height);
         if (existBlock) {
           // console.log('In cache', existBlock);
-          transaction.timestamp = `${this.transactionService.dateFormatUTC(new UInt64([existBlock.timestamp.lower, existBlock.timestamp.higher]))} - UTC`;
+          UTCDateTime = `${this.transactionService.dateFormatPureUTC(new UInt64([existBlock.timestamp.lower, existBlock.timestamp.higher]))}`;
+          transaction.timestamp = this.convertDateTimeFormat(UTCDateTime);
+          this.dashboardService.saveBlockTimestamp(this.dataBridge.blockInfo.generationHash, height, UTCDateTime);
           const calculateEffectiveFee = this.transactionService.amountFormatterSimple(existBlock.feeMultiplier * transaction.data.size);
           transaction.effectiveFee = this.transactionService.getDataPart(calculateEffectiveFee, 6);
           // console.log('Effective fee ---> ', transaction.effectiveFee);
@@ -465,7 +637,9 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             next => {
               // console.log('Http', next);
               this.dataBridge.validateBlock(next);
-              transaction.timestamp = `${this.transactionService.dateFormatUTC(next.timestamp)} - UTC`;
+              UTCDateTime = `${this.transactionService.dateFormatPureUTC(next.timestamp)}`;
+              transaction.timestamp = this.convertDateTimeFormat(UTCDateTime);
+              this.dashboardService.saveBlockTimestamp(this.dataBridge.blockInfo.generationHash, height, UTCDateTime);
               const calculateEffectiveFee = this.transactionService.amountFormatterSimple(next.feeMultiplier * transaction.data.size);
               transaction.effectiveFee = this.transactionService.getDataPart(calculateEffectiveFee, 6);
               // console.log('Effective fee ---> ', transaction.effectiveFee);

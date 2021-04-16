@@ -20,8 +20,23 @@
   padding-right: 1rem !important;
 }
 
+.uppercase{
+  text-transform: uppercase;
+}
 
+.namespace-mosaic-info{
+  color: black;
+  background: lightgray;
+  padding: 6px 30px !important;
+  font-weight: bold !important;
+  font-size: 15px !important;
+  text-align: center !important;
+}
 
+.namespace-mosaic-info.selected{
+  color: white;
+  background: #306eb5 !important;
+}
 
 table.table td, table.table th {
   padding-top: 0.5rem;

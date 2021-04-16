@@ -119,7 +119,7 @@ export class AliasAddressToNamespaceComponent implements OnInit, OnDestroy {
             let label = namespaceStorage.namespaceName.name; // await this.namespaceService.getNameParentNamespace(namespaceStorage);
             const name = label;
             if (namespaceStorage.namespaceInfo.alias.type === 1) {
-              this.mosaicstoHex = new MosaicId([namespaceStorage.namespaceInfo.alias.mosaicId[0], namespaceStorage.namespaceInfo.alias.mosaicId[1]]);
+              this.mosaicstoHex =  new MosaicId([namespaceStorage.namespaceInfo.alias.mosaicId.id.lower, namespaceStorage.namespaceInfo.alias.mosaicId.id.higher]);
 
             }
             const type = namespaceStorage.namespaceInfo.alias.type;
@@ -127,7 +127,7 @@ export class AliasAddressToNamespaceComponent implements OnInit, OnDestroy {
               isLinked = true;
               disabled = (this.LinkToNamespaceForm.get('typeAction').value === 0) ? true : false;
               label = `${label} - (Linked to Address)`;
-              address = this.proximaxProvider.createAddressFromEncode(namespaceStorage.namespaceInfo.alias.address).plain();
+              address = Address.createFromRawAddress(namespaceStorage.namespaceInfo.alias.address['address']).plain();
             } else if (type === 1) {
               isLinked = true;
               disabled = true;
