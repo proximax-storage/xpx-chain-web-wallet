@@ -85,6 +85,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
   subscription: Subscription[] = [];
   vestedBalance: { part1: string; part2: string; };
   noMosaics = false;
+  noMosaicSelectable = false;
 
   signer: AccountsInterface = null;
   typeTx = 1; // 1 simple, 2 multisig
@@ -137,6 +138,9 @@ export class MosaicsSupplyChangeComponent implements OnInit {
 
     const data = await this.mosaicService.filterMosaics(null, this.signer.name);
     const mosaicsSelect = this.parentMosaic.slice(0);
+
+    this.noMosaics = data.length > 0 ? false : true;
+
     data.forEach(element => {
       let expired = false;
       let nameExpired = '';
@@ -179,11 +183,11 @@ export class MosaicsSupplyChangeComponent implements OnInit {
 
     this.parentMosaic = mosaicsSelect;
     if (this.parentMosaic.length === 1) {
-      this.noMosaics = true;
+      this.noMosaicSelectable = true;
       this.formMosaicSupplyChange.get('parentMosaic').disable();
       this.formMosaicSupplyChange.get('password').disable();
     } else {
-      this.noMosaics = false;
+      this.noMosaicSelectable = false;
       this.formMosaicSupplyChange.get('parentMosaic').enable();
       this.formMosaicSupplyChange.get('password').enable();
     }
