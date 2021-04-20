@@ -136,6 +136,7 @@ export class AuditApostilleComponent implements OnInit {
   });
   async fileTour() {
     const hash = [];
+    this.transactionsSearch = []
     for (let index = 0; index < this.ourFile.length; index++) {
       const el = this.ourFile[index];
       if (el.type === 'application/zip') {
