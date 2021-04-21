@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { TransferTransaction } from 'tsjs-xpx-chain-sdk';
+import { TransactionInfo, TransferTransaction, UInt64 } from 'tsjs-xpx-chain-sdk';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { NodeService } from '../../../servicesModule/services/node.service';
 import { Verifier } from './audit-apistille-verifier';
@@ -11,7 +11,8 @@ import { PaginationInstance } from 'ngx-pagination';
 import * as JSZip from 'jszip';
 import { environment } from '../../../../environments/environment';
 import { StorageService } from '../../../storage/views/services/storage.service';
-
+import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
+import { formatDate } from '@angular/common';
 @Component({
   selector: 'app-audit-apostille',
   templateUrl: './audit-apostille.component.html',
@@ -52,6 +53,7 @@ export class AuditApostilleComponent implements OnInit {
   @ViewChild('basicModal', { static: true }) modalAudit: ModalDirective;
 
   constructor(
+    private dataBridge: DataBridgeService,
     private proximaxProvider: ProximaxProvider,
     private nodeService: NodeService,
     private transactionService: TransactionsService,
@@ -107,45 +109,60 @@ export class AuditApostilleComponent implements OnInit {
       this.searching = false;
     }
   }
-
+  getHashName(name: string): GetHashName {
+    let dataR: any = {
+      sussces: false,
+      hash: null
+    }
+    let arrayName = name.split("TX")
+    let arrayNameV = arrayName.map(x => x.trim().slice(0, 64)).find(x => this.returnHexaNumber(x) && x.length == 64)
+    if (arrayNameV) {
+      dataR = {
+        sussces: true,
+        hash: arrayNameV
+      }
+    }
+    return dataR
+  }
+  returnHexaNumber(s: any) {
+    var regExp = /^[-+]?[0-9A-Fa-f]+\.?[0-9A-Fa-f]*?$/;
+    return (typeof s === 'string' && regExp.test(s));
+  }
+  toBase64 = file => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+  });
   async fileTour() {
     const hash = [];
+    this.transactionsSearch = []
     for (let index = 0; index < this.ourFile.length; index++) {
-      // console.log('bucle #', index);
       const el = this.ourFile[index];
       if (el.type === 'application/zip') {
         const jszip = new JSZip();
         await jszip.loadAsync(el).then(async (zip) => {
-          // console.log('\n\n\n\nValue of zip', zip, '\n\n\n\nEnd value\n\n');
           if (Object.keys(zip.files).length >= 2) {
-            // console.log('cero');
             for (let filename of Object.keys(zip.files)) {
               await zip.files[filename].async('blob').then(async (blobFile) => {
                 const blobClone = Object.assign({}, blobFile);
-                // console.log('uno aqui', blobClone);
                 blobClone.type = await zip.files[filename].comment;
-                // console.log('dos aqui', blobClone.type);
-                // Do something with the blob file
-                const file = await new File([blobClone], zip.files[filename].name, { type: zip.files[filename].comment});
-                // console.log('my file --> ', file);
-
+                const file = await new File([blobClone], zip.files[filename].name, { type: zip.files[filename].comment });
                 let verifiName = file.name.substr(0, 15);
-                if (verifiName !== 'Certificate of ' && file.name.length > 100) {
-                  // console.log('3 aqui');
-                  let arrayName = file.name.split(' --Apostille TX ');
-                  if (arrayName.length > 1) {
-                    // console.log('4 aqui');
+                if (verifiName !== 'Certificate of ') {
+                  const file = await new File([blobFile], zip.files[filename].name, { type: zip.files[filename].comment });
+                const uploadedFileContent = await this.toBase64(file)
+                  const hashName: GetHashName = this.getHashName(file.name)
+                  if (hashName.sussces) {
                     this.ourFile[index] = file;
-                    // console.log('\n\n\n\nValue of this.ourFile', this.ourFile, '\n\n\n\nEnd value\n\n');
-                    let arrayDate = arrayName[1].split(' --Date ');
-                    this.transactionsSearch.push(file);
-                    hash.push(arrayDate[0]);
+                    this.transactionsSearch.push({ file: file, resultData: uploadedFileContent, hash: hashName.hash });
+                    hash.push(hashName.hash);
                   } else {
                     this.addAuditResult({
                       filename: el.name,
                       owner: '',
                       fileHash: '',
-                      result: 'The file does not contain valid data to audit',
+                      result: 'the filename does not contain the hash located in the certificate',
                       hash: ''
                     });
                   }
@@ -163,93 +180,106 @@ export class AuditApostilleComponent implements OnInit {
           }
         });
       } else {
-        let arrayName = el.name.split(' --Apostille TX ');
-        if (arrayName.length > 1) {
-          let arrayDate = arrayName[1].split(' --Date ');
-          this.transactionsSearch.push(el);
-          hash.push(arrayDate[0]);
-
+        const hashName: GetHashName = this.getHashName(el.name)
+        if (hashName.sussces) {
+          const uploadedFileContent = await this.toBase64(el)
+          this.transactionsSearch.push({ file: el, resultData: uploadedFileContent, hash: hashName.hash });
+          hash.push(hashName.hash);
         } else {
           this.addAuditResult({
             filename: el.name,
             owner: '',
             fileHash: '',
-            result: 'Document not attested',
+            result: 'the filename does not contain the hash located in the certificate',
             hash: ''
           });
         }
       }
     }
-
-    // console.log('aqui retornó');
-
     return hash;
   }
+  convertDateTimeFormat(dateTime: string): string {
+    let dateFormat = "MM-dd-yyyy";
+    let date = new Date(dateTime);
+    let timezone = - date.getTimezoneOffset();
 
+    return formatDate(date, dateFormat, 'en-us', timezone.toString());
+  }
+
+  getUTCDateTime = (transactionInfo: TransactionInfo) => new Promise((resolve, reject) => {
+    const height = transactionInfo.height.compact();
+    let UTCDateTime = "";
+    if (typeof (height) === 'number') {
+      const existBlock = this.dataBridge.filterBlockStorage(height);
+      if (existBlock) {
+        UTCDateTime = `${this.transactionService.dateFormatPureUTC(new UInt64([existBlock.timestamp.lower, existBlock.timestamp.higher]))}`;
+        UTCDateTime = this.convertDateTimeFormat(UTCDateTime);
+        resolve(UTCDateTime);
+      } else {
+        this.proximaxProvider.getBlockInfo(height).subscribe(
+          next => {
+            this.dataBridge.validateBlock(next);
+            UTCDateTime = `${this.transactionService.dateFormatPureUTC(next.timestamp)}`;
+            UTCDateTime = this.convertDateTimeFormat(UTCDateTime);
+            resolve(UTCDateTime);
+          }
+        );
+      }
+    }
+
+    // return UTCDateTime
+  });
   /**
    * Method to verify hash of documents uploaded
    * @param transactions transactions found
    */
-  verifyHash(transactions: TransferTransaction[]) {
+  async verifyHash(transactions: TransferTransaction[]) {
     // console.log('\n\n\n\nValue of trasaction', transactions, '\n\n\n\nEnd value\n\n');
     this.searching = false;
-    this.transactionsSearch.forEach(element => {
-      const arrayName = element.name.split(' --Apostille TX ');
-      const arrayHash = arrayName[1].split(' --Date ');
-      const arrayDate = arrayHash[1].split(' ');
-      const findHash = transactions.find(el => arrayHash[0].toUpperCase() === el.transactionInfo.hash);
-
+    this.transactionsSearch.forEach(async element => {
+      const arrayName = element.file.name;
+      const findHash = transactions.find(el => element.hash.toUpperCase() === el.transactionInfo.hash);
       if (findHash !== undefined) {
-        const myReader: FileReader = new FileReader();
-        myReader.onloadend = (e) => {
-          if (this.verify(myReader.result, findHash)) {
-            let originalName = '';
-            let method = '';
-            if (element.type !== '') {
-              let arrayExtention = arrayName[1].split('.');
-              originalName = `${arrayName[0]}.${arrayExtention[arrayExtention.length - 1]}`;
-            } else {
-              originalName = arrayName[0];
-            }
-            // console.log('\n\n\n\nValue of element', element, '\n\n\n\nEnd value\n\n');
-            const apostillePrivatePrefix = 'fe4e545983';
-            const apostillePublicPrefix = 'fe4e545903';
-            const prefixHash = findHash.message.payload.replace(/['"]+/g, '').substr(0, 10);
+        const dateFile = await this.getUTCDateTime(findHash.transactionInfo)
+        if (this.verify(element.resultData, findHash)) {
+          let originalName = '';
+          let method = '';
+          originalName = arrayName
+          const apostillePrivatePrefix = 'fe4e545983';
+          const apostillePublicPrefix = 'fe4e545903';
+          const prefixHash = findHash.message.payload.replace(/['"]+/g, '').substr(0, 10);
 
 
-            let transaction = this.transactionService.getStructureDashboard(findHash);
-            transaction.dateFile = arrayDate[0];
-            transaction.fileName = originalName;
+          let transaction = this.transactionService.getStructureDashboard(findHash);
+          transaction.dateFile = String(dateFile) ;
+          transaction.fileName = originalName;
 
-            if (prefixHash === apostillePublicPrefix) {
-              transaction.privateFile = false;
-            } else if (prefixHash === apostillePrivatePrefix) {
-              transaction.privateFile = true;
-            }
-
-            this.addAuditResult({
-              filename: originalName,
-              owner: this.proximaxProvider.createFromRawAddress(findHash.recipient['address']).pretty(),
-              fileHash: findHash.message.payload.replace(/['"]+/g, ''),
-              result: 'Document apostille',
-              hash: findHash.transactionInfo.hash,
-              date: arrayDate[0],
-              method: method,
-              transaction: transaction,
-            }, findHash.transactionInfo.hash);
-          } else {
-            // console.log('element name ---> ', element);
-
-            this.addAuditResult({
-              filename: element.name,
-              owner: '',
-              fileHash: '',
-              result: 'Modified document',
-              hash: ''
-            });
+          if (prefixHash === apostillePublicPrefix) {
+            transaction.privateFile = false;
+          } else if (prefixHash === apostillePrivatePrefix) {
+            transaction.privateFile = true;
           }
-        };
-        myReader.readAsDataURL(element);
+
+          this.addAuditResult({
+            filename: originalName,
+            owner: this.proximaxProvider.createFromRawAddress(findHash.recipient['address']).pretty(),
+            fileHash: findHash.message.payload.replace(/['"]+/g, ''),
+            result: 'Document apostille',
+            hash: findHash.transactionInfo.hash,
+            date: String(dateFile) ,
+            method: method,
+            transaction: transaction,
+          }, findHash.transactionInfo.hash);
+        } else {
+
+          this.addAuditResult({
+            filename: element.name,
+            owner: '',
+            fileHash: '',
+            result: 'Modified document',
+            hash: ''
+          });
+        }
       } else {
         this.addAuditResult({
           filename: element.name,
@@ -314,4 +344,8 @@ export class AuditApostilleComponent implements OnInit {
 
     return message
   }
+}
+export interface GetHashName {
+  sussces: boolean,
+  hash: string
 }
