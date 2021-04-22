@@ -213,14 +213,16 @@ export class PollsComponent implements OnInit {
     this.cantPolls = 0;
   }
 
-  routerRouterLink(link: string) {
-    // Create Book logic
+  routerRouterLink(link: string, name: string) {
     if(!link || link === ""){
       this.sharedService.showError('', `Something where wrong, please try again`);
     }
 
     if (this.walletService.canVote) {
-      this.router.navigate([link]);
+
+      const finalLink = link + "/" + encodeURI(name);
+
+      this.router.navigate([finalLink]);
     } else {
       this.sharedService.showInfo('', `We are validating your vote, please wait a few seconds`);
     }
