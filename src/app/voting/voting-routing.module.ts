@@ -27,7 +27,7 @@ const routes: Routes = [
       }
     }
   }, {
-    path: `${AppConfig.routes.voteInPoll}/:id`,
+    path: `${AppConfig.routes.voteInPoll}/:id/:name`,
     component: VoteInPollComponent,
     data: {
       meta: {

@@ -94,7 +94,9 @@ export class VoteInPollComponent implements OnInit {
     this.showResultProgress = false;
     this.createForm()
 
-    this.getPoll(this.activateRoute.snapshot.paramMap.get('id'));
+    let pollName = decodeURI(this.activateRoute.snapshot.paramMap.get('name'));
+    this.getPoll(this.activateRoute.snapshot.paramMap.get('id'), pollName);
+    
   }
   @ViewChild('modalInfo', { static: true }) modalInfo: ModalDirective;
   @ViewChild('certificationModal', { static: true }) certificationModal: ModalDirective;
@@ -181,8 +183,8 @@ export class VoteInPollComponent implements OnInit {
     this.optionsSelected = [];
     this.optionsSelected.push({ field: field });
   }
-  getPoll(id) {
-    this.pollSelected = this.createPollStorageService.filterPoll(id);
+  getPoll(id, name) {
+    this.pollSelected = this.createPollStorageService.filterPoll(id, name);
     this.isMultipe = this.pollSelected.isMultiple
     this.verifyVote();
     this.setResultprev(this.pollSelected);

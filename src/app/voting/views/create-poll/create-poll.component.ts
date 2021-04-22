@@ -53,7 +53,7 @@ export class CreatePollComponent implements OnInit {
   fee:number = 0.000000;
   displayFee: string = '0.000000'; 
   transferTransactions: InnerTransaction[] = [];
-  pollId = Math.floor(Math.random() * 1455654).toString();
+  pollId = new Date().getTime().toString();
   startDate = new Date();
   createdDate = new Date();
   firstTransfer: TransferTransaction;
