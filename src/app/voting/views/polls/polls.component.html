@@ -94,7 +94,7 @@
 
           <tbody class="background-white">
             <ng-container *ngFor="let poll of pollResult | filterobject: objectValue ">
-              <tr class="white-space-pre cursor-p" mdbTableCol (click)="routerRouterLink(routes.voteInpoll+poll.id)">
+              <tr class="white-space-pre cursor-p" mdbTableCol (click)="routerRouterLink(routes.voteInpoll+poll.id, poll.name)">
                 <!-- <td class="fs-07rem" [ngClass]="transaction ? 'fw-600': ''">{{transaction.status}}</td> -->
                 <td class="fs-07rem txt-a-center">{{poll.name}}</td>
                 <td class="fs-07rem txt-a-center">{{poll.typeName}}</td>

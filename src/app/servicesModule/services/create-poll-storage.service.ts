@@ -258,8 +258,8 @@ export class CreatePollStorageService {
    * @returns
    * @memberof WalletService
    */
-  filterPoll(byId: number): PollInterface {
-    return this.allPollResult.find(elm => elm.id === byId);
+  filterPoll(byId: number, name: string): PollInterface {
+    return this.allPollResult.find(elm => elm.id === byId && elm.name == name);
   }
 
   /**
