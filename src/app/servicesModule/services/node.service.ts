@@ -81,11 +81,32 @@ export class NodeService {
     this.subscribeNodeSelected();
 
     // go through all the nodes that exist by default, and verify that they do not repeat in the storage
-    this.listNodes.forEach(element => {
-      this.validateToAddNode(element);
-    });
+    for (let i = 0; i < this.listNodes.length; i++) {
+      // const e = this.listNodes[i];
+      this.validateToAddNode(this.listNodes[i]);
+    }
+    this.updateListConfig()
   }
+  updateListConfig() {
+    const newList = []
+    const dataStorage = this.getAllNodes();
+    if (dataStorage === null) {
+      return
+    }
+    for (let t = 0; t < dataStorage.length; t++) {
+      const e = dataStorage[t];
+      const data = this.listNodes.find((x: { value: any; }) => x === e.value);
+      if (data || !e.isDefault) {
+        newList.push(e)
+      }
+    }
+    this.setArrayNode(newList);
+    // Validate node select exist in nodelist
+    if(!this.listNodes.find((x: { value: any; }) => x === this.getNodeSelected())) {
+      this.addNewNodeSelected(this.listNodes[Math.floor(Math.random() * this.listNodes.length)] )
+    }
 
+  }
 
   /**
    * Add new selected node
@@ -175,7 +196,8 @@ export class NodeService {
    * @memberof NodeService
    */
   getAllNodes() {
-    return JSON.parse(localStorage.getItem(this.nameItemsArrayStorage));
+    const nodes = localStorage.getItem(this.nameItemsArrayStorage)
+    return nodes ? JSON.parse(nodes) : null;
   }
 
 
@@ -186,7 +208,8 @@ export class NodeService {
    * @memberof NodeService
    */
   getNodeSelected() {
-    return JSON.parse(localStorage.getItem(this.nameItemSelectedStorage));
+    const node = localStorage.getItem(this.nameItemSelectedStorage)
+    return node ? JSON.parse(node) : null;
   }
 
   /**
