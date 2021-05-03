@@ -193,13 +193,20 @@
                 </div>
               </div>
               <!-- TAGS -->
-              <div class="row row mt-1rem">
+              <div class="row row mt-1rem"> {{apostilleFormTwo.value}}
                 <div class="col-12">
                   <div class="md-form form-sm mt-0 mb-0rem">
                     <input [maxlength]="configurationForm.tags.maxLength" [minlength]="configurationForm.tags.minLength"
-                      type="text" autocomplete="off" formControlName="tags" required id="tags" mdbInputDirective
+                      type="text" autocomplete="off" formControlName="tags"  id="tags" mdbInputDirective
                       mdbValidate [validateSuccess]="true" [validateError]="true"
                       class="form-control form-control-sm input-border" placeholder="+Tags">
+
+                    <!-- VALIDATION -->
+                    <mdb-error
+                    *ngIf="validateInput('tags', '').invalid && (validateInput('tags', '').dirty || validateInput('tags', '').touched)">
+                    <span>Tags required</span>
+                  </mdb-error>
+
                   </div>
                 </div>
               </div>
@@ -304,7 +311,8 @@
                     <span class="fs-1-2em color-white">Clear</span>
                   </button>
                 </div>
-
+                <!-- <pre class="list-group-item-text"> {{apostilleFormTwo | json }} </pre> -->
+                {{ apostilleFormTwo}}
                 <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
                   <button [disabled]="apostilleFormTwo.invalid || blockBtn" mdbBtn type="submit" rounded="true"
                     mdbWavesEffect class="btn-proximax" size="md">
