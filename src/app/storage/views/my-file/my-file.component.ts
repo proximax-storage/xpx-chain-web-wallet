@@ -198,7 +198,7 @@ export class MyFileComponent implements OnInit, AfterViewInit {
 
   async getFiles(dataHash?: string, title?: string, downloadPrivate: Boolean = false) {
 
-    // console.log(this.fromTransactionId);
+    console.log(this.fromTransactionId);
     // if
     let param = null
     if (!downloadPrivate) {
@@ -227,10 +227,15 @@ export class MyFileComponent implements OnInit, AfterViewInit {
 
 
     const response = await this.searcher.search(param.build());
-    // console.log(response);
-
+    console.log('response', response)
+   
     if (response.toTransactionId) {
       this.fromTransactionId = response.toTransactionId;
+      if (response.results.length < this.resultSize) {
+        this.fromTransactionId = undefined;
+       }
+    } else {
+      this.fromTransactionId = undefined;
     }
 
     // console.log(this.fromTransactionId);
@@ -260,7 +265,7 @@ export class MyFileComponent implements OnInit, AfterViewInit {
     await this.getFiles();
   }
   mdbModalPasswordClose() {
-    this.mdbModalPassword.hide() 
+    this.mdbModalPassword.hide()
     this.passwordForm.reset()
   }
   async getFilesCustom() {
