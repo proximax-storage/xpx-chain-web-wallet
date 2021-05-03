@@ -69,6 +69,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
     precision: '0'
   };
   deltaSupply = 0;
+  deltaSupplyValidate = false;
   totalSupply = '0';
   invalidSupply: boolean;
   errorSupply: string;
@@ -659,6 +660,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
   subscribeData() {
     this.subscribe['block'] = this.dataBridge.getBlock().subscribe(next => this.currentBlock = next);
     this.formMosaicSupplyChange.get('deltaSupply').valueChanges.subscribe(next => {
+      this.deltaSupplyValidate = true
       if (parseFloat(next) <= this.configurationForm.mosaicWallet.maxSupply) {
         this.invalidSupply = false;
         this.blockBtn = false;
@@ -680,8 +682,6 @@ export class MosaicsSupplyChangeComponent implements OnInit {
       this.builder();
     });
   }
-
-
   /**
    *
    *
