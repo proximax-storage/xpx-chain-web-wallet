@@ -667,7 +667,7 @@ export class EditAccountMultisigComponent implements OnInit {
         }
         this.updateConfigFormCosignatorieSign(listFilter.length);
       } else {
-        this.validateAccountAlert = { show: true, info: 'You are not consignee of the account', subInfo: 'Requires a valid cosigner to edit this account.' };
+        this.validateAccountAlert = { show: true, info: 'You are not cosigner of the account', subInfo: 'Requires a valid cosigner to edit this account.' };
       }
       if (this.validateAccountAlert.show) {
         this.disabledForm('selectAccount', true);
@@ -697,7 +697,7 @@ export class EditAccountMultisigComponent implements OnInit {
         this.isRepeatCosignatoryVal = true;
       }
     }
-    if (this.isRepeatCosignatoryVal) { this.sharedService.showWarning('', 'Consignee already exists'); }
+    if (this.isRepeatCosignatoryVal) { this.sharedService.showWarning('', 'Cosigner already exists '); }
     return this.isRepeatCosignatoryVal;
   }
   // TODO hacer recursive function
@@ -725,7 +725,7 @@ export class EditAccountMultisigComponent implements OnInit {
       let nameNull = null;
       const oneName = (this.multisigService.filterOwnCosignatory({ publicKey: x.publicKey },
         this.walletService.currentWallet.accounts)) ? this.multisigService.filterOwnCosignatory({ publicKey: x.publicKey },
-          this.walletService.currentWallet.accounts).name : `Consignee-${x.address.pretty().substr(-4)}`;
+          this.walletService.currentWallet.accounts).name : `Cosigner-${x.address.pretty().substr(-4)}`;
       let d = {
         loading: true,
         isMultisig: null,
@@ -739,13 +739,13 @@ export class EditAccountMultisigComponent implements OnInit {
           const ownCosignatoriesTow = this.multisigService.multisigAccountGraphInfoMap(account.multisigAccountGraphInfo).find(c => c.account.publicKey === i.publicKey);
           const towName = (this.multisigService.filterOwnCosignatory({ publicKey: i.publicKey },
             this.walletService.currentWallet.accounts)) ? this.multisigService.filterOwnCosignatory({ publicKey: i.publicKey },
-              this.walletService.currentWallet.accounts).name : `Consignee-${i.address.pretty().substr(-4)}`;
+              this.walletService.currentWallet.accounts).name : `Cosigner-${i.address.pretty().substr(-4)}`;
           if (ownCosignatoriesTow) {
             const cosignatorieswTowList: CosignatoriesInterface[] = ownCosignatoriesTow.cosignatories.map(xY => {
               const ownCosignatoriesThree = this.multisigService.filterOwnCosignatory({ publicKey: xY.publicKey }, this.walletService.currentWallet.accounts);
               const ThreeName = (this.multisigService.filterOwnCosignatory({ publicKey: xY.publicKey },
                 this.walletService.currentWallet.accounts)) ? this.multisigService.filterOwnCosignatory({ publicKey: x.publicKey },
-                  this.walletService.currentWallet.accounts).name : `Consignee-${xY.address.pretty().substr(-4)}`;
+                  this.walletService.currentWallet.accounts).name : `Cosigner-${xY.address.pretty().substr(-4)}`;
               const xy = {
                 name: ThreeName,
                 address: xY.address.plain(),
@@ -764,7 +764,7 @@ export class EditAccountMultisigComponent implements OnInit {
               }
             );
           } else {
-            nameNull = `Consignee-${i.address.pretty().substr(-4)}`;
+            nameNull = `Cosigner-${i.address.pretty().substr(-4)}`;
             data.cosignatories.push(
               {
                 publicAccount: PublicAccount.createFromPublicKey(i.publicKey, environment.typeNetwork.value),

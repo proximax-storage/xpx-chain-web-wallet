@@ -202,7 +202,6 @@ export class CreateApostilleComponent implements OnInit {
       ]],
 
       tags: [[], [
-        Validators.required,
         Validators.minLength(this.configurationForm.tags.minLength),
         Validators.maxLength(this.configurationForm.tags.maxLength)
       ]],

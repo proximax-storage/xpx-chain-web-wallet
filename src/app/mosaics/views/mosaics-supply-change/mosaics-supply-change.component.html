@@ -76,6 +76,9 @@
               <mdb-error *ngIf="errSupplyMin">
                 <span> Supply maximum decrease {{supply}}</span>
               </mdb-error>
+              <mdb-error *ngIf="deltaSupply === 0 && deltaSupplyValidate">
+                <span> Enter quantity supply </span>
+              </mdb-error>
               <br>
             </div>
           </div>
