@@ -60,7 +60,7 @@ export class MyFileComponent implements OnInit, AfterViewInit {
   common: any;
   passwordMain = 'password';
   dataSelected: SearchResultInterface = null;
-  headElements = ['Timestamp', 'Name', 'Action'];
+  headElements = ['Date', 'Name', 'Action'];
   optionTypeSearch = [{
     value: 'name',
     label: 'File Name'
