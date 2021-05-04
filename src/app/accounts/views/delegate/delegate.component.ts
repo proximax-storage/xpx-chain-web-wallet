@@ -286,7 +286,7 @@ export class DelegateComponent implements OnInit, OnDestroy {
   changeInputType(inputType: string) {
     const newType = this.sharedService.changeInputType(inputType);
 
-    this.pvkMain = newType;
+    this.passwordMain = newType;
   }
 
 
@@ -331,7 +331,7 @@ export class DelegateComponent implements OnInit, OnDestroy {
 
       this.isMultisigAccount = accountMultisigInfo.isMultisig();
     } catch (e) { 
-      console.error(e);
+      console.info(e);
       this.isMultisigAccount = false;
     }
   }
