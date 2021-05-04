@@ -45,6 +45,7 @@ export class MyFileComponent implements OnInit, AfterViewInit {
   downloadForm: FormGroup;
   passwordForm: FormGroup;
   searching = false;
+  refresh = false;
   downloading = false;
   objectKeys = Object.keys;
   resultSize = 10;
@@ -197,8 +198,6 @@ export class MyFileComponent implements OnInit, AfterViewInit {
   }
 
   async getFiles(dataHash?: string, title?: string, downloadPrivate: Boolean = false) {
-
-    console.log(this.fromTransactionId);
     // if
     let param = null
     if (!downloadPrivate) {
@@ -227,13 +226,12 @@ export class MyFileComponent implements OnInit, AfterViewInit {
 
 
     const response = await this.searcher.search(param.build());
-    console.log('response', response)
-   
+
     if (response.toTransactionId) {
       this.fromTransactionId = response.toTransactionId;
       if (response.results.length < this.resultSize) {
         this.fromTransactionId = undefined;
-       }
+      }
     } else {
       this.fromTransactionId = undefined;
     }
@@ -255,10 +253,12 @@ export class MyFileComponent implements OnInit, AfterViewInit {
 
       this.elements.push(item);
     });
+    this.refresh = false;
 
   }
 
   async clearData() {
+    this.refresh = true;
     this.elements = [];
     this.paramSearch = '';
     this.fromTransactionId = undefined;
