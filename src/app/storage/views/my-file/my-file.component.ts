@@ -454,7 +454,7 @@ export class MyFileComponent implements OnInit, AfterViewInit {
         } catch (err) {
           //console.log(err);
           this.downloading = false;
-          this.sharedService.showError("Unable to download", err);
+          this.sharedService.showError("Unable to download",  err.toString().replace("'", ''));
         }
       }
     }
