@@ -2,7 +2,7 @@ dynamic_configuration = {
     production: true,
     routeNodesJson: 'mainnet',
     itemBooksAddress: 'sw-books-mainnet',
-    version: '0.5.6',
+    version: '0.5.7',
     cacheVersion: '01-MAINNET',
     nameKeyBlockStorage: `sw-blocks`,
     nameKeyBlockTimestamp: `sw-blocks-timestamp`,

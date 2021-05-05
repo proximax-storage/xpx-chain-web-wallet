@@ -38,6 +38,10 @@
           class="selectWrapper" [items]="optionsEncryptionMethods" formControlName="encryptionMethod" bindLabel="name"
           bindValue="value" placeholder="Select Encryption Method" (change)="encryptionMethodSelect($event)">
         </ng-select>
+        <mdb-error class="mt-03rem ml-1rem"
+          *ngIf="validateInput('encryptionMethod').invalid && (validateInput('encryptionMethod').dirty || validateInput('encryptionMethod').touched)">
+          <span >Select encryption method</span>
+        </mdb-error>
       </div>
     </div>
 

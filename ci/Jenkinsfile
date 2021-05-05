@@ -90,7 +90,7 @@ pipeline {
           s3Delete bucket: 'bctestnetwallet.xpxsirius.io', path: './'
 
           echo 'Uploading new files'
-          s3Upload bucket: 'bctestnetwallet.xpxsirius.io', acl: 'PublicRead', file: 'dist/proximax-testnet-sirius-wallet/', sseAlgorithm: 'AES256'
+          s3Upload bucket: 'bctestnetwallet.xpxsirius.io', acl: 'PublicRead', file: 'dist/proximax-sirius-wallet/', sseAlgorithm: 'AES256'
         }
 
         echo 'Managing CloudFront'
@@ -159,7 +159,7 @@ pipeline {
           s3Delete bucket: 'bcmainnetwallet.xpxsirius.io', path: './'
 
           echo 'Uploading new files'
-          s3Upload bucket: 'bcmainnetwallet.xpxsirius.io', acl: 'PublicRead', file: 'dist/proximax-mainnet-sirius-wallet/', sseAlgorithm: 'AES256'
+          s3Upload bucket: 'bcmainnetwallet.xpxsirius.io', acl: 'PublicRead', file: 'dist/proximax-sirius-wallet/', sseAlgorithm: 'AES256'
         }
 
         echo 'Managing CloudFront'

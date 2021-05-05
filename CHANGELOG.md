@@ -1,4 +1,46 @@
+
+<!-- RELEASE TESTNET v0.5.6.7 -->
+## [Version: 0.5.7](https://github.com/proximax-storage/xpx-chain-web-wallet/releases/tag/release-v0.5.7)
+<h2>Update</h2>
+<ul>
+<h3>Setting</h3>
+ <li>New version 0.5.7</li>
+ <li>Enabled storage module for developer</li>
+</ul>
+<h2>Text correction</h2>
+<ul>
+<h3>Edit multisig</h3>
+ <li>Cosignee / cosigner</li>
+ <h3>Storage</h3>
+<li>Timestand / Date</li>
+</ul>
+<h2>Bug/features</h2>
+<ul>
+<h3>Mosaic supply</h3>
+<li>Validation text is added if supply quantity is 0</li>
+<h3>Apostille</h3>
+<li>Remove required tags in apostille</li>
+ <h3>Storage</h3>
+<li>Validate select encryption method</li>
+<li>Button refresh loading</li>
+<li>Next button validate "disable"</li>
+ <h3>Delegate</h3>
+ <li>Show/hide password</li>
+</ul>
+
+<!-- RELEASE TESTNET v0.5.6.1 -->
+## [Version: 0.5.6.1](https://github.com/proximax-storage/xpx-chain-web-wallet/releases/tag/release-v0.5.6.1)
+<h2>Fix bug</h2>
+<ul> 
+<h3>Attestation</h3>
+<li>Clean uploaded files </li> 
+<li>Hash filter on file name</li> 
+<h3>Vote</h3>
+<li>Duplicate  id</li> 
+<li>Get id from router param</li> 
+</ul>
 <!-- RELEASE TESTNET v0.5.6 -->
+
 ## [Version: 0.5.6](https://github.com/proximax-storage/xpx-chain-web-wallet/releases/tag/release-v0.5.6)
 <h2>Update</h2>
 <ul>
@@ -26,6 +68,7 @@
 <li>Module storage</li>
 </ul>
 <!-- RELEASE TESTNET v0.5.5 -->
+
 ## [Version: 0.5.5](https://github.com/proximax-storage/xpx-chain-web-wallet/releases/tag/release-v0.5.5)
  <h2>Update</h2>
 <ul>

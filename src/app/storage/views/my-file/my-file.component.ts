@@ -45,6 +45,7 @@ export class MyFileComponent implements OnInit, AfterViewInit {
   downloadForm: FormGroup;
   passwordForm: FormGroup;
   searching = false;
+  refresh = false;
   downloading = false;
   objectKeys = Object.keys;
   resultSize = 10;
@@ -60,7 +61,7 @@ export class MyFileComponent implements OnInit, AfterViewInit {
   common: any;
   passwordMain = 'password';
   dataSelected: SearchResultInterface = null;
-  headElements = ['Timestamp', 'Name', 'Action'];
+  headElements = ['Date', 'Name', 'Action'];
   optionTypeSearch = [{
     value: 'name',
     label: 'File Name'
@@ -197,8 +198,6 @@ export class MyFileComponent implements OnInit, AfterViewInit {
   }
 
   async getFiles(dataHash?: string, title?: string, downloadPrivate: Boolean = false) {
-
-    // console.log(this.fromTransactionId);
     // if
     let param = null
     if (!downloadPrivate) {
@@ -227,10 +226,14 @@ export class MyFileComponent implements OnInit, AfterViewInit {
 
 
     const response = await this.searcher.search(param.build());
-    // console.log(response);
 
     if (response.toTransactionId) {
       this.fromTransactionId = response.toTransactionId;
+      if (response.results.length < this.resultSize) {
+        this.fromTransactionId = undefined;
+      }
+    } else {
+      this.fromTransactionId = undefined;
     }
 
     // console.log(this.fromTransactionId);
@@ -250,17 +253,19 @@ export class MyFileComponent implements OnInit, AfterViewInit {
 
       this.elements.push(item);
     });
+    this.refresh = false;
 
   }
 
   async clearData() {
+    this.refresh = true;
     this.elements = [];
     this.paramSearch = '';
     this.fromTransactionId = undefined;
     await this.getFiles();
   }
   mdbModalPasswordClose() {
-    this.mdbModalPassword.hide() 
+    this.mdbModalPassword.hide()
     this.passwordForm.reset()
   }
   async getFilesCustom() {
@@ -449,7 +454,7 @@ export class MyFileComponent implements OnInit, AfterViewInit {
         } catch (err) {
           //console.log(err);
           this.downloading = false;
-          this.sharedService.showError("Unable to download", err);
+          this.sharedService.showError("Unable to download",  err.toString().replace("'", ''));
         }
       }
     }

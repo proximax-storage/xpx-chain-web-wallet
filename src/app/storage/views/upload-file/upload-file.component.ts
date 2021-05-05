@@ -235,7 +235,7 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
          Validators.maxLength(this.configurationForm.privateKey.maxLength)
        ]],*/
       // useSecureMessage: [''],
-      encryptionMethod: [''],
+      encryptionMethod: ['', [Validators.required]],
       // encryptionPassword: ['', [
       //   Validators.minLength(this.configurationForm.passwordWallet.minLength),
       //   Validators.maxLength(this.configurationForm.passwordWallet.maxLength)

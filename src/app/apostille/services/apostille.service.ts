@@ -368,7 +368,7 @@ export interface SignedZipInterface {
 export interface NtyDataInterface {
   fileName: string;
   extensionFile: string;
-  tags: string;
+  tags?: string;
   fileHash: string;
   owner: Address;
   fromMultisig: Address;

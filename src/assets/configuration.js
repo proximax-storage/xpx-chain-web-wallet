@@ -4,7 +4,7 @@ dynamic_configuration = {
     production: false,
     routeNodesJson: 'testnet',
     itemBooksAddress: 'sw-books-testnet',
-    version: '0.5.6',
+    version: '0.5.7',
     cacheVersion: '01',
     nameKeyBlockStorage: `sw-blocks`,
     nameKeyBlockTimestamp: `sw-blocks-timestamp`,
@@ -25,10 +25,10 @@ dynamic_configuration = {
       },
       storage: {
         viewChildrenParam: true,
-        files: false,
-        uploadFiles: false,
+        files: true,
+        uploadFiles: true,
         sendShare: false,
-        classNameParam: 'disable-module'
+        classNameParam: ''
       },
       notarization: {
         viewChildrenParam: true,
