@@ -109,7 +109,7 @@ export class ServicesBoxComponent implements OnInit {
 
     // Mosaics
     const mosaics = {
-      title: 'Mosaics',
+      title: 'Tokens',
       show: true,
       description: 'Create digital representations with customized properties',
       image: 'icon-mosaics-full-color-80h-proximax-sirius-wallet.svg',

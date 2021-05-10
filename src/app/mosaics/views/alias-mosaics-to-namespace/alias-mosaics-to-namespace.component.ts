@@ -24,7 +24,7 @@ import { environment } from 'src/environments/environment';
 export class AliasMosaicsToNamespaceComponent implements OnInit, OnDestroy {
 
   paramsHeader: HeaderServicesInterface = {
-    moduleName: 'Mosaics',
+    moduleName: 'Tokens',
     componentName: 'Link to Namespace',
   };
   arrayNamespaceStorage: NamespaceStorageInterface[] = [];
@@ -36,7 +36,7 @@ export class AliasMosaicsToNamespaceComponent implements OnInit, OnDestroy {
   linked = null;
   mosaicSelect: Array<object> = [{
     value: '1',
-    label: 'Select Mosaic',
+    label: 'Select Token',
     selected: true,
     disabled: true
   }];
@@ -246,7 +246,7 @@ export class AliasMosaicsToNamespaceComponent implements OnInit, OnDestroy {
             } else if (type === 1) {
               isLinked = true;
               disabled = (this.linkingNamespaceToMosaic.get('typeAction').value === 0) ? true : false;
-              label = `${label}- (Linked to Mosaic) - ${this.mosaicstoHex.toHex()}`;
+              label = `${label}- (Linked to Token) - ${this.mosaicstoHex.toHex()}`;
             } else {
               disabled = (this.linkingNamespaceToMosaic.get('typeAction').value === 1) ? true : false;
             }

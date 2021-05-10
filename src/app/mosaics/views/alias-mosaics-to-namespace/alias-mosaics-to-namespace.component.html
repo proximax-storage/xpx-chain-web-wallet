@@ -54,10 +54,10 @@
             <div class="col-11 mx-auto">
               <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
                 [searchable]="false" class="selectWrapper" [items]="mosaicSelect" formControlName="mosaic"
-                bindLabel="label" bindValue="value" placeholder="Select mosaic" (change)="captureMmosaic()"></ng-select>
+                bindLabel="label" bindValue="value" placeholder="Select token" (change)="captureMmosaic()"></ng-select>
               <mdb-error class="ml-1rem"
                 *ngIf="validateInput('mosaic').invalid && (validateInput('mosaic').dirty || validateInput('mosaic').touched)">
-                <span class="fs-08rem  color-error-message">Select mosaic</span>
+                <span class="fs-08rem  color-error-message">Select token</span>
               </mdb-error>
             </div>
           </div>

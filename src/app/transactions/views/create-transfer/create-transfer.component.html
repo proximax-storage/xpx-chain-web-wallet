@@ -261,7 +261,7 @@
                 <div class="col-12 mx-auto">
                   <ng-select class="custom" mdbInputDirective mdbValidate class="selectWrapper"
                     [items]="otherMosaic.selectOtherMosaics" bindLabel="label" bindValue="value"
-                    placeholder="Select mosaic" (change)="otherMosaicsChange($event, i)" clearAllText="Clean"
+                    placeholder="Select token" (change)="otherMosaicsChange($event, i)" clearAllText="Clean"
                     [disabled]="disabledAllField">
                   </ng-select>
                 </div>
@@ -306,7 +306,7 @@
           (click)="pushedOtherMosaics()">
           <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
             *ngIf="currentBlock === 0 && !disabledBtnAddMosaic"></span>
-          <span class="fs-1-2em text-cl-m fw-700">(+) Add Mosaics </span>
+          <span class="fs-1-2em text-cl-m fw-700">(+) Add Token </span>
         </button>
       </div>
     </div>

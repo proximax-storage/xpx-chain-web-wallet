@@ -34,7 +34,7 @@ import { NodeService } from 'src/app/servicesModule/services/node.service';
 export class CreateMosaicComponent implements OnInit, OnDestroy {
 
   paramsHeader: HeaderServicesInterface = {
-    moduleName: 'Mosaics',
+    moduleName: 'Tokens',
     componentName: 'Create',
   };
   @BlockUI() blockUI: NgBlockUI;
@@ -212,7 +212,6 @@ export class CreateMosaicComponent implements OnInit, OnDestroy {
    * @memberof CreateMosaicComponent
    */
   buildMosaicDefinition(publicAccount: PublicAccount, params: any) {
-    console.debug(this.deltaSupply);
     const mosaicDefinitionTransaction = this.proximaxProvider.buildMosaicDefinition(params);
     const mosaicSupplyChangeTransaction = this.proximaxProvider.buildMosaicSupplyChange(
       mosaicDefinitionTransaction.mosaicId,
@@ -390,8 +389,6 @@ export class CreateMosaicComponent implements OnInit, OnDestroy {
     });
 
     this.mosaicForm.get('deltaSupply').valueChanges.subscribe(next => {
-      console.debug('maxSupply', this.configurationForm.mosaicWallet.maxSupply);
-      console.debug('deltaSupply', parseFloat(next.toString().replace(/./g, '')));
       if (parseFloat(next) <= this.configurationForm.mosaicWallet.maxSupply) {
         if (next === 0) {
           this.invalidSupply = true;
