@@ -231,25 +231,17 @@ export class EditAccountMultisigComponent implements OnInit {
           this.formEditAccountMultsig.get('otherCosignatorie').setValue('', {
             emitEvent: false
           });
-          // this.consginerFirmAccountList = this.pushCosignerFirmList(id)
           const signCosignatory = this.consignerFirmList.find(item => item.value === id);
           if (signCosignatory) {
             this.showSignCosignatory = true;
             this.consignerFirm = signCosignatory;
           }
           this.otherCosignatorieList = this.consignerFirmList.filter(item => item.value !== id);
-          console.log('this.otherCosignatorieList 1', this.otherCosignatorieList)
           this.builderOtherCosignatorie(id);
-          // this.builder()
         }
       }
     );
   }
-  // builderOtherCosignatorie(id) {
-  //   if (id) {
-
-  //   }
-  // }
 
   /**
    *
@@ -260,7 +252,6 @@ export class EditAccountMultisigComponent implements OnInit {
       id => {
         this.otherCosignerFirmAccountList = [];
         this.otherCosignerFirmAccountList = this.pushOtherCosignerFirmList(id);
-        // this.builder()
       }
     );
   }
@@ -433,7 +424,6 @@ export class EditAccountMultisigComponent implements OnInit {
     // Get transaction status
     this.subscribe['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
-        // this.blockSend = false;
         if (statusTransaction !== null && statusTransaction !== undefined && signedTransaction !== null) {
           const match = statusTransaction['hash'] === signedTransaction.hash;
           if (match) {
@@ -463,18 +453,6 @@ export class EditAccountMultisigComponent implements OnInit {
    * @memberof CreateMultiSignatureComponent
    */
   clearForm () {
-    // .reset({
-    //   cosignatory: '',
-    //   cosignatorieSign: '',
-    //   otherCosignatorie: '',
-    //   contact: '',
-    //   minApprovalDelta: 1,
-    //   minRemovalDelta: 1,
-    //   password: ''
-    // }, {
-    //     emitEvent: false
-    //   }
-    // );
     this.cosignatories.clear();
     this.showContacts = false;
     this.formEditAccountMultsig.reset({
@@ -635,12 +613,9 @@ export class EditAccountMultisigComponent implements OnInit {
       info: '',
       subInfo: ''
     };
-    // console.log('ACCOUNT', account.data);
-    // console.log(this.txOnpartial);
     const ispartial = this.multisigService.onPartial(account.data, this.txOnpartial);
-    // console.log('ispartial', ispartial);
     if (ispartial) {
-      this.validateAccountAlert = { show: true, info: 'Partial', subInfo: 'Has transactions in partial' };
+      this.validateAccountAlert = { show: true, info: 'Partial', subInfo: 'Your account has transactions in partial' };
     }
     if (!account.data.isMultisign) {
       this.router.navigate([`/${AppConfig.routes.home}`]);
@@ -702,9 +677,6 @@ export class EditAccountMultisigComponent implements OnInit {
   }
   // TODO hacer recursive function
   setDataCurrentAccout (account: AccountsInterface): DataCurrentAccount {
-
-    // const multisigAccountGraphIn = this.multisigService.multisigAccountGraphInfoMap(account.multisigAccountGraphInfo . )
-    // console.log('multisigAccountGraphIn', multisigAccountGraphIn)
     this.dataCurrentAccout.name = account.name;
     this.dataCurrentAccout.publicAccount = account.publicAccount;
     const address = Address.createFromPublicKey(account.publicAccount.publicKey, environment.typeNetwork.value);
@@ -787,7 +759,6 @@ export class EditAccountMultisigComponent implements OnInit {
 
       return Object.assign(data, d);
     });
-    // console.log('this.dataCurrentAccout.cosignatoryList', this.dataCurrentAccout.cosignatoryList);
     return this.dataCurrentAccout;
   }
 
@@ -825,7 +796,6 @@ export class EditAccountMultisigComponent implements OnInit {
       this.transactionService
         .getAggregateBondedTransactions$()
         .subscribe((transactions: TransactionsInterface[]) => {
-          console.log('ESTAS SON MIS TRANSACCIONES', transactions);
           if (transactions.length > 0) {
             this.txOnpartial = transactions;
           } else {
@@ -834,7 +804,6 @@ export class EditAccountMultisigComponent implements OnInit {
         }));
     this.subscribe.push(this.walletService.getAccountsInfo$().subscribe(
       next => {
-        // console.log('NUEVO VALOR', next);
         this.getAccount(this.activateRoute.snapshot.paramMap.get('name'));
       }
     ));
@@ -853,7 +822,6 @@ export class EditAccountMultisigComponent implements OnInit {
   builderOtherCosignatorie (id) {
     if (id) {
       this.otherCosignatorieList = this.consignerFirmList.filter(item => item.value !== id);
-      console.log('this.otherCosignatorieList 2', this.otherCosignatorieList)
     }
   }
   /**
@@ -893,7 +861,6 @@ export class EditAccountMultisigComponent implements OnInit {
       this.aggregateTransaction = this.multisigService.aggregateTransactionEditModifyMultisig(this.paramConvert);
       const feeAgregate = Number(this.transactionService.amountFormatterSimple(this.aggregateTransaction.maxFee.compact()));
       this.feeConfig.fee = feeAgregate.toFixed(6);
-      // console.log(this.feeConfig.fee);
     }
 
   }
@@ -925,7 +892,7 @@ export class EditAccountMultisigComponent implements OnInit {
     return validation;
   }
   /**
-   *  TODO   patchValue , updateValueAndValidity, setValidators optimizar para una sola funcion
+   *  TODO   patchValue , updateValueAndValidity, setValidators optimize for a single function
    */
   validatorsDelta (maxDelta: number = 1) {
     this.maxDelta = maxDelta;

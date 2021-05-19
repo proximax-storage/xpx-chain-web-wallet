@@ -85,13 +85,13 @@ export class HomeComponent implements OnInit {
 
     this.boxCreateWallet = [
       this.services.buildStructureService(
-        'Sign In',
+        'Sign in',
         true,
         '',
         'icon-add-new-blue.svg',
         `signIn`
       ),this.services.buildStructureService(
-        'Sign In With SiriusID',
+        'Sign in with SiriusID',
         this.disableModules.siriusid.show,
         '',
         'icon-add-new-blue.svg',
