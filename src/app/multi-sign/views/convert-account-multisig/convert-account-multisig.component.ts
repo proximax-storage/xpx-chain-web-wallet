@@ -365,7 +365,6 @@ export class ConvertAccountMultisigComponent implements OnInit {
         const accountInfo = this.walletService.filterAccountInfo(element.name);
         if (accountInfo) {
           if (!this.multisigService.checkIsMultisig(element)) {
-            // console.log('is not multisig');
             this.currentAccounts.push({
               label: element.name,
               value: element.publicAccount,
@@ -469,7 +468,6 @@ export class ConvertAccountMultisigComponent implements OnInit {
         .getAggregateBondedTransactions$()
         .subscribe((transactions: TransactionsInterface[]) => {
           if (transactions.length > 0) {
-            console.log('ESTAS SON MIS TRANSACCIONES', transactions);
             this.txOnpartial = transactions;
             this.validateSnapshot();
           } else {
@@ -479,7 +477,6 @@ export class ConvertAccountMultisigComponent implements OnInit {
     );
     this.subscribe.push(this.walletService.getAccountsInfo$().subscribe(
       next => {
-        // console.log('NUEVO VALOR', next);
         this.validateSnapshot();
       }
     ));
@@ -552,7 +549,7 @@ export class ConvertAccountMultisigComponent implements OnInit {
       // Validate in partial txs
       const ispartial = this.multisigService.onPartial(account.data, this.txOnpartial);
       if (ispartial) {
-        this.validateAccountAlert = { show: true, info: 'Partial', subInfo: 'Has transactions in partial' };
+        this.validateAccountAlert = { show: true, info: 'Partial', subInfo: 'Your account has transactions in partial' };
       }
       // Validate is multisig
       if (account.isMultisig) {
@@ -578,7 +575,6 @@ export class ConvertAccountMultisigComponent implements OnInit {
     if (!(accountFiltered !== null && accountFiltered !== undefined && accountFiltered.accountInfo !== null)) {
       return value;
     }
-    console.log('accountFiltered', accountFiltered)
     const balanceAccount = accountFiltered.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id);
     if (!balanceAccount) {
       return value;
