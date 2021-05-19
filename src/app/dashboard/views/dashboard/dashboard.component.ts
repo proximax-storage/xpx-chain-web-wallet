@@ -249,7 +249,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
           linkedInfo = "-";
           break;
         case 1:
-          aliasType = "Mosaic";
+          aliasType = "Asset";
           linkedInfo = ownedNamespace.namespaceInfo.alias.mosaicId.toHex();
           break;
         case 2:
