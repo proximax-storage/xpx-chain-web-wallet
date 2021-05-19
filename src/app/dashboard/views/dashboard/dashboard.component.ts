@@ -98,8 +98,8 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     deleteAccount: `/${AppConfig.routes.deleteAccount}/`,
   };
 
-  namespaceHeaders = ['Namespace ID', 'Name', 'Link Type', 'Token ID/Address', 'Active'];
-  assetHeaders = ['Owner', 'Token ID', 'Namespace ID', 'Alias Name', 'Quantity', 'Active'];
+  namespaceHeaders = ['Namespace ID', 'Name', 'Link Type', 'Asset ID/Address', 'Active'];
+  assetHeaders = ['Owner', 'Asset ID', 'Namespace ID', 'Alias Name', 'Quantity', 'Active'];
   namespaceAssetView = 0;
   dashBoardNamespaceInfoList: DashboardNamespaceInfo[] = [];
   dashBoardAssetInfoList: DashboardMosaicInfo[] = [];

@@ -34,7 +34,7 @@ import { NodeService } from 'src/app/servicesModule/services/node.service';
 export class CreateMosaicComponent implements OnInit, OnDestroy {
 
   paramsHeader: HeaderServicesInterface = {
-    moduleName: 'Tokens',
+    moduleName: 'Assets',
     componentName: 'Create',
   };
   @BlockUI() blockUI: NgBlockUI;

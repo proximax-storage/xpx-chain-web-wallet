@@ -23,7 +23,7 @@ import { HeaderServicesInterface } from '../../../servicesModule/services/servic
 export class MosaicsSupplyChangeComponent implements OnInit {
 
   paramsHeader: HeaderServicesInterface = {
-    moduleName: 'Tokens',
+    moduleName: 'Assets',
     componentName: 'Modify Supply',
   };
 
@@ -32,7 +32,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
   formMosaicSupplyChange: FormGroup;
   parentMosaic: any = [{
     value: '1',
-    label: 'Select Token',
+    label: 'Select Asset',
     selected: false,
     disabled: true
   }];
@@ -132,7 +132,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
     this.clearForm();
     this.parentMosaic = [{
       value: '1',
-      label: 'Select Token',
+      label: 'Select Asset',
       selected: false,
       disabled: true
     }];

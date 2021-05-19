@@ -72,11 +72,11 @@ export class TransactionsService {
     },
     mosaicDefinition: {
       id: TransactionType.MOSAIC_DEFINITION,
-      name: 'Token Definition'
+      name: 'Asset Definition'
     },
     mosaicSupplyChange: {
       id: TransactionType.MOSAIC_SUPPLY_CHANGE,
-      name: 'Token Supply Change'
+      name: 'Asset Supply Change'
     },
     modifyMultisigAccount: {
       id: TransactionType.MODIFY_MULTISIG_ACCOUNT,
@@ -92,7 +92,7 @@ export class TransactionsService {
     },
     mosaicAlias: {
       id: TransactionType.MOSAIC_ALIAS,
-      name: 'Token Alias'
+      name: 'Asset Alias'
     },
     addressAlias: {
       id: TransactionType.ADDRESS_ALIAS,

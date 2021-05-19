@@ -261,7 +261,7 @@
                 <div class="col-12 mx-auto">
                   <ng-select class="custom" mdbInputDirective mdbValidate class="selectWrapper"
                     [items]="otherMosaic.selectOtherMosaics" bindLabel="label" bindValue="value"
-                    placeholder="Select token" (change)="otherMosaicsChange($event, i)" clearAllText="Clean"
+                    placeholder="Select asset" (change)="otherMosaicsChange($event, i)" clearAllText="Clean"
                     [disabled]="disabledAllField">
                   </ng-select>
                 </div>
@@ -306,7 +306,7 @@
           (click)="pushedOtherMosaics()">
           <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
             *ngIf="currentBlock === 0 && !disabledBtnAddMosaic"></span>
-          <span class="fs-1-2em text-cl-m fw-700">(+) Add Token </span>
+          <span class="fs-1-2em text-cl-m fw-700">(+) Add Asset </span>
         </button>
       </div>
     </div>
@@ -402,9 +402,8 @@
                   <div class="col-12 text-center">
                     <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
                       width="20" alt="">
-                    <!-- <span class="fs-07rem">Unconfirmed/Recommended Fee: {{fee}} XPX <br></span> -->
                     <span class="fs-08rem">
-                      Unconfirmed/Recommended Fee:&nbsp;
+                      Transaction Fee:&nbsp;
                       <a [innerHTML]="getQuantity(fee)"></a> XPX
                     </span>
                   </div>
@@ -423,10 +422,9 @@
                       LockFund:&nbsp;
                       <a [innerHTML]="getQuantity('10.000000')"></a> XPX <br>
 
-                      Unconfirmed/Recommended Fee:&nbsp;
+                      Transaction Fee:&nbsp;
                       <a [innerHTML]="getQuantity('0.044500')"></a> XPX
                     </span>
-                    <!-- <span class="fs-07rem">LockFund: 10.000000 XPX <br> Unconfirmed/Recommended Fee: 0.044500 XPX</span>  -->
                   </div>
                 </div>
               </div>
@@ -447,7 +445,7 @@
                 <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20"
                   alt="">
                 <span class="fs-08rem">
-                  Unconfirmed/Recommended Fee:&nbsp;
+                  Transaction Fee:&nbsp;
                   <a [innerHTML]="getQuantity(fee)"></a> XPX
                 </span>
               </div>
