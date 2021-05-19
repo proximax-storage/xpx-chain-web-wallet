@@ -16,7 +16,7 @@ import { TransactionsInterface, TransactionsService } from '../../services/trans
 import { SharedService, ConfigurationForm } from '../../../shared/services/shared.service';
 import { environment } from '../../../../environments/environment';
 import { CosignerFirmList, MultisigService } from 'src/app/multi-sign/service/multisig.service';
-
+import { formatDate } from '@angular/common';
 @Component({
   selector: 'app-partial',
   templateUrl: './partial.component.html',
@@ -92,9 +92,8 @@ export class PartialComponent implements OnInit, OnDestroy {
               transaction['isSigned'] = true;
             }
           });
-
           transaction.hash = transaction.data.transactionInfo.hash;
-          transaction['deadline'] = `${this.transactionService.dateFormat(transaction.data.deadline)} - UTC`;
+          transaction['deadline'] =  this.convertDateTimeFormat(transaction.data.deadline.value.toString());
         });
       }
     ));
@@ -109,6 +108,13 @@ export class PartialComponent implements OnInit, OnDestroy {
     this.subscription.forEach(subscription => {
       subscription.unsubscribe();
     });
+  }
+  convertDateTimeFormat(dateTime: string): string{
+    let dateFormat = "MM/dd/yyyy HH:mm:ss";
+    let date = new Date(dateTime);
+    let timezone = - date.getTimezoneOffset();
+
+    return formatDate(date, dateFormat, 'en-us', timezone.toString());
   }
 
   /**
@@ -150,14 +156,13 @@ export class PartialComponent implements OnInit, OnDestroy {
     this.showSwap = false;
     this.modalPartial.show();
     this.dataSelected = transaction;
-    this.deadline = `${this.transactionService.dateFormat(this.dataSelected.data['deadline'])} - UTC`;
+    this.deadline =  this.convertDateTimeFormat(this.dataSelected.data['deadline'].value.toString());
     this.arraySelect = this.arraySelect.slice(0);
     // this.arraySelect = [];
     this.account = null;
     this.password = '';
     let arraySelect = [];
     const accountMultisig = this.walletService.filterAccountInfo(transaction.data['innerTransactions'][0].signer.address.pretty(), true);
-    console.log('accountMultisig', accountMultisig);
     if (accountMultisig && accountMultisig.multisigInfo && accountMultisig.multisigInfo.cosignatories && accountMultisig.multisigInfo.cosignatories.length > 0) {
       arraySelect = this.multisigService.buildCosignerList(accountMultisig.multisigInfo, this.walletService.currentWallet.accounts);
       arraySelect.map((r: CosignerFirmList | any) => {
@@ -169,21 +174,6 @@ export class PartialComponent implements OnInit, OnDestroy {
           r.disabled = r.disabled || hasSigned;
         }
       });
-      /* accountMultisig.multisigInfo.cosignatories.forEach(element => {
-        const cosignatorie: AccountsInterface = this.walletService.filterAccountWallet('', null, element.address.pretty());
-        console.log('cosignatorie', cosignatorie);
-        if (cosignatorie) {
-          const publicAccount = this.proximaxProvider.createPublicAccount(cosignatorie.publicAccount.publicKey, cosignatorie.publicAccount.address.networkType);
-          const signedByAccount = transaction.data.signedByAccount(publicAccount);
-          arraySelect.push({
-            label: (signedByAccount) ? `${cosignatorie.name} - Signed` : cosignatorie.name,
-            value: cosignatorie,
-            selected: false,
-            signed: signedByAccount,
-            disabled: signedByAccount
-          });
-        }
-      }); */
     }
 
     transaction.data['innerTransactions'].forEach((element: any) => {
@@ -195,10 +185,8 @@ export class PartialComponent implements OnInit, OnDestroy {
         // tslint:disable-next-line: no-shadowed-variable
         data.modifications.forEach(element => {
           const exist = arraySelect.find((b: any) => b.value.address === element.cosignatoryPublicAccount.address.plain());
-          console.log('exist', exist);
           if (!exist) {
             const possibleCosignatory: AccountsInterface = this.walletService.filterAccountWallet('', null, element.cosignatoryPublicAccount.address.pretty());
-            console.log('possibleCosignatory ---->', possibleCosignatory);
             // Address encontrada
             if (possibleCosignatory) {
               if (possibleCosignatory && possibleCosignatory.isMultisign && possibleCosignatory.isMultisign.isMultisig()) {
@@ -209,18 +197,15 @@ export class PartialComponent implements OnInit, OnDestroy {
                   if (!existOtherCosignatory) {
                     // Other cosignatory level 2
                     const cosignatoryLevelTwo: AccountsInterface = this.walletService.filterAccountWallet('', null, level2.address.pretty());
-                    console.log('cosignatoryLevelTwo', cosignatoryLevelTwo);
                     if (cosignatoryLevelTwo) {
                       if (cosignatoryLevelTwo && cosignatoryLevelTwo.isMultisign && cosignatoryLevelTwo.isMultisign.isMultisig()) {
                         // All cosignatories level 3
                         cosignatoryLevelTwo.isMultisign.cosignatories.forEach(level3 => {
                           // Is added before in array select?
                           const existCosignatoryLevelThree = arraySelect.find((b: any) => b.value.address === level3.address.plain());
-                          console.log('existCosignatoryLevelThree', existCosignatoryLevelThree);
                           if (!existCosignatoryLevelThree) {
                             // Other cosignatory level 3
                             const cosignatoryLevelThree: AccountsInterface = this.walletService.filterAccountWallet('', null, level3.address.pretty());
-                            console.log('cosignatoryLevelThree', cosignatoryLevelThree);
                             if (cosignatoryLevelThree) {
                               const publicAccount = this.proximaxProvider.createPublicAccount(
                                 cosignatoryLevelThree.publicAccount.publicKey,
@@ -288,7 +273,6 @@ export class PartialComponent implements OnInit, OnDestroy {
             const addressSender = innerTransactions[0].signer.address.plain();
             if ((addressSender === addressAccountMultisig) || (addressSender === addressAccountSimple)) {
               if (msg && msg['type'] && msg['type'] === 'Swap') {
-                // console.log('IS SWAP');
                 this.nis1hash = msg['nis1Hash'];
                 this.msg = msg['message'];
                 this.showSwap = true;
@@ -361,7 +345,6 @@ export class PartialComponent implements OnInit, OnDestroy {
       this.password.length <= this.configurationForm.passwordWallet.maxLength
     ) {
       const common: any = { password: this.password };
-      // console.log(this.account);
       if (this.walletService.decrypt(common, this.account)) {
         const transaction: any = this.dataSelected.data;
         const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
