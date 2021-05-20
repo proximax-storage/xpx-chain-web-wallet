@@ -98,8 +98,8 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     deleteAccount: `/${AppConfig.routes.deleteAccount}/`,
   };
 
-  namespaceHeaders = ['Namespace Id', 'Name', 'Link Type', 'Mosaic Id/Address', 'Active'];
-  assetHeaders = ['Owner', 'Mosaic Id', 'Namespace Id', 'Alias Name', 'Quantity', 'Active'];
+  namespaceHeaders = ['Namespace ID', 'Name', 'Link Type', 'Asset ID/Address', 'Active'];
+  assetHeaders = ['Owner', 'Asset ID', 'Namespace ID', 'Alias Name', 'Quantity', 'Active'];
   namespaceAssetView = 0;
   dashBoardNamespaceInfoList: DashboardNamespaceInfo[] = [];
   dashBoardAssetInfoList: DashboardMosaicInfo[] = [];
@@ -249,7 +249,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
           linkedInfo = "-";
           break;
         case 1:
-          aliasType = "Mosaic";
+          aliasType = "Asset";
           linkedInfo = ownedNamespace.namespaceInfo.alias.mosaicId.toHex();
           break;
         case 2:

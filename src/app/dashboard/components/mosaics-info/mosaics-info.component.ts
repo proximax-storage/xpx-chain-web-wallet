@@ -118,7 +118,7 @@ export class MosaicsInfoComponent implements OnInit, OnChanges {
    * @param mosaicStorage
    */
   findMosaic(mosaicStorage: MosaicsStorage) {
-    // Create MosaicId from mosaic and namespace string id (ex: nem:xem or domain.subdom.subdome:token)
+    // Create MosaicId from mosaic and namespace string id (ex: nem:xem or domain.subdom.subdome:asset)
     const dataReturn: Mosaic[] = [];
     this.mosaicsArray.forEach(element => {
       const mosaicId = this.proximaxProvider.getMosaicId(mosaicStorage.idMosaic).toHex();

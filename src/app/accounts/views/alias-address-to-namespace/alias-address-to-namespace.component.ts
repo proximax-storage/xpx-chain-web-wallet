@@ -131,7 +131,7 @@ export class AliasAddressToNamespaceComponent implements OnInit, OnDestroy {
             } else if (type === 1) {
               isLinked = true;
               disabled = true;
-              label = `${label} - (Linked to Mosaic) - ${this.mosaicstoHex.toHex()}`;
+              label = `${label} - (Linked to Asset) - ${this.mosaicstoHex.toHex()}`;
             } else {
               disabled = (this.LinkToNamespaceForm.get('typeAction').value === 1) ? true : false;
             }
