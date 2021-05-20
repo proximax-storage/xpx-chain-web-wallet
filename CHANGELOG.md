@@ -1,3 +1,23 @@
+<!-- RELEASE TESTNET v0.5.6.7 -->
+## [Version: 0.5.8](https://github.com/proximax-storage/xpx-chain-web-wallet/releases/tag/release-v0.5.8)
+<h2>Update</h2>
+<ul>
+<h3>Setting</h3>
+ <li>New version 0.5.8</li>
+ <li>New link play google "SiriusID"</li>
+ <h3>Partial</h3>
+ <li>Date format</li>
+</ul>
+
+<h2>Text correction</h2>
+<ul>
+<h3>All modules</h3>
+ <li>Mosaic is changed by asset</li>
+<li>Multi-sign (partial)</li>
+<li>Change from "Unconfirmed / Recommended" to "Transaction Fee"</li>
+
+</ul>
+</ul>
 
 <!-- RELEASE TESTNET v0.5.6.7 -->
 ## [Version: 0.5.7](https://github.com/proximax-storage/xpx-chain-web-wallet/releases/tag/release-v0.5.7)
